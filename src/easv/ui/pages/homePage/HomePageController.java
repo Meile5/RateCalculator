@@ -1,4 +1,6 @@
 package easv.ui.pages.homePage;
+import easv.ui.components.homePage.empty.SideNavigationNewAproach;
+import easv.ui.components.homePage.scrollPane.ScrollPaneContoller;
 import easv.ui.components.homePage.sideNavigation.SideNavigation;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -6,8 +8,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -31,12 +36,15 @@ public class HomePageController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        SideNavigation  sideNavigation = new SideNavigation();
-        Platform.runLater(()->{ initializeSideMenu(menu,sideNavigation.getRoot());});
+       // SideNavigationNewAproach sideNavigation = new SideNavigationNewAproach();
+        ScrollPaneContoller sde = new ScrollPaneContoller();
+        Platform.runLater(()->{ initializeSideMenu(menu,sde.getRoot());});
+        Platform.runLater(()->{sde.getRoot().getWidth();});
     }
 
-    private void initializeSideMenu(StackPane stackPane, HBox hBox){
+    private void initializeSideMenu(StackPane stackPane, ScrollPane hBox){
         StackPane.setAlignment(hBox,Pos.CENTER_LEFT);
         stackPane.getChildren().add(hBox);
+
     }
 }
