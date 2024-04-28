@@ -1,8 +1,7 @@
-package easv.employeesPage.deleteEmployee;
+package easv.ui.employeesPage.deleteEmployee;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -10,14 +9,15 @@ import java.io.IOException;
 public class DeleteEmployeeController {
 
     @FXML
-    private VBox deleteButtonContainer;
+    private VBox deleteComponent;
+    @FXML
     private VBox deleteContainer;
 
     public DeleteEmployeeController(VBox deleteContainer) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeComponent.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("DeleteEmployeeComponenet.fxml"));
         loader.setController(this);
         try {
-            deleteButtonContainer = loader.load();
+            deleteComponent = loader.load();
             this.deleteContainer = deleteContainer;
 
         } catch (IOException e) {
@@ -27,6 +27,6 @@ public class DeleteEmployeeController {
     }
 
     public VBox getRoot() {
-        return deleteButtonContainer;
+        return deleteComponent;
     }
 }
