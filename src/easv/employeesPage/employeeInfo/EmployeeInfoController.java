@@ -2,18 +2,23 @@ package easv.employeesPage.employeeInfo;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class EmployeeInfoController {
+public class EmployeeInfoController implements Initializable {
 
    @FXML
    private HBox employeeComponent;
    @FXML
    private VBox employeesContainer;
+   @FXML
+   private VBox deleteContainer;
 
 
     public EmployeeInfoController(VBox employeesContainer) {
@@ -31,5 +36,13 @@ public class EmployeeInfoController {
 
     public HBox getRoot() {
         return employeeComponent;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
+    public void displayDelete(){
+
     }
 }

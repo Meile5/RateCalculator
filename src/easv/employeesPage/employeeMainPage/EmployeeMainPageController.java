@@ -16,9 +16,26 @@ import java.util.ResourceBundle;
 public class EmployeeMainPageController implements Initializable {
     @FXML
     private VBox employeesContainer;
+   @FXML
+   private HBox employeesMainPageContainer;
+    @FXML
     private EmployeeInfoController employeeInfoController;
 
+    /*public EmployeeMainPageController() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeesMainPage.fxml"));
+        loader.setController(this);
+        try {
+            employeesMainPageContainer = loader.load();
 
+
+        } catch (IOException e) {
+            //ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+        }
+
+    }
+    public HBox getRoot() {
+        return employeesMainPageContainer;
+    }*/
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         displayEmployees();
