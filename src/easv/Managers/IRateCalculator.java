@@ -1,7 +1,6 @@
-package easv.Services;
+package easv.Managers;
 
 import easv.be.Employee;
-import easv.be.EmployeeType;
 
 import java.math.BigDecimal;
 

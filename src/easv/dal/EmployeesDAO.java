@@ -13,7 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class EmployeesDAO implements IEmployeeDAO{
+public class EmployeesDAO implements IEmployeeDAO {
 
     private final ConnectionManager connectionManager;
 
@@ -21,10 +21,13 @@ public class EmployeesDAO implements IEmployeeDAO{
         this.connectionManager = new ConnectionManager();
     }
 
-    /** Retrieves all employees and puts the in a map*/
+    /**
+     * Retrieves all employees and puts the in a map
+     */
     @Override
     public ObservableMap<Integer, Employee> returnEmployees() {
-        ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
+
+          ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
         String sql = "SELECT E.EmployeeID, E.Name AS EmployeeName, E.AnnualSalary, " +
                 "E.FixedAnnualAmount, E.OverheadMultiplier, E.UtilizationPercentage, " +
                 "E.WorkingHours, E.employeeType, C.Name AS CountryName, T.Name AS TeamName " +
@@ -53,13 +56,13 @@ public class EmployeesDAO implements IEmployeeDAO{
                     // Create Team object
                     Team team = new Team(teamName);
 
-                    Employee employee = new Employee(name, annualSalary, fixedAnnualAmount,
-                            overheadMultiplier, utilizationPercentage,
-                            workingHours, country, team, type);
-                    employee.setId(id);
+                  //  Employee employee = new Employee(name, annualSalary, fixedAnnualAmount,
+                   //         overheadMultiplier, utilizationPercentage,
+                    //        workingHours, country, team, type);
+                    // employee.setId(id);
 
                     // Add Employee to ObservableMap
-                    employees.put(id, employee);
+                  //  employees.put(id, employee);
                 }
             }
         } catch ( SQLException e) {
@@ -69,3 +72,7 @@ public class EmployeesDAO implements IEmployeeDAO{
 
     }
 }
+
+
+
+
