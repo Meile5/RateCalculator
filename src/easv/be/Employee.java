@@ -1,5 +1,7 @@
 package easv.be;
 
+import easv.Services.IRateCalculator;
+
 import java.math.BigDecimal;
 
 public class Employee {
@@ -13,6 +15,7 @@ public class Employee {
     private Country country;
     private Team team;
     private int id;
+    private IRateCalculator iRateCalculator;
 
     public Employee(String name, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,  Country country, Team team, EmployeeType employeeType) {
         this.name = name;
@@ -25,6 +28,21 @@ public class Employee {
         this.team = team;
         this.employeeType = employeeType;
     }
+
+    /** Second constructor with dependency injection of rateCalculator
+     * after employees retrieval*/
+    /*public Employee(String name, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,  Country country, Team team, EmployeeType employeeType, IRateCalculator iRateCalculator) {
+        this.name = name;
+        this.annualSalary = annualSalary;
+        this.fixedAnnualAmount = fixedAnnualAmount;
+        this.overheadMultiplier = overheadMultiplier;
+        this.utilizationPercentage = utilizationPercentage;
+        this.workingHours = workingHours;
+        this.country = country;
+        this.team = team;
+        this.employeeType = employeeType;
+        this.iRateCalculator = iRateCalculator;
+    }*/
 
     public String getName() {
         return name;
@@ -104,5 +122,12 @@ public class Employee {
 
     public void setType(EmployeeType employeeType) {
         this.employeeType = employeeType;
+    }
+    public void setRateCalculator(IRateCalculator iRateCalculator) {
+        this.iRateCalculator = iRateCalculator;
+    }
+
+    public IRateCalculator getRateCalculator() {
+        return iRateCalculator;
     }
 }
