@@ -11,7 +11,7 @@
             <children>
                 <Region maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" VBox.vgrow="ALWAYS" />
                 <Region maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" />
-                <Line endX="50.0" />
+                <Line fx:id="theLine" endX="50.0" />
                 <Region maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" />
                 <Region VBox.vgrow="ALWAYS" />
             </children>

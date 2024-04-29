@@ -3,11 +3,6 @@
     -fx-stroke-width: 1;
 }
 
-.navButton:hover{
-    -fx-fill: #2ba746;
-    -fx-stroke-width: 1;
-}
-
 .navControl{
 }
 
@@ -27,13 +22,9 @@
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
-    -fx-border-color: black;
 }
 
-.navText:hover {
-    -fx-fill: lightblue;
-}
-.navArrow{
+.hover{
     -fx-fill: #2ba746;
-    -fx-border-color:black ;
+    -fx-text-fill: #2ba746;
 }

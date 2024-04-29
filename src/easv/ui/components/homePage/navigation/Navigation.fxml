@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
@@ -7,7 +6,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<HBox fx:id="navComponent" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="250.0" styleClass="navControl" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox fx:id="navComponent"  stylesheets="@../../../styling/NavigationButton.css" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="250.0" styleClass="navControl" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <HBox fx:id="navIcon" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0">
             <children>
@@ -18,7 +17,7 @@
          </HBox.margin>
         </HBox>
       <Region prefHeight="200.0" prefWidth="200.0" />
-      <Label fx:id="navText" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" text="Distribution">
+      <Label fx:id="navText" styleClass="navText" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" text="Distribution">
          <font>
             <Font size="18.0" />
          </font>

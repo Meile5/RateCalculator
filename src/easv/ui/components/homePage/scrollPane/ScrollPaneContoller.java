@@ -12,6 +12,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -24,9 +25,11 @@ public class ScrollPaneContoller implements Initializable {
     private VBox iconsContainer;
     @FXML
     private ScrollPane sideNavigationContainer;
+    @FXML
+    private Line theLine;
     private boolean isExpanded;
-    private double expandedWidth=300;
-    private double originalWidth = 90;
+    private static   final double expandedWidth=300;
+    private static   final double originalWidth = 90;
 
 
 
@@ -75,6 +78,7 @@ public class ScrollPaneContoller implements Initializable {
            KeyValue keyValue= new KeyValue(sideNavigationContainer.prefWidthProperty(),expandedWidth);
            KeyFrame keyFrame = new KeyFrame(Duration.millis(500),keyValue);
            timeline.getKeyFrames().add(keyFrame);
+           theLine.setEndX(250);
            timeline.play();
            isExpanded=true;
        });
@@ -85,6 +89,10 @@ public class ScrollPaneContoller implements Initializable {
             KeyValue keyValue= new KeyValue(sideNavigationContainer.prefWidthProperty(),originalWidth);
             KeyFrame keyFrame = new KeyFrame(Duration.millis(500),keyValue);
             timeline.getKeyFrames().add(keyFrame);
+            timeline.setOnFinished((e)->{
+                theLine.setEndX(50);
+            });
+
             timeline.play();
             isExpanded=false;
         });
