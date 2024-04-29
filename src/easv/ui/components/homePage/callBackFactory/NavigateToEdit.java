@@ -1,7 +1,7 @@
-package easv.ui.components.homePage.CallBackFactory;
+package easv.ui.components.homePage.callBackFactory;
 
 import easv.ui.components.common.PageManager;
-import easv.ui.pages.editPage.EditController;
+import easv.ui.pages.modelingPage.ModelingController;
 import javafx.scene.Parent;
 
 public class NavigateToEdit implements CallBack {
@@ -20,7 +20,7 @@ public class NavigateToEdit implements CallBack {
     }
 
     private void initializeEditController(){
-        EditController editController = new EditController();
-        root= editController.getEditPage();
+        ModelingController editController = new ModelingController();
+        root= editController.getModelingPage();
     }
 }

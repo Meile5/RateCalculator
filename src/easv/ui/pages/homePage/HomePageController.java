@@ -1,9 +1,8 @@
 package easv.ui.pages.homePage;
 import easv.ui.components.common.PageManager;
-import easv.ui.components.homePage.CallBackFactory.CallBackFactory;
-import easv.ui.components.homePage.NavigationFactory.NavigationFactory;
+import easv.ui.components.homePage.callBackFactory.CallBackFactory;
 import easv.ui.components.homePage.map.WorldMap;
-import easv.ui.components.homePage.scrollPane.ScrollPaneContoller;
+import easv.ui.components.homePage.sideNavigation.SideNavigationController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,9 +19,12 @@ import java.util.ResourceBundle;
 public class HomePageController implements Initializable, PageManager {
     private Parent root;
     @FXML
-    private StackPane menu,firstLayout;
+    private StackPane menu, firstLayout;
     @FXML
     private VBox pageContainer;
+    @FXML
+    private SideNavigationController sideNavigation;
+
     public HomePageController() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("HomePage.fxml"));
         loader.setController(this);
@@ -34,33 +36,37 @@ public class HomePageController implements Initializable, PageManager {
         }
 
     }
+
     public Parent getRoot() {
         return root;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-       // SideNavigationNewAproach sideNavigation = new SideNavigationNewAproach();
-        ScrollPaneContoller sde = new ScrollPaneContoller();
-        Platform.runLater(()->{ initializeSideMenu(menu,sde.getRoot());});
-        Platform.runLater(()->{sde.getRoot().getWidth();});
+        sideNavigation = new SideNavigationController();
+        Platform.runLater(() -> {
+            initializeSideMenu(menu, sideNavigation.getRoot());
+        });
+        Platform.runLater(() -> {
+            sideNavigation.getRoot().getWidth();
+        });
         initializeWorldMap();
         CallBackFactory.setPageHolder(this);
     }
 
-    private void initializeSideMenu(StackPane stackPane, ScrollPane hBox){
-        StackPane.setAlignment(hBox,Pos.CENTER_LEFT);
+    private void initializeSideMenu(StackPane stackPane, ScrollPane hBox) {
+        StackPane.setAlignment(hBox, Pos.CENTER_LEFT);
         stackPane.getChildren().add(hBox);
     }
-    private void initializeWorldMap(){
+
+    private void initializeWorldMap() {
         WorldMap worldMap = new WorldMap(firstLayout);
         this.pageContainer.getChildren().add(worldMap.getRoot());
     }
 
     @Override
     public void changePage(Parent page) {
-
-                this.pageContainer.getChildren().clear();
-                this.pageContainer.getChildren().add(page);
-            }
+        this.pageContainer.getChildren().clear();
+        this.pageContainer.getChildren().add(page);
+    }
 }

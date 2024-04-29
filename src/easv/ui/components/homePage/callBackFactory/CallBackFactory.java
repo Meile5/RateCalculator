@@ -1,4 +1,4 @@
-package easv.ui.components.homePage.CallBackFactory;
+package easv.ui.components.homePage.callBackFactory;
 import easv.be.Navigation;
 import easv.ui.components.common.PageManager;
 import java.util.HashMap;
@@ -9,9 +9,7 @@ public class CallBackFactory {
     private static PageManager pageManager;
 
     public static void setPageHolder(PageManager pageHolder) {
-        System.out.println(pageManager);
         pageManager = pageHolder;
-        System.out.println(pageManager);
     }
 
     public static CallBack createCallBack(Navigation pageTo) {
@@ -25,7 +23,7 @@ public class CallBackFactory {
         CallBack callBack = null;
         switch (pageTo) {
             case DISTRIBUTION -> {
-                callBack = new NavigateToCreate(pageManager);
+                callBack = new NavigateToDistribution(pageManager);
                 callBacks.put(pageTo, callBack);
             }
             case CREATE -> {
@@ -38,11 +36,11 @@ public class CallBackFactory {
                 callBacks.put(pageTo, callBack);
             }
             case MODELING -> {
-                callBack= new NavigateToEdit(pageManager);
+                callBack= new NavigateToModeling(pageManager);
                 callBacks.put(pageTo,callBack);
             }
             case PROFILE -> {
-                callBack = new NavigateToCreate(pageManager);
+                callBack = new NavigateToProfile(pageManager);
                 callBacks.put(pageTo, callBack);
             }
             default -> {

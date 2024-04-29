@@ -1,11 +1,10 @@
 package easv.ui.components.homePage.map;
-
-import javafx.application.Platform;
+import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.StackPane;
-import javafx.util.Callback;
 import org.controlsfx.control.WorldMapView;
 import java.io.IOException;
 import java.net.URL;
@@ -29,7 +28,17 @@ public class WorldMap implements Initializable {
             worldMap = loader.load();
             this.firstLayout=firstLayout;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+        }
+    }
+    public WorldMap() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("WorldMap.fxml"));
+        loader.setController(this);
+        countryData = new HashMap<>();
+        try {
+            worldMap = loader.load();
+        } catch (IOException e) {
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
 
@@ -44,11 +53,6 @@ public class WorldMap implements Initializable {
         populateCountries();
         populateOperationalCountries();
         changeColor(countries);
-//        Platform.runLater(() -> {
-//            for (WorldMapView.Country c : WorldMapView.Country.values())
-//
-//        });
-
     }
 
     private void populateCountries() {
@@ -68,18 +72,16 @@ public class WorldMap implements Initializable {
     }
 
 
-
+/**
+ *change the color of the countries that are operational */
     private void changeColor(List<String> countries) {
-        worldMap.setCountryViewFactory(new Callback<WorldMapView.Country, WorldMapView.CountryView>() {
-            @Override
-            public WorldMapView.CountryView call(WorldMapView.Country param) {
-                if (countries.contains(param.getLocale().getDisplayCountry())) {
-                    WorldMapView.CountryView operationalCountry = new WorldMapView.CountryView(param);
-                    operationalCountry.getStyleClass().add("country_operational");
-                    return operationalCountry;
-                }
-                return new WorldMapView.CountryView(param);
+        worldMap.setCountryViewFactory(param -> {
+            if (countries.contains(param.getLocale().getDisplayCountry())) {
+                WorldMapView.CountryView operationalCountry = new WorldMapView.CountryView(param);
+                operationalCountry.getStyleClass().add("country_operational");
+                return operationalCountry;
             }
+            return new WorldMapView.CountryView(param);
         });
     }
 

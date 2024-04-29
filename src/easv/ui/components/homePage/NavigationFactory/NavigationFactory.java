@@ -1,6 +1,6 @@
 package easv.ui.components.homePage.NavigationFactory;
 import easv.be.Navigation;
-import easv.ui.components.homePage.CallBackFactory.CallBack;
+import easv.ui.components.homePage.callBackFactory.CallBack;
 import easv.ui.components.homePage.navigation.NavigationController;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.SVGPath;

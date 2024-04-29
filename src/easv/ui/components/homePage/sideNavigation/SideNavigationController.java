@@ -1,7 +1,7 @@
-package easv.ui.components.homePage.scrollPane;
+package easv.ui.components.homePage.sideNavigation;
 
 import easv.be.Navigation;
-import easv.ui.components.homePage.CallBackFactory.CallBackFactory;
+import easv.ui.components.homePage.callBackFactory.CallBackFactory;
 import easv.ui.components.homePage.NavigationFactory.NavigationFactory;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -21,7 +21,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class ScrollPaneContoller implements Initializable {
+public class SideNavigationController implements Initializable {
     @FXML
     private VBox iconsContainer;
     @FXML
@@ -34,8 +34,8 @@ public class ScrollPaneContoller implements Initializable {
 
 
 
-    public ScrollPaneContoller() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("NewAproach.fxml"));
+    public SideNavigationController() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("SideNavigation.fxml"));
         loader.setController(this);
         try {
             sideNavigationContainer =loader.load();

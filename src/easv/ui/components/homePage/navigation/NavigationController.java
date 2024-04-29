@@ -1,5 +1,5 @@
 package easv.ui.components.homePage.navigation;
-import easv.ui.components.homePage.CallBackFactory.CallBack;
+import easv.ui.components.homePage.callBackFactory.CallBack;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,6 +20,8 @@ public class NavigationController implements Initializable {
     private HBox navIcon;
     @FXML
     private Label navText;
+    @FXML
+    private HBox navArrow;
     private CallBack callback;
     private SVGPath icon;
     private String iconText;
@@ -60,6 +62,7 @@ public class NavigationController implements Initializable {
             for(Node node: navComponent.getChildren() ){
                 recursiveStyling(node);
             }
+            navArrow.setVisible(true);
         });
     }
     private void addOnExitListener(){
@@ -67,9 +70,9 @@ public class NavigationController implements Initializable {
             for(Node node: navComponent.getChildren() ){
                 recursiveRemoveStyling(node);
             }
+            navArrow.setVisible(false);
         });
     }
-
 
     private void recursiveStyling(Node node){
         if(node == null){
@@ -83,6 +86,7 @@ public class NavigationController implements Initializable {
             }
         }
     }
+
     private void recursiveRemoveStyling(Node node){
         if(node == null){
             return;
