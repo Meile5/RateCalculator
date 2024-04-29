@@ -44,10 +44,10 @@ public class WorldMap implements Initializable {
         populateCountries();
         populateOperationalCountries();
         changeColor(countries);
-        Platform.runLater(() -> {
-            for (WorldMapView.Country c : WorldMapView.Country.values())
-                System.out.println(c.getLocale().getDisplayCountry());
-        });
+//        Platform.runLater(() -> {
+//            for (WorldMapView.Country c : WorldMapView.Country.values())
+//
+//        });
 
     }
 

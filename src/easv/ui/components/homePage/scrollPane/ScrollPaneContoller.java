@@ -1,5 +1,6 @@
 package easv.ui.components.homePage.scrollPane;
 
+import easv.be.Navigation;
 import easv.ui.components.homePage.CallBackFactory.CallBackFactory;
 import easv.ui.components.homePage.NavigationFactory.NavigationFactory;
 import javafx.animation.KeyFrame;
@@ -51,11 +52,11 @@ public class ScrollPaneContoller implements Initializable {
     }
 
     private void populateNavigation(VBox vBox) {
-        HBox distribution = NavigationFactory.getNavigationComponent(NavigationFactory.Navigation.DISTRIBUTION, CallBackFactory.createCallBack(CallBackFactory.PageTo.DISTRIBUTION));
-        HBox create = NavigationFactory.getNavigationComponent(NavigationFactory.Navigation.CREATE, CallBackFactory.createCallBack(CallBackFactory.PageTo.CREATE));
-        HBox employees = NavigationFactory.getNavigationComponent(NavigationFactory.Navigation.EMPLOYEES, CallBackFactory.createCallBack(CallBackFactory.PageTo.EMPLOYEES));
-        HBox modeling = NavigationFactory.getNavigationComponent(NavigationFactory.Navigation.MODELING, CallBackFactory.createCallBack(CallBackFactory.PageTo.MODELING));
-        HBox profile = NavigationFactory.getNavigationComponent(NavigationFactory.Navigation.PROFILE, CallBackFactory.createCallBack(CallBackFactory.PageTo.PROFILE));
+        HBox distribution = NavigationFactory.getNavigationComponent(Navigation.DISTRIBUTION, CallBackFactory.createCallBack(Navigation.DISTRIBUTION));
+        HBox create = NavigationFactory.getNavigationComponent(Navigation.CREATE, CallBackFactory.createCallBack(Navigation.CREATE));
+        HBox employees = NavigationFactory.getNavigationComponent(Navigation.EMPLOYEES, CallBackFactory.createCallBack(Navigation.EMPLOYEES));
+        HBox modeling = NavigationFactory.getNavigationComponent(Navigation.MODELING, CallBackFactory.createCallBack(Navigation.MODELING));
+        HBox profile = NavigationFactory.getNavigationComponent(Navigation.PROFILE, CallBackFactory.createCallBack(Navigation.PROFILE));
         vBox.getChildren().add(1, distribution);
         vBox.getChildren().add(2, create);
         vBox.getChildren().add(3, employees);

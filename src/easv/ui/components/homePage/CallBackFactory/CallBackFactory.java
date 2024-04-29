@@ -1,45 +1,59 @@
 package easv.ui.components.homePage.CallBackFactory;
-
-import java.util.ArrayList;
+import easv.be.Navigation;
+import easv.ui.components.common.PageManager;
 import java.util.HashMap;
-import java.util.List;
+
 
 public class CallBackFactory {
-    private static final HashMap<PageTo, CallBack> callBacks = new HashMap<>();
+    private static final HashMap<Navigation, CallBack> callBacks = new HashMap<>();
+    private static PageManager pageManager;
 
-    public static CallBack createCallBack(PageTo pageTo) {
-      return    getCallBack(pageTo);
+    public static void setPageHolder(PageManager pageHolder) {
+        System.out.println(pageManager);
+        pageManager = pageHolder;
+        System.out.println(pageManager);
     }
 
-    private static CallBack getCallBack(PageTo pageTo) {
+    public static CallBack createCallBack(Navigation pageTo) {
+        return () -> getCallBack(pageTo).call();
+    }
+
+    private static CallBack getCallBack(Navigation pageTo) {
         if (callBacks.containsKey(pageTo)) {
             return callBacks.get(pageTo);
         }
         CallBack callBack = null;
         switch (pageTo) {
             case DISTRIBUTION -> {
+                callBack = new NavigateToCreate(pageManager);
+                callBacks.put(pageTo, callBack);
             }
             case CREATE -> {
-                callBack = new NavigateToCreate();
+                System.out.println(pageManager);
+                callBack = new NavigateToCreate(pageManager);
                 callBacks.put(pageTo, callBack);
             }
             case EMPLOYEES -> {
-                callBack = new NavigateToEmployees();
+                callBack = new NavigateToEmployees(pageManager);
                 callBacks.put(pageTo, callBack);
             }
-            case MODELING -> {}
-            case PROFILE -> {}
+            case MODELING -> {
+                callBack= new NavigateToEdit(pageManager);
+                callBacks.put(pageTo,callBack);
+            }
+            case PROFILE -> {
+                callBack = new NavigateToCreate(pageManager);
+                callBacks.put(pageTo, callBack);
+            }
+            default -> {
+                callBack = new NavigateToCreate(pageManager);
+                callBacks.put(pageTo, callBack);
+            }
         }
         return callBack;
     }
 
 
-    public enum PageTo {
-        DISTRIBUTION,
-        CREATE,
-        EMPLOYEES,
-        MODELING,
-        PROFILE
-    }
+
 
 }
