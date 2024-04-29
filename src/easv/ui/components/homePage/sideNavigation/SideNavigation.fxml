@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -52,18 +51,19 @@
         <VBox fx:id="navigationLabels" alignment="CENTER_LEFT" disable="true" maxWidth="215.0" prefWidth="10.0" spacing="10.0" visible="false" HBox.hgrow="ALWAYS">
             <children>
             <Region maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" />
-                <Label maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" text="Distribution" VBox.vgrow="NEVER">
+                <Label maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" text="Distribution" VBox.vgrow="NEVER">
                     <font>
-                        <Font size="14.0" />
+                        <Font size="18.0" />
                     </font>
                 </Label>
-                <Label minHeight="-Infinity" prefHeight="30.0" text="Create profile" VBox.vgrow="NEVER" />
-                <Label minHeight="-Infinity" prefHeight="30.0" text="Employees" VBox.vgrow="NEVER" />
-                <Label minHeight="-Infinity" prefHeight="30.0" text="Modeling" VBox.vgrow="NEVER" />
+                <Label minHeight="-Infinity" prefHeight="50.0" text="Create profile" VBox.vgrow="NEVER" />
+                <Label minHeight="-Infinity" prefHeight="50.0" text="Employees" VBox.vgrow="NEVER" />
+                <Label minHeight="-Infinity" prefHeight="50.0" text="Modeling" VBox.vgrow="NEVER" />
             <Region maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" />
             <Line />
-                <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                <Label minHeight="-Infinity" prefHeight="30.0" text="Profile" VBox.vgrow="NEVER" />
+            <Region maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" />
+                <Label minHeight="-Infinity" prefHeight="50.0" text="Profile" VBox.vgrow="NEVER" />
+                <Region VBox.vgrow="ALWAYS" />
             </children>
             <HBox.margin>
                 <Insets />

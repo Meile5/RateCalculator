@@ -1,5 +1,4 @@
 package easv.ui.components.homePage.sideNavigation;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -13,8 +12,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -89,7 +86,7 @@ public class SideNavigation implements Initializable {
             }
             vBox1.setMaxWidth(vBox1.getWidth());
             Timeline timeline = new Timeline();
-            KeyValue kvHbox = new KeyValue(hbox.prefWidthProperty(), hbox.getWidth() + 120);
+            KeyValue kvHbox = new KeyValue(hbox.prefWidthProperty(), hbox.getWidth() + 200);
             KeyFrame kfHbox = new KeyFrame(Duration.millis(500), kvHbox);
             timeline.getKeyFrames().add(kfHbox);
             KeyValue kvVbox2 = new KeyValue(vBox2.prefWidthProperty(), vBox2.getWidth() + 100);

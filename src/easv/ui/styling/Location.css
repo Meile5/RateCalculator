@@ -1,0 +1,19 @@
+.location{
+    -fx-background-color: red;
+    -fx-border-radius: blue;
+
+}
+
+.world_map{
+    -fx-background-color: #fff;
+}
+
+.country_operational{
+    -fx-fill: #143664;
+}
+.country_operational:hover{
+    -fx-fill: #63B2E1;
+}
+.country_operational:selected{
+    -fx-fill: #f61cf6;
+}
