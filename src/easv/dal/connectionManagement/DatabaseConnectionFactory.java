@@ -18,7 +18,7 @@ public class DatabaseConnectionFactory {
         if(databaseConnections.containsKey(databaseType)){
             return databaseConnections.get(databaseType);
         }
-        IConnection connection = new ConnectionManager();
+        IConnection connection = new MSSQLConnection();
         databaseConnections.put(databaseType,connection);
         return connection;
     }

@@ -51,7 +51,7 @@ public class CreateController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            model = ModelFactory.createModel(ModelFactory.ModelType.MODELOTHER);
+            model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
             clickClearHandler();
             toTest();
         } catch (RateException e) {

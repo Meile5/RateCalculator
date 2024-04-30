@@ -21,11 +21,11 @@ public class ModelFactory {
         }
         IModel model = null;
         switch (modelType) {
-            case NORMAL_MODEL -> {
+            case MODELOTHER-> {
                 model = new NewModel();
                 models.put(modelType, model);
             }
-            case MODELOTHER -> {
+            case NORMAL_MODEL -> {
                 model = new Model();
                 models.put(modelType, model);
             }

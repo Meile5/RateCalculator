@@ -1,16 +1,12 @@
 package easv.dal.connectionManagement;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 import easv.dal.FileHandler;
 import easv.exception.RateException;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 
-public class ConnectionManager implements IConnection {
-
-
+public class MSSQLConnection implements IConnection {
     private final int  CONN_POOL_SIZE  = 3;
     private final long establishConnectionTime = 5000;
     private final SQLServerDataSource ds;
@@ -18,7 +14,7 @@ public class ConnectionManager implements IConnection {
     private String password;
     private ConnectionPool connectionPool;
 
-    public ConnectionManager() throws RateException {
+    public MSSQLConnection() throws RateException {
         ds = new SQLServerDataSource();
         this.getCredentials();
         ds.setDatabaseName("CSe2023b_e_20_Code_Crafters");
@@ -29,25 +25,6 @@ public class ConnectionManager implements IConnection {
         this.connectionPool = new ConnectionPool(ds, CONN_POOL_SIZE);
 
     }
-
-//    public Connection getConnection() {
-//        Connection conn = null;
-//        long time = System.currentTimeMillis();
-//        DriverManager.setLoginTimeout(2);
-//        while (conn == null && System.currentTimeMillis() < time + establishConnectionTime) {
-//            try {
-//                return ds.getConnection();
-//            } catch (SQLServerException e) {
-//                if (System.currentTimeMillis() >= time + establishConnectionTime) {
-//                    throw new RuntimeException();
-//                }
-//            }
-//        }
-//        if (conn == null) {
-//            throw new RuntimeException();
-//        }
-//        return conn;
-//    }
 
     @Override
     public void releaseConnection(Connection connection) {

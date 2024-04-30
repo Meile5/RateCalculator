@@ -4,7 +4,6 @@ import easv.be.Country;
 import easv.be.Employee;
 import easv.be.EmployeeType;
 import easv.be.Team;
-import easv.dal.connectionManagement.ConnectionManager;
 import easv.dal.connectionManagement.DatabaseConnectionFactory;
 import easv.dal.connectionManagement.IConnection;
 import easv.exception.RateException;
@@ -38,7 +37,9 @@ public class EmployeesDAO implements IEmployeeDAO {
                 "FROM Employees E " +
                 "INNER JOIN Countries C ON E.CountryID = C.CountryID " +
                 "INNER JOIN Teams T ON E.TeamID = T.TeamID";
-        try (Connection conn = connectionManager.getConnection()) {
+        Connection conn = null;
+        try {
+            conn = connectionManager.getConnection();
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 ResultSet res = psmt.executeQuery();
                 while (res.next()) {
@@ -68,9 +69,14 @@ public class EmployeesDAO implements IEmployeeDAO {
                     // Add Employee to ObservableMap
                     //  employees.put(id, employee);
                 }
+                connectionManager.releaseConnection(conn);
             }
         } catch (SQLException | RateException e) {
 
+        } finally {
+            if (conn != null) {
+                connectionManager.releaseConnection(conn);
+            }
         }
         return employees;
 
@@ -80,7 +86,9 @@ public class EmployeesDAO implements IEmployeeDAO {
     @Override
     public Integer addEmployee(Employee employee) {
         Integer employeeID = null;
-        try (Connection conn = connectionManager.getConnection()) {
+        Connection conn = null;
+        try {
+            conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
             String sql = "INSERT INTO Employees (Name, CountryID, TeamID, Currency) VALUES (?, ?, ?, ?)";
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -102,8 +110,11 @@ public class EmployeesDAO implements IEmployeeDAO {
             }
         } catch (SQLException | RateException e) {
             throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                connectionManager.releaseConnection(conn);
+            }
         }
-        System.out.println(employeeID);
         return employeeID;
     }
 }
