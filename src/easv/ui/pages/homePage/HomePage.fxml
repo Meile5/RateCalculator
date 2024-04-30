@@ -12,15 +12,9 @@
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: red;">
          <children>
-            <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="81.0" prefWidth="1200.0" style="-fx-background-color: F3F2F2;">
+            <HBox  fx:id="header" alignment="CENTER" maxHeight="-Infinity" prefHeight="81.0" prefWidth="1200.0" style="-fx-background-color: F3F2F2;">
                <children>
-                  <ImageView fitHeight="80.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../resources/images/schneider_logo.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets left="50.0" />
-                     </HBox.margin></ImageView>
+
                   <Region prefHeight="60.0" prefWidth="791.0" HBox.hgrow="ALWAYS" />
                   <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
                      <image>

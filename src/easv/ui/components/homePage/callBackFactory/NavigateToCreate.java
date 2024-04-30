@@ -1,9 +1,10 @@
 package easv.ui.components.homePage.callBackFactory;
 import easv.ui.components.common.PageManager;
+import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.pages.createPage.CreateController;
 import javafx.scene.Parent;
 
-public class NavigateToCreate implements CallBack {
+public class NavigateToCreate implements CallBack, Subject {
    private PageManager pageManager;
    private Parent root;
    private boolean isOpened;
@@ -21,7 +22,7 @@ public class NavigateToCreate implements CallBack {
         return;
       }
       initializePage();
-      pageManager.changePage(root);
+      pageManager.changePage(root,this);
       isOpened=true;
   }
 
@@ -31,7 +32,9 @@ public class NavigateToCreate implements CallBack {
       root=createController.getCreatePage();
   }
 
-    public void setOpened(boolean opened) {
-        isOpened = opened;
+
+    @Override
+    public void modifyDisplay(boolean val) {
+        isOpened=val;
     }
 }

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-
-<VBox prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: blue;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" />
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: blue;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fill="#ffa11f" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fill="#ff1f2b" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
+   </children>
+</VBox>

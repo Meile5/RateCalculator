@@ -1,12 +1,14 @@
 package easv.ui.components.homePage.callBackFactory;
 import easv.be.Navigation;
 import easv.ui.components.common.PageManager;
+import easv.ui.components.homePage.openPageObserver.Observable;
+import easv.ui.components.homePage.openPageObserver.Observer;
 import java.util.HashMap;
-
 
 public class CallBackFactory {
     private static final HashMap<Navigation, CallBack> callBacks = new HashMap<>();
     private static PageManager pageManager;
+    private final static Observable observer = new Observer();
 
     public static void setPageHolder(PageManager pageHolder) {
         pageManager = pageHolder;
@@ -23,35 +25,48 @@ public class CallBackFactory {
         CallBack callBack = null;
         switch (pageTo) {
             case DISTRIBUTION -> {
-                callBack = new NavigateToDistribution(pageManager);
+                NavigateToDistribution navigateToDistribution = new NavigateToDistribution(pageManager);
+                callBack = navigateToDistribution;
                 callBacks.put(pageTo, callBack);
+                observer.addSubject(navigateToDistribution);
             }
             case CREATE -> {
-                System.out.println(pageManager);
-                callBack = new NavigateToCreate(pageManager);
+                NavigateToCreate navigateToCreate = new NavigateToCreate(pageManager);
+                callBack = navigateToCreate;
                 callBacks.put(pageTo, callBack);
+                observer.addSubject(navigateToCreate);
             }
             case EMPLOYEES -> {
-                callBack = new NavigateToEmployees(pageManager);
+                NavigateToEmployees navigateToEmployees = new NavigateToEmployees(pageManager);
+                callBack = navigateToEmployees;
                 callBacks.put(pageTo, callBack);
+                observer.addSubject(navigateToEmployees);
             }
             case MODELING -> {
-                callBack= new NavigateToModeling(pageManager);
-                callBacks.put(pageTo,callBack);
+                NavigateToModeling navigateToModeling = new NavigateToModeling(pageManager);
+                callBack = navigateToModeling;
+                callBacks.put(pageTo, callBack);
+                observer.addSubject(navigateToModeling);
             }
             case PROFILE -> {
-                callBack = new NavigateToProfile(pageManager);
+                NavigateToProfile navigateToProfile = new NavigateToProfile(pageManager);
+                callBack = navigateToProfile;
                 callBacks.put(pageTo, callBack);
+                observer.addSubject(navigateToProfile);
             }
             default -> {
-                callBack = new NavigateToCreate(pageManager);
+                NavigateToHome navigateToHome = new NavigateToHome(pageManager);
+                callBack = navigateToHome;
                 callBacks.put(pageTo, callBack);
+                observer.addSubject(navigateToHome);
             }
         }
         return callBack;
     }
 
-
+    public static Observable getObserver() {
+        return observer;
+    }
 
 
 }

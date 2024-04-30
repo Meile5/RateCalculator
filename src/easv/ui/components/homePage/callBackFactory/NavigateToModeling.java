@@ -1,10 +1,11 @@
 package easv.ui.components.homePage.callBackFactory;
 
 import easv.ui.components.common.PageManager;
+import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.pages.modelingPage.ModelingController;
 import javafx.scene.Parent;
 
-public class NavigateToModeling  implements CallBack{
+public class NavigateToModeling  implements CallBack, Subject {
     private PageManager pageManager;
     private Parent root;
     private boolean isOpened;
@@ -22,7 +23,7 @@ public class NavigateToModeling  implements CallBack{
             return;
         }
         initializePage();
-        pageManager.changePage(root);
+        pageManager.changePage(root,this);
         isOpened=true;
     }
 
@@ -32,8 +33,10 @@ public class NavigateToModeling  implements CallBack{
         root=modelingController.getModelingPage();
     }
 
-    public void setOpened(boolean opened) {
-        isOpened = opened;
-    }
 
+    @Override
+    public void modifyDisplay(boolean val) {
+        isOpened=val;
+
+    }
 }

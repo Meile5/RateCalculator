@@ -12,7 +12,6 @@ import static javafx.scene.shape.FillRule.EVEN_ODD;
 
 public class NavigationFactory {
     private final static HashMap<Navigation, SVGPath> icons = new HashMap<>();
-
     public static HBox getNavigationComponent(Navigation navigation, CallBack callback) {
        return createAndConfigureNavigation(navigation,callback);
     }
@@ -37,6 +36,7 @@ public class NavigationFactory {
             case PROFILE ->  {
                 navigationController = new NavigationController(icons.get(navigation),callback,IconsText.PROFILE.value);
             }
+
 
         }
 

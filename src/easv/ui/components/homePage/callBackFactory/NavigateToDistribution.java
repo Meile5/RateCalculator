@@ -1,11 +1,10 @@
 package easv.ui.components.homePage.callBackFactory;
-
 import easv.ui.components.common.PageManager;
-import easv.ui.pages.createPage.CreateController;
+import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.pages.distribution.DistributionController;
 import javafx.scene.Parent;
 
-public class NavigateToDistribution implements CallBack{
+public class NavigateToDistribution implements CallBack, Subject {
     private PageManager pageManager;
     private Parent root;
     private boolean isOpened;
@@ -23,7 +22,7 @@ public class NavigateToDistribution implements CallBack{
             return;
         }
         initializePage();
-        pageManager.changePage(root);
+        pageManager.changePage(root,this);
         isOpened=true;
     }
 
@@ -35,5 +34,10 @@ public class NavigateToDistribution implements CallBack{
 
     public void setOpened(boolean opened) {
         isOpened = opened;
+    }
+
+    @Override
+    public void modifyDisplay(boolean val) {
+        isOpened=val;
     }
 }

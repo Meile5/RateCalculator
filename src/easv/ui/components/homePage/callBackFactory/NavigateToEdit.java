@@ -1,12 +1,14 @@
 package easv.ui.components.homePage.callBackFactory;
 
 import easv.ui.components.common.PageManager;
+import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.pages.modelingPage.ModelingController;
 import javafx.scene.Parent;
 
-public class NavigateToEdit implements CallBack {
+public class NavigateToEdit implements CallBack, Subject {
     private PageManager pageManager;
     private Parent root ;
+    private boolean isOpened;
 
     public NavigateToEdit(PageManager pageManager) {
         this.pageManager = pageManager;
@@ -15,12 +17,22 @@ public class NavigateToEdit implements CallBack {
 
     @Override
     public void call() {
+        if(isOpened){
+            return;
+        }
         initializeEditController();
-        pageManager.changePage(root);
+        pageManager.changePage(root,this);
+        isOpened=true;
     }
 
     private void initializeEditController(){
         ModelingController editController = new ModelingController();
         root= editController.getModelingPage();
+    }
+
+    @Override
+    public void modifyDisplay(boolean val) {
+        isOpened=val;
+
     }
 }

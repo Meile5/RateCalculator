@@ -1,10 +1,11 @@
 package easv.ui.components.homePage.callBackFactory;
 
 import easv.ui.components.common.PageManager;
+import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.pages.profilePage.ProfilePageController;
 import javafx.scene.Parent;
 
-public class NavigateToProfile implements CallBack {
+public class NavigateToProfile implements CallBack, Subject {
     private PageManager pageManager;
     private Parent root;
     private boolean isOpened;
@@ -22,7 +23,7 @@ public class NavigateToProfile implements CallBack {
             return;
         }
         initializePage();
-        pageManager.changePage(root);
+        pageManager.changePage(root,this);
         isOpened=true;
     }
 
@@ -36,4 +37,8 @@ public class NavigateToProfile implements CallBack {
         isOpened = opened;
     }
 
+    @Override
+    public void modifyDisplay(boolean val) {
+        isOpened=val;
+    }
 }
