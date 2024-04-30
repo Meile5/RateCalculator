@@ -21,7 +21,6 @@
     -fx-fill: white;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 0,0,0,1 );
 }
 
 .hover{
