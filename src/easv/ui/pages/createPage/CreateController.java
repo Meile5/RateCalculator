@@ -18,7 +18,6 @@ import javafx.scene.shape.SVGPath;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class CreateController implements Initializable {
@@ -40,15 +39,16 @@ public class CreateController implements Initializable {
         try {
             createPage=loader.load();
         } catch (IOException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        model = ModelFactory.createModel(ModelFactory.modelType.ModelOther);
+        model = ModelFactory.createModel(ModelFactory.ModelType.MODELOTHER);
         clickClearHandler();
-
         toTest();
     }
 
@@ -65,10 +65,8 @@ public class CreateController implements Initializable {
         Country country = new Country(countryCB.getText());
         Team team = new Team(teamCB.getText());
         Currency currency = Currency.valueOf(currencyCB.getText());
-
         Employee employee = new Employee(name, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, country, team, employeeType, currency);
         model.addEmployee(employee);
-
         clearFields();
     }
 
@@ -79,6 +77,10 @@ public class CreateController implements Initializable {
         });});
     }
 
+
+
+    // a loop can be used here , you can loop over the childrens and apply the clear, otherwise for each new field that will be added,
+    // need to modify the method
     @FXML
     private void clearFields() {
         nameTF.clear();

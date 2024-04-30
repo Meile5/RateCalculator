@@ -1,38 +1,34 @@
 package easv.ui;
-
-import easv.be.Employee;
 import easv.ui.pages.IModel;
 import easv.ui.pages.Model;
 import easv.ui.pages.NewModel;
-import javafx.collections.ObservableMap;
+import java.util.HashMap;
 
 
 public class ModelFactory {
-    final private static IModel[] models = new IModel[1];
-    public enum modelType{
-        NormalModel,
-        ModelOther
-    };
+    final private static HashMap<ModelType, IModel> models = new HashMap<>();
+
+    public enum ModelType {
+        NORMAL_MODEL,
+        MODELOTHER
+    }
 
 
-    public static IModel createModel(modelType Model){
-
-
-        if(models[0] == null){
-            IModel model = null;
-            switch (Model){
-                case NormalModel -> {  model = new NewModel();}
-                case ModelOther -> { model = new Model();}
-
-
+    public static IModel createModel(ModelType modelType) {
+        if (models.containsKey(modelType)) {
+            return models.get(modelType);
+        }
+        IModel model = null;
+        switch (modelType) {
+            case NORMAL_MODEL -> {
+                model = new NewModel();
+                models.put(modelType, model);
             }
-
-             models[0] = model;
-            return model;
+            case MODELOTHER -> {
+                model = new Model();
+                models.put(modelType, model);
+            }
         }
-        else {
-            return models[0];
-        }
-
+        return model;
     }
 }
