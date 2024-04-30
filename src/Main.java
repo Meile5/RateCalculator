@@ -18,7 +18,8 @@ public class Main extends Application {
     }
 
 
-    /**the model initialization will be moved to the class that will  manage all the initialization of the view based on the role*/
+    /**the model initialization will be moved to the class that will  manage all the initialization of the view based on the role
+     * the model will be initialized in that class and we will use dependency injection, to inject  the model in our components*/
     @Override
     public void start(Stage primaryStage) throws Exception {
 

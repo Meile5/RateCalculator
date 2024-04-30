@@ -3,17 +3,18 @@ package easv.dal.connectionManagement;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import easv.dal.FileHandler;
 import easv.exception.RateException;
-
 import java.sql.Connection;
 
 public class MSSQLConnection implements IConnection {
-    private final int  CONN_POOL_SIZE  = 3;
+    private final int  CONN_POOL_SIZE  = 2;
     private final long establishConnectionTime = 5000;
     private final SQLServerDataSource ds;
     private String user;
     private String password;
     private ConnectionPool connectionPool;
 
+    /**Manages the Microsoft SQL server connection, by encapsulating an connectionPool ,
+     *that will create new connections or retrieve an existing one from the pool */
     public MSSQLConnection() throws RateException {
         ds = new SQLServerDataSource();
         this.getCredentials();
