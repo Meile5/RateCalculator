@@ -3,6 +3,7 @@ package easv.ui.pages;
 import easv.be.*;
 import easv.bll.Managers.EmployeeManager;
 import easv.bll.Managers.IEmployeeManager;
+import easv.exception.RateException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
@@ -13,7 +14,7 @@ public class Model implements IModel {
 
     private IEmployeeManager employeeManager;
 
-    public Model() {
+    public Model() throws RateException {
         this.employees = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
         test();

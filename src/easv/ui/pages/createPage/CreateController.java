@@ -1,5 +1,8 @@
 package easv.ui.pages.createPage;
 import easv.be.*;
+import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
+import easv.exception.RateException;
 import easv.ui.ModelFactory;
 import easv.ui.pages.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
@@ -47,10 +50,17 @@ public class CreateController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        model = ModelFactory.createModel(ModelFactory.ModelType.MODELOTHER);
-        clickClearHandler();
-        toTest();
+        try {
+            model = ModelFactory.createModel(ModelFactory.ModelType.MODELOTHER);
+            clickClearHandler();
+            toTest();
+        } catch (RateException e) {
+            ExceptionHandler.errorAlertMessage(ErrorCode.CONNECTION_FAILED.getValue());
+        }
+
     }
+
+
 
     @FXML
     private void saveEmployee(){

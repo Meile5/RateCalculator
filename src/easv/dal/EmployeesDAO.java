@@ -4,6 +4,10 @@ import easv.be.Country;
 import easv.be.Employee;
 import easv.be.EmployeeType;
 import easv.be.Team;
+import easv.dal.connectionManagement.ConnectionManager;
+import easv.dal.connectionManagement.DatabaseConnectionFactory;
+import easv.dal.connectionManagement.IConnection;
+import easv.exception.RateException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
@@ -15,10 +19,10 @@ import java.sql.SQLException;
 
 public class EmployeesDAO implements IEmployeeDAO {
 
-    private final ConnectionManager connectionManager;
+    private final IConnection connectionManager;
 
-    public EmployeesDAO() {
-        this.connectionManager = new ConnectionManager();
+    public EmployeesDAO() throws RateException {
+        this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }
 
     /**
@@ -65,20 +69,18 @@ public class EmployeesDAO implements IEmployeeDAO {
                     //  employees.put(id, employee);
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException | RateException e) {
 
         }
         return employees;
 
     }
 
+
     @Override
     public Integer addEmployee(Employee employee) {
         Integer employeeID = null;
-        Connection conn = null;
-
-        try {
-            conn = connectionManager.getConnection();
+        try (Connection conn = connectionManager.getConnection()) {
             conn.setAutoCommit(false);
             String sql = "INSERT INTO Employees (Name, CountryID, TeamID, Currency) VALUES (?, ?, ?, ?)";
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -96,23 +98,9 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
                 conn.commit();
             } catch (SQLException e) {
-                try {
-                    if (conn != null) {
-                        conn.rollback();
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            } finally {
-                try {
-                    if (conn != null) {
-                        conn.close();
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                conn.rollback();
             }
-        } catch (SQLException e) {
+        } catch (SQLException | RateException e) {
             throw new RuntimeException(e);
         }
         System.out.println(employeeID);

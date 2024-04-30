@@ -1,4 +1,5 @@
 package easv.ui;
+import easv.exception.RateException;
 import easv.ui.pages.IModel;
 import easv.ui.pages.Model;
 import easv.ui.pages.NewModel;
@@ -14,7 +15,7 @@ public class ModelFactory {
     }
 
 
-    public static IModel createModel(ModelType modelType) {
+    public static IModel createModel(ModelType modelType) throws RateException {
         if (models.containsKey(modelType)) {
             return models.get(modelType);
         }
