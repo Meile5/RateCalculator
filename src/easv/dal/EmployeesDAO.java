@@ -27,7 +27,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     @Override
     public ObservableMap<Integer, Employee> returnEmployees() {
 
-          ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
+        ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
         String sql = "SELECT E.EmployeeID, E.Name AS EmployeeName, E.AnnualSalary, " +
                 "E.FixedAnnualAmount, E.OverheadMultiplier, E.UtilizationPercentage, " +
                 "E.WorkingHours, E.employeeType, C.Name AS CountryName, T.Name AS TeamName " +
@@ -56,20 +56,67 @@ public class EmployeesDAO implements IEmployeeDAO {
                     // Create Team object
                     Team team = new Team(teamName);
 
-                  //  Employee employee = new Employee(name, annualSalary, fixedAnnualAmount,
-                   //         overheadMultiplier, utilizationPercentage,
+                    //  Employee employee = new Employee(name, annualSalary, fixedAnnualAmount,
+                    //         overheadMultiplier, utilizationPercentage,
                     //        workingHours, country, team, type);
                     // employee.setId(id);
 
                     // Add Employee to ObservableMap
-                  //  employees.put(id, employee);
+                    //  employees.put(id, employee);
                 }
             }
-        } catch ( SQLException e) {
+        } catch (SQLException e) {
 
         }
         return employees;
 
+    }
+
+    @Override
+    public Integer addEmployee(Employee employee) {
+        Integer employeeID = null;
+        Connection conn = null;
+
+        try {
+            conn = connectionManager.getConnection();
+            conn.setAutoCommit(false);
+            String sql = "INSERT INTO Employees (Name, CountryID, TeamID, Currency) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                psmt.setString(1, employee.getName());
+                psmt.setInt(7, 1);
+                psmt.setInt(8, 1);
+                psmt.setString(9, employee.getCurrency().name());
+                psmt.executeUpdate();
+                try (ResultSet res = psmt.getGeneratedKeys()) {
+                    if (res.next()) {
+                        employeeID = res.getInt(1);
+                    } else {
+                        throw new SQLException("No keys generated");
+                    }
+                }
+                conn.commit();
+            } catch (SQLException e) {
+                try {
+                    if (conn != null) {
+                        conn.rollback();
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(employeeID);
+        return employeeID;
     }
 }
 
