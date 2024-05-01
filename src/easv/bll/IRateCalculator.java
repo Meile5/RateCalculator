@@ -1,4 +1,4 @@
-package easv.bll.Managers;
+package easv.bll;
 
 import easv.be.Employee;
 

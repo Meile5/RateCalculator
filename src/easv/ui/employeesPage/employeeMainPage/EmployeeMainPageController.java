@@ -1,13 +1,16 @@
 package easv.ui.employeesPage.employeeMainPage;
 
+import easv.ui.ModelFactory;
 import easv.ui.employeesPage.deleteEmployee.DeleteEmployeeController;
 import easv.ui.employeesPage.employeeInfo.EmployeeInfoController;
+import easv.ui.pages.IModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class EmployeeMainPageController implements Initializable {
@@ -15,6 +18,7 @@ public class EmployeeMainPageController implements Initializable {
     private VBox employeesContainer;
    @FXML
    private HBox employeesMainPageContainer;
+   private IModel model;
 
 
 
@@ -35,17 +39,32 @@ public class EmployeeMainPageController implements Initializable {
     }*/
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        displayEmployees();
+        try {
+
+            model = ModelFactory.createModel();
+            displayEmployees();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void displayEmployees() {
 
-        EmployeeInfoController employeeInfoController = new EmployeeInfoController(employeesContainer);
+
+    public void displayEmployees() throws SQLException {
         employeesContainer.getChildren().clear();
-        employeesContainer.getChildren().add(employeeInfoController.getRoot());
+        model.returnEmployees()
+                .values()
+                        .forEach(e -> {
+                            EmployeeInfoController employeeInfoController = new EmployeeInfoController(employeesContainer, e);
+                            employeesContainer.getChildren().add(employeeInfoController.getRoot());
+
+                        });
+
 
         }
     }
+
+
 
 
 

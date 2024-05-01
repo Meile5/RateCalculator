@@ -14,6 +14,9 @@ public class Employee {
     private Team team;
     private int id;
     private Currency currency;
+    private BigDecimal dailyRate;
+    private BigDecimal hourlyRate;
+
 
 
     public Employee(String name, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,  Country country, Team team, EmployeeType employeeType, Currency currency) {
@@ -116,6 +119,22 @@ public class Employee {
     }
     public void setCurrency(){
         this.currency = currency;
+    }
+
+    public BigDecimal getDailyRate() {
+        return dailyRate;
+    }
+
+    public void setDailyRate(BigDecimal dailyRate) {
+        this.dailyRate = dailyRate;
+    }
+
+    public BigDecimal getHourlyRate() {
+        return hourlyRate;
+    }
+
+    public void setHourlyRate(BigDecimal hourlyRate) {
+        this.hourlyRate = hourlyRate;
     }
 
     @Override

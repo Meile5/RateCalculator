@@ -1,9 +1,6 @@
 package easv.dal;
 
-import easv.be.Country;
-import easv.be.Employee;
-import easv.be.EmployeeType;
-import easv.be.Team;
+import easv.be.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
@@ -12,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 public class EmployeesDAO implements IEmployeeDAO {
 
@@ -22,47 +20,60 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
     /**
-     * Retrieves all employees and puts the in a map
+     * Retrieves all employees and puts them in a map
      */
     @Override
     public ObservableMap<Integer, Employee> returnEmployees() {
-
-          ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
-        String sql = "SELECT E.EmployeeID, E.Name AS EmployeeName, E.AnnualSalary, " +
-                "E.FixedAnnualAmount, E.OverheadMultiplier, E.UtilizationPercentage, " +
-                "E.WorkingHours, E.employeeType, C.Name AS CountryName, T.Name AS TeamName " +
-                "FROM Employees E " +
-                "INNER JOIN Countries C ON E.CountryID = C.CountryID " +
-                "INNER JOIN Teams T ON E.TeamID = T.TeamID";
+        ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
+        String sql = "SELECT " +
+                "e.EmployeeID, e.Name AS EmployeeName, e.employeeType, " +
+                "c.Name AS Country, t.Name AS Team, e.Currency, " +
+                "conf.AnnualSalary, conf.FixedAnnualAmount, conf.OverheadMultiplier, " +
+                "conf.UtilizationPercentage, conf.WorkingHours, conf.Date AS ConfigurationDate " +
+                "FROM " +
+                "Employees e " +
+                "INNER JOIN Countries c ON e.CountryID = c.CountryID " +
+                "INNER JOIN Teams t ON e.TeamID = t.TeamID " +
+                "LEFT JOIN EmployeeConfigurations ec ON e.EmployeeID = ec.EmployeeID " +
+                "LEFT JOIN Configurations conf ON ec.ConfigurationID = conf.ConfigurationID";
         try (Connection conn = connectionManager.getConnection()) {
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 ResultSet res = psmt.executeQuery();
                 while (res.next()) {
-                    int id = res.getInt("EmployeeID");
-                    String name = res.getString("Name");
+                    int employeeID = res.getInt("EmployeeID");
+                    String name = res.getString("EmployeeName");
+                    String employeeType = res.getString("employeeType");
+                    String countryName = res.getString("Country");
+                    String teamName = res.getString("Team");
+                    String currency1 = res.getString("Currency");
+
                     BigDecimal annualSalary = res.getBigDecimal("AnnualSalary");
                     BigDecimal fixedAnnualAmount = res.getBigDecimal("FixedAnnualAmount");
                     BigDecimal overheadMultiplier = res.getBigDecimal("OverheadMultiplier");
                     BigDecimal utilizationPercentage = res.getBigDecimal("UtilizationPercentage");
                     BigDecimal workingHours = res.getBigDecimal("WorkingHours");
-                    String employeeType = res.getString("employeeType");
-                    String countryName = res.getString("CountryName");
-                    String teamName = res.getString("TeamName");
-                    EmployeeType type = EmployeeType.valueOf(employeeType);
+                    //Date configurationDate = res.getDate("ConfigurationDate");
 
                     // Create Country object
                     Country country = new Country(countryName);
-
                     // Create Team object
                     Team team = new Team(teamName);
+                    // Retrieve employee type as string
+                    String employeeTypeStr = res.getString("employeeType");
+                    // Convert string to enum
+                    EmployeeType type = EmployeeType.valueOf(employeeTypeStr);
+                    // Retrieve employee type as string
+                    String currencyStr = res.getString("Currency");
+                    // Convert string to enum
+                    Currency currency = Currency.valueOf(currencyStr);
 
-                  //  Employee employee = new Employee(name, annualSalary, fixedAnnualAmount,
-                   //         overheadMultiplier, utilizationPercentage,
-                    //        workingHours, country, team, type);
-                    // employee.setId(id);
+                    Employee employee = new Employee(name, annualSalary, fixedAnnualAmount,
+                            overheadMultiplier, utilizationPercentage,
+                            workingHours, country, team, type, currency );
+                     employee.setId(employeeID);
 
                     // Add Employee to ObservableMap
-                  //  employees.put(id, employee);
+                     employees.put(employeeID, employee);
                 }
             }
         } catch ( SQLException e) {

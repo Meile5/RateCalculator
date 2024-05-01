@@ -9,24 +9,14 @@ import javafx.collections.ObservableMap;
 
 public class ModelFactory {
     final private static IModel[] models = new IModel[1];
-    public enum modelType{
-        NormalModel,
-        ModelOther
-    };
 
 
-    public static IModel createModel(modelType Model){
+
+    public static IModel createModel(){
 
 
         if(models[0] == null){
-            IModel model = null;
-            switch (Model){
-                case NormalModel -> {  model = new NewModel();}
-                case ModelOther -> { model = new Model();}
-
-
-            }
-
+            IModel model = new NewModel();
              models[0] = model;
             return model;
         }

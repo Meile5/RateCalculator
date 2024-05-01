@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class CreateController implements Initializable {
+public class CreateController {
     @FXML
     private Parent createPage;
     private IModel model;
@@ -32,7 +32,7 @@ public class CreateController implements Initializable {
     public Parent getCreatePage() {
         return createPage;
     }
-    private void click (){
+   /* private void click (){
         createPage.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             System.out.println(model.returnEmployees());
             System.out.println(model);
@@ -41,8 +41,8 @@ public class CreateController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        model = ModelFactory.createModel(ModelFactory.modelType.ModelOther);
+        model = ModelFactory.createModel();
         Platform.runLater(() -> {click();});
 
-    }
+    }*/
 }

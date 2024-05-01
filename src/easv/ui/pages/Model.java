@@ -1,27 +1,28 @@
 package easv.ui.pages;
 
 import easv.be.*;
+import easv.bll.EmployeeLogic;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 
 public class Model implements IModel {
     private ObservableMap<Integer, Employee> employees;
+    private EmployeeLogic employeeLogic;
 
     public Model() {
         this.employees = FXCollections.observableHashMap();
-        test();
+        employeeLogic = new EmployeeLogic();
+
     }
 
     @Override
-    public ObservableMap<Integer, Employee> returnEmployees() {
+    public ObservableMap<Integer, Employee> returnEmployees() throws SQLException {
+        employees = employeeLogic.returnEmployees();
         return employees;
     }
 
-    private void test() {
-        Employee employee = new Employee("Meile", new BigDecimal(200000), new BigDecimal(10000), new BigDecimal(10), new BigDecimal(20), new BigDecimal(2000), new Country("Denmark"), new Team("IT"), EmployeeType.OVERHEAD, Currency.$);
-        employee.setId(20);
-        employees.put(employee.getId(), employee);
-    }
+
 }
