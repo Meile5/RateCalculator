@@ -12,12 +12,10 @@ public class RateCalculator {
         BigDecimal fixedAnnualAmount = employee.getFixedAnnualAmount();
         BigDecimal annualEffectiveWorkingHours = employee.getWorkingHours();
         BigDecimal utilizationPercentage = employee.getUtilizationPercentage();
-
         BigDecimal dayRate = annualSalary
                 .add(fixedAnnualAmount)
                 .multiply(overheadMultiplier)
                 .multiply(utilizationPercentage).divide(annualEffectiveWorkingHours, 2, BigDecimal.ROUND_HALF_UP);
-        System.out.println(dayRate);
 
         return dayRate;
     }

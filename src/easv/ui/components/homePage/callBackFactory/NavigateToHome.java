@@ -4,6 +4,9 @@ import easv.ui.components.map.map.WorldMap;
 import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.pages.IModel;
 import javafx.scene.Parent;
+import javafx.scene.layout.StackPane;
+
+import java.awt.*;
 
 public class NavigateToHome implements CallBack, Subject {
 
@@ -11,9 +14,11 @@ public class NavigateToHome implements CallBack, Subject {
         private Parent root;
         private boolean isOpened;
         private IModel model;
+        private StackPane modalLayout;
 
-    public NavigateToHome(PageManager pageManager,IModel model) {
+    public NavigateToHome(PageManager pageManager, IModel model, StackPane modalLayout) {
             this.pageManager = pageManager;
+            this.modalLayout= modalLayout;
         }
 
         @Override
@@ -27,13 +32,12 @@ public class NavigateToHome implements CallBack, Subject {
         }
 
         private void initializeRoot(){
-            WorldMap  worldMap= new WorldMap(model);
+            WorldMap  worldMap= new WorldMap(modalLayout,model);
             root= worldMap.getRoot();
         }
 
     @Override
     public void modifyDisplay(boolean val) {
         isOpened=val;
-
     }
 }

@@ -1,0 +1,25 @@
+.countryBackground{
+    -fx-background-color: #F2F3F2;
+}
+.closeContainer{
+    -fx-background-radius: 0 10 0 0;
+}
+
+.closeContainer:hover{
+    -fx-background-color: #C42B1C;
+}
+.countryContainer{
+    -fx-background-radius: 10;
+}
+.teamsContainer{
+    -fx-background-radius: 10;
+    -fx-background-color: transparent;
+}
+.test{
+    -fx-background-radius: 10;
+    -fx-background-color: transparent;
+}
+.teamsContainer > .viewport{
+    -fx-background-radius: 10;
+}
+

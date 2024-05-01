@@ -16,9 +16,6 @@ public class NavigationFactory {
        return createAndConfigureNavigation(navigation,callback);
     }
 
-
-
-
     private static HBox createAndConfigureNavigation(Navigation navigation, CallBack callback){
         NavigationController navigationController = null;
         switch (navigation){

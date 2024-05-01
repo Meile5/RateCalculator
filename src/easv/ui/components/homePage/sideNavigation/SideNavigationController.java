@@ -51,6 +51,7 @@ public class SideNavigationController implements Initializable {
 
     }
 
+    //TODo this can be improved to receive the components from the outside
     private void populateNavigation(VBox vBox) {
         HBox distribution = NavigationFactory.getNavigationComponent(Navigation.DISTRIBUTION, CallBackFactory.createCallBack(Navigation.DISTRIBUTION));
         HBox create = NavigationFactory.getNavigationComponent(Navigation.CREATE, CallBackFactory.createCallBack(Navigation.CREATE));

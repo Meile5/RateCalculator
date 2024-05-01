@@ -4,3 +4,8 @@
 .mainPage_menuHolder{
     -fx-background-color: #fff;
 }
+
+.modalLayout{
+-fx-background-color:  rgba(0, 0, 0, 0.2);
+}
+
