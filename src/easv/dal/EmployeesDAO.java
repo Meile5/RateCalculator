@@ -7,10 +7,11 @@ import easv.be.EmployeeType;
 import easv.be.Team;
 import easv.dal.connectionManagement.DatabaseConnectionFactory;
 import easv.dal.connectionManagement.IConnection;
+import easv.exception.ErrorCode;
 import easv.exception.RateException;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
+
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -18,6 +19,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class EmployeesDAO implements IEmployeeDAO {
 
@@ -31,9 +34,9 @@ public class EmployeesDAO implements IEmployeeDAO {
      * Retrieves all employees and puts them in a map
      */
     @Override
-    public ObservableMap<Integer, Employee> returnEmployees() {
+    public LinkedHashMap<Integer, Employee> returnEmployees() throws RateException {
 
-       ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
+       LinkedHashMap<Integer, Employee> employees = new LinkedHashMap<>();
         String sql = "SELECT " +
                 "e.EmployeeID, e.Name AS EmployeeName, e.employeeType, " +
                 "c.Name AS Country, t.Name AS Team, e.Currency, " +
@@ -47,18 +50,6 @@ public class EmployeesDAO implements IEmployeeDAO {
                 "LEFT JOIN Configurations conf ON ec.ConfigurationID = conf.ConfigurationID";
         Connection conn = null;
         try  {conn=connectionManager.getConnection();
-
-
-       /* ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
-        String sql = "SELECT E.EmployeeID, E.Name AS EmployeeName, E.AnnualSalary, " +
-                "E.FixedAnnualAmount, E.OverheadMultiplier, E.UtilizationPercentage, " +
-                "E.WorkingHours, E.employeeType, C.Name AS CountryName, T.Name AS TeamName " +
-                "FROM Employees E " +
-                "INNER JOIN Countries C ON E.CountryID = C.CountryID " +
-                "INNER JOIN Teams T ON E.TeamID = T.TeamID";
-        Connection conn = null;
-        try {
-            conn = connectionManager.getConnection();*/
 
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 ResultSet res = psmt.executeQuery();
@@ -103,16 +94,13 @@ public class EmployeesDAO implements IEmployeeDAO {
 
 
                 }
-                //connectionManager.releaseConnection(conn);
+
             }
         } catch (SQLException | RateException e) {
+            throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
 
-        } /*finally {
-            if (conn != null) {
-                connectionManager.releaseConnection(conn);
-            }
-        }*/
-        System.out.println(employees + "from dao");
+        }
+
         return employees;
 
     }

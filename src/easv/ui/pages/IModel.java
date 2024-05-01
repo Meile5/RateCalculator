@@ -2,13 +2,15 @@ package easv.ui.pages;
 
 import easv.be.Country;
 import easv.be.Employee;
+import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 public interface IModel {
 
-    ObservableMap<Integer, Employee> returnEmployees() throws SQLException;
+    Map<Integer, Employee> returnEmployees() throws SQLException, RateException;
 
     void addEmployee(Employee employee);
     ObservableMap<Integer, Country> getCountries();

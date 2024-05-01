@@ -1,11 +1,11 @@
-package easv.bll;
+package easv.bll.EmployeesLogic;
 
 import easv.be.Employee;
 
 import java.math.BigDecimal;
 
-public class RateCalculator implements IRateCalculator {
-    @Override
+public class RateCalculator {
+
     public BigDecimal calculateDayRate(Employee employee) {
         BigDecimal annualSalary = employee.getAnnualSalary();
         BigDecimal overheadMultiplier = employee.getOverheadMultiplier();
@@ -22,7 +22,7 @@ public class RateCalculator implements IRateCalculator {
         return dayRate;
     }
 
-    @Override
+
     public BigDecimal calculateHourlyRate(Employee employee) {
         BigDecimal annualSalary = employee.getAnnualSalary();
         BigDecimal overheadMultiplier = employee.getOverheadMultiplier();

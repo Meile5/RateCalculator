@@ -1,10 +1,14 @@
 package easv.dal;
 
 import easv.be.Employee;
+import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public interface IEmployeeDAO {
-    ObservableMap<Integer, Employee> returnEmployees();
+    LinkedHashMap<Integer, Employee> returnEmployees() throws RateException;
 
     Integer addEmployee(Employee employee);
 }

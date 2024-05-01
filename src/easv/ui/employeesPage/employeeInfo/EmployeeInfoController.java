@@ -1,6 +1,8 @@
 package easv.ui.employeesPage.employeeInfo;
 
 import easv.be.Employee;
+import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
 import easv.ui.employeesPage.deleteEmployee.DeleteEmployeeController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -41,13 +43,11 @@ public class EmployeeInfoController implements Initializable {
         loader.setController(this);
         this.employee = employee;
         try {
-            System.out.println(employeeComponent +"constructor");
+
             employeeComponent = loader.load();
 
-            //this.employeesContainer = employeesContainer;
         } catch (IOException e) {
-            e.printStackTrace();
-            //ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }
@@ -58,22 +58,25 @@ public class EmployeeInfoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Platform.runLater(()-> {displayDelete();
+        displayDelete();
         setLabels();
-            System.out.println(employeeName.getText()+ "emeployee name");} );
+
 
     }
     public void displayDelete(){
         DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(deleteContainer);
+        deleteContainer.getChildren().clear();
         deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
 
     }
     public void setLabels(){
-        employeeName.setText(employee.getName());
-        employeeType.setText(employee.getType().toString());
-        country.setText(employee.getCountry().getCountryName());
-        team.setText(employee.getTeam().getTeam());
-        dayRate.setText(employee.getDailyRate().toString());
-        hourlyRate.setText(employee.getHourlyRate().toString());
+        if(employee != null) {
+            employeeName.setText(employee.getName());
+            employeeType.setText(employee.getType().toString());
+            country.setText(employee.getCountry().getCountryName());
+            team.setText(employee.getTeam().getTeam());
+            dayRate.setText(employee.getDailyRate().toString());
+            hourlyRate.setText(employee.getHourlyRate().toString());
+        }
     }
 }

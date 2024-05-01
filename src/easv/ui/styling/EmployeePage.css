@@ -1,0 +1,10 @@
+.scroll-bar{
+    -fx-opacity: 0;
+}
+
+.label{
+    -fx-text-fill: rgba(47, 46, 46, 1);
+    -fx-font-family: 'Open Sans' , sans-serif;
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+}

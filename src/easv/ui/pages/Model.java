@@ -1,20 +1,20 @@
 package easv.ui.pages;
 import easv.be.*;
-import easv.bll.EmployeeLogic;
-import easv.bll.EmployeeManager;
-import easv.bll.IEmployeeManager;
+import easv.bll.EmployeesLogic.EmployeeManager;
+import easv.bll.EmployeesLogic.IEmployeeManager;
 import easv.bll.countryLogic.CountryLogic;
 import easv.bll.countryLogic.ICountryLogic;
 import easv.exception.RateException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
-import java.math.BigDecimal;
-import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Model implements IModel {
-    private ObservableMap<Integer, Employee> employees;
-    private EmployeeLogic employeeLogic;
+
+    /**holds all the employees and their info*/
+    private LinkedHashMap<Integer, Employee> employees;
 
     private IEmployeeManager employeeManager;
     /**the logic layer responsible  of countries management*/
@@ -24,10 +24,7 @@ public class Model implements IModel {
 
 
     public Model() throws RateException {
-        this.employees = FXCollections.observableHashMap();
-
-        employeeLogic = new EmployeeLogic();
-
+        this.employees = new LinkedHashMap<>();
         this.employeeManager = new EmployeeManager();
         this.countryLogic = new CountryLogic();
         populateCountries();
@@ -40,10 +37,8 @@ public class Model implements IModel {
     }
 
     @Override
-    public ObservableMap<Integer, Employee> returnEmployees() throws SQLException {
-        employees = employeeLogic.returnEmployees();
-        System.out.println(employees);
-
+    public LinkedHashMap<Integer, Employee> returnEmployees() throws RateException {
+        employees = employeeManager.returnEmployees();
         return employees;
     }
 
