@@ -39,6 +39,7 @@ public class HomePageController implements Initializable, PageManager {
     private IModel model;
 
 
+
     public HomePageController( IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("HomePage.fxml"));
         loader.setController(this);

@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 public class ConnectionPool  {
 
 
-    private BlockingQueue<Connection> connectionPool;
+    private BlockigitngQueue<Connection> connectionPool;
 
     private SQLServerDataSource ds;
     /**
