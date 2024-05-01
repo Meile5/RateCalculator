@@ -25,7 +25,6 @@ public class EmployeeLogic {
                 employee.setDailyRate(dayRate);
                 employee.setHourlyRate(hourRate);
             }
-
         });
         System.out.println(employees);
         return employees;

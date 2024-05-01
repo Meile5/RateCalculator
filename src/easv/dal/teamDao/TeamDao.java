@@ -1,10 +1,8 @@
 package easv.dal.teamDao;
-
 import easv.be.*;
 import easv.dal.connectionManagement.DatabaseConnectionFactory;
 import easv.dal.connectionManagement.IConnection;
 import easv.exception.RateException;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,10 +20,17 @@ public class TeamDao {
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }
 
-    public List<TeamWithEmployees> getTeamsByCountry(Country country) {
+
+   /** retrieves the teams and the associated members
+    * @param offset the number off elements that needs to be skipped
+    * @param numberOfElements the number of elements that needs to be retrieved next */
+    public List<TeamWithEmployees> getTeamsByCountry(Country country,int offset,int numberOfElements) {
         List<TeamWithEmployees> teams = new ArrayList<>();
         TeamWithEmployees currentTeam = null;
-        String sql = "SELECT e.EmployeeId,e.Name,e.employeeType,e.Currency,t.TeamId,t.Name as TeamName FROM Employees e JOIN Teams t ON e.TeamId = t.TeamId WHERE e.CountryId = ? ORDER BY e.TeamId";
+        String sql = "SELECT e.EmployeeId,e.Name,e.employeeType,e.Currency,t.TeamId,t.Name as TeamName FROM Employees e "
+                +"JOIN Teams t ON e.TeamId = t.TeamId WHERE e.CountryId = ? ORDER BY e.TeamId "+
+                "OFFSET ? ROWS " +
+                "FETCH NEXT ? ROWS ONLY ";
         try (Connection conn = connectionManager.getConnection()) {
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 psmt.setInt(1, country.getId());
@@ -55,12 +60,16 @@ public class TeamDao {
         return teams;
     }
 
-
+/**initialize an TeamWithEmployees object*/
     private TeamWithEmployees createTeamWithEmployees(ResultSet rs) throws SQLException {
         return new TeamWithEmployees(rs.getString("TeamName"), rs.getInt("TeamId"), new ArrayList<>());
     }
 
 
+
+   /**retrieve the latest configuration added for an employee
+    * @param employeeId  the employee associated with the config
+    * @param conn database connection*/
     private Configuration getConfiguration(int employeeId,Connection conn) {
         Configuration config = null;
         String sql = "SELECT TOP 1 c.* " +

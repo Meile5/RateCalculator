@@ -58,4 +58,5 @@ public class Model implements IModel {
     public ObservableMap<Integer, Country> getCountries() {
         return countries;
     }
+
 }
