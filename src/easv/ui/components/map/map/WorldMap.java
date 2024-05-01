@@ -1,9 +1,11 @@
 package easv.ui.components.map.map;
+import easv.Utility.WindowsManagement;
 import easv.be.Country;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
 import easv.ui.ModelFactory;
+import easv.ui.components.map.map.popUpInfo.CountryInfoContainer;
 import easv.ui.pages.IModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +24,7 @@ public class WorldMap implements Initializable {
     private WorldMapView worldMap;
     private StackPane firstLayout;
     private IModel model;
+    private CountryInfoContainer countryInfoContainer;
 
     public WorldMap(StackPane firstLayout,IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("WorldMap.fxml"));
@@ -69,6 +72,9 @@ public class WorldMap implements Initializable {
 //                List<WorldMapView.Location> locations = worldMap.getLocations();
 //                this.firstLayout.setVisible(true);
 //                this.firstLayout.setDisable(false);
+                countryInfoContainer= new CountryInfoContainer(model,firstLayout);
+                firstLayout.getChildren().add(countryInfoContainer.getRoot());
+                WindowsManagement.showStackPane(firstLayout);
                 System.out.println("I am clicked");
             }
         });

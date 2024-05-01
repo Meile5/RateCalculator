@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+
+<VBox fx:id="countryPopUp" styleClass="countryBackground,countryContainer" stylesheets="@../../../../styling/CountryInfo.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="210.0" prefWidth="350.0"  xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" prefWidth="350.0" >
+         <children>
+            <Region prefHeight="10.0" HBox.hgrow="ALWAYS" />
+            <HBox  fx:id="closseButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="35.0" styleClass="countryBackground,closeContainer">
+               <children>
+                  <SVGPath fx:id="closeButton" content="M9.76,77.76,39.52,48,9.76,18.24a6,6,0,1,1,8.49-8.48L48,39.52,77.76,9.76a6,6,0,1,1,8.49,8.48L56.48,48,86.24,77.76a6,6,0,1,1-8.49,8.48L48,56.48,18.24,86.24a6,6,0,0,1-8.49-8.48ZM9.76,77.76,39.52,48,9.76,18.24a6,6,0,1,1,8.49-8.48L48,39.52,77.76,9.76a6,6,0,1,1,8.49,8.48L56.48,48,86.24,77.76a6,6,0,1,1-8.49,8.48L48,56.48,18.24,86.24a6,6,0,0,1-8.49-8.48Z" scaleX="0.2" scaleY="0.2"  HBox.hgrow="NEVER" />
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </HBox>
+         </children>
+      </HBox>
+      <ScrollPane styleClass="countryBackground,teamsContainer" hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="350.0" >
+         <content>
+            <VBox fx:id="teamsContainer"  styleClass="countryBackground,teamsContainer" prefHeight="200.0" prefWidth="350.0" />
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>
