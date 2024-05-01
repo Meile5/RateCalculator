@@ -1,5 +1,6 @@
 package easv.ui.employeesPage.employeeMainPage;
 
+import easv.exception.RateException;
 import easv.ui.ModelFactory;
 import easv.ui.employeesPage.deleteEmployee.DeleteEmployeeController;
 import easv.ui.employeesPage.employeeInfo.EmployeeInfoController;
@@ -41,9 +42,9 @@ public class EmployeeMainPageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
 
-            model = ModelFactory.createModel();
+            model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
             displayEmployees();
-        } catch (SQLException e) {
+        } catch (SQLException | RateException e) {
             throw new RuntimeException(e);
         }
     }

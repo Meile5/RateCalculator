@@ -4,7 +4,8 @@ public enum ErrorCode {
     INVALID_INPUT("Invalid Input"),
     CONNECTION_FAILED("Connection failed,please verify your network connection"),
     OPERATION_DB_FAILED("Operation failed,please verify your network connection, or try again"),
-    LOADING_FXML_FAILED("Operation failed, problems reading files, please try again or restart the application");
+    LOADING_FXML_FAILED("Operation failed, problems reading files, please try again or restart the application"),
+    POOL_CONNECTION_FAIL("Interrupted while waiting for a connection from the pool");
 
     private String value;
 

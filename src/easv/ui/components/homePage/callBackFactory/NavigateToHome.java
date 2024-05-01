@@ -2,6 +2,7 @@ package easv.ui.components.homePage.callBackFactory;
 import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.map.WorldMap;
 import easv.ui.components.homePage.openPageObserver.Subject;
+import easv.ui.pages.IModel;
 import javafx.scene.Parent;
 
 public class NavigateToHome implements CallBack, Subject {
@@ -9,8 +10,9 @@ public class NavigateToHome implements CallBack, Subject {
         private PageManager pageManager;
         private Parent root;
         private boolean isOpened;
+        private IModel model;
 
-    public NavigateToHome(PageManager pageManager) {
+    public NavigateToHome(PageManager pageManager,IModel model) {
             this.pageManager = pageManager;
         }
 
@@ -25,7 +27,7 @@ public class NavigateToHome implements CallBack, Subject {
         }
 
         private void initializeRoot(){
-            WorldMap  worldMap= new WorldMap();
+            WorldMap  worldMap= new WorldMap(model);
             root= worldMap.getRoot();
         }
 

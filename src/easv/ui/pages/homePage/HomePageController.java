@@ -9,6 +9,7 @@ import easv.ui.components.homePage.openPageObserver.Observable;
 import easv.ui.components.homePage.openPageObserver.Observer;
 import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.components.homePage.sideNavigation.SideNavigationController;
+import easv.ui.pages.IModel;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,11 +36,13 @@ public class HomePageController implements Initializable, PageManager {
     @FXML
     private HBox header;
     private Observable observer;
+    private IModel model;
 
 
-    public HomePageController() {
+    public HomePageController( IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("HomePage.fxml"));
         loader.setController(this);
+        this.model = model;
         try {
             root = loader.load();
             observer =CallBackFactory.getObserver();
@@ -64,6 +67,7 @@ public class HomePageController implements Initializable, PageManager {
         });
         initializeWorldMap();
         CallBackFactory.setPageHolder(this);
+        CallBackFactory.setModel(this.model);
     }
 
     private void initializeSideMenu(StackPane stackPane, ScrollPane hBox) {
@@ -72,7 +76,7 @@ public class HomePageController implements Initializable, PageManager {
     }
 
     private void initializeWorldMap() {
-        WorldMap worldMap = new WorldMap(firstLayout);
+        WorldMap worldMap = new WorldMap(firstLayout,model);
         this.pageContainer.getChildren().add(worldMap.getRoot());
         initializeHomePageLogo();
     }

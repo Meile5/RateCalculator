@@ -1,6 +1,10 @@
 package easv.ui.components.homePage.map;
+import easv.be.Country;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
+import easv.exception.RateException;
+import easv.ui.ModelFactory;
+import easv.ui.pages.IModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,17 +17,17 @@ import java.util.*;
 public class WorldMap implements Initializable {
 
     private Map<String, Double> countryData;
-    private List<String> countries;
-
     private List<WorldMapView.Country> operationalCountries;
     @FXML
     private WorldMapView worldMap;
     private StackPane firstLayout;
+    private IModel model;
 
-    public WorldMap(StackPane firstLayout) {
+    public WorldMap(StackPane firstLayout,IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("WorldMap.fxml"));
         loader.setController(this);
         countryData = new HashMap<>();
+        this.model= model;
         try {
             worldMap = loader.load();
             this.firstLayout=firstLayout;
@@ -31,10 +35,10 @@ public class WorldMap implements Initializable {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
-    public WorldMap() {
+    public WorldMap(IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("WorldMap.fxml"));
         loader.setController(this);
-        countryData = new HashMap<>();
+        this.model= model;
         try {
             worldMap = loader.load();
         } catch (IOException e) {
@@ -48,25 +52,24 @@ public class WorldMap implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        populateCountries();
+        try {
+            this.model= ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
+        } catch (RateException e) {
+        }
         addCountryClickHandler();
-        populateCountries();
-        populateOperationalCountries();
-        changeColor(countries);
+        changeColor(model.getCountries().values());
     }
 
-    private void populateCountries() {
-        operationalCountries = new ArrayList<>();
-        operationalCountries.add(WorldMapView.Country.US);
-    }
+
 
     private void addCountryClickHandler() {
         worldMap.setOnMouseClicked(event -> {
             if (!worldMap.getSelectedCountries().isEmpty()) {
-                List<WorldMapView.Country> countries = worldMap.getSelectedCountries();
-                List<WorldMapView.Location> locations = worldMap.getLocations();
-                this.firstLayout.setVisible(true);
-                this.firstLayout.setDisable(false);
+//                List<WorldMapView.Country> countries = worldMap.getSelectedCountries();
+//                List<WorldMapView.Location> locations = worldMap.getLocations();
+//                this.firstLayout.setVisible(true);
+//                this.firstLayout.setDisable(false);
+                System.out.println("I am clicked");
             }
         });
     }
@@ -74,29 +77,24 @@ public class WorldMap implements Initializable {
 
 /**
  *change the color of the countries that are operational */
-    private void changeColor(List<String> countries) {
-        worldMap.setCountryViewFactory(param -> {
-            if (countries.contains(param.getLocale().getDisplayCountry())) {
-                WorldMapView.CountryView operationalCountry = new WorldMapView.CountryView(param);
-                operationalCountry.getStyleClass().add("country_operational");
-                return operationalCountry;
-            }
-            return new WorldMapView.CountryView(param);
-        });
+private void changeColor(Collection<Country> countries) {
+    worldMap.setCountryViewFactory(param -> {
+        Optional<WorldMapView.CountryView> countryView = getCountryView(countries, param);
+        return countryView.orElseGet(() -> new WorldMapView.CountryView(param));
+    });
+}
+    private Optional<WorldMapView.CountryView> getCountryView(Collection<Country> countries, WorldMapView.Country country) {
+        return countries.stream()
+                .filter(e -> e.getCountryName().equals(country.getLocale().getDisplayCountry()))
+                .map(e -> {
+                    WorldMapView.CountryView operationalCountry = new WorldMapView.CountryView(country);
+                    operationalCountry.getStyleClass().add("country_operational");
+                    return operationalCountry;
+                })
+                .findFirst();
     }
 
 
-    private void populateOperationalCountries() {
-        countries = new ArrayList<>();
-        String norway = "Norway";
-        String denmark = "Denmark";
-        String usa = "United States of America";
-        String china = "China";
-        String india = "India";
-        String germany = "Germany";
-        String brazil = "Brazil";
-        Collections.addAll(countries, norway, denmark, usa, china, india, germany, brazil);
-    }
 
 
 }

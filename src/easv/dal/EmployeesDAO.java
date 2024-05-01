@@ -1,6 +1,14 @@
 package easv.dal;
-
 import easv.be.*;
+
+import easv.be.Country;
+import easv.be.Employee;
+import easv.be.EmployeeType;
+import easv.be.Team;
+import easv.dal.connectionManagement.DatabaseConnectionFactory;
+import easv.dal.connectionManagement.IConnection;
+import easv.exception.RateException;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
@@ -13,10 +21,10 @@ import java.util.Date;
 
 public class EmployeesDAO implements IEmployeeDAO {
 
-    private final ConnectionManager connectionManager;
+    private final IConnection connectionManager;
 
-    public EmployeesDAO() {
-        this.connectionManager = new ConnectionManager();
+    public EmployeesDAO() throws RateException {
+        this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }
 
     /**
@@ -24,7 +32,8 @@ public class EmployeesDAO implements IEmployeeDAO {
      */
     @Override
     public ObservableMap<Integer, Employee> returnEmployees() {
-        ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
+
+       ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
         String sql = "SELECT " +
                 "e.EmployeeID, e.Name AS EmployeeName, e.employeeType, " +
                 "c.Name AS Country, t.Name AS Team, e.Currency, " +
@@ -36,7 +45,21 @@ public class EmployeesDAO implements IEmployeeDAO {
                 "INNER JOIN Teams t ON e.TeamID = t.TeamID " +
                 "LEFT JOIN EmployeeConfigurations ec ON e.EmployeeID = ec.EmployeeID " +
                 "LEFT JOIN Configurations conf ON ec.ConfigurationID = conf.ConfigurationID";
-        try (Connection conn = connectionManager.getConnection()) {
+        Connection conn = null;
+        try  {conn=connectionManager.getConnection();
+
+
+       /* ObservableMap<Integer, Employee> employees = FXCollections.observableHashMap();
+        String sql = "SELECT E.EmployeeID, E.Name AS EmployeeName, E.AnnualSalary, " +
+                "E.FixedAnnualAmount, E.OverheadMultiplier, E.UtilizationPercentage, " +
+                "E.WorkingHours, E.employeeType, C.Name AS CountryName, T.Name AS TeamName " +
+                "FROM Employees E " +
+                "INNER JOIN Countries C ON E.CountryID = C.CountryID " +
+                "INNER JOIN Teams T ON E.TeamID = T.TeamID";
+        Connection conn = null;
+        try {
+            conn = connectionManager.getConnection();*/
+
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 ResultSet res = psmt.executeQuery();
                 while (res.next()) {
@@ -67,6 +90,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                     // Convert string to enum
                     Currency currency = Currency.valueOf(currencyStr);
 
+
                     Employee employee = new Employee(name, annualSalary, fixedAnnualAmount,
                             overheadMultiplier, utilizationPercentage,
                             workingHours, country, team, type, currency );
@@ -74,13 +98,57 @@ public class EmployeesDAO implements IEmployeeDAO {
 
                     // Add Employee to ObservableMap
                      employees.put(employeeID, employee);
-                }
-            }
-        } catch ( SQLException e) {
 
+
+
+                }
+                connectionManager.releaseConnection(conn);
+            }
+        } catch (SQLException | RateException e) {
+
+        } finally {
+            if (conn != null) {
+                connectionManager.releaseConnection(conn);
+            }
         }
         return employees;
 
+    }
+
+
+    @Override
+    public Integer addEmployee(Employee employee) {
+        Integer employeeID = null;
+        Connection conn = null;
+        try {
+            conn = connectionManager.getConnection();
+            conn.setAutoCommit(false);
+            String sql = "INSERT INTO Employees (Name, CountryID, TeamID, Currency) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                psmt.setString(1, employee.getName());
+                psmt.setInt(7, 1);
+                psmt.setInt(8, 1);
+                psmt.setString(9, employee.getCurrency().name());
+                psmt.executeUpdate();
+                try (ResultSet res = psmt.getGeneratedKeys()) {
+                    if (res.next()) {
+                        employeeID = res.getInt(1);
+                    } else {
+                        throw new SQLException("No keys generated");
+                    }
+                }
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+            }
+        } catch (SQLException | RateException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                connectionManager.releaseConnection(conn);
+            }
+        }
+        return employeeID;
     }
 }
 

@@ -20,6 +20,16 @@ public class NewModel implements IModel{
         return employees;
     }
 
+    @Override
+    public void addEmployee(Employee employee) {
+
+    }
+
+    @Override
+    public ObservableMap<Integer, Country> getCountries() {
+        return null;
+    }
+
     private void test() {
         Employee employee = new Employee("Nelson", new BigDecimal(200000), new BigDecimal(10000), new BigDecimal(10), new BigDecimal(20), new BigDecimal(2000), new Country("Denmark"), new Team("IT"), EmployeeType.OVERHEAD, Currency.$);
         employee.setId(20);

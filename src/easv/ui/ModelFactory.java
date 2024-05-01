@@ -1,28 +1,35 @@
 package easv.ui;
-
-import easv.be.Employee;
+import easv.exception.RateException;
 import easv.ui.pages.IModel;
 import easv.ui.pages.Model;
 import easv.ui.pages.NewModel;
-import javafx.collections.ObservableMap;
+import java.util.HashMap;
 
 
 public class ModelFactory {
-    final private static IModel[] models = new IModel[1];
+    final private static HashMap<ModelType, IModel> models = new HashMap<>();
+
+    public enum ModelType {
+        NORMAL_MODEL,
+        MODELOTHER
+    }
 
 
-
-    public static IModel createModel(){
-
-
-        if(models[0] == null){
-            IModel model = new NewModel();
-             models[0] = model;
-            return model;
+    public static IModel createModel(ModelType modelType) throws RateException {
+        if (models.containsKey(modelType)) {
+            return models.get(modelType);
         }
-        else {
-            return models[0];
+        IModel model = null;
+        switch (modelType) {
+            case MODELOTHER-> {
+                model = new NewModel();
+                models.put(modelType, model);
+            }
+            case NORMAL_MODEL -> {
+                model = new Model();
+                models.put(modelType, model);
+            }
         }
-
+        return model;
     }
 }

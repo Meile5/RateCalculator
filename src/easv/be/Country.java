@@ -1,17 +1,37 @@
 package easv.be;
 
 public class Country {
-    private String country;
+    private String countryName;
+    private int id;
 
     public Country(String country) {
-        this.country = country;
+        this.countryName = country;
     }
 
-    public String getCountry() {
-        return country;
+    public Country(String country, int id) {
+        this.countryName = country;
+        this.id = id;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return  countryName;
+
     }
 }

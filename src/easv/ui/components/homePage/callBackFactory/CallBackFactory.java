@@ -3,16 +3,19 @@ import easv.be.Navigation;
 import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.openPageObserver.Observable;
 import easv.ui.components.homePage.openPageObserver.Observer;
+import easv.ui.pages.IModel;
+
 import java.util.HashMap;
 
 public class CallBackFactory {
+
+
     private static final HashMap<Navigation, CallBack> callBacks = new HashMap<>();
     private static PageManager pageManager;
+    private static IModel model;
     private final static Observable observer = new Observer();
 
-    public static void setPageHolder(PageManager pageHolder) {
-        pageManager = pageHolder;
-    }
+
 
     public static CallBack createCallBack(Navigation pageTo) {
         return () -> getCallBack(pageTo).call();
@@ -55,7 +58,8 @@ public class CallBackFactory {
                 observer.addSubject(navigateToProfile);
             }
             default -> {
-                NavigateToHome navigateToHome = new NavigateToHome(pageManager);
+                System.out.println(model.getCountries());
+                NavigateToHome navigateToHome = new NavigateToHome(pageManager,model);
                 callBack = navigateToHome;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToHome);
@@ -66,6 +70,12 @@ public class CallBackFactory {
 
     public static Observable getObserver() {
         return observer;
+    }
+    public static void setPageHolder(PageManager pageHolder) {
+        pageManager = pageHolder;
+    }
+    public static void setModel(IModel modelParam) {
+        model=modelParam;
     }
 
 
