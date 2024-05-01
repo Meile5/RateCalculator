@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CountryDao implements ICountryDao {
     private IConnection connectionManager;
@@ -22,12 +23,10 @@ public class CountryDao implements ICountryDao {
     }
 
     @Override
-    public ObservableMap<Integer, Country> getCountries() throws RateException {
+    public Map<Integer, Country> getCountries() throws RateException {
         String sql = "SELECT  * FROM Countries";
-        ObservableMap<Integer, Country> countries = FXCollections.observableHashMap();
-        Connection conn = null;
-        try {
-            conn = connectionManager.getConnection();
+        Map<Integer, Country> countries = new HashMap<>();
+        try(Connection conn = connectionManager.getConnection()) {
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 ResultSet rs = psmt.executeQuery();
                 while (rs.next()) {
@@ -39,11 +38,7 @@ public class CountryDao implements ICountryDao {
             }
         } catch (SQLException | RateException e) {
             throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
-        }/* finally {
-            if (conn != null) {
-                connectionManager.releaseConnection(conn);
-            }
-        }*/
+        }
         return countries;
     }
 }

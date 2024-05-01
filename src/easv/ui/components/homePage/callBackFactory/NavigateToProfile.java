@@ -2,6 +2,7 @@ package easv.ui.components.homePage.callBackFactory;
 
 import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.openPageObserver.Subject;
+import easv.ui.pages.IModel;
 import easv.ui.pages.profilePage.ProfilePageController;
 import javafx.scene.Parent;
 
@@ -9,10 +10,11 @@ public class NavigateToProfile implements CallBack, Subject {
     private PageManager pageManager;
     private Parent root;
     private boolean isOpened;
+    private IModel model;
 
 
 
-    public NavigateToProfile(PageManager pageManager) {
+    public NavigateToProfile(PageManager pageManager,IModel model) {
         this.pageManager= pageManager;
 
     }
@@ -29,7 +31,7 @@ public class NavigateToProfile implements CallBack, Subject {
 
 
     private void initializePage(){
-        ProfilePageController  profilePageController= new ProfilePageController();
+        ProfilePageController  profilePageController= new ProfilePageController(model);
         root=profilePageController.getProfilePage();
     }
 

@@ -79,7 +79,9 @@ public class SideNavigationController implements Initializable {
            KeyValue keyValue= new KeyValue(sideNavigationContainer.prefWidthProperty(),expandedWidth);
            KeyFrame keyFrame = new KeyFrame(Duration.millis(500),keyValue);
            timeline.getKeyFrames().add(keyFrame);
-           theLine.setEndX(250);
+//           timeline.setOnFinished((e)->{
+//               theLine.setEndX(250);
+//           });
            timeline.play();
            isExpanded=true;
        });
@@ -90,10 +92,9 @@ public class SideNavigationController implements Initializable {
             KeyValue keyValue= new KeyValue(sideNavigationContainer.prefWidthProperty(),originalWidth);
             KeyFrame keyFrame = new KeyFrame(Duration.millis(500),keyValue);
             timeline.getKeyFrames().add(keyFrame);
-            timeline.setOnFinished((e)->{
-                theLine.setEndX(50);
-            });
-
+//            timeline.setOnFinished((e)->{
+//                theLine.setEndX(50);
+//            });
             timeline.play();
             isExpanded=false;
         });

@@ -7,7 +7,7 @@ import easv.bll.countryLogic.CountryLogic;
 import easv.bll.countryLogic.ICountryLogic;
 import easv.exception.RateException;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;q
+import javafx.collections.ObservableMap;
 
 
 
@@ -23,22 +23,18 @@ public class Model implements IModel {
     private ICountryLogic countryLogic;
     /**holds the countries that are currently operational for the company*/
     private ObservableMap <Integer,Country> countries;
-
-
     public Model() throws RateException {
         this.employees = FXCollections.observableHashMap();
-
         employeeLogic = new EmployeeLogic();
-
+        this.countries = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
         this.countryLogic = new CountryLogic();
         populateCountries();
-
     }
 
 
     private void  populateCountries() throws RateException {
-        this.countries = countryLogic.getCountries();
+        this.countries.putAll(countryLogic.getCountries());
     }
 
     @Override

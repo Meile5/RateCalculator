@@ -4,7 +4,7 @@ import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.pages.modelingPage.ModelingController;
 import javafx.scene.Parent;
-
+//TODO delete if not used
 public class NavigateToEdit implements CallBack, Subject {
     private PageManager pageManager;
     private Parent root ;
@@ -26,8 +26,8 @@ public class NavigateToEdit implements CallBack, Subject {
     }
 
     private void initializeEditController(){
-        ModelingController editController = new ModelingController();
-        root= editController.getModelingPage();
+     //   ModelingController editController = new ModelingController();
+       // root= editController.getModelingPage();
     }
 
     @Override

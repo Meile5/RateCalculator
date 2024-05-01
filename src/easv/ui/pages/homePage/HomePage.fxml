@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -8,13 +7,12 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane stylesheets="@../../styling/HomePage.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: red;">
+      <VBox prefHeight="200.0" prefWidth="100.0">
          <children>
-            <HBox  fx:id="header" alignment="CENTER" maxHeight="-Infinity" prefHeight="81.0" prefWidth="1200.0" style="-fx-background-color: F3F2F2;">
+            <HBox  fx:id="header"  styleClass="mainPage_header" alignment="CENTER" maxHeight="-Infinity" prefHeight="81.0" prefWidth="1200.0">
                <children>
-
                   <Region prefHeight="60.0" prefWidth="791.0" HBox.hgrow="ALWAYS" />
                   <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -25,9 +23,9 @@
                      </HBox.margin>
                   </ImageView>
                </children></HBox>
-            <HBox alignment="CENTER" prefHeight="711.0" prefWidth="1024.0" style="-fx-background-color: blue;">
+            <HBox alignment="CENTER" prefHeight="711.0" prefWidth="1024.0" >
                <children>
-                  <StackPane fx:id="menu" minWidth="40.0" prefHeight="710.0" prefWidth="86.0" style="-fx-background-color: white;" HBox.hgrow="ALWAYS">
+                  <StackPane  fx:id="menu" styleClass="mainPage_menuHolder" minWidth="40.0" prefHeight="710.0" prefWidth="86.0"  HBox.hgrow="ALWAYS">
                      <children>
                         <VBox fx:id="pageContainer" alignment="CENTER" prefHeight="710.0" prefWidth="653.0" />
                      </children>

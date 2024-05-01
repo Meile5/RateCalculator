@@ -7,6 +7,7 @@ import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class CountryLogic  implements ICountryLogic{
 
@@ -18,7 +19,7 @@ public class CountryLogic  implements ICountryLogic{
     }
 
     @Override
-    public ObservableMap<Integer, Country> getCountries() throws RateException {
+    public Map<Integer, Country> getCountries() throws RateException {
         return countryDao.getCountries();
     }
 }
