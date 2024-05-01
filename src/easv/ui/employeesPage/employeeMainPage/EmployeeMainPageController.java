@@ -57,6 +57,7 @@ public class EmployeeMainPageController implements Initializable {
                 .values()
                         .forEach(e -> {
                             EmployeeInfoController employeeInfoController = new EmployeeInfoController(employeesContainer, e);
+                            System.out.println(employeeInfoController.getRoot().getChildren().size());
                             employeesContainer.getChildren().add(employeeInfoController.getRoot());
 
                         });

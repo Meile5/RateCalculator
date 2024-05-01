@@ -39,11 +39,11 @@ public class CountryDao implements ICountryDao {
             }
         } catch (SQLException | RateException e) {
             throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
-        } finally {
+        }/* finally {
             if (conn != null) {
                 connectionManager.releaseConnection(conn);
             }
-        }
+        }*/
         return countries;
     }
 }

@@ -101,16 +101,18 @@ public class EmployeesDAO implements IEmployeeDAO {
 
 
 
+
                 }
-                connectionManager.releaseConnection(conn);
+                //connectionManager.releaseConnection(conn);
             }
         } catch (SQLException | RateException e) {
 
-        } finally {
+        } /*finally {
             if (conn != null) {
                 connectionManager.releaseConnection(conn);
             }
-        }
+        }*/
+        System.out.println(employees + "from dao");
         return employees;
 
     }
@@ -143,11 +145,11 @@ public class EmployeesDAO implements IEmployeeDAO {
             }
         } catch (SQLException | RateException e) {
             throw new RuntimeException(e);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 connectionManager.releaseConnection(conn);
             }
-        }
+        }*/
         return employeeID;
     }
 }

@@ -2,6 +2,7 @@ package easv.ui.employeesPage.employeeInfo;
 
 import easv.be.Employee;
 import easv.ui.employeesPage.deleteEmployee.DeleteEmployeeController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,7 +22,7 @@ public class EmployeeInfoController implements Initializable {
    private VBox employeesContainer;
    @FXML
    protected VBox deleteContainer;
-   @FXML
+  @FXML
    private Label employeeName;
    @FXML
    private Label employeeType;
@@ -57,19 +58,19 @@ public class EmployeeInfoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        displayDelete();
-        setLabels();
+        Platform.runLater(()-> {displayDelete();
+        setLabels();} );
+
     }
     public void displayDelete(){
         DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(deleteContainer);
-        deleteContainer.getChildren().clear();
         deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
 
     }
     public void setLabels(){
         employeeName.setText(employee.getName());
         employeeType.setText(employee.getType().toString());
-        country.setText(employee.getCountry().getCountry());
+        country.setText(employee.getCountry().getCountryName());
         team.setText(employee.getTeam().getTeam());
         dayRate.setText(employee.getDailyRate().toString());
         hourlyRate.setText(employee.getHourlyRate().toString());

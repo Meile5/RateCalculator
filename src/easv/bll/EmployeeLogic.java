@@ -18,12 +18,18 @@ public class EmployeeLogic {
 
     public ObservableMap<Integer, Employee> returnEmployees() throws SQLException {
         ObservableMap<Integer, Employee> employees = employeeDAO.returnEmployees();
-        employees.forEach((id, employee) -> {
-            BigDecimal dayRate = rateCalculator.calculateDayRate(employee);
-            BigDecimal hourRate = rateCalculator.calculateHourlyRate(employee);
-            employee.setDailyRate(dayRate);
-            employee.setHourlyRate(hourRate);
+        System.out.println(employees.values());
+        employees.values().forEach(( employee) -> {
+            if(employee.getAnnualSalary() != null) {
+                BigDecimal dayRate = rateCalculator.calculateDayRate(employee);
+                BigDecimal hourRate = rateCalculator.calculateHourlyRate(employee);
+                employee.setDailyRate(dayRate);
+                employee.setHourlyRate(hourRate);
+                System.out.println(dayRate + "day");
+            }
+
         });
+        System.out.println(employees);
         return employees;
     }
 

@@ -16,8 +16,8 @@ public class RateCalculator implements IRateCalculator {
         BigDecimal dayRate = annualSalary
                 .add(fixedAnnualAmount)
                 .multiply(overheadMultiplier)
-                .multiply(utilizationPercentage)
-                .divide(annualEffectiveWorkingHours, 2, BigDecimal.ROUND_HALF_UP);
+                .multiply(utilizationPercentage).divide(annualEffectiveWorkingHours, 2, BigDecimal.ROUND_HALF_UP);
+        System.out.println(dayRate);
 
         return dayRate;
     }
