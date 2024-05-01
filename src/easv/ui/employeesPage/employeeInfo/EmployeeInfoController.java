@@ -9,10 +9,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.scene.control.Label;
 
 public class EmployeeInfoController implements Initializable {
 
@@ -36,17 +36,17 @@ public class EmployeeInfoController implements Initializable {
    private Label hourlyRate;
    private Employee employee;
 
-    public EmployeeInfoController(VBox employeesContainer, Employee employee) {
+    public EmployeeInfoController( Employee employee) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeComponent.fxml"));
         loader.setController(this);
         this.employee = employee;
         try {
+            System.out.println(employeeComponent +"constructor");
             employeeComponent = loader.load();
-            this.employeesContainer = employeesContainer;
 
-
-
+            //this.employeesContainer = employeesContainer;
         } catch (IOException e) {
+            e.printStackTrace();
             //ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -59,7 +59,8 @@ public class EmployeeInfoController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(()-> {displayDelete();
-        setLabels();} );
+        setLabels();
+            System.out.println(employeeName.getText()+ "emeployee name");} );
 
     }
     public void displayDelete(){

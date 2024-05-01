@@ -43,6 +43,7 @@ public class Model implements IModel {
     public ObservableMap<Integer, Employee> returnEmployees() throws SQLException {
         employees = employeeLogic.returnEmployees();
         System.out.println(employees);
+
         return employees;
     }
 
