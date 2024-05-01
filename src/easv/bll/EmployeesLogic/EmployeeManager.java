@@ -35,7 +35,6 @@ public class EmployeeManager implements IEmployeeManager {
                 employee.setHourlyRate(hourRate);
 
             }
-
         });
 
         return employees;
