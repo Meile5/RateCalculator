@@ -79,8 +79,7 @@ public class NavigationController implements Initializable {
             return;
         }
         node.getStyleClass().add("hover");
-        if(node instanceof Parent){
-            Parent parent = (Parent) node;
+        if(node instanceof Parent parent){
             for(Node child : parent.getChildrenUnmodifiable()){
                 recursiveStyling(child);
             }
@@ -92,8 +91,7 @@ public class NavigationController implements Initializable {
             return;
         }
         node.getStyleClass().remove("hover");
-        if(node instanceof Parent){
-            Parent parent = (Parent) node;
+        if(node instanceof Parent parent){
             for(Node child : parent.getChildrenUnmodifiable()){
                 recursiveRemoveStyling(child);
             }

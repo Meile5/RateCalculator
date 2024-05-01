@@ -4,8 +4,8 @@ import easv.be.Country;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public interface ICountryDao {
-    ObservableMap<Integer, Country> getCountries() throws RateException;
+    Map<Integer, Country> getCountries() throws RateException;
 }

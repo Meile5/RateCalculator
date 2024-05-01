@@ -1,6 +1,6 @@
 package easv.ui.components.homePage.callBackFactory;
 import easv.ui.components.common.PageManager;
-import easv.ui.components.homePage.map.WorldMap;
+import easv.ui.components.map.map.WorldMap;
 import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.pages.IModel;
 import javafx.scene.Parent;

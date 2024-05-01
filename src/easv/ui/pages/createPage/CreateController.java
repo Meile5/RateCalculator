@@ -38,9 +38,13 @@ public class CreateController implements Initializable {
     @FXML
     private SVGPath clearSVG;
 
-    public CreateController() {
+
+    // if you decide to use the model like i did, trough the dependency injection , than i made this posibile
+    // you just need to initialize it in the constructor.
+    public CreateController(IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Create.fxml"));
         loader.setController(this);
+        //this.model=model;
         try {
             createPage=loader.load();
         } catch (IOException e) {

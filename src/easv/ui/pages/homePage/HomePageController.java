@@ -3,10 +3,9 @@ package easv.ui.pages.homePage;
 import easv.be.Navigation;
 import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.callBackFactory.CallBackFactory;
-import easv.ui.components.homePage.map.WorldMap;
+import easv.ui.components.map.map.WorldMap;
 import easv.ui.components.homePage.navigation.HomePageNavigationController;
 import easv.ui.components.homePage.openPageObserver.Observable;
-import easv.ui.components.homePage.openPageObserver.Observer;
 import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.components.homePage.sideNavigation.SideNavigationController;
 import easv.ui.pages.IModel;
@@ -37,6 +36,7 @@ public class HomePageController implements Initializable, PageManager {
     private HBox header;
     private Observable observer;
     private IModel model;
+
 
 
     public HomePageController( IModel model) {

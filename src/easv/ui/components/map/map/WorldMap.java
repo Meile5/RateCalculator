@@ -1,4 +1,4 @@
-package easv.ui.components.homePage.map;
+package easv.ui.components.map.map;
 import easv.be.Country;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;

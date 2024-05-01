@@ -28,37 +28,36 @@ public class CallBackFactory {
         CallBack callBack = null;
         switch (pageTo) {
             case DISTRIBUTION -> {
-                NavigateToDistribution navigateToDistribution = new NavigateToDistribution(pageManager);
+                NavigateToDistribution navigateToDistribution = new NavigateToDistribution(pageManager,model);
                 callBack = navigateToDistribution;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToDistribution);
             }
             case CREATE -> {
-                NavigateToCreate navigateToCreate = new NavigateToCreate(pageManager);
+                NavigateToCreate navigateToCreate = new NavigateToCreate(pageManager,model);
                 callBack = navigateToCreate;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToCreate);
             }
             case EMPLOYEES -> {
-                NavigateToEmployees navigateToEmployees = new NavigateToEmployees(pageManager);
+                NavigateToEmployees navigateToEmployees = new NavigateToEmployees(pageManager,model);
                 callBack = navigateToEmployees;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToEmployees);
             }
             case MODELING -> {
-                NavigateToModeling navigateToModeling = new NavigateToModeling(pageManager);
+                NavigateToModeling navigateToModeling = new NavigateToModeling(pageManager,model);
                 callBack = navigateToModeling;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToModeling);
             }
             case PROFILE -> {
-                NavigateToProfile navigateToProfile = new NavigateToProfile(pageManager);
+                NavigateToProfile navigateToProfile = new NavigateToProfile(pageManager,model);
                 callBack = navigateToProfile;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToProfile);
             }
             default -> {
-                System.out.println(model.getCountries());
                 NavigateToHome navigateToHome = new NavigateToHome(pageManager,model);
                 callBack = navigateToHome;
                 callBacks.put(pageTo, callBack);

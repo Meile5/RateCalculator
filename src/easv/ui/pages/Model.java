@@ -8,8 +8,15 @@ import easv.exception.RateException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
+
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+
 
 public class Model implements IModel {
 
@@ -21,19 +28,20 @@ public class Model implements IModel {
     private ICountryLogic countryLogic;
     /**holds the countries that are currently operational for the company*/
     private ObservableMap <Integer,Country> countries;
-
-
     public Model() throws RateException {
+
         this.employees = new LinkedHashMap<>();
+
+        this.employees = new LinkedHashMap<>();
+        this.countries = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
         this.countryLogic = new CountryLogic();
         populateCountries();
-
     }
 
 
     private void  populateCountries() throws RateException {
-        this.countries = countryLogic.getCountries();
+        this.countries.putAll(countryLogic.getCountries());
     }
 
     @Override
