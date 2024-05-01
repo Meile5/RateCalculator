@@ -32,6 +32,17 @@ public class Employee {
         this.currency = currency;
     }
 
+    public Employee(String name, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, EmployeeType employeeType, Currency currency) {
+        this.name = name;
+        this.annualSalary = annualSalary;
+        this.fixedAnnualAmount = fixedAnnualAmount;
+        this.overheadMultiplier = overheadMultiplier;
+        this.utilizationPercentage = utilizationPercentage;
+        this.workingHours = workingHours;
+        this.employeeType = employeeType;
+        this.currency = currency;
+    }
+
 
 
     public String getName() {

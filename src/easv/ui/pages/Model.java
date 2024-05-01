@@ -40,8 +40,6 @@ public class Model implements IModel {
     @Override
     public ObservableMap<Integer, Employee> returnEmployees() throws SQLException {
         employees = employeeLogic.returnEmployees();
-        System.out.println(employees);
-
         return employees;
     }
 

@@ -18,8 +18,6 @@ import java.util.*;
 
 public class WorldMap implements Initializable {
 
-    private Map<String, Double> countryData;
-    private List<WorldMapView.Country> operationalCountries;
     @FXML
     private WorldMapView worldMap;
     private StackPane firstLayout;
@@ -29,15 +27,15 @@ public class WorldMap implements Initializable {
     public WorldMap(StackPane firstLayout,IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("WorldMap.fxml"));
         loader.setController(this);
-        countryData = new HashMap<>();
         this.model= model;
+        this.firstLayout=firstLayout;
         try {
             worldMap = loader.load();
-            this.firstLayout=firstLayout;
         } catch (IOException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
+
     public WorldMap(IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("WorldMap.fxml"));
         loader.setController(this);

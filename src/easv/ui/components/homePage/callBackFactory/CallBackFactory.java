@@ -4,6 +4,7 @@ import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.openPageObserver.Observable;
 import easv.ui.components.homePage.openPageObserver.Observer;
 import easv.ui.pages.IModel;
+import javafx.scene.layout.StackPane;
 
 import java.util.HashMap;
 
@@ -14,9 +15,12 @@ public class CallBackFactory {
     private static PageManager pageManager;
     private static IModel model;
     private final static Observable observer = new Observer();
+    private  static StackPane modalLayout;
 
 
-
+     public static  void setModalWindow(StackPane stackPane){
+         modalLayout=stackPane;
+     }
     public static CallBack createCallBack(Navigation pageTo) {
         return () -> getCallBack(pageTo).call();
     }
@@ -58,7 +62,8 @@ public class CallBackFactory {
                 observer.addSubject(navigateToProfile);
             }
             default -> {
-                NavigateToHome navigateToHome = new NavigateToHome(pageManager,model);
+                System.out.println(modalLayout + "aloo ");
+                NavigateToHome navigateToHome = new NavigateToHome(pageManager,model,modalLayout);
                 callBack = navigateToHome;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToHome);
