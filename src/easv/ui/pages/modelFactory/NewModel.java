@@ -1,6 +1,7 @@
 package easv.ui.pages.modelFactory;
 
 import easv.be.*;
+import easv.exception.RateException;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.collections.ObservableMap;
 
@@ -21,6 +22,11 @@ public class NewModel implements IModel{
     @Override
     public LinkedHashMap<Integer, Employee> returnEmployees() {
         return employees;
+    }
+
+    @Override
+    public void deleteEmployee(Employee employee) throws RateException {
+
     }
 
     @Override

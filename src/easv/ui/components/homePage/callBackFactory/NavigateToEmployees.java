@@ -4,16 +4,19 @@ import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.pages.employeesPage.employeeMainPage.EmployeeMainPageController;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.scene.Parent;
+import javafx.scene.layout.StackPane;
 
 public class NavigateToEmployees implements CallBack, Subject {
     private PageManager pageManager;
     private Parent root;
     private boolean isOpened;
     private IModel model;
+    private StackPane modalLayout;
 
-    public NavigateToEmployees(PageManager pageManager, IModel model) {
+    public NavigateToEmployees(PageManager pageManager, IModel model, StackPane modalLayout) {
         this.pageManager = pageManager;
         this.model = model;
+        this.modalLayout = modalLayout;
     }
 
     @Override
@@ -28,7 +31,7 @@ public class NavigateToEmployees implements CallBack, Subject {
     }
 
     private void initializeRoot(){
-        EmployeeMainPageController employeeMainPageController = new EmployeeMainPageController();
+        EmployeeMainPageController employeeMainPageController = new EmployeeMainPageController(modalLayout);
         root= employeeMainPageController.getRoot();
         pageManager.changePage(root, this);
         isOpened = true;

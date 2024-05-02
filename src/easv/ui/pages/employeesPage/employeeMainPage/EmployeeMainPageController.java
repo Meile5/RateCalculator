@@ -1,8 +1,10 @@
 package easv.ui.pages.employeesPage.employeeMainPage;
 
+import easv.Utility.WindowsManagement;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
+import easv.ui.pages.employeesPage.deleteEmployee.DeleteEmployeeController;
 import easv.ui.pages.modelFactory.ModelFactory;
 import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
@@ -10,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -28,17 +31,15 @@ public class EmployeeMainPageController implements Initializable {
    public VBox getEmployeesContainer(){
        return employeesContainer;
    };
+   private StackPane firstLayout;
 
 
-
-
-    public EmployeeMainPageController() {
+    public EmployeeMainPageController(StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeesMainPage.fxml"));
         loader.setController(this);
+        this.firstLayout = firstLayout;
         try {
             employeePage = loader.load();
-
-
         } catch (IOException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
@@ -66,8 +67,10 @@ public class EmployeeMainPageController implements Initializable {
        model.returnEmployees()
                 .values()
                         .forEach(e -> {
-                            EmployeeInfoController employeeInfoController = new EmployeeInfoController( e);
+                            DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
+                            EmployeeInfoController employeeInfoController = new EmployeeInfoController( e, deleteEmployeeController);
                             employeesContainer.getChildren().add(employeeInfoController.getRoot());
+
 
                         });
 

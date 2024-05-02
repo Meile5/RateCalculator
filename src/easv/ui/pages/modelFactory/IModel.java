@@ -16,6 +16,8 @@ public interface IModel {
 
 
     LinkedHashMap<Integer, Employee> returnEmployees() throws SQLException, RateException;
+    void deleteEmployee(Employee employee) throws RateException ;
+
 
 
 

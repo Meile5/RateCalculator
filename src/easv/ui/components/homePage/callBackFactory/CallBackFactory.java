@@ -44,7 +44,7 @@ public class CallBackFactory {
                 observer.addSubject(navigateToCreate);
             }
             case EMPLOYEES -> {
-                NavigateToEmployees navigateToEmployees = new NavigateToEmployees(pageManager,model);
+                NavigateToEmployees navigateToEmployees = new NavigateToEmployees(pageManager,model,modalLayout);
                 callBack = navigateToEmployees;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToEmployees);
