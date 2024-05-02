@@ -3,7 +3,7 @@ import easv.be.Navigation;
 import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.openPageObserver.Observable;
 import easv.ui.components.homePage.openPageObserver.Observer;
-import easv.ui.pages.IModel;
+import easv.ui.pages.modelFactory.IModel;
 import javafx.scene.layout.StackPane;
 
 import java.util.HashMap;

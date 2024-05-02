@@ -3,16 +3,13 @@ package easv.ui.employeesPage.employeeMainPage;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
-import easv.ui.ModelFactory;
-import easv.ui.employeesPage.deleteEmployee.DeleteEmployeeController;
+import easv.ui.pages.modelFactory.ModelFactory;
 import easv.ui.employeesPage.employeeInfo.EmployeeInfoController;
-import easv.ui.pages.IModel;
-import javafx.application.Platform;
+import easv.ui.pages.modelFactory.IModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;

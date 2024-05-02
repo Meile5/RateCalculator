@@ -1,6 +1,5 @@
 package easv.dal;
 import easv.be.*;
-
 import easv.be.Country;
 import easv.be.Currency;
 import easv.be.Employee;
@@ -171,29 +170,7 @@ public class EmployeesDAO implements IEmployeeDAO {
 
     @Override
     public Boolean deleteEmployee(Employee employee) {return null;}
-       /* boolean succeeded = false;
-        String sql = "DELETE FROM Employees WHERE EmployeeID=?";
-        try (Connection conn = connectionManager.getConnection()) {
-            conn.setAutoCommit(false);
-            conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
-            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-                psmt.setInt(1, eventId);
-                psmt.executeUpdate();
-                if (!ticketsToDelete.isEmpty()) {
-                    deleteTicket(ticketsToDelete, conn);
-                }
-                conn.commit();
-                succeeded = true;
-            } catch (SQLException e) {
-                conn.rollback();
-                throw new EventException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
-            }
-        } catch (SQLException | RateException e) {
-            e.printStackTrace();
-            ExceptionLogger.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
-        }
-        return succeeded;
-    }*/
+
 
 
 }

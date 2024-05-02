@@ -1,8 +1,7 @@
 package easv.ui.components.homePage.callBackFactory;
 import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.openPageObserver.Subject;
-import easv.ui.pages.IModel;
-import easv.ui.pages.Model;
+import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.distribution.DistributionController;
 import javafx.scene.Parent;
 

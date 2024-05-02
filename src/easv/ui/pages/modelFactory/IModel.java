@@ -1,4 +1,4 @@
-package easv.ui.pages;
+package easv.ui.pages.modelFactory;
 
 import easv.be.Country;
 import easv.be.Employee;
