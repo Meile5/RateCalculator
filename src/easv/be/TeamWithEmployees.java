@@ -4,12 +4,16 @@ import java.util.List;
 public class TeamWithEmployees {
     private String teamName;
     private int id;
-
     private  List<Employee> teamMembers;
     public TeamWithEmployees(String team, int id, List<Employee> teamMembers) {
         this.teamName = team;
         this.id = id;
         this.teamMembers = teamMembers;
+    }
+
+    public TeamWithEmployees(String team, int id) {
+        this.teamName = team;
+        this.id = id;
     }
 
     public String getTeamName() {

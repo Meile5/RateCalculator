@@ -3,11 +3,14 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<VBox fx:id="teamComponent" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="teamComponent" stylesheets="@../../../../../styling/CountryInfo.css" styleClass="teamComponent" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="330.0" style="-fx-background-radius: 10;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="teamName" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" text="Label" />
+      <Label fx:id="teamName" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" text="Team name">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
       <PieChart fx:id="teamChart" />
    </children>
 </VBox>

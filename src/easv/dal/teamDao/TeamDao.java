@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TeamDao {
+public class TeamDao implements ITeamDao {
     private IConnection connectionManager;
-
-
     public TeamDao() throws RateException {
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }

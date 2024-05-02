@@ -1,6 +1,7 @@
 package easv.be;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class Employee {
     private String name;
@@ -16,6 +17,7 @@ public class Employee {
     private Currency currency;
     private BigDecimal dailyRate;
     private BigDecimal hourlyRate;
+    private List<Configuration> configs;
 
 
 
