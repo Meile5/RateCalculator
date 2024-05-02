@@ -22,4 +22,7 @@
 .teamsContainer > .viewport{
     -fx-background-radius: 10;
 }
+.teamComponent{
+    -fx-background-color: red;
+}
 

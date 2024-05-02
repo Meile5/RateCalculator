@@ -3,6 +3,7 @@ package easv.ui.components.map.map.popUpInfo;
 import easv.Utility.WindowsManagement;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
+import easv.ui.components.map.map.popUpInfo.teamComponent.TeamComponentController;
 import easv.ui.pages.IModel;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -22,6 +23,9 @@ public class CountryInfoContainer implements Initializable {
     private VBox countryPopUp;
     @FXML
     private HBox closeButton;
+
+    @FXML
+    private VBox teamsContainer;
     private IModel model;
     private StackPane parent;
     public CountryInfoContainer(IModel model, StackPane parent) {
@@ -40,6 +44,8 @@ public class CountryInfoContainer implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("I am initialized");
       closeWindow();
+        TeamComponentController teamComponentController = new TeamComponentController(model);
+        teamsContainer.getChildren().add(teamComponentController.getRoot());
 
     }
     public VBox getRoot() {
