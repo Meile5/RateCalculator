@@ -140,12 +140,13 @@ public class EmployeesDAO implements IEmployeeDAO {
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
-            String sql = "INSERT INTO Employees (Name, CountryID, TeamID, Currency) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO Employees (Name, employeeType, CountryID, TeamID, Currency) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psmt.setString(1, employee.getName());
-                psmt.setInt(7, 1);
-                psmt.setInt(8, 1);
-                psmt.setString(9, employee.getCurrency().name());
+                psmt.setString(2, employee.getEmployeeType().toString());
+                psmt.setInt(3, 1);
+                psmt.setInt(4, 1);
+                psmt.setString(5, employee.getCurrency().name());
                 psmt.executeUpdate();
                 try (ResultSet res = psmt.getGeneratedKeys()) {
                     if (res.next()) {
@@ -160,11 +161,16 @@ public class EmployeesDAO implements IEmployeeDAO {
             }
         } catch (SQLException | RateException e) {
             throw new RuntimeException(e);
-        } /*finally {
-            if (conn != null) {
-                connectionManager.releaseConnection(conn);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-        }*/
+        }
         return employeeID;
     }
 
