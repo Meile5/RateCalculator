@@ -23,8 +23,12 @@ public class EmployeeManager implements IEmployeeManager {
 
 
     @Override
-    public Integer addEmployee(Employee employee) {
-        return employeeDAO.addEmployee(employee);
+    public Employee addEmployee(Employee employee) {
+        Integer employeeID = employeeDAO.addEmployee(employee);
+        if (employeeID != null) {
+            employee.setId(employeeID);
+        }
+        return employee;
     }
 
     @Override
