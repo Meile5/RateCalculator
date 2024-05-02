@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.SVGPath;
 
@@ -36,15 +37,13 @@ public class CreateController implements Initializable {
     @FXML
     private IModel model;
     @FXML
-    private SVGPath clearSVG;
+    private ImageView clearIMG, employeeIMG;
 
 
-    // if you decide to use the model like i did, trough the dependency injection , than i made this posibile
-    // you just need to initialize it in the constructor.
     public CreateController(IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Create.fxml"));
         loader.setController(this);
-        //this.model=model;
+        this.model=model;
         try {
             createPage=loader.load();
         } catch (IOException e) {
@@ -56,14 +55,8 @@ public class CreateController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
             clickClearHandler();
             toTest();
-        } catch (RateException e) {
-            ExceptionHandler.errorAlertMessage(ErrorCode.CONNECTION_FAILED.getValue());
-        }
-
     }
 
 
@@ -71,24 +64,27 @@ public class CreateController implements Initializable {
     @FXML
     private void saveEmployee(){
         String name = nameTF.getText();
+        EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText());
+        Country country = new Country(countryCB.getText());
+        Team team = new Team(teamCB.getText());
+        Currency currency = Currency.valueOf(currencyCB.getText());
+
         BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
         BigDecimal fixedAnnualAmount = new BigDecimal(annualAmountTF.getText());
         BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
         BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
         BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
-        EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText().toUpperCase());
-        System.out.println(employeeType);
-        Country country = new Country(countryCB.getText());
-        Team team = new Team(teamCB.getText());
-        Currency currency = Currency.valueOf(currencyCB.getText());
-       // Employee employee = new Employee(name, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, country, team, employeeType, currency);
-       // model.addEmployee(employee);
+
+
+        Employee employee = new Employee(name, country, team, employeeType, currency);
+        model.addEmployee(employee);
         clearFields();
     }
 
     @FXML
     private void clickClearHandler(){
-        Platform.runLater(() -> {clearSVG.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        Platform.runLater(() -> {
+            clearIMG.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             clearFields();
         });});
     }
@@ -119,7 +115,7 @@ public class CreateController implements Initializable {
         teams.add("TEST");
 
         ObservableList<String> currencies = FXCollections.observableArrayList();
-        currencies.add("$");
+        currencies.add("EUR");
 
         ObservableList<String> overOrResource = FXCollections.observableArrayList();
         overOrResource.add("Overhead");

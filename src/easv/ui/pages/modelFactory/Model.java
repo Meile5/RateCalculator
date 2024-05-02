@@ -70,9 +70,8 @@ public class Model implements IModel {
 
     @Override
     public void addEmployee(Employee employee) {
-        Integer employeeID = employeeManager.addEmployee(employee);
-        if (employeeID != null) {
-            employee.setId(employeeID);
+        employee = employeeManager.addEmployee(employee);
+        if (employee != null) {
             employees.put(employee.getId(), employee);
         }
     }
