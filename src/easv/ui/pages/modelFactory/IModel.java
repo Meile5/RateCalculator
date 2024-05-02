@@ -2,6 +2,7 @@ package easv.ui.pages.modelFactory;
 
 import easv.be.Country;
 import easv.be.Employee;
+import easv.be.Team;
 import easv.be.TeamWithEmployees;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
@@ -29,4 +30,8 @@ public interface IModel {
     Map<TeamWithEmployees, List<BigDecimal>> getCountryTeams(String country);
     /**used to reset the  index of the database retrieval */
     public void resetCurrentIndexToRetrieve();
+
+    ObservableMap<Integer, Team> getTeams();
+
+
 }

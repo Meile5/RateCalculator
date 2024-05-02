@@ -1,9 +1,5 @@
 package easv.ui.pages.createPage;
 import easv.be.*;
-import easv.exception.ErrorCode;
-import easv.exception.ExceptionHandler;
-import easv.exception.RateException;
-import easv.ui.pages.modelFactory.ModelFactory;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -16,7 +12,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.SVGPath;
 
 
 import java.io.IOException;
@@ -56,7 +51,7 @@ public class CreateController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
             clickClearHandler();
-            toTest();
+            populateComboBoxes();
     }
 
 
@@ -107,18 +102,11 @@ public class CreateController implements Initializable {
         overOrResourceCB.clear();
     }
 
-    public void toTest(){
-        ObservableList<String> countries = FXCollections.observableArrayList();
-        countries.add("Denmark");
-
-        ObservableList<String> teams = FXCollections.observableArrayList();
-        teams.add("TEST");
-
-        ObservableList<String> currencies = FXCollections.observableArrayList();
-        currencies.add("EUR");
-
-        ObservableList<String> overOrResource = FXCollections.observableArrayList();
-        overOrResource.add("Overhead");
+    public void populateComboBoxes() {
+        ObservableList<Country> countries = FXCollections.observableArrayList(model.getCountries().values());
+        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
+        ObservableList<String> currencies = FXCollections.observableArrayList("$", "€");
+        ObservableList<String> overOrResource = FXCollections.observableArrayList("Overhead", "Resource");
 
         countryCB.setItems(countries);
         teamCB.setItems(teams);
@@ -129,19 +117,5 @@ public class CreateController implements Initializable {
     public Parent getCreatePage() {
         return createPage;
     }
-
-   /* private void click (){
-        createPage.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println(model.returnEmployees());
-            System.out.println(model);
-        });
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        model = ModelFactory.createModel();
-        Platform.runLater(() -> {click();});
-
-    }*/
 
 }

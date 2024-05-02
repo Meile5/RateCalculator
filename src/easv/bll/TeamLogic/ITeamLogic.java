@@ -1,7 +1,9 @@
 package easv.bll.TeamLogic;
 
 import easv.be.Country;
+import easv.be.Team;
 import easv.be.TeamWithEmployees;
+import easv.exception.RateException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,6 +18,6 @@ public interface ITeamLogic  {
      */
   Map<TeamWithEmployees, List<BigDecimal>> getTeamsOverheadByCountry(Country country, int offset, int numberOfElements);
 
-
+  Map<Integer, Team> getTeams() throws RateException;
 
 }
