@@ -23,7 +23,7 @@ public class TeamDao implements ITeamDao {
     * @param offset the number off elements that needs to be skipped
     * @param numberOfElements the number of elements that needs to be retrieved next */
     public List<TeamWithEmployees> getTeamsByCountry(Country country,int offset,int numberOfElements) {
-        List<TeamWithEmployees> teams = new ArrayList<>();
+       /* List<TeamWithEmployees> teams = new ArrayList<>();
         TeamWithEmployees currentTeam = null;
         String sql = "SELECT e.EmployeeId,e.Name,e.employeeType,e.Currency,t.TeamId,t.Name as TeamName FROM Employees e "
                 +"JOIN Teams t ON e.TeamId = t.TeamId WHERE e.CountryId = ? ORDER BY e.TeamId "+
@@ -57,7 +57,7 @@ public class TeamDao implements ITeamDao {
         } catch (SQLException | RateException e) {
             throw new RuntimeException(e);
         }
-        return teams;
+        return teams;*/return null;
     }
 
 /**initialize an TeamWithEmployees object*/
