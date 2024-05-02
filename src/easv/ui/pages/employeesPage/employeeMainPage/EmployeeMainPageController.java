@@ -1,10 +1,10 @@
-package easv.ui.employeesPage.employeeMainPage;
+package easv.ui.pages.employeesPage.employeeMainPage;
 
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
 import easv.ui.pages.modelFactory.ModelFactory;
-import easv.ui.employeesPage.employeeInfo.EmployeeInfoController;
+import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

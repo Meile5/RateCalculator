@@ -58,4 +58,8 @@ public class EmployeeManager implements IEmployeeManager {
         return null;
     }
 
+    public Boolean deleteEmployee(Employee employee) throws RateException {
+        return employeeDAO.deleteEmployee(employee);
+    }
+
 }

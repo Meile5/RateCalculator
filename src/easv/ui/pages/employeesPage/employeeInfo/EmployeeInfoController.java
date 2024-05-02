@@ -1,10 +1,9 @@
-package easv.ui.employeesPage.employeeInfo;
+package easv.ui.pages.employeesPage.employeeInfo;
 
 import easv.be.Employee;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
-import easv.ui.employeesPage.deleteEmployee.DeleteEmployeeController;
-import javafx.application.Platform;
+import easv.ui.pages.employeesPage.deleteEmployee.DeleteEmployeeController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;

@@ -10,7 +10,7 @@ import easv.dal.connectionManagement.IConnection;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
 
-import javafx.collections.FXCollections;
+
 
 
 import java.math.BigDecimal;
@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.logging.Level;
+
 
 public class EmployeesDAO implements IEmployeeDAO {
 
@@ -169,11 +169,32 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
     @Override
-    public Boolean deleteEmployee(Employee employee) {return null;}
+    public Boolean deleteEmployee(Employee employee) throws RateException {
+        boolean succeeded = false;
+        String sql = "DELETE FROM Employees WHERE EmployeeID=?";
+        try (Connection conn = connectionManager.getConnection()) {
+            conn.setAutoCommit(false);
+            conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+                psmt.setInt(1, employee.getId());
+                psmt.executeUpdate();
+                conn.commit();
+                succeeded = true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+            }
+        } catch (SQLException | RateException e) {
+            throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+        }
+        return succeeded;
+    }
+
 
 
 
 }
+
 
 
 

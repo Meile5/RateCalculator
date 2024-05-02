@@ -11,5 +11,5 @@ public interface IEmployeeDAO {
     LinkedHashMap<Integer, Employee> returnEmployees() throws RateException;
 
     Integer addEmployee(Employee employee);
-    Boolean deleteEmployee(Employee employee);
+    Boolean deleteEmployee(Employee employee) throws RateException;
 }

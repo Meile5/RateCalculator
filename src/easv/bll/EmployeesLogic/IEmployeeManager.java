@@ -10,4 +10,5 @@ import java.util.Map;
 public interface IEmployeeManager {
     Integer addEmployee(Employee employee);
     Map<Integer, Employee> returnEmployees() throws RateException;
+    Boolean deleteEmployee(Employee employee) throws RateException;
 }

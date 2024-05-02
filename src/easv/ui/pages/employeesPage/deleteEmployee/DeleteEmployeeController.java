@@ -1,4 +1,4 @@
-package easv.ui.employeesPage.deleteEmployee;
+package easv.ui.pages.employeesPage.deleteEmployee;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
