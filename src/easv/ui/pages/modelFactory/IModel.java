@@ -2,6 +2,7 @@ package easv.ui.pages.modelFactory;
 
 import easv.be.Country;
 import easv.be.Employee;
+import easv.be.Team;
 import easv.be.TeamWithEmployees;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
@@ -23,18 +24,14 @@ public interface IModel {
 
 
     void addEmployee(Employee employee);
-    Map<String, Country> getCountries();
+    ObservableMap<Integer, Country> getCountries();
 
     /**retrieve the teams with the overhead computed*/
-    List<TeamWithEmployees> getCountryTeams();
+    Map<TeamWithEmployees, List<BigDecimal>> getCountryTeams(String country);
     /**used to reset the  index of the database retrieval */
     public void resetCurrentIndexToRetrieve();
 
-    /**used for country input validation*/
-    void populateValidCountries(List<String> validCountries);
-
-    /**set the country that user has selected from the map*/
-    void setSelectedCountry(String selectedCountry);
+    ObservableMap<Integer, Team> getTeams();
 
 
 }
