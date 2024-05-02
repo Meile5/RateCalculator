@@ -45,7 +45,7 @@ public class Model implements IModel {
 
     @Override
     public LinkedHashMap<Integer, Employee> returnEmployees() throws RateException {
-        employees = (LinkedHashMap<Integer, Employee>) employeeManager.returnEmployees();
+        employees.putAll (employeeManager.returnEmployees());
         return employees;
     }
 
