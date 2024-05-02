@@ -1,5 +1,9 @@
 package easv.ui.pages.createPage;
 import easv.be.*;
+import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
+import easv.exception.RateException;
+import easv.ui.pages.modelFactory.ModelFactory;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -12,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.SVGPath;
 
 
 import java.io.IOException;

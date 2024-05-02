@@ -8,7 +8,7 @@
    <children>
       <ImageView fitHeight="41.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../resources/images/trash (1) (1).png" />
+            <Image url="@../../../../resources/images/trash (1) (1).png" />
          </image></ImageView>
    </children>
 </VBox>

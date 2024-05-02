@@ -80,6 +80,14 @@ public class Model implements IModel {
     }
 
     @Override
+    public void deleteEmployee(Employee employee) throws RateException {
+        boolean deleted = employeeManager.deleteEmployee(employee);
+        if(deleted){
+            employees.remove(employee.getId());
+        }
+    }
+
+    @Override
     public void addEmployee(Employee employee) {
         employee = employeeManager.addEmployee(employee);
         if (employee != null) {

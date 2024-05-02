@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -40,11 +41,15 @@ public class EmployeeInfoController implements Initializable {
    @FXML
    private Label dayCurrency;
    private Employee employee;
+   private StackPane firstLayout;
+   private DeleteEmployeeController deleteEmployeeController;
 
-    public EmployeeInfoController( Employee employee) {
+    public EmployeeInfoController( Employee employee, DeleteEmployeeController deleteEmployeeController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeComponent.fxml"));
         loader.setController(this);
         this.employee = employee;
+        this.deleteEmployeeController=deleteEmployeeController;
+
         try {
 
             employeeComponent = loader.load();
@@ -61,17 +66,19 @@ public class EmployeeInfoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        displayDelete();
+        deleteContainer.getChildren().clear();
+        this.deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
+        //displayDelete();
         setLabels();
 
 
     }
-    public void displayDelete(){
-        DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(deleteContainer);
+    /*public void displayDelete(){
+        DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController( firstLayout,  deleteContainer);
         deleteContainer.getChildren().clear();
         deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
 
-    }
+    }*/
     public void setLabels(){
         if(employee != null) {
             employeeName.setText(employee.getName());
