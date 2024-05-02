@@ -7,7 +7,7 @@ import easv.ui.components.homePage.navigation.HomePageNavigationController;
 import easv.ui.components.homePage.openPageObserver.Observable;
 import easv.ui.components.homePage.openPageObserver.Subject;
 import easv.ui.components.homePage.sideNavigation.SideNavigationController;
-import easv.ui.pages.IModel;
+import easv.ui.pages.modelFactory.IModel;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

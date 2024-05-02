@@ -2,7 +2,7 @@ package easv.ui.components.homePage.callBackFactory;
 
 import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.openPageObserver.Subject;
-import easv.ui.pages.IModel;
+import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.profilePage.ProfilePageController;
 import javafx.scene.Parent;
 

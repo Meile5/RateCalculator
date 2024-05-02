@@ -1,7 +1,6 @@
 package easv.ui.pages.displayPage;
 
-import easv.ui.pages.IModel;
-import easv.ui.pages.Model;
+import easv.ui.pages.modelFactory.IModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

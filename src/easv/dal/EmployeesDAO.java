@@ -1,6 +1,5 @@
 package easv.dal;
 import easv.be.*;
-
 import easv.be.Country;
 import easv.be.Employee;
 import easv.be.EmployeeType;
@@ -89,9 +88,6 @@ public class EmployeesDAO implements IEmployeeDAO {
 
                     // Add Employee to ObservableMap
                      employees.put(employeeID, employee);
-
-
-
 
                 }
 

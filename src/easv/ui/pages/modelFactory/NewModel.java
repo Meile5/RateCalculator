@@ -1,13 +1,12 @@
-package easv.ui.pages;
+package easv.ui.pages.modelFactory;
 
 import easv.be.*;
-import javafx.collections.FXCollections;
+import easv.ui.pages.modelFactory.IModel;
 import javafx.collections.ObservableMap;
 
-import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
-public class NewModel implements IModel{
+public class NewModel implements IModel {
 
     private LinkedHashMap<Integer, Employee> employees;
 

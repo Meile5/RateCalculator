@@ -19,8 +19,6 @@ public class Employee {
     private BigDecimal hourlyRate;
     private List<Configuration> configs;
 
-
-
     public Employee(String name, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,  Country country, Team team, EmployeeType employeeType, Currency currency) {
         this.name = name;
         this.annualSalary = annualSalary;

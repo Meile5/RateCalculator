@@ -1,10 +1,11 @@
-package easv.ui.pages;
+package easv.ui.pages.modelFactory;
 import easv.be.*;
 import easv.bll.EmployeesLogic.EmployeeManager;
 import easv.bll.EmployeesLogic.IEmployeeManager;
 import easv.bll.countryLogic.CountryLogic;
 import easv.bll.countryLogic.ICountryLogic;
 import easv.exception.RateException;
+import easv.ui.pages.modelFactory.IModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import java.math.BigDecimal;
@@ -27,7 +28,7 @@ public class Model implements IModel {
     private ObservableMap<Integer, Country> countries;
 
     // collection that holds all the teams related to a country, with all the associated overhead
-    private ObservableMap<TeamWithEmployees, List<BigDecimal>> countryTeams;
+    private Map<TeamWithEmployees, List<BigDecimal>> countryTeams;
 
     public Model() throws RateException {
         this.employees = new LinkedHashMap<>();

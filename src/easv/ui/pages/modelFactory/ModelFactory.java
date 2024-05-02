@@ -1,8 +1,6 @@
-package easv.ui;
+package easv.ui.pages.modelFactory;
 import easv.exception.RateException;
-import easv.ui.pages.IModel;
-import easv.ui.pages.Model;
-import easv.ui.pages.NewModel;
+
 import java.util.HashMap;
 
 
