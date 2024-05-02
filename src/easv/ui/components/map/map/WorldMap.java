@@ -28,7 +28,7 @@ public class WorldMap implements Initializable {
         this.firstLayout=firstLayout;
         try {
             worldMap = loader.load();
-
+worldMap.getCountries();
         } catch (IOException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
@@ -66,20 +66,15 @@ public class WorldMap implements Initializable {
  *change the color of the countries that are operational */
 private void changeColor(Collection<Country> countries) {
     worldMap.setCountryViewFactory(param -> {
-        Optional<WorldMapView.CountryView> countryView = getCountryView(countries, param);
-        return countryView.orElseGet(() -> new WorldMapView.CountryView(param));
+        WorldMapView.CountryView countryView = new WorldMapView.CountryView(param);
+        boolean isOperational = countries.stream().anyMatch(e->e.getCountryName().equals(param.getLocale().getDisplayCountry()));
+        if(isOperational){
+            countryView.getStyleClass().add("country_operational");
+        }
+        return countryView;
     });
 }
-    private Optional<WorldMapView.CountryView> getCountryView(Collection<Country> countries, WorldMapView.Country country) {
-        return countries.stream()
-                .filter(e -> e.getCountryName().equals(country.getLocale().getDisplayCountry()))
-                .map(e -> {
-                    WorldMapView.CountryView operationalCountry = new WorldMapView.CountryView(country);
-                    operationalCountry.getStyleClass().add("country_operational");
-                    return operationalCountry;
-                })
-                .findFirst();
-    }
+
 
 
 
