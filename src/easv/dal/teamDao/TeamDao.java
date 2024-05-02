@@ -2,6 +2,7 @@ package easv.dal.teamDao;
 import easv.be.*;
 import easv.dal.connectionManagement.DatabaseConnectionFactory;
 import easv.dal.connectionManagement.IConnection;
+import easv.exception.ErrorCode;
 import easv.exception.RateException;
 
 import javax.sound.midi.Soundbank;
@@ -103,6 +104,25 @@ public class TeamDao implements ITeamDao {
             throw new RuntimeException(e);
         }
          return config;
+    }
+
+    public Map<Integer, Team> getTeams() throws RateException {
+        String sql = "SELECT  * FROM Teams";
+        Map<Integer, Team> teams = new HashMap<>();
+        try(Connection conn = connectionManager.getConnection()) {
+            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+                ResultSet rs = psmt.executeQuery();
+                while (rs.next()) {
+                    int id = rs.getInt("TeamId");
+                    String name = rs.getString("Name");
+                    Team team = new Team(name, id);
+                    teams.put(team.getId(), team);
+                }
+            }
+        } catch (SQLException | RateException e) {
+            throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
+        }
+        return teams;
     }
 
 
