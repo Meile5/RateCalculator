@@ -43,6 +43,7 @@ public class Model implements IModel {
      * holds the countries that are currently operational for the company
      */
     private final ObservableMap<Integer, Country> countries;
+    private final ObservableMap<Integer, Team> teams;
 
     // collection that holds all the teams related to a country, with all the associated overhead
     private Map<TeamWithEmployees, List<BigDecimal>> countryTeams;
@@ -50,11 +51,13 @@ public class Model implements IModel {
     public Model() throws RateException {
         this.employees = new LinkedHashMap<>();
         this.countries = FXCollections.observableHashMap();
+        this.teams = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
         this.countryLogic = new CountryLogic();
         this.teamManager = new TeamLogic();
         this.countryTeams=new HashMap<>();
         populateCountries();
+        populateTeams();
     }
 
 
@@ -99,6 +102,15 @@ public class Model implements IModel {
         System.out.println(countryTeams);
         System.out.println(currentIndexToRetrieve);
         return countryTeams;
+    }
+
+    private void populateTeams() throws RateException {
+        this.teams.putAll(teamManager.getTeams());
+
+    }
+
+    public ObservableMap<Integer, Team> getTeams() {
+        return teams;
     }
 
     /**reset the currentIndexToRetrieve when retrieving for a new country */

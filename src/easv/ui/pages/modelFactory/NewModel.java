@@ -43,5 +43,10 @@ public class NewModel implements IModel{
 
     }
 
+    @Override
+    public ObservableMap<Integer, Team> getTeams() {
+        return null;
+    }
+
 
 }

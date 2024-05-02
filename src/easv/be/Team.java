@@ -28,4 +28,9 @@ public class Team {
     public void setId(int id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return team;
+    }
 }

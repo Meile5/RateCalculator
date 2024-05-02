@@ -1,6 +1,7 @@
 package easv.bll.TeamLogic;
 
 import easv.be.Country;
+import easv.be.Team;
 import easv.be.TeamWithEmployees;
 import easv.bll.EmployeesLogic.IRateCalculator;
 
@@ -53,6 +54,10 @@ public class TeamLogic implements ITeamLogic {
         List<BigDecimal> teamOverhead = new ArrayList<>();
         Collections.addAll(teamOverhead, salaryOverhead, totalOverhead, productiveOverhead);
         return teamOverhead;
+    }
+
+    public Map<Integer, Team> getTeams() throws RateException {
+        return teamDao.getTeams();
     }
 
 }
