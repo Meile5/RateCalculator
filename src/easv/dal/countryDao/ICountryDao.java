@@ -7,5 +7,5 @@ import javafx.collections.ObservableMap;
 import java.util.Map;
 
 public interface ICountryDao {
-    Map<Integer, Country> getCountries() throws RateException;
+    Map<String, Country> getCountries() throws RateException;
 }

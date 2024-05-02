@@ -23,9 +23,9 @@ public class CountryDao implements ICountryDao {
     }
 
     @Override
-    public Map<Integer, Country> getCountries() throws RateException {
+    public Map<String, Country> getCountries() throws RateException {
         String sql = "SELECT  * FROM Countries";
-        Map<Integer, Country> countries = new HashMap<>();
+        Map<String, Country> countries = new HashMap<>();
         try(Connection conn = connectionManager.getConnection()) {
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 ResultSet rs = psmt.executeQuery();
@@ -33,7 +33,7 @@ public class CountryDao implements ICountryDao {
                     int id = rs.getInt("CountryId");
                     String name = rs.getString("Name");
                     Country country = new Country(name, id);
-                    countries.put(country.getId(), country);
+                    countries.put(country.getCountryName(), country);
                 }
             }
         } catch (SQLException | RateException e) {

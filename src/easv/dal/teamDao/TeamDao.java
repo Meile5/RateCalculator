@@ -3,13 +3,17 @@ import easv.be.*;
 import easv.dal.connectionManagement.DatabaseConnectionFactory;
 import easv.dal.connectionManagement.IConnection;
 import easv.exception.RateException;
+
+import javax.sound.midi.Soundbank;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class TeamDao implements ITeamDao {
@@ -22,43 +26,48 @@ public class TeamDao implements ITeamDao {
    /** retrieves the teams and the associated members
     * @param offset the number off elements that needs to be skipped
     * @param numberOfElements the number of elements that needs to be retrieved next */
-    public List<TeamWithEmployees> getTeamsByCountry(Country country,int offset,int numberOfElements) {
-       List<TeamWithEmployees> teams = new ArrayList<>();
-        TeamWithEmployees currentTeam = null;
-        String sql = "SELECT e.EmployeeId,e.Name,e.employeeType,e.Currency,t.TeamId,t.Name as TeamName FROM Employees e "
-                +"JOIN Teams t ON e.TeamId = t.TeamId WHERE e.CountryId = ? ORDER BY e.TeamId "+
-                "OFFSET ? ROWS " +
-                "FETCH NEXT ? ROWS ONLY ";
-        try (Connection conn = connectionManager.getConnection()) {
-            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-                psmt.setInt(1, country.getId());
-                psmt.setInt(2,offset);
-                psmt.setInt(3,numberOfElements);
-                ResultSet rs = psmt.executeQuery();
-                while (rs.next()) {
-                    if (currentTeam == null || rs.getInt("TeamId") != currentTeam.getId()) {
-                        currentTeam = createTeamWithEmployees(rs);
-                        teams.add(currentTeam);
-                    }
-                    int employeeID = rs.getInt("EmployeeID");
-                    String name = rs.getString("Name");
-                    String employeeType = rs.getString("employeeType");
-                    String currencyValue = rs.getString("Currency");
-                    Configuration config =  getConfiguration(employeeID,conn);
-                    EmployeeType type = EmployeeType.valueOf(employeeType);
-                    Currency currency = Currency.valueOf(currencyValue);
-                    List<Configuration> configs = new ArrayList<>();
-                    configs.add(config);
-                    Employee employee = new Employee(name, type, currency,configs);
-                    employee.setId(employeeID);
-                    currentTeam.addEmployee(employee);
-                }
-            }
-        } catch (SQLException | RateException e) {
-            throw new RuntimeException(e);
-        }
-        return teams;
-    }
+   public List<TeamWithEmployees> getTeamsByCountry(Country country,int offset,int numberOfElements) {
+       Map<Integer, TeamWithEmployees> teamsMap = new HashMap<>();
+       String sql = "SELECT e.EmployeeId,e.Name,e.employeeType,e.Currency,t.TeamId,t.Name as TeamName FROM Employees e "
+               +"JOIN Teams t ON e.TeamId = t.TeamId WHERE e.CountryId = ? ORDER BY e.TeamId "+
+               "OFFSET ? ROWS " +
+               "FETCH NEXT ? ROWS ONLY ";
+       try (Connection conn = connectionManager.getConnection()) {
+           try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+               psmt.setInt(1, country.getId());
+               psmt.setInt(2,offset);
+               psmt.setInt(3,numberOfElements);
+               ResultSet rs = psmt.executeQuery();
+               while (rs.next()) {
+                   int teamId = rs.getInt("TeamId");
+                   TeamWithEmployees currentTeam = teamsMap.get(teamId);
+                   if (currentTeam == null) {
+                       currentTeam = createTeamWithEmployees(rs);
+                       teamsMap.put(teamId, currentTeam);
+                   }
+                   int employeeID = rs.getInt("EmployeeID");
+                   String name = rs.getString("Name");
+                   String employeeType = rs.getString("employeeType");
+                   String currencyValue = rs.getString("Currency");
+                   Configuration config =  getConfiguration(employeeID,conn);
+                   EmployeeType type = EmployeeType.valueOf(employeeType);
+                   Currency currency = Currency.valueOf(currencyValue);
+                   List<Configuration> configs = new ArrayList<>();
+                   configs.add(config);
+                   Employee employee = new Employee(name, type, currency,configs);
+                   employee.setId(employeeID);
+                   currentTeam.addEmployee(employee);
+               }
+           }
+       } catch (SQLException | RateException e) {
+           throw new RuntimeException(e);
+       }
+       List<TeamWithEmployees> teams = new ArrayList<>(teamsMap.values());
+       System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>.");
+       teams.forEach(e-> System.out.println(e.getTeamName() + "team name from dao"));
+       System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>.");
+       return teams;
+   }
 
 /**initialize an TeamWithEmployees object*/
     private TeamWithEmployees createTeamWithEmployees(ResultSet rs) throws SQLException {

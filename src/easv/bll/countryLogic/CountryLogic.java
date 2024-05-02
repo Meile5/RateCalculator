@@ -19,7 +19,7 @@ public class CountryLogic  implements ICountryLogic{
     }
 
     @Override
-    public Map<Integer, Country> getCountries() throws RateException {
+    public Map<String, Country> getCountries() throws RateException {
         return countryDao.getCountries();
     }
 }

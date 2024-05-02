@@ -23,6 +23,6 @@
     -fx-background-radius: 10;
 }
 .teamComponent{
-    -fx-background-color: red;
+    -fx-background-color: transparent;
 }
 

@@ -20,8 +20,8 @@ public class ModelFactory {
         IModel model = null;
         switch (modelType) {
             case MODELOTHER-> {
-                model = new NewModel();
-                models.put(modelType, model);
+//                model = new NewModel();
+//                models.put(modelType, model);
             }
             case NORMAL_MODEL -> {
                 model = new Model();

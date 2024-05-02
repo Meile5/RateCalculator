@@ -1,14 +1,11 @@
 
 package easv.be;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Locale;
+
 
 public class Employee {
     private String name;
-
     private EmployeeType employeeType;
     private Country country;
     private Team team;
@@ -18,6 +15,13 @@ public class Employee {
     private BigDecimal hourlyRate;
     private List<Configuration> configurations;
     private Configuration latestConfiguration;
+    private BigDecimal overhead;
+
+
+
+    public void setOverhead(BigDecimal overhead) {
+        this.overhead = overhead;
+    }
 
     public Configuration getLatestConfiguration() {
         return latestConfiguration;
@@ -147,5 +151,13 @@ public class Employee {
 
     public boolean removeConfig(Configuration config){
         return this.configurations.remove(config);
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public BigDecimal getOverhead() {
+        return overhead;
     }
 }

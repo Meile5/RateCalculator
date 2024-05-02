@@ -21,10 +21,18 @@ public interface IModel {
 
 
     void addEmployee(Employee employee);
-    ObservableMap<Integer, Country> getCountries();
+    Map<String, Country> getCountries();
 
     /**retrieve the teams with the overhead computed*/
-    Map<TeamWithEmployees, List<BigDecimal>> getCountryTeams(String country);
+    List<TeamWithEmployees> getCountryTeams();
     /**used to reset the  index of the database retrieval */
     public void resetCurrentIndexToRetrieve();
+
+    /**used for country input validation*/
+    void populateValidCountries(List<String> validCountries);
+
+    /**set the country that user has selected from the map*/
+    void setSelectedCountry(String selectedCountry);
+
+
 }

@@ -7,6 +7,6 @@ import java.util.Map;
 
 
 public interface ICountryLogic {
-    Map<Integer, Country> getCountries() throws RateException;
+    Map<String, Country> getCountries() throws RateException;
 
 }
