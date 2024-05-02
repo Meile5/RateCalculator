@@ -57,6 +57,10 @@ public class Employee {
         this.employeeType = employeeType;
         this.currency = currency;
     }
+    public Employee(String name,EmployeeType employeeType,Currency currency,List<Configuration> configs){
+        this(name,employeeType,currency);
+        this.configurations=configs;
+    }
 
 
 
@@ -134,5 +138,14 @@ public class Employee {
                 ", id=" + id +
                 ", currency=" + currency +
                 '}';
+    }
+
+
+    public void addConfiguration(Configuration config){
+        this.configurations.add(config);
+    }
+
+    public boolean removeConfig(Configuration config){
+        return this.configurations.remove(config);
     }
 }

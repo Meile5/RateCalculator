@@ -47,7 +47,7 @@ public class EmployeeManager implements IEmployeeManager {
         return employees;
     }
 
-<<<<<<< HEAD
+
     private Configuration findLatestConfiguration(Employee employee) {
         List<Configuration> configurations = employee.getConfigurations();
         if (configurations != null && !configurations.isEmpty()) {
@@ -57,8 +57,5 @@ public class EmployeeManager implements IEmployeeManager {
         }
         return null;
     }
-=======
 
-
->>>>>>> f4cd57f11e9570b291d28f38846a88c92972cb19
 }

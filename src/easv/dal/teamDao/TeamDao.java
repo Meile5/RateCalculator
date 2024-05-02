@@ -23,7 +23,7 @@ public class TeamDao implements ITeamDao {
     * @param offset the number off elements that needs to be skipped
     * @param numberOfElements the number of elements that needs to be retrieved next */
     public List<TeamWithEmployees> getTeamsByCountry(Country country,int offset,int numberOfElements) {
-       /* List<TeamWithEmployees> teams = new ArrayList<>();
+       List<TeamWithEmployees> teams = new ArrayList<>();
         TeamWithEmployees currentTeam = null;
         String sql = "SELECT e.EmployeeId,e.Name,e.employeeType,e.Currency,t.TeamId,t.Name as TeamName FROM Employees e "
                 +"JOIN Teams t ON e.TeamId = t.TeamId WHERE e.CountryId = ? ORDER BY e.TeamId "+
@@ -47,9 +47,9 @@ public class TeamDao implements ITeamDao {
                     Configuration config =  getConfiguration(employeeID,conn);
                     EmployeeType type = EmployeeType.valueOf(employeeType);
                     Currency currency = Currency.valueOf(currencyValue);
-                    Employee employee = new Employee(name,config.getAnnualSalary() , config.getFixedAnnualAmount(),
-                            config.getOverheadMultiplier(), config.getUtilizationPercentage(),
-                            config.getWorkingHours(), type, currency);
+                    List<Configuration> configs = new ArrayList<>();
+                    configs.add(config);
+                    Employee employee = new Employee(name, type, currency,configs);
                     employee.setId(employeeID);
                     currentTeam.addEmployee(employee);
                 }
@@ -57,7 +57,7 @@ public class TeamDao implements ITeamDao {
         } catch (SQLException | RateException e) {
             throw new RuntimeException(e);
         }
-        return teams;*/return null;
+        return teams;
     }
 
 /**initialize an TeamWithEmployees object*/

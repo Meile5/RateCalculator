@@ -81,8 +81,8 @@ public class CreateController implements Initializable {
         Country country = new Country(countryCB.getText());
         Team team = new Team(teamCB.getText());
         Currency currency = Currency.valueOf(currencyCB.getText());
-        Employee employee = new Employee(name, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, country, team, employeeType, currency);
-        model.addEmployee(employee);
+       // Employee employee = new Employee(name, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, country, team, employeeType, currency);
+       // model.addEmployee(employee);
         clearFields();
     }
 
