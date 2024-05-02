@@ -78,7 +78,6 @@ public class HomePageController implements Initializable, PageManager {
     }
 
     private void initializeWorldMap() {
-
         initializeHomePageLogo();
     }
     private void initializeHomePageLogo(){

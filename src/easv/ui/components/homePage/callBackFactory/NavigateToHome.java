@@ -17,6 +17,7 @@ public class NavigateToHome implements CallBack, Subject {
     public NavigateToHome(PageManager pageManager, IModel model, StackPane modalLayout) {
             this.pageManager = pageManager;
             this.modalLayout= modalLayout;
+            this.model=model;
         }
 
         @Override

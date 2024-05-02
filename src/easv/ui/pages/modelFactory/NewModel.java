@@ -4,9 +4,12 @@ import easv.be.*;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.collections.ObservableMap;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-public class NewModel implements IModel {
+public class NewModel implements IModel{
 
     private LinkedHashMap<Integer, Employee> employees;
 
@@ -28,6 +31,16 @@ public class NewModel implements IModel {
     @Override
     public ObservableMap<Integer, Country> getCountries() {
         return null;
+    }
+
+    @Override
+    public Map<TeamWithEmployees, List<BigDecimal>> getCountryTeams(String country) {
+        return null;
+    }
+
+    @Override
+    public void resetCurrentIndexToRetrieve() {
+
     }
 
 

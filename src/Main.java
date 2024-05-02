@@ -24,7 +24,7 @@ public class Main extends Application {
 
         IModel model = null;
         try{
-            model =    ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
+            model =  ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
         }catch (RateException e){
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
             primaryStage.close();

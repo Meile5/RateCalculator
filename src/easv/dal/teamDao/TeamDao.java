@@ -32,6 +32,8 @@ public class TeamDao implements ITeamDao {
         try (Connection conn = connectionManager.getConnection()) {
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 psmt.setInt(1, country.getId());
+                psmt.setInt(2,offset);
+                psmt.setInt(3,numberOfElements);
                 ResultSet rs = psmt.executeQuery();
                 while (rs.next()) {
                     if (currentTeam == null || rs.getInt("TeamId") != currentTeam.getId()) {
