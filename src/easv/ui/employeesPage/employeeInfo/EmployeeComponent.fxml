@@ -26,14 +26,18 @@
          <children>
             <Label fx:id="team" prefHeight="35.0" prefWidth="97.0" />
          </children></VBox>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+      <HBox alignment="CENTER" layoutX="471.0" layoutY="10.0" prefHeight="70.0" prefWidth="103.0">
          <children>
+            <Label fx:id="dayCurrency" />
             <Label fx:id="dayRate" />
-         </children></VBox>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="90.0">
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="70.0" prefWidth="103.0">
          <children>
+            <Label fx:id="hourlyCurrency" />
             <Label fx:id="hourlyRate" />
-         </children></VBox>
+         </children>
+      </HBox>
       <VBox prefHeight="200.0" prefWidth="80.0" />
       <VBox fx:id="deleteContainer" alignment="CENTER" prefHeight="70.0" prefWidth="80.0">
          <children>

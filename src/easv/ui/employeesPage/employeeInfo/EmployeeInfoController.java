@@ -36,6 +36,10 @@ public class EmployeeInfoController implements Initializable {
    private Label dayRate;
    @FXML
    private Label hourlyRate;
+   @FXML
+   private Label hourlyCurrency;
+   @FXML
+   private Label dayCurrency;
    private Employee employee;
 
     public EmployeeInfoController( Employee employee) {
@@ -77,6 +81,8 @@ public class EmployeeInfoController implements Initializable {
             team.setText(employee.getTeam().getTeam());
             dayRate.setText(employee.getDailyRate().toString());
             hourlyRate.setText(employee.getHourlyRate().toString());
+            hourlyCurrency.setText(employee.getCurrency().toString());
+            dayCurrency.setText(employee.getCurrency().toString());
         }
     }
 }
