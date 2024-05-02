@@ -1,4 +1,5 @@
 package easv.bll.EmployeesLogic;
+import easv.be.Configuration;
 import easv.be.Employee;
 import easv.be.TeamWithEmployees;
 import java.math.BigDecimal;
@@ -7,30 +8,28 @@ import java.math.RoundingMode;
 
 public class RateCalculator  implements IRateCalculator{
 
-    public BigDecimal calculateDayRate(Employee employee) {
-        BigDecimal annualSalary = employee.getAnnualSalary();
-        BigDecimal overheadMultiplier = employee.getOverheadMultiplier();
-        BigDecimal fixedAnnualAmount = employee.getFixedAnnualAmount();
-        BigDecimal annualEffectiveWorkingHours = employee.getWorkingHours();
-        BigDecimal utilizationPercentage = employee.getUtilizationPercentage();
+    public BigDecimal calculateDayRate(Employee employee, Configuration latestConfiguration) {
+        BigDecimal annualSalary = latestConfiguration.getAnnualSalary();
+        BigDecimal overheadMultiplier = latestConfiguration.getOverheadMultiplier();
+        BigDecimal fixedAnnualAmount = latestConfiguration.getFixedAnnualAmount();
+        BigDecimal annualEffectiveWorkingHours = latestConfiguration.getWorkingHours();
+        BigDecimal utilizationPercentage = latestConfiguration.getUtilizationPercentage();
+
         BigDecimal dayRate = annualSalary
                 .add(fixedAnnualAmount)
                 .multiply(overheadMultiplier)
-                .multiply(utilizationPercentage).divide(annualEffectiveWorkingHours, 2, BigDecimal.ROUND_HALF_UP);
+                .multiply(utilizationPercentage)
+                .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP);
 
         return dayRate;
     }
 
+    public BigDecimal calculateHourlyRate(Employee employee, Configuration latestConfiguration) {
+        BigDecimal annualEffectiveWorkingHours = latestConfiguration.getWorkingHours();
 
-    public BigDecimal calculateHourlyRate(Employee employee) {
-        BigDecimal annualSalary = employee.getAnnualSalary();
-        BigDecimal overheadMultiplier = employee.getOverheadMultiplier();
-        BigDecimal fixedAnnualAmount = employee.getFixedAnnualAmount();
-        BigDecimal annualEffectiveWorkingHours = employee.getWorkingHours();
-        BigDecimal utilizationPercentage = employee.getUtilizationPercentage();
-
-        BigDecimal hourlyRate = calculateDayRate(employee)
+        BigDecimal hourlyRate = calculateDayRate(employee, latestConfiguration)
                 .divide(annualEffectiveWorkingHours, RoundingMode.HALF_UP);
+
         return hourlyRate;
     }
 

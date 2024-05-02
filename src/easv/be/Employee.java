@@ -1,15 +1,13 @@
 package easv.be;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
 public class Employee {
     private String name;
-    private BigDecimal annualSalary;
-    private BigDecimal fixedAnnualAmount;
-    private BigDecimal overheadMultiplier;
-    private BigDecimal utilizationPercentage;
-    private BigDecimal workingHours;
+
     private EmployeeType employeeType;
     private Country country;
     private Team team;
@@ -17,30 +15,44 @@ public class Employee {
     private Currency currency;
     private BigDecimal dailyRate;
     private BigDecimal hourlyRate;
-    private List<Configuration> configs;
+    private List<Configuration> configurations;
+    private Configuration latestConfiguration;
+
+    public Configuration getLatestConfiguration() {
+        return latestConfiguration;
+    }
+
+    public void setLatestConfiguration(Configuration latestConfiguration) {
+        this.latestConfiguration = latestConfiguration;
+    }
 
 
+    public EmployeeType getEmployeeType() {
+        return employeeType;
+    }
 
-    public Employee(String name, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,  Country country, Team team, EmployeeType employeeType, Currency currency) {
+    public void setEmployeeType(EmployeeType employeeType) {
+        this.employeeType = employeeType;
+    }
+
+    public List<Configuration> getConfigurations() {
+        return configurations;
+    }
+
+    public void setConfigurations(List<Configuration> configurations) {
+        this.configurations = configurations;
+    }
+
+    public Employee(String name, Country country, Team team, EmployeeType employeeType, Currency currency) {
         this.name = name;
-        this.annualSalary = annualSalary;
-        this.fixedAnnualAmount = fixedAnnualAmount;
-        this.overheadMultiplier = overheadMultiplier;
-        this.utilizationPercentage = utilizationPercentage;
-        this.workingHours = workingHours;
         this.country = country;
         this.team = team;
         this.employeeType = employeeType;
         this.currency = currency;
     }
 
-    public Employee(String name, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, EmployeeType employeeType, Currency currency) {
+    public Employee(String name, EmployeeType employeeType, Currency currency) {
         this.name = name;
-        this.annualSalary = annualSalary;
-        this.fixedAnnualAmount = fixedAnnualAmount;
-        this.overheadMultiplier = overheadMultiplier;
-        this.utilizationPercentage = utilizationPercentage;
-        this.workingHours = workingHours;
         this.employeeType = employeeType;
         this.currency = currency;
     }
@@ -55,45 +67,6 @@ public class Employee {
         this.name = name;
     }
 
-    public BigDecimal getAnnualSalary() {
-        return annualSalary;
-    }
-
-    public void setAnnualSalary(BigDecimal annualSalary) {
-        this.annualSalary = annualSalary;
-    }
-
-    public BigDecimal getFixedAnnualAmount() {
-        return fixedAnnualAmount;
-    }
-
-    public void setFixedAnnualAmount(BigDecimal fixedAnnualAmount) {
-        this.fixedAnnualAmount = fixedAnnualAmount;
-    }
-
-    public BigDecimal getOverheadMultiplier() {
-        return overheadMultiplier;
-    }
-
-    public void setOverheadMultiplier(BigDecimal overheadMultiplier) {
-        this.overheadMultiplier = overheadMultiplier;
-    }
-
-    public BigDecimal getUtilizationPercentage() {
-        return utilizationPercentage;
-    }
-
-    public void setUtilizationPercentage(BigDecimal utilizationPercentage) {
-        this.utilizationPercentage = utilizationPercentage;
-    }
-
-    public BigDecimal getWorkingHours() {
-        return workingHours;
-    }
-
-    public void setWorkingHours(BigDecimal workingHours) {
-        this.workingHours = workingHours;
-    }
 
 
     public Country getCountry() {
@@ -154,11 +127,6 @@ public class Employee {
     public String toString() {
         return "Employee{" +
                 "name='" + name + '\'' +
-                ", annualSalary=" + annualSalary +
-                ", fixedAnnualAmount=" + fixedAnnualAmount +
-                ", overheadMultiplier=" + overheadMultiplier +
-                ", utilizationPercentage=" + utilizationPercentage +
-                ", workingHours=" + workingHours +
                 ", employeeType=" + employeeType +
                 ", country=" + country +
                 ", team=" + team +

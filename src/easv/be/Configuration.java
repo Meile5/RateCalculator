@@ -11,6 +11,13 @@ public class Configuration {
     private BigDecimal workingHours;
     private LocalDateTime savedDate;
 
+    public LocalDateTime getSavedDate() {
+        return savedDate;
+    }
+
+    public void setSavedDate(LocalDateTime savedDate) {
+        this.savedDate = savedDate;
+    }
 
     public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours) {
         this.annualSalary = annualSalary;

@@ -2,6 +2,7 @@ package easv.dal;
 import easv.be.*;
 
 import easv.be.Country;
+import easv.be.Currency;
 import easv.be.Employee;
 import easv.be.EmployeeType;
 import easv.be.Team;
@@ -18,9 +19,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.logging.Level;
 
 public class EmployeesDAO implements IEmployeeDAO {
 
@@ -35,22 +36,18 @@ public class EmployeesDAO implements IEmployeeDAO {
      */
     @Override
     public LinkedHashMap<Integer, Employee> returnEmployees() throws RateException {
-
-       LinkedHashMap<Integer, Employee> employees = new LinkedHashMap<>();
+        LinkedHashMap<Integer, Employee> employees = new LinkedHashMap<>();
         String sql = "SELECT " +
                 "e.EmployeeID, e.Name AS EmployeeName, e.employeeType, " +
-                "c.Name AS Country, t.Name AS Team, e.Currency, " +
-                "conf.AnnualSalary, conf.FixedAnnualAmount, conf.OverheadMultiplier, " +
-                "conf.UtilizationPercentage, conf.WorkingHours, conf.Date AS ConfigurationDate " +
+                "c.Name AS Country, t.Name AS Team, e.Currency " +
                 "FROM " +
                 "Employees e " +
                 "INNER JOIN Countries c ON e.CountryID = c.CountryID " +
-                "INNER JOIN Teams t ON e.TeamID = t.TeamID " +
-                "LEFT JOIN EmployeeConfigurations ec ON e.EmployeeID = ec.EmployeeID " +
-                "LEFT JOIN Configurations conf ON ec.ConfigurationID = conf.ConfigurationID";
+                "INNER JOIN Teams t ON e.TeamID = t.TeamID";
         Connection conn = null;
-        try  {conn=connectionManager.getConnection();
-
+        try {
+            conn = connectionManager.getConnection();
+            conn.setAutoCommit(false); // Start transaction
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 ResultSet res = psmt.executeQuery();
                 while (res.next()) {
@@ -61,49 +58,80 @@ public class EmployeesDAO implements IEmployeeDAO {
                     String teamName = res.getString("Team");
                     String currency1 = res.getString("Currency");
 
-                    BigDecimal annualSalary = res.getBigDecimal("AnnualSalary");
-                    BigDecimal fixedAnnualAmount = res.getBigDecimal("FixedAnnualAmount");
-                    BigDecimal overheadMultiplier = res.getBigDecimal("OverheadMultiplier");
-                    BigDecimal utilizationPercentage = res.getBigDecimal("UtilizationPercentage");
-                    BigDecimal workingHours = res.getBigDecimal("WorkingHours");
-                    //Date configurationDate = res.getDate("ConfigurationDate");
-
                     // Create Country object
                     Country country = new Country(countryName);
                     // Create Team object
                     Team team = new Team(teamName);
                     // Retrieve employee type as string
-                    String employeeTypeStr = res.getString("employeeType");
-                    // Convert string to enum
-                    EmployeeType type = EmployeeType.valueOf(employeeTypeStr);
+                    EmployeeType type = EmployeeType.valueOf(employeeType);
                     // Retrieve employee type as string
-                    String currencyStr = res.getString("Currency");
-                    // Convert string to enum
-                    Currency currency = Currency.valueOf(currencyStr);
+                    Currency currency = Currency.valueOf(currency1);
 
+                    Employee employee = new Employee(name, country, team, type, currency);
+                    employee.setId(employeeID);
 
-                    Employee employee = new Employee(name, annualSalary, fixedAnnualAmount,
-                            overheadMultiplier, utilizationPercentage,
-                            workingHours, country, team, type, currency );
-                     employee.setId(employeeID);
-
-                    // Add Employee to ObservableMap
-                     employees.put(employeeID, employee);
-
-
-
-
+                    // Add Employee to LinkedHashMap
+                    employees.put(employeeID, employee);
                 }
-
             }
+            // Retrieve configurations for employees
+            for (Employee employee : employees.values()) {
+                List<Configuration> configurations = retrieveConfigurationsForEmployee(employee.getId(), conn);
+                employee.setConfigurations(configurations);
+            }
+            conn.commit(); // Commit transaction
         } catch (SQLException | RateException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback(); // Rollback transaction if there's an exception
+                }
+            } catch (SQLException ex) {
+                throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+            }
             throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
-
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true); // Reset auto-commit mode
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+            }
         }
-
         return employees;
-
     }
+
+    private List<Configuration> retrieveConfigurationsForEmployee(int employeeId, Connection conn) throws SQLException {
+        List<Configuration> configurations = new ArrayList<>();
+        String sql = "SELECT " +
+                "conf.ConfigurationID, conf.AnnualSalary, conf.FixedAnnualAmount, " +
+                "conf.OverheadMultiplier, conf.UtilizationPercentage, conf.WorkingHours, " +
+                "conf.Date AS ConfigurationDate " +
+                "FROM " +
+                "EmployeeConfigurations ec " +
+                "INNER JOIN Configurations conf ON ec.ConfigurationID = conf.ConfigurationID " +
+                "WHERE " +
+                "ec.EmployeeID = ?";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, employeeId);
+            ResultSet res = psmt.executeQuery();
+            while (res.next()) {
+                int configurationId = res.getInt("ConfigurationID");
+                BigDecimal annualSalary = res.getBigDecimal("AnnualSalary");
+                BigDecimal fixedAnnualAmount = res.getBigDecimal("FixedAnnualAmount");
+                BigDecimal overheadMultiplier = res.getBigDecimal("OverheadMultiplier");
+                BigDecimal utilizationPercentage = res.getBigDecimal("UtilizationPercentage");
+                BigDecimal workingHours = res.getBigDecimal("WorkingHours");
+                LocalDateTime configurationDate = res.getTimestamp("ConfigurationDate").toLocalDateTime();
+
+                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate);
+                configurations.add(configuration);
+            }
+        }
+        return configurations;
+    }
+
 
 
     @Override
@@ -141,6 +169,31 @@ public class EmployeesDAO implements IEmployeeDAO {
         return employeeID;
     }
 
+    @Override
+    public Boolean deleteEmployee(Employee employee) {return null;}
+       /* boolean succeeded = false;
+        String sql = "DELETE FROM Employees WHERE EmployeeID=?";
+        try (Connection conn = connectionManager.getConnection()) {
+            conn.setAutoCommit(false);
+            conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+                psmt.setInt(1, eventId);
+                psmt.executeUpdate();
+                if (!ticketsToDelete.isEmpty()) {
+                    deleteTicket(ticketsToDelete, conn);
+                }
+                conn.commit();
+                succeeded = true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new EventException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+            }
+        } catch (SQLException | RateException e) {
+            e.printStackTrace();
+            ExceptionLogger.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
+        }
+        return succeeded;
+    }*/
 
 
 }
