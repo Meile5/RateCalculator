@@ -1,12 +1,8 @@
 package easv.ui.components.homePage.callBackFactory;
-
 import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.openPageObserver.Subject;
-
 import easv.ui.employeesPage.employeeMainPage.EmployeeMainPageController;
 import easv.ui.pages.IModel;
-
-import easv.ui.pages.displayPage.EmployeeController;
 import javafx.scene.Parent;
 
 public class NavigateToEmployees implements CallBack, Subject {
@@ -34,7 +30,6 @@ public class NavigateToEmployees implements CallBack, Subject {
     private void initializeRoot(){
         EmployeeMainPageController employeeMainPageController = new EmployeeMainPageController();
         root= employeeMainPageController.getRoot();
-
         pageManager.changePage(root, this);
         isOpened = true;
     }

@@ -1,10 +1,10 @@
 package easv.bll.TeamLogic;
 
 import easv.be.Country;
-import easv.be.Team;
 import easv.be.TeamWithEmployees;
-import easv.bll.IRateCalculator;
-import easv.bll.RateCalculator;
+import easv.bll.EmployeesLogic.IRateCalculator;
+
+import easv.bll.EmployeesLogic.RateCalculator;
 import easv.dal.teamDao.ITeamDao;
 import easv.dal.teamDao.TeamDao;
 import easv.exception.RateException;

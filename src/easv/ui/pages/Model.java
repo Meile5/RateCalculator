@@ -1,22 +1,20 @@
 package easv.ui.pages;
 import easv.be.*;
-import easv.bll.EmployeeLogic;
-import easv.bll.EmployeeManager;
-import easv.bll.IEmployeeManager;
+import easv.bll.EmployeesLogic.EmployeeManager;
+import easv.bll.EmployeesLogic.IEmployeeManager;
 import easv.bll.countryLogic.CountryLogic;
 import easv.bll.countryLogic.ICountryLogic;
 import easv.exception.RateException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
-
-
-
 import java.math.BigDecimal;
-import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Model implements IModel {
-    private ObservableMap<Integer, Employee> employees;
-    private EmployeeLogic employeeLogic;
+    private LinkedHashMap<Integer, Employee> employees;
+
 
     private IEmployeeManager employeeManager;
     /**
@@ -32,9 +30,6 @@ public class Model implements IModel {
     private ObservableMap<TeamWithEmployees, List<BigDecimal>> countryTeams;
 
     public Model() throws RateException {
-
-        this.employees = new LinkedHashMap<>();
-
         this.employees = new LinkedHashMap<>();
         this.countries = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
@@ -49,7 +44,7 @@ public class Model implements IModel {
 
     @Override
     public LinkedHashMap<Integer, Employee> returnEmployees() throws RateException {
-        employees = employeeManager.returnEmployees();
+        employees = (LinkedHashMap<Integer, Employee>) employeeManager.returnEmployees();
         return employees;
     }
 

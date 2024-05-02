@@ -1,12 +1,11 @@
 package easv.bll.EmployeesLogic;
-
 import easv.be.Employee;
 import easv.be.TeamWithEmployees;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
-public class RateCalculator {
+public class RateCalculator  implements IRateCalculator{
 
     public BigDecimal calculateDayRate(Employee employee) {
         BigDecimal annualSalary = employee.getAnnualSalary();
@@ -29,9 +28,9 @@ public class RateCalculator {
         BigDecimal fixedAnnualAmount = employee.getFixedAnnualAmount();
         BigDecimal annualEffectiveWorkingHours = employee.getWorkingHours();
         BigDecimal utilizationPercentage = employee.getUtilizationPercentage();
-        BigDecimal hourlyRate = calculateDayRate(employee)
-                .divide(annualEffectiveWorkingHours, 2, BigDecimal.ROUND_HALF_UP);
 
+        BigDecimal hourlyRate = calculateDayRate(employee)
+                .divide(annualEffectiveWorkingHours, RoundingMode.HALF_UP);
         return hourlyRate;
     }
 
@@ -42,7 +41,6 @@ public class RateCalculator {
         return team.getTeamMembers().stream().map(this::calculateEmployeeSalaryOverhead).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-
     /**calculate the team total overhead by summing the team member total overhead*/
     public BigDecimal calculateTeamTotalOverhead(TeamWithEmployees team){
         return team.getTeamMembers().stream().map(this::calculateEmployeeTotalOverHead).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -52,7 +50,6 @@ public class RateCalculator {
     public BigDecimal calculateProductiveOverHead(TeamWithEmployees team){
         return team.getTeamMembers().stream().map(this::calculateEmployeeProductiveOverhead).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
 
 
     //TODO the method needs to be modified to use the procents

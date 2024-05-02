@@ -1,5 +1,4 @@
 
-import easv.dal.teamDao.TeamDao;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
@@ -10,8 +9,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+
 public class Main extends Application {
     public static void main(String[] args) {
         Application.launch();
@@ -25,7 +23,6 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         IModel model = null;
-        TeamDao teamDao = new TeamDao();
         try{
             model =    ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
         }catch (RateException e){

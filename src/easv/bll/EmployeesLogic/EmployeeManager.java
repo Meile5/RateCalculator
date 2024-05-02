@@ -25,7 +25,7 @@ public class EmployeeManager implements IEmployeeManager {
     }
 
     @Override
-    public LinkedHashMap<Integer, Employee> returnEmployees() throws RateException {
+    public Map<Integer, Employee> returnEmployees() throws RateException {
         LinkedHashMap<Integer, Employee> employees = employeeDAO.returnEmployees();
         employees.values().forEach(( employee) -> {
             if(employee.getAnnualSalary() != null) {

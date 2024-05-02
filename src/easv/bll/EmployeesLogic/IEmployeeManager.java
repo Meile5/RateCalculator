@@ -9,5 +9,5 @@ import java.util.Map;
 
 public interface IEmployeeManager {
     Integer addEmployee(Employee employee);
-    LinkedHashMap<Integer, Employee> returnEmployees() throws RateException;
+    Map<Integer, Employee> returnEmployees() throws RateException;
 }

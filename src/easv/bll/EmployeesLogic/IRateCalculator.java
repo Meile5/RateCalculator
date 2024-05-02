@@ -1,4 +1,4 @@
-package easv.bll;
+package easv.bll.EmployeesLogic;
 
 import easv.be.Employee;
 import easv.be.TeamWithEmployees;
