@@ -52,8 +52,6 @@ public class Model implements IModel {
      * the value off the selected country from the view map
      */
     private String selectedCountry;
-
-
     /**
      * used to check if the inserted country is valid
      */

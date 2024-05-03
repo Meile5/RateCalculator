@@ -11,14 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface IModel {
-
-
     LinkedHashMap<Integer, Employee> returnEmployees() throws SQLException, RateException;
     void deleteEmployee(Employee employee) throws RateException ;
-
-
-
-
 
     void addEmployee(Employee employee, Configuration configuration) throws RateException;
     ObservableMap<String, Country> getCountries();
@@ -34,6 +28,5 @@ public interface IModel {
 
     /**set the country that user has selected from the map*/
     void setSelectedCountry(String selectedCountry);
-
 
 }
