@@ -1,14 +1,18 @@
 package easv.bll.EmployeesLogic;
 
+import easv.be.Configuration;
+import easv.be.Country;
 import easv.be.Employee;
+import easv.be.Team;
 import easv.exception.RateException;
+import javafx.collections.ObservableMap;
 
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public interface IEmployeeManager {
-    Employee addEmployee(Employee employee);
+    Employee addEmployee(Employee employee, ObservableMap<String, Country> countries, ObservableMap<Integer, Team> teams, Configuration configuration) throws RateException;
     Map<Integer, Employee> returnEmployees() throws RateException;
     Boolean deleteEmployee(Employee employee) throws RateException;
 }

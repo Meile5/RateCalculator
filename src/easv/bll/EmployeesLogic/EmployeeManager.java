@@ -1,10 +1,13 @@
 package easv.bll.EmployeesLogic;
 
 import easv.be.Configuration;
+import easv.be.Country;
 import easv.be.Employee;
+import easv.be.Team;
 import easv.dal.EmployeesDAO;
 import easv.dal.IEmployeeDAO;
 import easv.exception.RateException;
+import javafx.collections.ObservableMap;
 
 
 import java.math.BigDecimal;
@@ -23,12 +26,28 @@ public class EmployeeManager implements IEmployeeManager {
 
 
     @Override
-    public Employee addEmployee(Employee employee) {
-        Integer employeeID = employeeDAO.addEmployee(employee);
+    public Employee addEmployee(Employee employee, ObservableMap<String, Country> countries, ObservableMap<Integer, Team> teams, Configuration configuration) throws RateException {
+        boolean isNewCountry = checkIfNewCountry(employee.getCountry(), countries);
+        boolean isNewTeam = checkIfNewTeam(employee.getTeam(), teams);
+        Integer employeeID = employeeDAO.addEmployee(employee, isNewCountry, isNewTeam, configuration);
         if (employeeID != null) {
             employee.setId(employeeID);
         }
         return employee;
+    }
+
+    private boolean checkIfNewCountry(Country country, ObservableMap<String, Country> countries) {
+        if (country == null) {
+            return false;
+        }
+        return countries.values().stream().noneMatch(t -> t.getCountryName().equals(country.getCountryName()));
+    }
+
+    private boolean checkIfNewTeam(Team team, ObservableMap<Integer, Team> teams) {
+        if (team == null) {
+            return false;
+        }
+        return teams.values().stream().noneMatch(t -> t.getTeam().equals(team.getTeam()));
     }
 
     @Override
