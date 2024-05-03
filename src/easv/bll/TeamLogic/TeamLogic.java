@@ -1,15 +1,21 @@
 package easv.bll.TeamLogic;
+
+
 import easv.be.Country;
 import easv.be.Employee;
+import easv.be.Team;
 import easv.be.TeamWithEmployees;
 import easv.bll.EmployeesLogic.IRateCalculator;
 import easv.bll.EmployeesLogic.RateCalculator;
 import easv.dal.teamDao.ITeamDao;
 import easv.dal.teamDao.TeamDao;
 import easv.exception.RateException;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TeamLogic implements ITeamLogic {
     private final ITeamDao teamDao;
@@ -21,30 +27,27 @@ public class TeamLogic implements ITeamLogic {
     }
 
     /**
-     * retrieve the teams and related team overhead for a specific country
-     * @param country country to retrieve for
-     * @param offset the index from where to retrieve
-     * @param numberOfElements how manny elements to retrieve
+
+     retrieve the teams and related team overhead for a specific country
+     @param country country to retrieve for
+     @param offset the index from where to retrieve
+     @param numberOfElements how manny elements to retrieve
      */
     public List<TeamWithEmployees> getTeamsOverheadByCountry(Country country, int offset, int numberOfElements) {
         System.out.println(country.getId()+"from logic");
         List<TeamWithEmployees> teams = teamDao.getTeamsByCountry(country, offset, numberOfElements);
         for (TeamWithEmployees team : teams) {
             team.setTeamOverheadValues(calculateTeamOverhead(team));
-            team.setEmployeesOverheadPercentage(calculateTeamPercentage(team));
-        }
+            team.setEmployeesOverheadPercentage(calculateTeamPercentage(team));}
         System.out.println(teams.size());
-        return teams;
-    }
-
+        return teams;}
 
     /**
-     * compute the overhead for a team
-     *
-     * @param team the team to calculate for
-     *             returns a List that contains salaryOverhead,totalOverhead,productiveOverhead
-     */
-    private Map<TeamWithEmployees.TeamOverheadType,BigDecimal> calculateTeamOverhead(TeamWithEmployees team) {
+
+     compute the overhead for a team*
+     @param team the team to calculate for
+     returns a List that contains salaryOverhead,totalOverhead,productiveOverhead*/
+    private Map<TeamWithEmployees.TeamOverheadType, BigDecimal> calculateTeamOverhead(TeamWithEmployees team) {
         Map<TeamWithEmployees.TeamOverheadType,BigDecimal> teamOverhead = new HashMap<>();
         BigDecimal salaryOverhead =rateCalculator.calculateTeamSalaryOverhead(team);
         BigDecimal expensesOverhead = rateCalculator.calculateTeamTotalOverhead(team);
@@ -55,13 +58,11 @@ public class TeamLogic implements ITeamLogic {
         team.getTeamMembers().forEach(e-> System.out.println(e.getOverhead()+ " " +  e.getTeam() + " " +e.getName() + " " +team.getTeamName()));
         System.out.println("space");
         System.out.println(team.getTeamMembers().size());
-        return teamOverhead;
-    }
-
+        return teamOverhead;}
 
     private List<Map<String,Double>> calculateTeamPercentage(TeamWithEmployees team){
-       List<Map<String,Double>> teamPercentagePerEmployee =team.getTeamMembers().stream().map(e-> employeePercentage(e,team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD))).toList();
-      return teamPercentagePerEmployee;
+        List<Map<String,Double>> teamPercentagePerEmployee =team.getTeamMembers().stream().map(e-> employeePercentage(e,team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD))).toList();
+        return teamPercentagePerEmployee;
     }
 
 
@@ -71,6 +72,10 @@ public class TeamLogic implements ITeamLogic {
         double percentage = employeeOverhead.divide(totalOverhead, MathContext.DECIMAL32).doubleValue() * 100;
         emplPercentage.put(employee.getName(), percentage);
         return emplPercentage;
+    }
+
+    public Map<Integer, Team> getTeams() throws RateException {
+        return teamDao.getTeams();
     }
 
 }

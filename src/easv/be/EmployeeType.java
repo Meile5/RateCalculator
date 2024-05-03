@@ -1,8 +1,8 @@
 package easv.be;
 
 public enum EmployeeType {
-    Overhead("overhead"),
-    Resource("resource");
+    Overhead("Overhead"),
+    Resource("Resource");
 
     private final String stringValue;
 

@@ -1,9 +1,6 @@
 package easv.ui.pages.createPage;
 import easv.be.*;
-import easv.exception.ErrorCode;
-import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
-import easv.ui.pages.modelFactory.ModelFactory;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -16,12 +13,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.SVGPath;
 
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 
@@ -56,17 +53,30 @@ public class CreateController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
             clickClearHandler();
-            toTest();
+            populateComboBoxes();
     }
 
 
 
     @FXML
-    private void saveEmployee(){
+    private void saveEmployee() throws RateException {
         String name = nameTF.getText();
         EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText());
-        Country country = new Country(countryCB.getText());
-        Team team = new Team(teamCB.getText());
+
+        Country country = null;
+        if(countryCB.getSelectedItem() == null){
+            country = new Country(countryCB.getText());
+        } else {
+            country = (Country) countryCB.getSelectedItem();
+        }
+
+        Team team = null;
+        if(teamCB.getSelectedItem() == null){
+            team = new Team(teamCB.getText());
+        } else {
+            team = (Team) teamCB.getSelectedItem();
+        }
+
         Currency currency = Currency.valueOf(currencyCB.getText());
 
         BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
@@ -74,10 +84,11 @@ public class CreateController implements Initializable {
         BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
         BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
         BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
-
+        LocalDateTime savedDate = LocalDateTime.now();
 
         Employee employee = new Employee(name, country, team, employeeType, currency);
-        model.addEmployee(employee);
+        Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate);
+        model.addEmployee(employee, configuration);
         clearFields();
     }
 
@@ -101,24 +112,19 @@ public class CreateController implements Initializable {
         salaryTF.clear();
         utilPercentageTF.clear();
         workingHoursTF.clear();
+        countryCB.clearSelection();
         countryCB.clear();
+        teamCB.clearSelection();
         teamCB.clear();
-        currencyCB.clear();
-        overOrResourceCB.clear();
+        currencyCB.clearSelection();
+        overOrResourceCB.clearSelection();
     }
 
-    public void toTest(){
-        ObservableList<String> countries = FXCollections.observableArrayList();
-        countries.add("Denmark");
-
-        ObservableList<String> teams = FXCollections.observableArrayList();
-        teams.add("TEST");
-
-        ObservableList<String> currencies = FXCollections.observableArrayList();
-        currencies.add("EUR");
-
-        ObservableList<String> overOrResource = FXCollections.observableArrayList();
-        overOrResource.add("Overhead");
+    public void populateComboBoxes() {
+        ObservableList<Country> countries = FXCollections.observableArrayList(model.getCountries().values());
+        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
+        ObservableList<String> currencies = FXCollections.observableArrayList("$", "€");
+        ObservableList<String> overOrResource = FXCollections.observableArrayList("Overhead", "Resource");
 
         countryCB.setItems(countries);
         teamCB.setItems(teams);
@@ -129,19 +135,5 @@ public class CreateController implements Initializable {
     public Parent getCreatePage() {
         return createPage;
     }
-
-   /* private void click (){
-        createPage.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println(model.returnEmployees());
-            System.out.println(model);
-        });
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        model = ModelFactory.createModel();
-        Platform.runLater(() -> {click();});
-
-    }*/
 
 }
