@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 
 
 import java.io.IOException;
@@ -32,9 +33,11 @@ public class CreateController implements Initializable {
     @FXML
     private MFXComboBox countryCB, teamCB, currencyCB, overOrResourceCB;
     @FXML
-    private IModel model;
-    @FXML
     private ImageView clearIMG, employeeIMG;
+    @FXML
+    private VBox vBox1, vBox2, vBox3;
+    @FXML
+    private IModel model;
 
 
     public CreateController(IModel model) {
@@ -100,24 +103,43 @@ public class CreateController implements Initializable {
         });});
     }
 
-
-
-    // a loop can be used here , you can loop over the childrens and apply the clear, otherwise for each new field that will be added,
-    // need to modify the method
     @FXML
     private void clearFields() {
-        nameTF.clear();
-        annualAmountTF.clear();
-        multiplierTF.clear();
-        salaryTF.clear();
-        utilPercentageTF.clear();
-        workingHoursTF.clear();
-        countryCB.clearSelection();
-        countryCB.clear();
-        teamCB.clearSelection();
-        teamCB.clear();
-        currencyCB.clearSelection();
-        overOrResourceCB.clearSelection();
+        for (int i = 0; i < vBox1.getChildren().size(); i++) {
+            if (vBox1.getChildren().get(i) instanceof MFXTextField) {
+                MFXTextField textField = (MFXTextField) vBox1.getChildren().get(i);
+                textField.clear();
+            }
+            if(vBox1.getChildren().get(i) instanceof MFXComboBox){
+                MFXComboBox comboBox = (MFXComboBox) vBox1.getChildren().get(i);
+                comboBox.clearSelection();
+                comboBox.clear();
+            }
+        }
+
+        for (int i = 0; i < vBox2.getChildren().size(); i++) {
+            if (vBox2.getChildren().get(i) instanceof MFXTextField) {
+                MFXTextField textField = (MFXTextField) vBox2.getChildren().get(i);
+                textField.clear();
+            }
+            if(vBox2.getChildren().get(i) instanceof MFXComboBox){
+                MFXComboBox comboBox = (MFXComboBox) vBox2.getChildren().get(i);
+                comboBox.clearSelection();
+                comboBox.clear();
+            }
+        }
+
+        for (int i = 0; i < vBox3.getChildren().size(); i++) {
+            if (vBox3.getChildren().get(i) instanceof MFXTextField) {
+                MFXTextField textField = (MFXTextField) vBox3.getChildren().get(i);
+                textField.clear();
+            }
+            if(vBox3.getChildren().get(i) instanceof MFXComboBox){
+                MFXComboBox comboBox = (MFXComboBox) vBox3.getChildren().get(i);
+                comboBox.clearSelection();
+                comboBox.clear();
+            }
+        }
     }
 
     public void populateComboBoxes() {
