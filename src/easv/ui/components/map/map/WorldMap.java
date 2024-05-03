@@ -48,7 +48,7 @@ public class WorldMap implements Initializable {
             for (WorldMapView.Country c : WorldMapView.Country.values()) {
                 countries.add(c.getLocale().getDisplayCountry());
             }
-            //model.populateValidCountries(countries);
+            model.populateValidCountries(countries);
         });
     }
 
@@ -58,10 +58,14 @@ public class WorldMap implements Initializable {
             if (!worldMap.getSelectedCountries().isEmpty()) {
                 WindowsManagement.showStackPane(firstLayout);
                 String countrySelected = worldMap.getSelectedCountries().get(0).getLocale().getDisplayCountry();
-                //model.setSelectedCountry(countrySelected);
-                countryInfoContainer = new CountryInfoContainer(model, firstLayout);
-                System.out.println(countrySelected);
-                firstLayout.getChildren().add(countryInfoContainer.getRoot());
+                model.setSelectedCountry(countrySelected);
+                if(model.getCountries().get(countrySelected)!=null){
+                    countryInfoContainer = new CountryInfoContainer(model, firstLayout,false);
+                    firstLayout.getChildren().add(countryInfoContainer.getRoot());
+                }else{
+                    countryInfoContainer = new CountryInfoContainer(model, firstLayout,true);
+                    firstLayout.getChildren().add(countryInfoContainer.getRoot());
+                }
             }
         });
     }

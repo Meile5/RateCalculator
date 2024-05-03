@@ -11,6 +11,9 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -19,7 +22,11 @@ public class TeamComponentController  implements Initializable {
     @FXML
     private VBox teamComponent;
     @FXML
-    private Label teamName;
+    private Label totalOverhead;
+    @FXML
+    private Label expensesOverhead;
+    @FXML
+    private Label salaryOverhead;
     @FXML
     private PieChart teamChart;
     private TeamWithEmployees team;
@@ -50,7 +57,6 @@ public class TeamComponentController  implements Initializable {
 
 
         private void initializePieChart(){
-            this.teamName.setText(team.getTeamName());
             for(Map<String, Double> data : team.getEmployeesOverheadPercentage()){
                 for (Map.Entry<String, Double> entry : data.entrySet()) {
                     String key = entry.getKey();
@@ -60,6 +66,20 @@ public class TeamComponentController  implements Initializable {
             }
             teamChart.setData(pieChartData);
             teamChart.setTitle(team.getTeamName());
+            initializeTeamOverheadData();
         }
+
+
+        private void initializeTeamOverheadData(){
+        BigDecimal salaryOverheadValue  = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD).setScale(2, RoundingMode.HALF_UP);
+        salaryOverhead.setText(String.valueOf(salaryOverheadValue));
+        BigDecimal expensesOverheadValue = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD).setScale(2,RoundingMode.HALF_UP);
+        expensesOverhead.setText(String.valueOf(expensesOverheadValue));
+        BigDecimal totalOverheadValue =   team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD).setScale(2,RoundingMode.HALF_UP);
+        totalOverhead.setText(String.valueOf(totalOverheadValue));
+        }
+
+
+
 
 }

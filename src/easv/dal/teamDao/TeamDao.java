@@ -49,6 +49,7 @@ public class TeamDao implements ITeamDao {
                    int employeeID = rs.getInt("EmployeeID");
                    String name = rs.getString("Name");
                    String employeeType = rs.getString("employeeType");
+                   System.out.println(employeeType);
                    String currencyValue = rs.getString("Currency");
                    Configuration config =  getConfiguration(employeeID,conn);
                    EmployeeType type = EmployeeType.valueOf(employeeType);

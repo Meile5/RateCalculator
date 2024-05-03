@@ -9,7 +9,7 @@ public class ModelFactory {
 
     public enum ModelType {
         NORMAL_MODEL,
-        MODELOTHER;
+
     }
 
 
@@ -18,16 +18,9 @@ public class ModelFactory {
             return models.get(modelType);
         }
         IModel model = null;
-        switch (modelType) {
-            case MODELOTHER-> {
-//                model = new NewModel();
-//                models.put(modelType, model);
-            }
-            case NORMAL_MODEL -> {
-                model = new Model();
-                models.put(modelType, model);
-            }
-        }
+        model = new Model();
+        models.put(modelType, model);
+
         return model;
     }
 }
