@@ -63,14 +63,16 @@ public class RateCalculator implements IRateCalculator {
 
     /**calculate the salary overhead for an employee by multiplying the annual salary to the overhead multiplier*/
     private BigDecimal calculateEmployeeSalaryOverhead(Employee employee) {
-        Configuration config = employee.getConfigurations().getFirst();
-        return new BigDecimal(String.valueOf(config.getAnnualSalary().multiply(config.getOverheadMultiplier())));}
+        Configuration config = employee.getActiveConfiguration();
+        BigDecimal overheadMultiplier =BigDecimal.ONE.add( config.getOverheadMultiplier().divide(BigDecimal.valueOf(100),RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP));
+        return new BigDecimal(String.valueOf(config.getAnnualSalary().multiply(overheadMultiplier)));
+    }
 
 
 
     /**calculate the  total employee overhead by adding the employee annual fixed  amount to the salary overhead*/
     private BigDecimal calculateEmployeeTotalOverHead(Employee employee) {
-        Configuration configuration = employee.getConfigurations().getFirst();
+        Configuration configuration = employee.getActiveConfiguration();
         BigDecimal salaryOverhead = calculateEmployeeSalaryOverhead(employee);
         return new BigDecimal(String.valueOf(salaryOverhead.add(configuration.getFixedAnnualAmount())));}
 
@@ -79,9 +81,10 @@ public class RateCalculator implements IRateCalculator {
 
    /** calculate the employee (total overhead) productive overhead by dividing the employee total overhead with the utilization percentage*/
     private BigDecimal calculateEmployeeProductiveOverhead(Employee employee) {
-        Configuration employeConfig = employee.getConfigurations().getFirst();
+        Configuration employeConfig = employee.getActiveConfiguration();
         BigDecimal totalOverHead = calculateEmployeeTotalOverHead(employee);
-        return  new BigDecimal(String.valueOf(totalOverHead.multiply(employeConfig.getWorkingHours().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32))));}
+        BigDecimal utilizationPercentage = employeConfig.getUtilizationPercentage().divide(BigDecimal.valueOf(100),MathContext.DECIMAL32);
+        return  new BigDecimal(String.valueOf(totalOverHead.multiply(utilizationPercentage)));}
 
     /**calculate total overhead for each employee*/
     private  void setEmployeesTotalOverhead(TeamWithEmployees team){

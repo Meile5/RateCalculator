@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -64,6 +65,12 @@ public class TeamComponentController  implements Initializable {
             teamChart.setTitle(team.getTeamName());
             teamChart.setLabelLineLength(10);
             teamChart.setLegendVisible(false);
+            for (PieChart.Data data : pieChartData) {
+                data.getNode().setOnMouseClicked(event -> {
+                    data.setPieValue(data.getPieValue());
+
+                });
+            }
             initializeTeamOverheadData();
         }
 

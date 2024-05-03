@@ -22,7 +22,7 @@
             </HBox>
          </children>
       </HBox>
-      <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minViewportHeight="190.0" minViewportWidth="200.0" prefHeight="380.0" prefViewportHeight="200.0" prefViewportWidth="200.0" prefWidth="450.0" styleClass="teamsContainer">
+      <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minViewportHeight="190.0" minViewportWidth="200.0" prefHeight="380.0" prefViewportHeight="200.0" prefViewportWidth="200.0" prefWidth="440.0" styleClass="teamsContainer" vbarPolicy="ALWAYS">
          <content>
             <VBox fx:id="teamsContainer" alignment="TOP_CENTER" prefHeight="380.0" prefWidth="420.0" spacing="10.0" styleClass="countryBackground,test" />
          </content>

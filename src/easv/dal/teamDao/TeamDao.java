@@ -4,8 +4,6 @@ import easv.dal.connectionManagement.DatabaseConnectionFactory;
 import easv.dal.connectionManagement.IConnection;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
-
-import javax.sound.midi.Soundbank;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -68,7 +66,7 @@ public class TeamDao implements ITeamDao {
        }
        List<TeamWithEmployees> teams = new ArrayList<>(teamsMap.values());
        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>.");
-       teams.forEach(e-> System.out.println(e.getTeamName() + "team name from dao"));
+       teams.forEach(e-> System.out.println(e.getTeamName() +"team name from dao"));
        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>.");
        return teams;
    }

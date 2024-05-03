@@ -103,7 +103,8 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
 
-    //Todo
+    //Todo i commented the code , becouse is having errors with the new database configuration,
+    // it is complaining about the construtor , i solve it in the team dal
     private List<Configuration> retrieveConfigurationsForEmployee(int employeeId, Connection conn) throws SQLException {
         List<Configuration> configurations = new ArrayList<>();
         String sql = "SELECT " +
