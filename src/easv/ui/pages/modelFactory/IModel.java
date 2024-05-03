@@ -20,7 +20,7 @@ public interface IModel {
 
 
 
-    void addEmployee(Employee employee, Configuration configuration);
+    void addEmployee(Employee employee, Configuration configuration) throws RateException;
     ObservableMap<String, Country> getCountries();
 
     /**retrieve the teams with the overhead computed*/

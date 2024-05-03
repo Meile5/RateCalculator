@@ -80,7 +80,7 @@ public class Model implements IModel {
     }
 
     @Override
-    public void addEmployee(Employee employee, Configuration configuration) {
+    public void addEmployee(Employee employee, Configuration configuration) throws RateException {
         employee = employeeManager.addEmployee(employee, countries, teams, configuration);
         if (employee != null) {
             employees.put(employee.getId(), employee);

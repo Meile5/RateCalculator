@@ -15,7 +15,7 @@ import java.util.Map;
 public interface IEmployeeDAO {
     LinkedHashMap<Integer, Employee> returnEmployees() throws RateException;
 
-    Integer addEmployee(Employee employee, boolean newCountry, boolean newTeam, Configuration configuration);
+    Integer addEmployee(Employee employee, boolean newCountry, boolean newTeam, Configuration configuration) throws RateException;
     Boolean deleteEmployee(Employee employee) throws RateException;
     void addNewCountryOrTeam(Employee employee, boolean newCountry, boolean newTeam, Connection conn) throws RateException, SQLException;
     Integer addCountry(Country country, Connection conn) throws RateException, SQLException;

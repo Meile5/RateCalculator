@@ -1,5 +1,6 @@
 package easv.ui.pages.createPage;
 import easv.be.*;
+import easv.exception.RateException;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -58,7 +59,7 @@ public class CreateController implements Initializable {
 
 
     @FXML
-    private void saveEmployee(){
+    private void saveEmployee() throws RateException {
         String name = nameTF.getText();
         EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText());
 

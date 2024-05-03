@@ -135,7 +135,7 @@ public class EmployeesDAO implements IEmployeeDAO {
 
 
     @Override
-    public Integer addEmployee(Employee employee, boolean newCountry, boolean newTeam, Configuration configuration) {
+    public Integer addEmployee(Employee employee, boolean newCountry, boolean newTeam, Configuration configuration) throws RateException {
         Integer employeeID = null;
         Connection conn = null;
         try {
@@ -154,7 +154,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                     if (res.next()) {
                         employeeID = res.getInt(1);
                     } else {
-                        throw new SQLException("No keys generated");
+                        throw new RateException(ErrorCode.OPERATION_DB_FAILED);
                     }
                 }
                 if(configuration != null) {
@@ -168,7 +168,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 conn.rollback();
             }
         } catch (SQLException | RateException e) {
-            throw new RuntimeException(e);
+            throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
         } finally {
             try {
                 if (conn != null) {
@@ -176,7 +176,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                     conn.close();
                 }
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
             }
         }
         return employeeID;

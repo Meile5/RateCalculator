@@ -26,7 +26,7 @@ public class EmployeeManager implements IEmployeeManager {
 
 
     @Override
-    public Employee addEmployee(Employee employee, ObservableMap<String, Country> countries, ObservableMap<Integer, Team> teams, Configuration configuration) {
+    public Employee addEmployee(Employee employee, ObservableMap<String, Country> countries, ObservableMap<Integer, Team> teams, Configuration configuration) throws RateException {
         boolean isNewCountry = checkIfNewCountry(employee.getCountry(), countries);
         boolean isNewTeam = checkIfNewTeam(employee.getTeam(), teams);
         Integer employeeID = employeeDAO.addEmployee(employee, isNewCountry, isNewTeam, configuration);
