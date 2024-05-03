@@ -8,12 +8,9 @@ import easv.bll.countryLogic.CountryLogic;
 import easv.bll.countryLogic.ICountryLogic;
 import easv.exception.RateException;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
-import java.math.BigDecimal;
 import java.util.*;
 
 public class Model implements IModel {
-
     /**
      * the variable that decide how many elements to skip in the database, when retrieving teams
      */
@@ -22,8 +19,10 @@ public class Model implements IModel {
      * the variable that decide how many elements to retrieve from the database, when retrieving teams
      */
     private int ELEMENTS_NUMBER = 3;
-    /**computed variable that holds  the current index, from where to start to retrieve teams form the database
-     *  used for pagination*/
+    /**
+     * computed variable that holds  the current index, from where to start to retrieve teams form the database
+     * used for pagination
+     */
     private int currentIndexToRetrieve;
 
     private LinkedHashMap<Integer, Employee> employees;
@@ -39,36 +38,33 @@ public class Model implements IModel {
     /**
      * holds the countries that are currently operational for the company
      */
-    private final ObservableMap<String, Country> countries;
-    private final ObservableMap<Integer, Team> teams;
-
-    /**
-     * the value off the selected country from the view map
-     */
-    private String selectedCountry;
-    /**
-     * used to check if the inserted country is valid
-     */
-    private List<String> validMapViewCountryNameValues;
-
-
-
+    private final Map<String, Country> countries;
 
     // collection that holds all the teams related to a country, with all the associated overhead
     private List<TeamWithEmployees> countryTeams;
 
 
+    /**
+     * the value off the selected country from the view map
+     */
+    private String selectedCountry;
+
+
+    /**
+     * used to check if the inserted country is valid
+     */
+
+    private List<String> validMapViewCountryNameValues;
+
     public Model() throws RateException {
         this.employees = new LinkedHashMap<>();
         this.countries = FXCollections.observableHashMap();
-        this.teams = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
         this.countryLogic = new CountryLogic();
         this.teamManager = new TeamLogic();
-       this.validMapViewCountryNameValues= new ArrayList<>();
+        this.validMapViewCountryNameValues = new ArrayList<>();
         this.countryTeams = new ArrayList<>();
         populateCountries();
-        populateTeams();
     }
 
 
@@ -76,9 +72,10 @@ public class Model implements IModel {
         this.countries.putAll(countryLogic.getCountries());
     }
 
+
     @Override
     public LinkedHashMap<Integer, Employee> returnEmployees() throws RateException {
-        employees.putAll (employeeManager.returnEmployees());
+        employees.putAll(employeeManager.returnEmployees());
         return employees;
     }
 
@@ -92,12 +89,7 @@ public class Model implements IModel {
 
     @Override
     public void addEmployee(Employee employee) {
-
-    }
-
-    @Override
-    public void addEmployee(Employee employee, Configuration configuration) throws RateException {
-        employee = employeeManager.addEmployee(employee, countries, teams, configuration);
+        employee = employeeManager.addEmployee(employee);
         if (employee != null) {
             employees.put(employee.getId(), employee);
         }
@@ -107,15 +99,9 @@ public class Model implements IModel {
     /**
      * return the operational countries
      */
-    public ObservableMap<String, Country> getCountries() {
-        System.out.println(countries);
+    public Map<String, Country> getCountries() {
         return countries;
     }
-
-//    @Override
-//    public List<TeamWithEmployees> getCountryTeams() {
-//        return null;
-//    }
 
     public  synchronized List<TeamWithEmployees> getCountryTeams() {
         Country selectedCountry = countries.get(this.selectedCountry);
@@ -126,19 +112,17 @@ public class Model implements IModel {
         return this.countryTeams;
     }
 
-    private void populateTeams() throws RateException {
-        this.teams.putAll(teamManager.getTeams());
 
-    }
 
-    public ObservableMap<Integer, Team> getTeams() {
-        return teams;
-    }
 
-    /**reset the currentIndexToRetrieve when retrieving for a new country */
+
+    /**
+     * reset the currentIndexToRetrieve when retrieving for a new country
+     */
     public void resetCurrentIndexToRetrieve() {
         this.currentIndexToRetrieve = 0;
-        this.countryTeams.clear();
+        System.out.println( "currentIndex is changed" + currentIndexToRetrieve);
+        countryTeams.clear();
     }
 
     public void populateValidCountries(List<String> validCountries) {
@@ -151,5 +135,4 @@ public class Model implements IModel {
         this.selectedCountry = selectedCountry;
         System.out.println(this.selectedCountry + "after");
     }
-
 }
