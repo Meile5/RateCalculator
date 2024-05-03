@@ -95,14 +95,12 @@ public class Model implements IModel {
         }
     }
 
-
     /**
      * return the operational countries
      */
     public Map<String, Country> getCountries() {
         return countries;
     }
-
     public  synchronized List<TeamWithEmployees> getCountryTeams() {
         Country selectedCountry = countries.get(this.selectedCountry);
         System.out.println(selectedCountry+" " +selectedCountry.getId() + " " + selectedCountry.getCountryName());

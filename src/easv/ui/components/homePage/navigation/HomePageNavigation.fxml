@@ -3,7 +3,7 @@
 <?import javafx.scene.image.ImageView?><?import javafx.scene.image.Image?><?import javafx.geometry.Insets?>
 
 
-    <ImageView  fitHeight="80.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+    <ImageView  fitHeight="80.0" fitWidth="130.0" pickOnBounds="true" >
         <image>
             <Image url="@../../../../resources/images/schneider_logo.png" />
         </image>

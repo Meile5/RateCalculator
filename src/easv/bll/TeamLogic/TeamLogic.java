@@ -7,8 +7,6 @@ import easv.bll.EmployeesLogic.RateCalculator;
 import easv.dal.teamDao.ITeamDao;
 import easv.dal.teamDao.TeamDao;
 import easv.exception.RateException;
-
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.*;
