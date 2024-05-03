@@ -42,7 +42,8 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
         try {
             employeePage = loader.load();
         } catch (IOException e) {
-            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+            e.printStackTrace();
+           // ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }

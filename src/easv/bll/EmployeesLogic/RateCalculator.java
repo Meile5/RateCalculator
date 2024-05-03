@@ -39,18 +39,15 @@ public class RateCalculator implements IRateCalculator {
      * calculate the overhead of the team by summing the employees  salary overhead
      */
     public BigDecimal calculateTeamSalaryOverhead(TeamWithEmployees team) {
-        return team.getTeamMembers().stream()
-                .map(this::calculateEmployeeSalaryOverhead)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return team.getTeamMembers().stream().map(this::calculateEmployeeSalaryOverhead).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
 
     /**
      * calculate the team total overhead by summing the team member total overhead
      */
     public BigDecimal calculateTeamTotalOverhead(TeamWithEmployees team) {
-        return team.getTeamMembers().stream()
-                .map(this::calculateEmployeeTotalOverHead)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return team.getTeamMembers().stream().map(this::calculateEmployeeTotalOverHead).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     /**
@@ -60,36 +57,31 @@ public class RateCalculator implements IRateCalculator {
         setEmployeesTotalOverhead(team);
         return team.getTeamMembers().stream().map(Employee::getOverhead).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
-
     //TODO the method needs to be modified to use the procents
 
-    /**
-     * calculate the salary overhead for an employee by multiplying the annual salary to the overhead multiplier
-     */
+
+
+    /**calculate the salary overhead for an employee by multiplying the annual salary to the overhead multiplier*/
     private BigDecimal calculateEmployeeSalaryOverhead(Employee employee) {
         Configuration config = employee.getConfigurations().getFirst();
-        return new BigDecimal(String.valueOf(config.getAnnualSalary().multiply(config.getOverheadMultiplier())));
-    }
+        return new BigDecimal(String.valueOf(config.getAnnualSalary().multiply(config.getOverheadMultiplier())));}
 
-    /**
-     * calculate the  total employee overhead by adding the employee annual fixed  amount to the salary overhead
-     */
+
+
+    /**calculate the  total employee overhead by adding the employee annual fixed  amount to the salary overhead*/
     private BigDecimal calculateEmployeeTotalOverHead(Employee employee) {
         Configuration configuration = employee.getConfigurations().getFirst();
         BigDecimal salaryOverhead = calculateEmployeeSalaryOverhead(employee);
-        return new BigDecimal(String.valueOf(salaryOverhead.add(configuration.getFixedAnnualAmount())));
-    }
+        return new BigDecimal(String.valueOf(salaryOverhead.add(configuration.getFixedAnnualAmount())));}
 
 
-    /**
-     * calculate the employee (total overhead) productive overhead by dividing the employee total overhead with the utilization percentage
-     */
+
+
+   /** calculate the employee (total overhead) productive overhead by dividing the employee total overhead with the utilization percentage*/
     private BigDecimal calculateEmployeeProductiveOverhead(Employee employee) {
         Configuration employeConfig = employee.getConfigurations().getFirst();
         BigDecimal totalOverHead = calculateEmployeeTotalOverHead(employee);
-        return  new BigDecimal(String.valueOf(totalOverHead.multiply(employeConfig.getWorkingHours().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32))));
-    }
+        return  new BigDecimal(String.valueOf(totalOverHead.multiply(employeConfig.getWorkingHours().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32))));}
 
     /**calculate total overhead for each employee*/
     private  void setEmployeesTotalOverhead(TeamWithEmployees team){
@@ -97,6 +89,7 @@ public class RateCalculator implements IRateCalculator {
             teamMember.setOverhead(calculateEmployeeProductiveOverhead(teamMember));
         }
     }
+
 
 
 

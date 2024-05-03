@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IModel {
-<<<<<<< HEAD
+
 
 
     ObservableMap<Integer, Employee> returnEmployees() throws SQLException, RateException;
@@ -20,12 +20,9 @@ public interface IModel {
     void setDisplayer(DisplayEmployees displayEmployees);
 
 
-=======
-    LinkedHashMap<Integer, Employee> returnEmployees() throws SQLException, RateException;
-    void deleteEmployee(Employee employee) throws RateException ;
-    void addEmployee(Employee employee);
+
     Map<String, Country> getCountries();
->>>>>>> 0b10669f03d0d147c2f6d6384563fc76eff51de0
+
 
     void addEmployee(Employee employee, Configuration configuration) throws RateException;
 
