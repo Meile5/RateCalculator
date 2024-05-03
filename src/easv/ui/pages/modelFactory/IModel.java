@@ -1,5 +1,6 @@
 package easv.ui.pages.modelFactory;
 
+import easv.Utility.DisplayEmployees;
 import easv.be.*;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
@@ -13,10 +14,10 @@ import java.util.Map;
 public interface IModel {
 
 
-    LinkedHashMap<Integer, Employee> returnEmployees() throws SQLException, RateException;
+    ObservableMap<Integer, Employee> returnEmployees() throws SQLException, RateException;
     void deleteEmployee(Employee employee) throws RateException ;
 
-
+    void setDisplayer(DisplayEmployees displayEmployees);
 
 
 

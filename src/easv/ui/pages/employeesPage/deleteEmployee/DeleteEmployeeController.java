@@ -5,11 +5,14 @@ import easv.be.Employee;
 import easv.exception.RateException;
 import easv.ui.components.confirmationView.ConfirmationWindowController;
 import easv.ui.components.confirmationView.OperationHandler;
+import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -26,6 +29,8 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
     private StackPane firstLayout;
     private IModel model;
     private Employee employee;
+    private VBox employeesContainer;
+    private HBox employeeComponent;
 
     public DeleteEmployeeController(StackPane firstLayout , IModel model, Employee employee) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DeleteEmployeeComponenet.fxml"));
@@ -70,4 +75,12 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
         WindowsManagement.closeStackPane(firstLayout);
 
     }
+    /*private void removeEmployee(){
+        for (Node node : employeesContainer.getChildren()){
+            if(node instanceof EmployeeInfoController){
+                EmployeeInfoController employeeInfoController = (EmployeeInfoController) node;
+
+            }
+        }
+    }*/
 }

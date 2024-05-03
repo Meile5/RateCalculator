@@ -1,5 +1,6 @@
 package easv.ui.pages.modelFactory;
 
+import easv.Utility.DisplayEmployees;
 import easv.be.*;
 import easv.exception.RateException;
 import easv.ui.pages.modelFactory.IModel;
@@ -20,12 +21,17 @@ public class NewModel implements IModel{
     }
 
     @Override
-    public LinkedHashMap<Integer, Employee> returnEmployees() {
-        return employees;
+    public ObservableMap<Integer, Employee> returnEmployees() {
+        return null;
     }
 
     @Override
     public void deleteEmployee(Employee employee) throws RateException {
+
+    }
+
+    @Override
+    public void setDisplayer(DisplayEmployees displayEmployees) {
 
     }
 

@@ -1,4 +1,5 @@
 package easv.ui.pages.modelFactory;
+import easv.Utility.DisplayEmployees;
 import easv.be.*;
 import easv.bll.EmployeesLogic.EmployeeManager;
 import easv.bll.EmployeesLogic.IEmployeeManager;
@@ -7,13 +8,12 @@ import easv.bll.TeamLogic.TeamLogic;
 import easv.bll.countryLogic.CountryLogic;
 import easv.bll.countryLogic.ICountryLogic;
 import easv.exception.RateException;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 
 public class Model implements IModel {
 
@@ -29,7 +29,7 @@ public class Model implements IModel {
      *  used for pagination*/
     private int currentIndexToRetrieve;
 
-    private LinkedHashMap<Integer, Employee> employees;
+    private ObservableMap<Integer, Employee> employees;
 
 
     private IEmployeeManager employeeManager;
@@ -47,9 +47,10 @@ public class Model implements IModel {
 
     // collection that holds all the teams related to a country, with all the associated overhead
     private Map<TeamWithEmployees, List<BigDecimal>> countryTeams;
+    private DisplayEmployees displayEmployees;
 
     public Model() throws RateException {
-        this.employees = new LinkedHashMap<>();
+        this.employees = FXCollections.observableMap(new LinkedHashMap<>());
         this.countries = FXCollections.observableHashMap();
         this.teams = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
@@ -60,22 +61,37 @@ public class Model implements IModel {
         populateTeams();
     }
 
+    public void setDisplayer(DisplayEmployees displayEmployees){
+        this.displayEmployees=displayEmployees;
+    }
+
 
     private void populateCountries() throws RateException {
         this.countries.putAll(countryLogic.getCountries());
     }
 
     @Override
-    public LinkedHashMap<Integer, Employee> returnEmployees() throws RateException {
+    public ObservableMap<Integer, Employee> returnEmployees() throws RateException {
         employees.putAll (employeeManager.returnEmployees());
         return employees;
     }
 
+
+
+
     @Override
     public void deleteEmployee(Employee employee) throws RateException {
-        boolean deleted = employeeManager.deleteEmployee(employee);
-        if(deleted){
+        boolean succeeded = employeeManager.deleteEmployee(employee);
+        if (succeeded) {
+            // If the deletion was successful, remove the employee from the observable map
             employees.remove(employee.getId());
+            Platform.runLater(()-> {
+                try {
+                    displayEmployees.displayEmployees();
+                } catch (RateException | SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 

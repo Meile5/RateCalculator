@@ -11,10 +11,10 @@ public class RateCalculator implements IRateCalculator {
 
     public BigDecimal calculateDayRate(Employee employee, Configuration latestConfiguration) {
         BigDecimal annualSalary = latestConfiguration.getAnnualSalary();
-        BigDecimal overheadMultiplier = latestConfiguration.getOverheadMultiplier();
+        BigDecimal overheadMultiplier = latestConfiguration.getOverheadMultiplier(); // Convert to percentage;
         BigDecimal fixedAnnualAmount = latestConfiguration.getFixedAnnualAmount();
         BigDecimal annualEffectiveWorkingHours = latestConfiguration.getWorkingHours();
-        BigDecimal utilizationPercentage = latestConfiguration.getUtilizationPercentage();
+        BigDecimal utilizationPercentage = latestConfiguration.getUtilizationPercentage(); // Convert to percentage;
 
         BigDecimal dayRate = annualSalary
                 .add(fixedAnnualAmount)
