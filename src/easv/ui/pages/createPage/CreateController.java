@@ -89,8 +89,9 @@ public class CreateController implements Initializable {
         BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
         LocalDateTime savedDate = LocalDateTime.now();
 
+        //Todo Nelson if you see this, i put the boolean at the end of the constructor to match with the new database
         Employee employee = new Employee(name, country, team, employeeType, currency);
-        Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate);
+        Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
         model.addEmployee(employee, configuration);
         clearFields();
     }

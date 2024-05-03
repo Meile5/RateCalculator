@@ -10,6 +10,7 @@ public class Configuration {
     private BigDecimal utilizationPercentage;
     private BigDecimal workingHours;
     private LocalDateTime savedDate;
+    private boolean active;
 
     public LocalDateTime getSavedDate() {
         return savedDate;
@@ -26,18 +27,33 @@ public class Configuration {
         this.utilizationPercentage = utilizationPercentage;
         this.workingHours = workingHours;
     }
-    public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,LocalDateTime savedDate) {
+    public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,LocalDateTime savedDate,boolean active) {
       this(annualSalary,fixedAnnualAmount,overheadMultiplier,utilizationPercentage,workingHours);
         this.savedDate= savedDate;
+        this.active= active;
     }
 
-    public Configuration(int configurationId ,BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,LocalDateTime savedDate) {
-        this(annualSalary,fixedAnnualAmount,overheadMultiplier,utilizationPercentage,workingHours,savedDate);
+    public Configuration(int configurationId ,BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,LocalDateTime savedDate, boolean active) {
+        this(annualSalary,fixedAnnualAmount,overheadMultiplier,utilizationPercentage,workingHours,savedDate,active);
         this.configurationId=configurationId;
+
     }
-    public Configuration(int configurationId ,BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours) {
+
+
+
+    public Configuration(int configurationId , BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, boolean active) {
         this(annualSalary,fixedAnnualAmount,overheadMultiplier,utilizationPercentage,workingHours);
         this.configurationId=configurationId;
+        this.active=active;
+    }
+
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 

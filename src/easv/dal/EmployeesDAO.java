@@ -102,6 +102,8 @@ public class EmployeesDAO implements IEmployeeDAO {
         return employees;
     }
 
+
+    //Todo
     private List<Configuration> retrieveConfigurationsForEmployee(int employeeId, Connection conn) throws SQLException {
         List<Configuration> configurations = new ArrayList<>();
         String sql = "SELECT " +
@@ -125,8 +127,8 @@ public class EmployeesDAO implements IEmployeeDAO {
                 BigDecimal workingHours = res.getBigDecimal("WorkingHours");
                 LocalDateTime configurationDate = res.getTimestamp("ConfigurationDate").toLocalDateTime();
 
-                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate);
-                configurations.add(configuration);
+//                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate);
+//                configurations.add(configuration);
             }
         }
         return configurations;

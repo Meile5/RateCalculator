@@ -49,7 +49,6 @@ public class TeamDao implements ITeamDao {
                    int employeeID = rs.getInt("EmployeeID");
                    String name = rs.getString("Name");
                    String employeeType = rs.getString("employeeType");
-                   System.out.println(employeeType);
                    String currencyValue = rs.getString("Currency");
                    Configuration config =  getConfiguration(employeeID,conn);
                    EmployeeType type = EmployeeType.valueOf(employeeType);
@@ -58,6 +57,9 @@ public class TeamDao implements ITeamDao {
                    configs.add(config);
                    Employee employee = new Employee(name, type, currency,configs);
                    employee.setId(employeeID);
+                   if(config.isActive()){
+                       employee.setActiveConfiguration(config);
+                   }
                    currentTeam.addEmployee(employee);
                }
            }
@@ -99,7 +101,8 @@ public class TeamDao implements ITeamDao {
                 BigDecimal overheadMultiplier = rs.getBigDecimal("OverheadMultiplier");
                 BigDecimal utilizationPercentage = rs.getBigDecimal("UtilizationPercentage");
                 BigDecimal workingHours = rs.getBigDecimal("WorkingHours");
-                config = new Configuration(configurationId,annualSalary,fixedAnnualAmount,overheadMultiplier,utilizationPercentage,workingHours);
+                boolean active = Boolean.parseBoolean(rs.getString("Active"));
+                config = new Configuration(configurationId,annualSalary,fixedAnnualAmount,overheadMultiplier,utilizationPercentage,workingHours,active);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

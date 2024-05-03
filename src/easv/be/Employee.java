@@ -16,6 +16,7 @@ public class Employee {
     private List<Configuration> configurations;
     private Configuration latestConfiguration;
     private BigDecimal overhead;
+    private Configuration  activeConfiguration;
 
 
 
@@ -64,6 +65,15 @@ public class Employee {
     public Employee(String name,EmployeeType employeeType,Currency currency,List<Configuration> configs){
         this(name,employeeType,currency);
         this.configurations=configs;
+    }
+
+
+    public Configuration getActiveConfiguration() {
+        return activeConfiguration;
+    }
+
+    public void setActiveConfiguration(Configuration activeConfiguration) {
+        this.activeConfiguration = activeConfiguration;
     }
 
 
