@@ -59,9 +59,13 @@ public class WorldMap implements Initializable {
                 WindowsManagement.showStackPane(firstLayout);
                 String countrySelected = worldMap.getSelectedCountries().get(0).getLocale().getDisplayCountry();
                 model.setSelectedCountry(countrySelected);
-                countryInfoContainer = new CountryInfoContainer(model, firstLayout);
-                System.out.println(countrySelected);
-                firstLayout.getChildren().add(countryInfoContainer.getRoot());
+                if(model.getCountries().get(countrySelected)!=null){
+                    countryInfoContainer = new CountryInfoContainer(model, firstLayout,false);
+                    firstLayout.getChildren().add(countryInfoContainer.getRoot());
+                }else{
+                    countryInfoContainer = new CountryInfoContainer(model, firstLayout,true);
+                    firstLayout.getChildren().add(countryInfoContainer.getRoot());
+                }
             }
         });
     }

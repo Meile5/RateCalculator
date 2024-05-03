@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<VBox fx:id="countryPopUp" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="350.0" styleClass="countryBackground,countryContainer" stylesheets="@../../../../styling/CountryInfo.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="countryPopUp" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="450.0" styleClass="countryBackground,countryContainer" stylesheets="@../../../../styling/CountryInfo.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" prefWidth="350.0">
+      <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" prefWidth="450.0">
          <children>
             <Region prefHeight="10.0" HBox.hgrow="ALWAYS" />
             <HBox fx:id="closeButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="35.0" styleClass="countryBackground,closeContainer">
@@ -22,10 +22,13 @@
             </HBox>
          </children>
       </HBox>
-      <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minViewportHeight="190.0" minViewportWidth="200.0" prefHeight="380.0" prefViewportHeight="200.0" prefViewportWidth="200.0" prefWidth="350.0" styleClass="teamsContainer">
+      <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minViewportHeight="190.0" minViewportWidth="200.0" prefHeight="380.0" prefViewportHeight="200.0" prefViewportWidth="200.0" prefWidth="450.0" styleClass="teamsContainer">
          <content>
-            <VBox fx:id="teamsContainer" prefHeight="380.0" prefWidth="350.0" styleClass="countryBackground,test" />
+            <VBox fx:id="teamsContainer" alignment="TOP_CENTER" prefHeight="380.0" prefWidth="430.0" spacing="10.0" styleClass="countryBackground,test" />
          </content>
+         <padding>
+            <Insets bottom="5.0" left="20.0" right="10.0" top="5.0" />
+         </padding>
       </ScrollPane>
    </children>
 </VBox>

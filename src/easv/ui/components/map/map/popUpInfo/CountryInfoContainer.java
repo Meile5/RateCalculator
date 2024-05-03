@@ -1,4 +1,5 @@
 package easv.ui.components.map.map.popUpInfo;
+
 import easv.Utility.WindowsManagement;
 import easv.be.TeamWithEmployees;
 import easv.exception.ErrorCode;
@@ -12,10 +13,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,19 +30,19 @@ public class CountryInfoContainer implements Initializable {
     private VBox countryPopUp;
     @FXML
     private HBox closeButton;
-
     @FXML
     private VBox teamsContainer;
     private IModel model;
     private StackPane parent;
     private Service<List<TeamWithEmployees>> teamsInitializer;
+    private boolean isOperational;
 
-
-    public CountryInfoContainer(IModel model, StackPane parent) {
+    public CountryInfoContainer(IModel model, StackPane parent, boolean isOperational) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CountryInfo.fxml"));
         loader.setController(this);
         this.model = model;
         this.parent = parent;
+        this.isOperational = isOperational;
         try {
             countryPopUp = loader.load();
         } catch (IOException e) {
@@ -50,7 +53,7 @@ public class CountryInfoContainer implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         closeWindow();
-       initializeService();
+        initializeWindow();
     }
 
     public VBox getRoot() {
@@ -66,10 +69,11 @@ public class CountryInfoContainer implements Initializable {
     }
 
     public void populatePieChart(List<TeamWithEmployees> countryTeams) {
-
         List<Parent> teamComponentControllers = new ArrayList<>();
+        if (countryTeams.isEmpty()) {
+            initializeNoDataCountryInfo();
+        }
         for (TeamWithEmployees team : countryTeams) {
-            System.out.println(team.getTeamName());
             TeamComponentController teamComponentController = new TeamComponentController(team);
             teamComponentControllers.add(teamComponentController.getRoot());
         }
@@ -83,7 +87,6 @@ public class CountryInfoContainer implements Initializable {
             }
             teamsInitializer.reset();
         }
-
         teamsInitializer = new Service<>() {
             @Override
             protected Task<List<TeamWithEmployees>> createTask() {
@@ -97,7 +100,7 @@ public class CountryInfoContainer implements Initializable {
         };
 
         teamsInitializer.setOnSucceeded(event -> {
-            teamsInitializer.getValue().forEach(e-> System.out.println(e.getTeamName()));
+            teamsInitializer.getValue().forEach(e -> System.out.println(e.getTeamName()));
             populatePieChart(teamsInitializer.getValue());
         });
 
@@ -106,6 +109,30 @@ public class CountryInfoContainer implements Initializable {
             ExceptionHandler.errorAlertMessage(ErrorCode.CONNECTION_FAILED.getValue());
         });
         teamsInitializer.start();
+    }
+
+
+    /**
+     * display a message if no data is in the system related to the country teams overhead
+     */
+    private void initializeNoDataCountryInfo() {
+        teamsContainer.getChildren().add(new Label("No data present for this country"));
+    }
+
+    private void initializeNoOperationalCountry() {
+        teamsContainer.getChildren().add(new Label("No operations in this country"));
+    }
+
+    /**
+     * initialize window different based on the country operational status
+     * if the country is operational , retrieve data from the db else not
+     */
+    private void initializeWindow() {
+        if (isOperational) {
+            initializeNoOperationalCountry();
+            return;
+        }
+        initializeService();
     }
 
 
