@@ -60,7 +60,7 @@
                                     <Font name="Open Sans SemiBold" size="13.0" />
                                  </font>
                               </Text>
-                              <Text fill="#2f2e2e" strokeType="OUTSIDE" strokeWidth="0.0" text="Team">
+                              <Text fill="#2f2e2e" strokeType="OUTSIDE" strokeWidth="0.0" text="Team" styleClass="headerLabel">
                                  <font>
                                     <Font name="Open Sans SemiBold" size="13.0" />
                                  </font>
