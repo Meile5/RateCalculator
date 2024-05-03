@@ -125,5 +125,15 @@ public class Model implements IModel {
     public void resetCurrentIndexToRetrieve() {
         this.currentIndexToRetrieve = 0;
     }
+    public void populateValidCountries(List<String> validCountries) {
+        this.validMapViewCountryNameValues.addAll(validCountries);
+    }
+
+
+    public void setSelectedCountry(String selectedCountry) {
+        System.out.println(selectedCountry + "the country is beeing seted");
+        this.selectedCountry = selectedCountry;
+        System.out.println(this.selectedCountry + "after");
+    }
 
 }
