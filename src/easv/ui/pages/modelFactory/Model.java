@@ -48,6 +48,18 @@ public class Model implements IModel {
     // collection that holds all the teams related to a country, with all the associated overhead
     private Map<TeamWithEmployees, List<BigDecimal>> countryTeams;
 
+    /**
+     * the value off the selected country from the view map
+     */
+    private String selectedCountry;
+
+
+    /**
+     * used to check if the inserted country is valid
+     */
+
+    private List<String> validMapViewCountryNameValues;
+
     public Model() throws RateException {
         this.employees = new LinkedHashMap<>();
         this.countries = FXCollections.observableHashMap();
