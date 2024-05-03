@@ -4,9 +4,6 @@ import easv.be.Country;
 import easv.be.Employee;
 import easv.be.TeamWithEmployees;
 import easv.exception.RateException;
-import javafx.collections.ObservableMap;
-
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,11 +14,6 @@ public interface IModel {
 
     LinkedHashMap<Integer, Employee> returnEmployees() throws SQLException, RateException;
     void deleteEmployee(Employee employee) throws RateException ;
-
-
-
-
-
     void addEmployee(Employee employee);
     Map<String, Country> getCountries();
 
