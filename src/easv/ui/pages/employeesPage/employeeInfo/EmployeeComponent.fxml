@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 
 <HBox fx:id="employeeComponent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="70.0" prefWidth="670.0" spacing="7.0" style="-fx-background-radius: 20; -fx-background-color: F8F8F8;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -38,7 +39,10 @@
             <Label fx:id="hourlyRate" />
          </children>
       </HBox>
-      <VBox prefHeight="200.0" prefWidth="80.0" />
+      <VBox fx:id="editButton" alignment="CENTER" prefHeight="200.0" prefWidth="80.0">
+         <children>
+            <SVGPath content="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" fill="WHITE" fillRule="EVEN_ODD" scaleX="1.5" scaleY="1.5" stroke="#2ba746" strokeWidth="2.0" />
+         </children></VBox>
       <VBox fx:id="deleteContainer" alignment="CENTER" prefHeight="70.0" prefWidth="80.0">
          <children>
             <VBox fx:id="deleteContainer2" alignment="CENTER" prefHeight="46.0" prefWidth="55.0" />

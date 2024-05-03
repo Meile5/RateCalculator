@@ -128,8 +128,8 @@ public class EmployeesDAO implements IEmployeeDAO {
                 BigDecimal workingHours = res.getBigDecimal("WorkingHours");
                 LocalDateTime configurationDate = res.getTimestamp("ConfigurationDate").toLocalDateTime();
 
-//                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate);
-//                configurations.add(configuration);
+                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate,true);
+                configurations.add(configuration);
             }
         }
         return configurations;

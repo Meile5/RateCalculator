@@ -1,7 +1,5 @@
 package easv.ui.pages.employeesPage.employeeMainPage;
-
 import easv.Utility.DisplayEmployees;
-import easv.Utility.WindowsManagement;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
@@ -15,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -43,7 +40,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
             employeePage = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
-           // ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+           ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }
@@ -70,7 +67,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
                 .values()
                         .forEach(e -> {
                             DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
-                            EmployeeInfoController employeeInfoController = new EmployeeInfoController( e, deleteEmployeeController);
+                            EmployeeInfoController employeeInfoController = new EmployeeInfoController( e, deleteEmployeeController,model,firstLayout);
                             employeesContainer.getChildren().add(employeeInfoController.getRoot());
 
 

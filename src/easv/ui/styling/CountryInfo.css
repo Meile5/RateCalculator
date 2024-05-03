@@ -8,6 +8,7 @@
 .closeContainer:hover{
     -fx-background-color: #C42B1C;
 }
+
 .countryContainer{
     -fx-background-radius: 10;
 }

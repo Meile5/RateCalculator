@@ -1,12 +1,17 @@
 package easv.ui.pages.employeesPage.employeeInfo;
 
+import easv.Utility.WindowsManagement;
 import easv.be.Employee;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
+import easv.ui.components.editPage.EditController;
 import easv.ui.pages.employeesPage.deleteEmployee.DeleteEmployeeController;
+import easv.ui.pages.modelFactory.IModel;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -40,20 +45,22 @@ public class EmployeeInfoController implements Initializable {
    private Label hourlyCurrency;
    @FXML
    private Label dayCurrency;
+   @FXML
+   private VBox editButton;
    private Employee employee;
    private StackPane firstLayout;
    private DeleteEmployeeController deleteEmployeeController;
 
-    public EmployeeInfoController( Employee employee, DeleteEmployeeController deleteEmployeeController) {
+   private IModel model;
+
+    public EmployeeInfoController( Employee employee, DeleteEmployeeController deleteEmployeeController,IModel model,StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeComponent.fxml"));
         loader.setController(this);
         this.employee = employee;
         this.deleteEmployeeController=deleteEmployeeController;
-
+        this.firstLayout= firstLayout;
         try {
-
             employeeComponent = loader.load();
-
         } catch (IOException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
@@ -70,6 +77,8 @@ public class EmployeeInfoController implements Initializable {
         this.deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
         //displayDelete();
         setLabels();
+       addEditAction();
+
 
 
     }
@@ -91,4 +100,13 @@ public class EmployeeInfoController implements Initializable {
             dayCurrency.setText(employee.getCurrency().toString());
         }
     }
+
+    private void addEditAction(){
+        this.editButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
+            EditController editController = new EditController(model);
+            this.firstLayout.getChildren().add(editController.getRoot());
+            WindowsManagement.showStackPane(firstLayout);
+        });
+    }
+
 }
