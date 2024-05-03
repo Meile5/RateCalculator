@@ -30,12 +30,12 @@ public class NewModel implements IModel{
     }
 
     @Override
-    public void addEmployee(Employee employee) {
+    public void addEmployee(Employee employee, Configuration configuration) {
 
     }
 
     @Override
-    public ObservableMap<Integer, Country> getCountries() {
+    public ObservableMap<String, Country> getCountries() {
         return null;
     }
 

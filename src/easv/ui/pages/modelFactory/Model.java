@@ -42,7 +42,7 @@ public class Model implements IModel {
     /**
      * holds the countries that are currently operational for the company
      */
-    private final ObservableMap<Integer, Country> countries;
+    private final ObservableMap<String, Country> countries;
     private final ObservableMap<Integer, Team> teams;
 
     // collection that holds all the teams related to a country, with all the associated overhead
@@ -80,8 +80,8 @@ public class Model implements IModel {
     }
 
     @Override
-    public void addEmployee(Employee employee) {
-        employee = employeeManager.addEmployee(employee);
+    public void addEmployee(Employee employee, Configuration configuration) {
+        employee = employeeManager.addEmployee(employee, countries, teams, configuration);
         if (employee != null) {
             employees.put(employee.getId(), employee);
         }
@@ -91,7 +91,7 @@ public class Model implements IModel {
     /**
      * return the operational countries
      */
-    public ObservableMap<Integer, Country> getCountries() {
+    public ObservableMap<String, Country> getCountries() {
         System.out.println(countries);
         return countries;
     }

@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 
@@ -60,8 +61,21 @@ public class CreateController implements Initializable {
     private void saveEmployee(){
         String name = nameTF.getText();
         EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText());
-        Country country = new Country(countryCB.getText());
-        Team team = new Team(teamCB.getText());
+
+        Country country = null;
+        if(countryCB.getSelectedItem() == null){
+            country = new Country(countryCB.getText());
+        } else {
+            country = (Country) countryCB.getSelectedItem();
+        }
+
+        Team team = null;
+        if(teamCB.getSelectedItem() == null){
+            team = new Team(teamCB.getText());
+        } else {
+            team = (Team) teamCB.getSelectedItem();
+        }
+
         Currency currency = Currency.valueOf(currencyCB.getText());
 
         BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
@@ -69,10 +83,11 @@ public class CreateController implements Initializable {
         BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
         BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
         BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
-
+        LocalDateTime savedDate = LocalDateTime.now();
 
         Employee employee = new Employee(name, country, team, employeeType, currency);
-        model.addEmployee(employee);
+        Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate);
+        model.addEmployee(employee, configuration);
         clearFields();
     }
 
@@ -96,10 +111,12 @@ public class CreateController implements Initializable {
         salaryTF.clear();
         utilPercentageTF.clear();
         workingHoursTF.clear();
+        countryCB.clearSelection();
         countryCB.clear();
+        teamCB.clearSelection();
         teamCB.clear();
-        currencyCB.clear();
-        overOrResourceCB.clear();
+        currencyCB.clearSelection();
+        overOrResourceCB.clearSelection();
     }
 
     public void populateComboBoxes() {

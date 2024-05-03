@@ -15,6 +15,7 @@ import easv.exception.RateException;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -134,18 +135,19 @@ public class EmployeesDAO implements IEmployeeDAO {
 
 
     @Override
-    public Integer addEmployee(Employee employee) {
+    public Integer addEmployee(Employee employee, boolean newCountry, boolean newTeam, Configuration configuration) {
         Integer employeeID = null;
         Connection conn = null;
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
+            addNewCountryOrTeam(employee, newCountry, newTeam, conn);
             String sql = "INSERT INTO Employees (Name, employeeType, CountryID, TeamID, Currency) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psmt.setString(1, employee.getName());
                 psmt.setString(2, employee.getEmployeeType().toString());
-                psmt.setInt(3, 1);
-                psmt.setInt(4, 1);
+                psmt.setInt(3, employee.getCountry().getId());
+                psmt.setInt(4, employee.getTeam().getId());
                 psmt.setString(5, employee.getCurrency().name());
                 psmt.executeUpdate();
                 try (ResultSet res = psmt.getGeneratedKeys()) {
@@ -153,6 +155,12 @@ public class EmployeesDAO implements IEmployeeDAO {
                         employeeID = res.getInt(1);
                     } else {
                         throw new SQLException("No keys generated");
+                    }
+                }
+                if(configuration != null) {
+                    Integer configurationID = addConfiguration(configuration, conn);
+                    if (configurationID != null) {
+                        addEmployeeConfiguration(employeeID, configurationID, conn);
                     }
                 }
                 conn.commit();
@@ -173,6 +181,92 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
         return employeeID;
     }
+
+    @Override
+    public void addNewCountryOrTeam(Employee employee, boolean newCountry, boolean newTeam, Connection conn) throws RateException, SQLException {
+        if(newCountry) {
+            Integer countryID = addCountry(employee.getCountry(), conn);
+            if (countryID != null) {
+                employee.getCountry().setId(countryID);
+            }
+        }
+        if(newTeam) {
+            Integer teamID = addTeam(employee.getTeam(), conn);
+            if (teamID != null) {
+                employee.getTeam().setId(teamID);
+            }
+        }
+    }
+
+    @Override
+    public Integer addCountry(Country country, Connection conn) throws RateException, SQLException {
+        Integer countryID = null;
+        String sql = "INSERT INTO Countries (Name) VALUES (?)";
+            try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                psmt.setString(1, country.getCountryName());
+                psmt.executeUpdate();
+                try (ResultSet res = psmt.getGeneratedKeys()) {
+                    if (res.next()) {
+                        countryID = res.getInt(1);
+                    } else {
+                        throw new RateException(ErrorCode.OPERATION_DB_FAILED);
+                    }
+                }
+            }
+            return countryID;
+    }
+
+    @Override
+    public Integer addTeam(Team team, Connection conn) throws RateException, SQLException {
+        Integer teamID = null;
+        String sql = "INSERT INTO Teams (Name) VALUES (?)";
+        try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            psmt.setString(1, team.getTeam());
+            psmt.executeUpdate();
+            try (ResultSet res = psmt.getGeneratedKeys()) {
+                if (res.next()) {
+                    teamID = res.getInt(1);
+                } else {
+                    throw new RateException(ErrorCode.OPERATION_DB_FAILED);
+                }
+            }
+        }
+        return teamID;
+    }
+
+    @Override
+    public Integer addConfiguration(Configuration configuration, Connection conn) throws RateException, SQLException {
+        Integer configurationID = null;
+        String sql = "INSERT INTO Configurations (AnnualSalary, FixedAnnualAmount, OverheadMultiplier, UtilizationPercentage, WorkingHours, Date) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            psmt.setBigDecimal(1, configuration.getAnnualSalary());
+            psmt.setBigDecimal(2, configuration.getFixedAnnualAmount());
+            psmt.setBigDecimal(3, configuration.getOverheadMultiplier());
+            psmt.setBigDecimal(4, configuration.getUtilizationPercentage());
+            psmt.setBigDecimal(5, configuration.getWorkingHours());
+            psmt.setDate(6, Date.valueOf(configuration.getSavedDate().toLocalDate()));
+            psmt.executeUpdate();
+            try (ResultSet res = psmt.getGeneratedKeys()) {
+                if (res.next()) {
+                    configurationID = res.getInt(1);
+                } else {
+                    throw new RateException(ErrorCode.OPERATION_DB_FAILED);
+                }
+            }
+        }
+        return configurationID;
+    }
+
+    @Override
+    public void addEmployeeConfiguration(int employeeID, int configurationID, Connection conn) throws RateException, SQLException {
+        String sql = "INSERT INTO EmployeeConfigurations (EmployeeID, ConfigurationID) VALUES (?, ?)";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, employeeID);
+            psmt.setInt(2, configurationID);
+            psmt.executeUpdate();
+        }
+    }
+
 
     @Override
     public Boolean deleteEmployee(Employee employee) throws RateException {

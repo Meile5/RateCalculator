@@ -1,9 +1,6 @@
 package easv.ui.pages.modelFactory;
 
-import easv.be.Country;
-import easv.be.Employee;
-import easv.be.Team;
-import easv.be.TeamWithEmployees;
+import easv.be.*;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
@@ -23,8 +20,8 @@ public interface IModel {
 
 
 
-    void addEmployee(Employee employee);
-    ObservableMap<Integer, Country> getCountries();
+    void addEmployee(Employee employee, Configuration configuration);
+    ObservableMap<String, Country> getCountries();
 
     /**retrieve the teams with the overhead computed*/
     Map<TeamWithEmployees, List<BigDecimal>> getCountryTeams(String country);
