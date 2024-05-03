@@ -8,6 +8,8 @@ import easv.bll.countryLogic.CountryLogic;
 import easv.bll.countryLogic.ICountryLogic;
 import easv.exception.RateException;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
+
 import java.util.*;
 
 public class Model implements IModel {
@@ -103,6 +105,11 @@ public class Model implements IModel {
         return countries;
     }
 
+    @Override
+    public void addEmployee(Employee employee, Configuration configuration) throws RateException {
+
+    }
+
     public  synchronized List<TeamWithEmployees> getCountryTeams() {
         Country selectedCountry = countries.get(this.selectedCountry);
         System.out.println(selectedCountry+" " +selectedCountry.getId() + " " + selectedCountry.getCountryName());
@@ -123,6 +130,11 @@ public class Model implements IModel {
         this.currentIndexToRetrieve = 0;
         System.out.println( "currentIndex is changed" + currentIndexToRetrieve);
         countryTeams.clear();
+    }
+
+    @Override
+    public ObservableMap<Integer, Team> getTeams() {
+        return null;
     }
 
     public void populateValidCountries(List<String> validCountries) {
