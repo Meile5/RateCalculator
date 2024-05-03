@@ -13,7 +13,7 @@
 }
 .teamsContainer{
     -fx-background-radius: 10;
-    -fx-background-color: transparent;
+    -fx-background-color: #F2F3F2C2;
 }
 .test{
     -fx-background-radius: 10;
@@ -21,9 +21,11 @@
 }
 .teamsContainer > .viewport{
     -fx-background-radius: 10;
+    -fx-background-color: transparent;
 }
 .teamComponent{
-    -fx-background-color: transparent;
+    -fx-background-color: white;
+    -fx-background-radius: 10;
 }
 
 .scroll-bar{
@@ -34,5 +36,8 @@
     -fx-font-family: 'Open Sans' , sans-serif;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
+}
+.circle{
+    -fx-fill: #CCCCCC;
 }
 

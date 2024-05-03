@@ -1,11 +1,11 @@
-package easv.ui.components.map.map.popUpInfo;
+package easv.ui.components.map.popUpInfo;
 
 import easv.Utility.WindowsManagement;
 import easv.be.TeamWithEmployees;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
-import easv.ui.components.map.map.popUpInfo.teamComponent.TeamComponentController;
+import easv.ui.components.map.popUpInfo.teamComponent.TeamComponentController;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;

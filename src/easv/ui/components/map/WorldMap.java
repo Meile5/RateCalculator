@@ -1,9 +1,9 @@
-package easv.ui.components.map.map;
+package easv.ui.components.map;
 import easv.Utility.WindowsManagement;
 import easv.be.Country;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
-import easv.ui.components.map.map.popUpInfo.CountryInfoContainer;
+import easv.ui.components.map.popUpInfo.CountryInfoContainer;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.application.Platform;
 import javafx.fxml.FXML;

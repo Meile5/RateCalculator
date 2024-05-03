@@ -6,28 +6,28 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<VBox fx:id="teamComponent" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="310.0" prefWidth="420.0" style="-fx-background-radius: 10;" styleClass="teamComponent" stylesheets="@../../../../../styling/CountryInfo.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="teamComponent" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="310.0" prefWidth="400.0" styleClass="teamComponent" stylesheets="@../../../../../styling/CountryInfo.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <PieChart fx:id="teamChart" />
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="2.0">
          <children>
             <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="100.0" prefWidth="10.0" spacing="5.0">
                <children>
-                  <Circle fill="DODGERBLUE" radius="9.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle radius="7.0" styleClass="circle" />
                   <Label maxWidth="-Infinity" prefWidth="120.0" text="Salary overhead" />
                   <Label fx:id="salaryOverhead" maxWidth="-Infinity" prefWidth="100.0" text="Label" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                <children>
-                  <Circle fill="DODGERBLUE" radius="9.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle radius="7.0" styleClass="circle" />
                   <Label maxWidth="-Infinity" prefWidth="120.0" text="Expenses overhead" />
                   <Label fx:id="expensesOverhead" maxWidth="-Infinity" prefWidth="100.0" text="Label" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                <children>
-                  <Circle fill="DODGERBLUE" radius="9.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle radius="7.0" styleClass="circle" />
                   <Label maxWidth="-Infinity" prefWidth="120.0" text="Total overhead" />
                   <Label fx:id="totalOverhead" maxWidth="-Infinity" prefWidth="100.0" text="Label" />
                </children>

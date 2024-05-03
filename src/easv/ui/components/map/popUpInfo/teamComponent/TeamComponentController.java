@@ -1,7 +1,5 @@
-package easv.ui.components.map.map.popUpInfo.teamComponent;
+package easv.ui.components.map.popUpInfo.teamComponent;
 import easv.be.TeamWithEmployees;
-import easv.ui.components.homePage.openPageObserver.Observable;
-import easv.ui.pages.modelFactory.IModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.util.Map;
@@ -46,7 +43,6 @@ public class TeamComponentController  implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("initialized");
         initializePieChart();
     }
 
@@ -55,7 +51,7 @@ public class TeamComponentController  implements Initializable {
     }
 
 
-
+/**initialize chart with the values*/
         private void initializePieChart(){
             for(Map<String, Double> data : team.getEmployeesOverheadPercentage()){
                 for (Map.Entry<String, Double> entry : data.entrySet()) {
@@ -66,10 +62,14 @@ public class TeamComponentController  implements Initializable {
             }
             teamChart.setData(pieChartData);
             teamChart.setTitle(team.getTeamName());
+            teamChart.setLabelLineLength(10);
+            teamChart.setLegendVisible(false);
             initializeTeamOverheadData();
         }
 
 
+        /**initialize the team ovearhead values
+         * */
         private void initializeTeamOverheadData(){
         BigDecimal salaryOverheadValue  = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD).setScale(2, RoundingMode.HALF_UP);
         salaryOverhead.setText(String.valueOf(salaryOverheadValue));
