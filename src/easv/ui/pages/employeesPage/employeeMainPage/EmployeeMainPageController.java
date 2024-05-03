@@ -1,5 +1,6 @@
 package easv.ui.pages.employeesPage.employeeMainPage;
 
+import easv.Utility.DisplayEmployees;
 import easv.Utility.WindowsManagement;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
@@ -20,7 +21,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class EmployeeMainPageController implements Initializable {
+public class EmployeeMainPageController implements Initializable , DisplayEmployees {
    @FXML
    private VBox employeesContainer;
    @FXML
@@ -41,7 +42,8 @@ public class EmployeeMainPageController implements Initializable {
         try {
             employeePage = loader.load();
         } catch (IOException e) {
-            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+            e.printStackTrace();
+           // ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }
@@ -70,6 +72,8 @@ public class EmployeeMainPageController implements Initializable {
                             DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
                             EmployeeInfoController employeeInfoController = new EmployeeInfoController( e, deleteEmployeeController);
                             employeesContainer.getChildren().add(employeeInfoController.getRoot());
+
+
 
 
                         });

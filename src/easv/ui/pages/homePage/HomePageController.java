@@ -95,5 +95,6 @@ public class HomePageController implements Initializable, PageManager {
         observer.modifyDisplay(subject);
         this.pageContainer.getChildren().clear();
         this.pageContainer.getChildren().add(page);
+
     }
 }
