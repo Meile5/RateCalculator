@@ -29,6 +29,11 @@ public interface IModel {
     public void resetCurrentIndexToRetrieve();
 
     ObservableMap<Integer, Team> getTeams();
+    /**used for country input validation*/
+    void populateValidCountries(List<String> validCountries);
+
+    /**set the country that user has selected from the map*/
+    void setSelectedCountry(String selectedCountry);
 
 
 }
