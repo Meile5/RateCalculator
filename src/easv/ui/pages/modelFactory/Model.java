@@ -90,6 +90,11 @@ public class Model implements IModel {
     }
 
     @Override
+    public void addEmployee(Employee employee) {
+
+    }
+
+    @Override
     public void addEmployee(Employee employee, Configuration configuration) throws RateException {
         employee = employeeManager.addEmployee(employee, countries, teams, configuration);
         if (employee != null) {
@@ -104,6 +109,11 @@ public class Model implements IModel {
     public ObservableMap<String, Country> getCountries() {
         System.out.println(countries);
         return countries;
+    }
+
+    @Override
+    public List<TeamWithEmployees> getCountryTeams() {
+        return null;
     }
 
     public Map<TeamWithEmployees, List<BigDecimal>> getCountryTeams(String country) {

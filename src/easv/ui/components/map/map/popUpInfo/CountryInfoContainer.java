@@ -94,7 +94,6 @@ public class CountryInfoContainer implements Initializable {
                     @Override
                     protected List<TeamWithEmployees> call() throws RateException {
                         return model.getCountryTeams();
-
                     }
                 };
             }

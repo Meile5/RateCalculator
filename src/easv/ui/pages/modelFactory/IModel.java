@@ -2,6 +2,8 @@ package easv.ui.pages.modelFactory;
 
 import easv.be.*;
 import easv.exception.RateException;
+import javafx.collections.ObservableMap;
+
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,7 +16,7 @@ public interface IModel {
     Map<String, Country> getCountries();
 
     void addEmployee(Employee employee, Configuration configuration) throws RateException;
-    ObservableMap<String, Country> getCountries();
+
 
     /**retrieve the teams with the overhead computed*/
     List<TeamWithEmployees> getCountryTeams();
