@@ -42,9 +42,6 @@ public class Model implements IModel {
     private final ObservableMap<String, Country> countries;
     private final ObservableMap<Integer, Team> teams;
 
-    // collection that holds all the teams related to a country, with all the associated overhead
-    private Map<TeamWithEmployees, List<BigDecimal>> countryTeams;
-
     /**
      * the value off the selected country from the view map
      */
@@ -54,6 +51,13 @@ public class Model implements IModel {
      */
     private List<String> validMapViewCountryNameValues;
 
+
+
+
+    // collection that holds all the teams related to a country, with all the associated overhead
+    private List<TeamWithEmployees> countryTeams;
+
+
     public Model() throws RateException {
         this.employees = new LinkedHashMap<>();
         this.countries = FXCollections.observableHashMap();
@@ -62,7 +66,7 @@ public class Model implements IModel {
         this.countryLogic = new CountryLogic();
         this.teamManager = new TeamLogic();
        this.validMapViewCountryNameValues= new ArrayList<>();
-        this.countryTeams=new HashMap<>();
+        this.countryTeams = new ArrayList<>();
         populateCountries();
         populateTeams();
     }
@@ -108,25 +112,18 @@ public class Model implements IModel {
         return countries;
     }
 
-    @Override
-    public List<TeamWithEmployees> getCountryTeams() {
-        return null;
-    }
+//    @Override
+//    public List<TeamWithEmployees> getCountryTeams() {
+//        return null;
+//    }
 
-    public Map<TeamWithEmployees, List<BigDecimal>> getCountryTeams(String country) {
-        currentIndexToRetrieve+=OFFSET;
-        Country countrySeLected;
-        countrySeLected = countries.values().stream().filter(e->e.getCountryName().equals(country)).findFirst().get();
-        Map<TeamWithEmployees, List<BigDecimal>>  countryTeams = teamManager.getTeamsOverheadByCountry(countrySeLected,currentIndexToRetrieve,ELEMENTS_NUMBER);
-        System.out.println(countrySeLected.getId());
-        if(countryTeams==null){
-            System.out.println(countryTeams + "co" + "");
-            return new HashMap<>();
-        }
-        this.countryTeams.putAll(countryTeams);
-        System.out.println(countryTeams);
-        System.out.println(currentIndexToRetrieve);
-        return countryTeams;
+    public  synchronized List<TeamWithEmployees> getCountryTeams() {
+        Country selectedCountry = countries.get(this.selectedCountry);
+        System.out.println(selectedCountry+" " +selectedCountry.getId() + " " + selectedCountry.getCountryName());
+        List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
+        this.countryTeams.addAll(countryTeams);
+        currentIndexToRetrieve += OFFSET;
+        return this.countryTeams;
     }
 
     private void populateTeams() throws RateException {
@@ -141,7 +138,9 @@ public class Model implements IModel {
     /**reset the currentIndexToRetrieve when retrieving for a new country */
     public void resetCurrentIndexToRetrieve() {
         this.currentIndexToRetrieve = 0;
+        this.countryTeams.clear();
     }
+
     public void populateValidCountries(List<String> validCountries) {
         this.validMapViewCountryNameValues.addAll(validCountries);
     }
