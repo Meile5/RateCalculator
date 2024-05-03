@@ -127,6 +127,7 @@ public class CountryInfoContainer implements Initializable {
      * initialize window different based on the country operational status
      * if the country is operational , retrieve data from the db else not
      */
+
     private void initializeWindow() {
         if (isOperational) {
             initializeNoOperationalCountry();

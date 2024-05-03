@@ -10,10 +10,7 @@ import easv.exception.RateException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Model implements IModel {
 
@@ -55,7 +52,6 @@ public class Model implements IModel {
     /**
      * used to check if the inserted country is valid
      */
-
     private List<String> validMapViewCountryNameValues;
 
     public Model() throws RateException {
@@ -65,6 +61,7 @@ public class Model implements IModel {
         this.employeeManager = new EmployeeManager();
         this.countryLogic = new CountryLogic();
         this.teamManager = new TeamLogic();
+       this.validMapViewCountryNameValues= new ArrayList<>();
         this.countryTeams=new HashMap<>();
         populateCountries();
         populateTeams();
