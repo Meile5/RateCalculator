@@ -8,10 +8,10 @@ import java.math.RoundingMode;
 
 
 public class RateCalculator implements IRateCalculator {
-
+    private long HoursInDay = 8;
     public BigDecimal calculateDayRate(Employee employee, Configuration latestConfiguration) {
         BigDecimal annualSalary = latestConfiguration.getAnnualSalary();
-        BigDecimal overheadMultiplier = latestConfiguration.getOverheadMultiplier().divide(BigDecimal.valueOf(100),MathContext.DECIMAL32); //kodel divide?
+        BigDecimal overheadMultiplier = latestConfiguration.getOverheadMultiplier().divide(BigDecimal.valueOf(100),MathContext.DECIMAL32).add(BigDecimal.ONE);
         BigDecimal fixedAnnualAmount = latestConfiguration.getFixedAnnualAmount();
         BigDecimal annualEffectiveWorkingHours = latestConfiguration.getWorkingHours();
         BigDecimal utilizationPercentage = latestConfiguration.getUtilizationPercentage().divide(BigDecimal.valueOf(100),MathContext.DECIMAL32);
@@ -19,17 +19,16 @@ public class RateCalculator implements IRateCalculator {
         BigDecimal dayRate = ((annualSalary.add(fixedAnnualAmount))
                 .multiply(overheadMultiplier)
                 .multiply(utilizationPercentage)
-                .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP));
+                .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(HoursInDay));
 
 
         return dayRate;
     }
 
     public BigDecimal calculateHourlyRate(Employee employee, Configuration latestConfiguration) {
-        BigDecimal annualEffectiveWorkingHours = latestConfiguration.getWorkingHours();
 
         BigDecimal hourlyRate = calculateDayRate(employee, latestConfiguration)
-                .divide(annualEffectiveWorkingHours, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(HoursInDay));
 
         return hourlyRate;
     }
