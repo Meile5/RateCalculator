@@ -2,16 +2,14 @@ package easv.ui.components.editPage;
 
 import easv.Utility.EmployeeValidation;
 import easv.Utility.WindowsManagement;
-import easv.be.Configuration;
-import easv.be.Country;
-import easv.be.Employee;
+import easv.be.*;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
-import easv.ui.components.homePage.openPageObserver.Observable;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -39,6 +37,14 @@ public class EditController implements Initializable {
     private MFXTextField nameInput;
     @FXML
     private MFXComboBox<Country> countryCB;
+    @FXML
+    private MFXComboBox<Currency> currencyCB;
+    @FXML
+    private MFXComboBox<Team> teamCB;
+    @FXML
+    private MFXComboBox<EmployeeType> overOrResourceCB;
+    @FXML
+    private MFXComboBox<Configuration> configurations;
 
     private StackPane firstLayout;
 
@@ -78,9 +84,7 @@ public class EditController implements Initializable {
         initializeLettersValidationListeners();
 
         populateInputs();
-        Platform.runLater(()->{
-            this.countryCB.getSelectionModel().selectItem(employee.getCountry());
-        });
+
     }
 
 
@@ -111,24 +115,25 @@ public class EditController implements Initializable {
         EmployeeValidation.addLettersOnlyInputListener(countryCB);
     }
 
-//    private MFXTextField utilPercentageTF, multiplierTF, markup, grossMargin;
-//    @FXML
-//    private MFXTextField salaryTF, workingHoursTF, annualAmountTF;
-//    @FXML
-//    private MFXTextField nameInput;
-//    @FXML
-//    private MFXComboBox<Country> countryCB;
     private void populateInputs() {
         this.countryCB.setItems(model.getCountiesValues());
+        this.countryCB.selectItem(employee.getCountry());
         this.nameInput.setText(employee.getName());
-
+        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
         Configuration config = employee.getActiveConfiguration();
         this.utilPercentageTF.setText(String.valueOf(config.getUtilizationPercentage()));
         this.multiplierTF.setText(String.valueOf(config.getOverheadMultiplier()));
         this.salaryTF.setText(String.valueOf(config.getAnnualSalary()));
         this.workingHoursTF.setText(String.valueOf(config.getWorkingHours()));
         this.annualAmountTF.setText(String.valueOf(config.getFixedAnnualAmount()));
-
+        this.currencyCB.setItems(FXCollections.observableArrayList(Currency.values()));
+        this.currencyCB.selectItem(employee.getCurrency());
+        this.teamCB.setItems(teams);
+        this.teamCB.selectItem(employee.getTeam());
+        this.overOrResourceCB.setItems(FXCollections.observableArrayList(EmployeeType.values()));
+        this.overOrResourceCB.selectItem(employee.getType());
+        this.configurations.setItems(FXCollections.observableArrayList(employee.getConfigurations()));
+        this.configurations.selectItem(employee.getActiveConfiguration());
 
     }
 

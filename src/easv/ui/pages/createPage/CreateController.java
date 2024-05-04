@@ -92,7 +92,6 @@ public class CreateController implements Initializable {
         BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
         BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
         LocalDateTime savedDate = LocalDateTime.now();
-
         Employee employee = new Employee(name, country, team, employeeType, currency);
         Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
         model.addEmployee(employee, configuration);

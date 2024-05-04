@@ -1,6 +1,8 @@
 package easv.be;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.time.format.DateTimeFormatter;
 
 public class Configuration {
     private int configurationId;
@@ -11,6 +13,32 @@ public class Configuration {
     private BigDecimal workingHours;
     private LocalDateTime savedDate;
     private boolean active;
+
+
+
+
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return savedDate.format(formatter);
+    }
+
+
+    /**do not use the equal for comparison , is used only for the view
+     **/
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Configuration that = (Configuration) o;
+        return Objects.equals(savedDate.toString(), that.savedDate.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(savedDate);
+    }
 
     public LocalDateTime getSavedDate() {
         return savedDate;
