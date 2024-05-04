@@ -130,21 +130,27 @@ public class EmployeeValidation {
     public List<String> validateAditionalMultipliers(MFXTextField markup, MFXTextField grossMargin) {
         boolean areInputsValid = true;
         if (!markup.getText().isEmpty()) {
-            double markupValue = Double.parseDouble(markup.getText());
-            boolean isValid = isValueWithinValidRange(markupValue);
+            boolean isValid = isValueWithinValidRange(markup.getText());
             markup.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, isValid);
         }
         if (!grossMargin.getText().isEmpty()) {
-            double grossMarginValue = Double.parseDouble(grossMargin.getText());
-            boolean isValid = isValueWithinValidRange(grossMarginValue);
+            boolean isValid = isValueWithinValidRange(grossMargin.getText());
             grossMargin.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, isValid);
         }
         return null;
     }
 
 
-    private static boolean isValueWithinValidRange(double inputValue) {
-        return inputValue > 0 && inputValue <= 100;
+    /**check if the  input is a valid number between 0 an 100*/
+    private static boolean isValueWithinValidRange(String inputValue) {
+        double value = parseMultiplierToNumber(inputValue, Locale.GERMANY);
+        // if the value is not valid for  decimal point or comma point
+
+        if (Double.isNaN(value)) {
+            value = parseMultiplierToNumber(inputValue, Locale.US);
+        }
+
+       return (!Double.isNaN(value) && (value >0 && value<=100));
     }
 
     /*
@@ -246,12 +252,7 @@ public class EmployeeValidation {
             if (!newValue.isEmpty()) {
                 pauseTransition.setOnFinished((event) -> {
                     try {
-                        double value = Double.parseDouble(newValue);
-                        if (value > 100) {
-                            percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-                            return;
-                        }
-                        percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, false);
+                     percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,!isValueWithinValidRange(newValue));
                     } catch (NumberFormatException e) {
                         percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                     }
@@ -262,7 +263,7 @@ public class EmployeeValidation {
     }
 
     /**
-     * add validation listeners for the input fields, to nopt be empty and to be digits
+     * add validation listeners for the input fields, to not be empty and to be digits
      * if later we need to check for the cap than we need to modify the method
      */
 
@@ -270,11 +271,13 @@ public class EmployeeValidation {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
         normalDigitInputs.textProperty().addListener((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((event -> {
+
                 double value = parseMultiplierToNumber(newValue, Locale.GERMANY);
                 if (Double.isNaN(value)) {
                     value = parseMultiplierToNumber(newValue, Locale.US);
                 }
-                normalDigitInputs.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, Double.isNaN(value));
+                boolean isValueValid = !Double.isNaN(value) && value >0 ;
+                normalDigitInputs.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,!isValueValid);
             }));
 
             pauseTransition.playFromStart();
