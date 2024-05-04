@@ -75,12 +75,5 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
         WindowsManagement.closeStackPane(firstLayout);
 
     }
-    /*private void removeEmployee(){
-        for (Node node : employeesContainer.getChildren()){
-            if(node instanceof EmployeeInfoController){
-                EmployeeInfoController employeeInfoController = (EmployeeInfoController) node;
 
-            }
-        }
-    }*/
 }
