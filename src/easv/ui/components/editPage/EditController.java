@@ -1,9 +1,11 @@
 package easv.ui.components.editPage;
 import easv.Utility.InputValidation;
 import easv.Utility.WindowsManagement;
+import easv.be.Country;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.pages.modelFactory.IModel;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +27,12 @@ public class EditController implements Initializable {
     private IModel model;
     @FXML
     private MFXTextField utilPercentageTF,multiplierTF,markup,grossMargin;
+    @FXML
+    private MFXTextField salaryTF, workingHoursTF,annualAmountTF;
+    @FXML
+    private MFXTextField nameInput;
+    @FXML
+    private MFXComboBox<Country> countryCB;
 
     private StackPane firstLayout;
 
@@ -37,6 +45,7 @@ public class EditController implements Initializable {
         try{
             editRoot= loader.load();
         }catch (IOException e){
+            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
         }
     }
@@ -53,16 +62,33 @@ public class EditController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         addCloseButtonAction();
-        initializeInputValidationListeners();
+        //initialize the percentage inputs listeners
+        initializePercentageInputValidationListeners();
+        //initialize the digits inputs listeners
+        initializeDigitsValidationListaners();
+        // initialize the letters inputs listeners
+        initializeLettersValidationListeners();
     }
 
 
-/**initialize inputs validation  listeners*/
-private void initializeInputValidationListeners(){
+/**initialize  percentage inputs validation  listeners */
+private void initializePercentageInputValidationListeners(){
     InputValidation.addUtilizationListener(utilPercentageTF);
     InputValidation.addUtilizationListener(multiplierTF);
     InputValidation.addUtilizationListener(markup);
     InputValidation.addUtilizationListener(grossMargin);
+}
+
+/**initialize digits inputs validation listeners*/
+private void initializeDigitsValidationListaners(){
+    InputValidation.addInputDigitsListeners(salaryTF);
+    InputValidation.addInputDigitsListeners(workingHoursTF);
+    InputValidation.addInputDigitsListeners(annualAmountTF);
+}
+/**initialize letters inputs validation listeners */
+private void initializeLettersValidationListeners(){
+    InputValidation.addLettersOnlyInputListener(nameInput);
+    InputValidation.addLettersOnlyInputListener(countryCB);
 }
 
 }

@@ -38,7 +38,7 @@
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
-                                <MFXTextField fx:id="nameInput" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="nameInput">
+                                <MFXTextField fx:id="nameInput"  floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="letters">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
@@ -47,7 +47,7 @@
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
-                                <MFXComboBox fx:id="countryCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="country">
+                                <MFXComboBox fx:id="countryCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="letters">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
@@ -74,7 +74,7 @@
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
-                                <MFXTextField fx:id="salaryTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                                <MFXTextField fx:id="salaryTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="digits">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
@@ -83,7 +83,7 @@
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
-                                <MFXTextField fx:id="workingHoursTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                                <MFXTextField fx:id="workingHoursTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="digits">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
@@ -92,7 +92,7 @@
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
-                                <MFXTextField fx:id="annualAmountTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                                <MFXTextField fx:id="annualAmountTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="digits">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
@@ -126,7 +126,7 @@
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
-                                <MFXComboBox fx:id="overOrResourceCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                                <MFXComboBox fx:id="overOrResourceCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
@@ -143,13 +143,13 @@
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
-                                <MFXComboBox fx:id="currencyCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
+                                <MFXComboBox fx:id="currencyCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
                   <Label text="Configurations">
                      <font>
                         <Font name="Open Sans Regular" size="14.0" />
                      </font>
                   </Label>
-                  <MFXComboBox fx:id="configurations" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
+                  <MFXComboBox fx:id="configurations" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
                             </children>
                             <padding>
                                 <Insets left="30.0" top="10.0" />

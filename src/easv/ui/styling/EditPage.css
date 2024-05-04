@@ -15,25 +15,6 @@
     -fx-fill:#fff;
 }
 
-
-/*.country:error{*/
-/*    -fx-border-color: #C42B1C;*/
-/*}*/
-.country:selected.box.mark{
-    -fx-effect: dropshadow(three-pass-box, #2ba746, 3, 0.8, 0, 0);
-    -fx-border-color: #2ba746;
-}
-.box.mark{
-    -fx-border-color: #2ba746;
-}
-
-
-.nameInput:focused{
-    -fx-border-color: #2ba746;
-    -fx-background-color: blue;
-}
-
-
 .mfx-text-field:focus-within {
     -fx-background-insets: 2;
     -fx-border-color: #2ba746; ;
@@ -41,6 +22,15 @@
     -fx-border-insets: -0.5;
 }
 .percentage:error{
+    -fx-border-color: #C42B1C;
+    -fx-text-fill: #C42B1C;
+}
+
+.digits:error{
+    -fx-border-color: #C42B1C;
+    -fx-text-fill: #C42B1C;
+}
+.letters:error{
     -fx-border-color: #C42B1C;
     -fx-text-fill: #C42B1C;
 }
