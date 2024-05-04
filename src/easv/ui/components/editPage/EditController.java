@@ -1,8 +1,10 @@
 package easv.ui.components.editPage;
+import easv.Utility.InputValidation;
 import easv.Utility.WindowsManagement;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.pages.modelFactory.IModel;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,6 +23,8 @@ public class EditController implements Initializable {
      private HBox closeButton;
 
     private IModel model;
+    @FXML
+    private MFXTextField utilPercentageTF,multiplierTF,markup,grossMargin;
 
     private StackPane firstLayout;
 
@@ -37,8 +41,6 @@ public class EditController implements Initializable {
         }
     }
 
-
-
    private void addCloseButtonAction(){
         this.closeButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event->
                 WindowsManagement.closeStackPane(firstLayout));
@@ -51,8 +53,17 @@ public class EditController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         addCloseButtonAction();
+        initializeInputValidationListeners();
     }
 
+
+/**initialize inputs validation  listeners*/
+private void initializeInputValidationListeners(){
+    InputValidation.addUtilizationListener(utilPercentageTF);
+    InputValidation.addUtilizationListener(multiplierTF);
+    InputValidation.addUtilizationListener(markup);
+    InputValidation.addUtilizationListener(grossMargin);
+}
 
 }
 
