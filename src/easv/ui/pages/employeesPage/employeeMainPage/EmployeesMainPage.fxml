@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
 <?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -60,7 +61,7 @@
                                     <Font name="Open Sans SemiBold" size="13.0" />
                                  </font>
                               </Text>
-                              <Text fill="#2f2e2e" strokeType="OUTSIDE" strokeWidth="0.0" text="Team" styleClass="headerLabel">
+                              <Text fill="#2f2e2e" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerLabel" text="Team">
                                  <font>
                                     <Font name="Open Sans SemiBold" size="13.0" />
                                  </font>
@@ -76,6 +77,7 @@
                                  </font>
                               </Text>
                               <Label />
+                              <MFXProgressSpinner fx:id="progressBar" prefHeight="71.0" prefWidth="130.0" />
                            </children>
                            <padding>
                               <Insets left="70.0" top="15.0" />

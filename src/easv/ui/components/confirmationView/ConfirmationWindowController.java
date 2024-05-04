@@ -1,6 +1,7 @@
 package easv.ui.components.confirmationView;
 
 import easv.exception.RateException;
+import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +26,8 @@ public class ConfirmationWindowController {
     private VBox confirmationWindow;
     private  StackPane firstLayout;
     private OperationHandler operationHandler;
+    @FXML
+    private MFXProgressSpinner progressSpinner;
 
     public ConfirmationWindowController(StackPane firstLayout, OperationHandler operationHandler) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Confirmation.fxml"));
@@ -70,6 +73,7 @@ public class ConfirmationWindowController {
 
     @FXML
     private void confirmOperation(ActionEvent event) throws RateException {
+        progressSpinner.setVisible(true);
         operationHandler.performOperation();
 
     }
