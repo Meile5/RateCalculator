@@ -39,7 +39,6 @@ public class TeamLogic implements ITeamLogic {
         for (TeamWithEmployees team : teams) {
             team.setTeamOverheadValues(calculateTeamOverhead(team));
             team.setEmployeesOverheadPercentage(calculateTeamPercentage(team));}
-        System.out.println(teams.size());
         return teams;}
 
     /**
@@ -55,9 +54,6 @@ public class TeamLogic implements ITeamLogic {
         teamOverhead.put(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD,salaryOverhead);
         teamOverhead.put(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD,expensesOverhead);
         teamOverhead.put(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD,productiveOverhead);
-        team.getTeamMembers().forEach(e-> System.out.println(e.getOverhead()+ " " +  e.getTeam() + " " +e.getName() + " " +team.getTeamName()));
-        System.out.println("space");
-        System.out.println(team.getTeamMembers().size());
         return teamOverhead;}
 
     private List<Map<String,Double>> calculateTeamPercentage(TeamWithEmployees team){

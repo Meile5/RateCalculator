@@ -3,6 +3,7 @@ package easv.ui.pages.modelFactory;
 import easv.Utility.DisplayEmployees;
 import easv.be.*;
 import easv.exception.RateException;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
 import java.sql.SQLException;
@@ -39,5 +40,10 @@ public interface IModel {
     /**set the country that user has selected from the map*/
     void setSelectedCountry(String selectedCountry);
 
+    /**get countries values as a Observable list */
+    ObservableList<Country> getCountiesValues();
 
+
+    /**save the updated employee to the database*/
+    boolean updateEditedEmployee(Employee employee, Employee editedEmployee);
 }

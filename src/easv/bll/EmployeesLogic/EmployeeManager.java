@@ -11,7 +11,6 @@ import javafx.collections.ObservableMap;
 
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class EmployeeManager implements IEmployeeManager {
         if (team == null) {
             return false;
         }
-        return teams.values().stream().noneMatch(t -> t.getTeam().equals(team.getTeam()));
+        return teams.values().stream().noneMatch(t -> t.getTeamName().equals(team.getTeamName()));
     }
 
     @Override

@@ -1,4 +1,5 @@
 package easv.ui.pages.createPage;
+import easv.Utility.EmployeeValidation;
 import easv.be.*;
 import easv.exception.RateException;
 import easv.ui.pages.modelFactory.IModel;
@@ -10,9 +11,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 
@@ -38,6 +41,8 @@ public class CreateController implements Initializable {
     private VBox vBox1, vBox2, vBox3;
     @FXML
     private IModel model;
+    @FXML
+    private HBox inputsParent;
 
 
     public CreateController(IModel model) {
@@ -80,17 +85,17 @@ public class CreateController implements Initializable {
             team = (Team) teamCB.getSelectedItem();
         }
 
-        Currency currency = Currency.valueOf(currencyCB.getText());
 
+        Currency currency = Currency.valueOf(currencyCB.getText());
         BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
         BigDecimal fixedAnnualAmount = new BigDecimal(annualAmountTF.getText());
         BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
         BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
         BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
         LocalDateTime savedDate = LocalDateTime.now();
-
         Employee employee = new Employee(name, country, team, employeeType, currency);
         Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
+        employee.setActiveConfiguration(configuration);
         model.addEmployee(employee, configuration);
         clearFields();
     }
@@ -141,6 +146,26 @@ public class CreateController implements Initializable {
             }
         }
     }
+
+    //Todo  the bellow method is it how i imagined that needs to be implemented, when i told you about
+    //it is much shorter and simpler, if you want you can use it,
+
+    private void clearFields2(){
+         inputsParent.getChildren().forEach((child)->{
+           if(child instanceof VBox){
+               ((VBox) child).getChildren().forEach((input)->{
+                   if(input instanceof  MFXTextField){
+                       ((MFXTextField) input).clear();
+                   }
+                   if(input instanceof MFXComboBox<?>){
+                       ((MFXComboBox<?>) input).clear();
+                   }
+               });
+           }
+         });
+    }
+
+
 
     public void populateComboBoxes() {
         ObservableList<Country> countries = FXCollections.observableArrayList(model.getCountries().values());

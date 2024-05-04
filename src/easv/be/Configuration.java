@@ -1,6 +1,9 @@
 package easv.be;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.time.format.DateTimeFormatter;
 
 public class Configuration {
     private int configurationId;
@@ -10,15 +13,11 @@ public class Configuration {
     private BigDecimal utilizationPercentage;
     private BigDecimal workingHours;
     private LocalDateTime savedDate;
+
+    private double markupMultiplier;
+    private double grossMargin;
     private boolean active;
 
-    public LocalDateTime getSavedDate() {
-        return savedDate;
-    }
-
-    public void setSavedDate(LocalDateTime savedDate) {
-        this.savedDate = savedDate;
-    }
 
     public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours) {
         this.annualSalary = annualSalary;
@@ -27,24 +26,112 @@ public class Configuration {
         this.utilizationPercentage = utilizationPercentage;
         this.workingHours = workingHours;
     }
-    public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,LocalDateTime savedDate,boolean active) {
-      this(annualSalary,fixedAnnualAmount,overheadMultiplier,utilizationPercentage,workingHours);
-        this.savedDate= savedDate;
-        this.active= active;
-    }
 
-    public Configuration(int configurationId ,BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,LocalDateTime savedDate, boolean active) {
-        this(annualSalary,fixedAnnualAmount,overheadMultiplier,utilizationPercentage,workingHours,savedDate,active);
-        this.configurationId=configurationId;
 
+    public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime savedDate, boolean active) {
+        this(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours);
+        this.savedDate = savedDate;
+        this.active = active;
     }
 
 
+    public Configuration(int configurationId, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime savedDate, boolean active) {
+        this(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate, active);
+        this.configurationId = configurationId;
 
-    public Configuration(int configurationId , BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, boolean active) {
-        this(annualSalary,fixedAnnualAmount,overheadMultiplier,utilizationPercentage,workingHours);
-        this.configurationId=configurationId;
-        this.active=active;
+    }
+
+
+    /**
+     * Constructor used to create Configuration objects with active configuration, without marginMultiplier and grossMargin.
+     *
+     * @param configurationId       Unique identifier for the configuration.
+     * @param annualSalary          The annual salary.
+     * @param fixedAnnualAmount     The fixed annual amount.
+     * @param overheadMultiplier    The overhead multiplier.
+     * @param utilizationPercentage The utilization percentage.
+     * @param workingHours          The working hours.
+     * @param active                The active status of the configuration.
+     */
+
+    public Configuration(int configurationId, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, boolean active) {
+        this(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours);
+        this.configurationId = configurationId;
+        this.active = active;
+    }
+
+
+    /**
+     * Constructor used to create Configuration objects with active configuration, without marginMultiplier and grossMargin , without configurationId.
+     *
+     * @param annualSalary          The annual salary.
+     * @param fixedAnnualAmount     The fixed annual amount.
+     * @param overheadMultiplier    The overhead multiplier.
+     * @param utilizationPercentage The utilization percentage.
+     * @param workingHours          The working hours.
+     * @param active                The active status of the configuration.
+     * @param markup                The markup multiplier.
+     * @param grossMargin           The gross margin.
+     */
+    public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime savedDate, boolean active, double markup, double grossMargin) {
+        this(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours);
+        this.savedDate = savedDate;
+        this.active = active;
+    }
+
+
+    /**
+     * Constructor used to create Configuration objects with the markupMultiplier and grossMargin.
+     *
+     * @param configurationId       Unique identifier for the configuration.
+     * @param annualSalary          The annual salary.
+     * @param fixedAnnualAmount     The fixed annual amount.
+     * @param overheadMultiplier    The overhead multiplier.
+     * @param utilizationPercentage The utilization percentage.
+     * @param workingHours          The working hours.
+     * @param active                The active status of the configuration.
+     * @param createdDate           date of creation
+     * @param markup                The markup multiplier.
+     * @param grossMargin           The gross margin.
+     */
+    public Configuration(int configurationId, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime createdDate, boolean active, double markup, double grossMargin) {
+        this(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, active);
+        this.markupMultiplier = markup;
+        this.grossMargin = grossMargin;
+        this.savedDate = createdDate;
+    }
+
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        String activeStatus = isActive() ? "active" : "";
+        return savedDate.format(formatter) + " " + activeStatus;
+    }
+
+
+    /**
+     * do not use the equal for comparison , is used only for the view
+     **/
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Configuration that = (Configuration) o;
+        return Objects.equals(savedDate.toString(), that.savedDate.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(savedDate);
+    }
+
+    public LocalDateTime getSavedDate() {
+        return savedDate;
+    }
+
+    public void setSavedDate(LocalDateTime savedDate) {
+        this.savedDate = savedDate;
     }
 
 
@@ -103,5 +190,21 @@ public class Configuration {
 
     public void setWorkingHours(BigDecimal workingHours) {
         this.workingHours = workingHours;
+    }
+
+    public double getMarkupMultiplier() {
+        return markupMultiplier;
+    }
+
+    public void setMarkupMultiplier(double markupMultiplier) {
+        this.markupMultiplier = markupMultiplier;
+    }
+
+    public double getGrossMargin() {
+        return grossMargin;
+    }
+
+    public void setGrossMargin(double grossMargin) {
+        this.grossMargin = grossMargin;
     }
 }
