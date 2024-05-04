@@ -103,10 +103,10 @@ public class EditController implements Initializable {
      * initialize  percentage inputs validation  listeners
      */
     private void initializePercentageInputValidationListeners() {
-        EmployeeValidation.addUtilizationListener(utilPercentageTF);
-        EmployeeValidation.addUtilizationListener(multiplierTF);
-        EmployeeValidation.addUtilizationListener(markup);
-        EmployeeValidation.addUtilizationListener(grossMargin);
+        EmployeeValidation.addNonEmptyPercentageListener(utilPercentageTF);
+        EmployeeValidation.addNonEmptyPercentageListener(multiplierTF);
+        EmployeeValidation.addAdditionalMarkupsListeners(markup);
+        EmployeeValidation.addAdditionalMarkupsListeners(grossMargin);
     }
 
     /**
@@ -141,7 +141,6 @@ public class EditController implements Initializable {
         this.overOrResourceCB.selectItem(employee.getType());
         this.configurations.setItems(FXCollections.observableArrayList(employee.getConfigurations()));
         this.configurations.selectItem(employee.getActiveConfiguration());
-
     }
 
 
@@ -155,9 +154,21 @@ public class EditController implements Initializable {
             BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
             BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
             BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
-            double markup = Double.parseDouble(this.markup.getText());
-            double grossMargin = Double.parseDouble(this.grossMargin.getText());
-            Configuration editedConfiguration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true, markup, grossMargin);
+            double markupValue = 0;
+            double grossMarginValue = 0;
+
+            if (EmployeeValidation.validateAditionalMultipliers(markup, grossMargin).isEmpty()) {
+                if (!isTextFieldEmpty(markup)) {
+                    markupValue = Double.parseDouble(this.markup.getText());
+                }
+                if (!isTextFieldEmpty(grossMargin)) {
+                    grossMarginValue = Double.parseDouble(this.grossMargin.getText());
+                }
+            } else {
+                return;
+            }
+
+            Configuration editedConfiguration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true, markupValue, grossMarginValue);
             String name = this.nameInput.getText();
             Country country = this.countryCB.getSelectedItem();
             Currency currency = this.currencyCB.getSelectedItem();
@@ -165,7 +176,6 @@ public class EditController implements Initializable {
             EmployeeType employeeType = overOrResourceCB.getSelectedItem();
             Employee editedEmployee = new Employee(name, country, team, employeeType, currency);
             editedEmployee.setActiveConfiguration(editedConfiguration);
-
             if (model.updateEditedEmployee(this.employee, editedEmployee)) {
                 updateUserValues(editedEmployee);
             }
@@ -204,13 +214,19 @@ public class EditController implements Initializable {
         }
     }
 
-    /**call the EmployeeInfoControllerTo update the edited userValues*/
+    /**
+     * call the EmployeeInfoControllerTo update the edited userValues
+     */
     private void updateUserValues(Employee employee) {
         this.employeeDisplayer.setEmployeeName(employee.getName());
         this.employeeDisplayer.setCountry(employee.getCountry().getCountryName());
         this.employeeDisplayer.setEmployeeType(employee.getEmployeeType());
         this.employeeDisplayer.setTeam(employee.getTeam().getTeamName());
         WindowsManagement.closeStackPane(this.firstLayout);
+    }
+
+    private boolean isTextFieldEmpty(MFXTextField textField) {
+        return textField.getText().isEmpty();
     }
 }
 

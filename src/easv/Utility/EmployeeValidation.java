@@ -8,7 +8,6 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.PauseTransition;
 import javafx.collections.ObservableMap;
 import javafx.css.PseudoClass;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
 
@@ -31,7 +30,7 @@ public class EmployeeValidation {
     private static final String VALID_CURRENCY_FORMAT = "Please select the currency to apply (e.g., EUR or USD).";
     private final static String validNamePattern = "^[A-Za-z]+(\\s[A-Za-z]+)*$";
 
-    private final static String INVALID_MARKUP = "The markup multiplier should be between 0 and 100";
+    private final static String INVALID_MARKUP = "The  multiplier should be between 0 and 100";
 
     private static List<String> countries = new ArrayList<>();
     private static List<Team> teams;
@@ -127,30 +126,28 @@ public class EmployeeValidation {
      * @param markup
      * @param grossMargin
      */
-    public List<String> validateAditionalMultipliers(MFXTextField markup, MFXTextField grossMargin) {
+    public static String validateAditionalMultipliers(MFXTextField markup, MFXTextField grossMargin) {
         boolean areInputsValid = true;
         if (!markup.getText().isEmpty()) {
             boolean isValid = isValueWithinValidRange(markup.getText());
-            markup.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, isValid);
+            markup.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
+            areInputsValid = isValid;
         }
         if (!grossMargin.getText().isEmpty()) {
             boolean isValid = isValueWithinValidRange(grossMargin.getText());
-            grossMargin.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, isValid);
+            grossMargin.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
+            areInputsValid = isValid;
         }
-        return null;
+       return areInputsValid?"":INVALID_MARKUP;
     }
 
 
-    /**check if the  input is a valid number between 0 an 100*/
+    /**
+     * check if the  input is a valid number between 0 an 100
+     */
     private static boolean isValueWithinValidRange(String inputValue) {
-        double value = parseMultiplierToNumber(inputValue, Locale.GERMANY);
-        // if the value is not valid for  decimal point or comma point
-
-        if (Double.isNaN(value)) {
-            value = parseMultiplierToNumber(inputValue, Locale.US);
-        }
-
-       return (!Double.isNaN(value) && (value >0 && value<=100));
+        double value = Double.parseDouble(inputValue);
+        return value > 0 && value <= 100;
     }
 
     /*
@@ -244,23 +241,55 @@ public class EmployeeValidation {
     }
 
     /**
-     * add validation for the utilization percentage
+     * add validation for the  percentage input fields that can not be empty
+     * @param percentageDisplayer the container off the percentage values
      */
-    public static void addUtilizationListener(MFXTextField percentageDisplayer) {
+    public static void addNonEmptyPercentageListener(MFXTextField percentageDisplayer) {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
         percentageDisplayer.textProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue.isEmpty()) {
-                pauseTransition.setOnFinished((event) -> {
-                    try {
-                     percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,!isValueWithinValidRange(newValue));
-                    } catch (NumberFormatException e) {
-                        percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-                    }
-                });
-                pauseTransition.playFromStart();
+                percentageInputsValidation(percentageDisplayer, pauseTransition, newValue);
             }
         }));
     }
+
+    /**
+     * add validation listeners for the markup and the grossMargin multipliers,
+     * they can be empty;
+     */
+    public static void addAdditionalMarkupsListeners(MFXTextField percentageDisplayer) {
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
+        percentageDisplayer.textProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue.isEmpty()){
+                percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,false);
+           }else {
+                percentageInputsValidation(percentageDisplayer, pauseTransition, newValue);
+            }
+
+        }));
+    }
+
+
+    /** if the inputs are not empty  check if they are  in the following formats
+     * 0 00 00.00  and between 0 and 100
+     * @param percentageDisplayer the input that is accepting percentage values
+     * @param pauseTransition  the transition that will change the color off the input
+     * @param value input value that needs to be validated */
+    private static void percentageInputsValidation(MFXTextField percentageDisplayer, PauseTransition pauseTransition, String value) {
+        pauseTransition.setOnFinished((event) -> {
+            try {
+                if (!value.matches("^\\d{1,3}([.,]\\d{2})?$")) {
+                    percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                    return;
+                }
+                percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValueWithinValidRange(value));
+            } catch (NumberFormatException e) {
+                percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            }
+        });
+        pauseTransition.playFromStart();
+    }
+
 
     /**
      * add validation listeners for the input fields, to not be empty and to be digits
@@ -271,16 +300,15 @@ public class EmployeeValidation {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
         normalDigitInputs.textProperty().addListener((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((event -> {
-
                 double value = parseMultiplierToNumber(newValue, Locale.GERMANY);
                 if (Double.isNaN(value)) {
                     value = parseMultiplierToNumber(newValue, Locale.US);
                 }
-                boolean isValueValid = !Double.isNaN(value) && value >0 ;
-                normalDigitInputs.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,!isValueValid);
+                boolean isValueValid = !Double.isNaN(value) && value > 0;
+                normalDigitInputs.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValueValid);
             }));
-
             pauseTransition.playFromStart();
+
         });
     }
 
@@ -288,8 +316,13 @@ public class EmployeeValidation {
     private static double parseMultiplierToNumber(String numberStr, Locale locale) {
         DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(locale);
         DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
-        symbols.setGroupingSeparator('.');
-        symbols.setDecimalSeparator(',');
+        if (locale.equals(Locale.GERMANY)) {
+            symbols.setGroupingSeparator('.');
+            symbols.setDecimalSeparator(',');
+        } else if (locale.equals(Locale.US)) {
+            symbols.setGroupingSeparator(',');
+            symbols.setDecimalSeparator('.');
+        }
         format.setDecimalFormatSymbols(symbols);
         try {
             Number number = format.parse(numberStr);
