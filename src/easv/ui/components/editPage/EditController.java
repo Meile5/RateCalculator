@@ -1,4 +1,5 @@
 package easv.ui.components.editPage;
+import easv.Utility.EmployeeValidation;
 import easv.Utility.InputValidation;
 import easv.Utility.WindowsManagement;
 import easv.be.Country;
@@ -72,22 +73,22 @@ public class EditController implements Initializable {
 
 /**initialize  percentage inputs validation  listeners */
 private void initializePercentageInputValidationListeners(){
-    InputValidation.addUtilizationListener(utilPercentageTF);
-    InputValidation.addUtilizationListener(multiplierTF);
-    InputValidation.addUtilizationListener(markup);
-    InputValidation.addUtilizationListener(grossMargin);
+    EmployeeValidation.addUtilizationListener(utilPercentageTF);
+    EmployeeValidation.addUtilizationListener(multiplierTF);
+    EmployeeValidation.addUtilizationListener(markup);
+    EmployeeValidation.addUtilizationListener(grossMargin);
 }
 
 /**initialize digits inputs validation listeners*/
 private void initializeDigitsValidationListaners(){
-    InputValidation.addInputDigitsListeners(salaryTF);
-    InputValidation.addInputDigitsListeners(workingHoursTF);
-    InputValidation.addInputDigitsListeners(annualAmountTF);
+    EmployeeValidation.addInputDigitsListeners(salaryTF);
+    EmployeeValidation.addInputDigitsListeners(workingHoursTF);
+    EmployeeValidation.addInputDigitsListeners(annualAmountTF);
 }
 /**initialize letters inputs validation listeners */
 private void initializeLettersValidationListeners(){
-    InputValidation.addLettersOnlyInputListener(nameInput);
-    InputValidation.addLettersOnlyInputListener(countryCB);
+    EmployeeValidation.addLettersOnlyInputListener(nameInput);
+    EmployeeValidation.addLettersOnlyInputListener(countryCB);
 }
 
 }
