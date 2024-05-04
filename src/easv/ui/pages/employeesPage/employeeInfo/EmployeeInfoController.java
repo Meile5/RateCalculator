@@ -2,12 +2,12 @@ package easv.ui.pages.employeesPage.employeeInfo;
 
 import easv.Utility.WindowsManagement;
 import easv.be.Employee;
+import easv.be.EmployeeType;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.components.editPage.EditController;
 import easv.ui.pages.employeesPage.deleteEmployee.DeleteEmployeeController;
 import easv.ui.pages.modelFactory.IModel;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -29,7 +29,10 @@ public class EmployeeInfoController implements Initializable {
    private VBox employeesContainer;
    @FXML
    protected VBox deleteContainer;
-  @FXML
+
+
+
+    @FXML
    private Label employeeName;
    @FXML
    private Label employeeType;
@@ -94,7 +97,7 @@ public class EmployeeInfoController implements Initializable {
             employeeName.setText(employee.getName());
             employeeType.setText(employee.getType().toString());
             country.setText(employee.getCountry().getCountryName());
-            team.setText(employee.getTeam().getTeam());
+            team.setText(employee.getTeam().getTeamName());
             dayRate.setText(employee.getDailyRate().toString());
             hourlyRate.setText(employee.getHourlyRate().toString());
             hourlyCurrency.setText(employee.getCurrency().toString());
@@ -104,10 +107,25 @@ public class EmployeeInfoController implements Initializable {
 
     private void addEditAction(){
         this.editButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
-            EditController editController = new EditController(model,firstLayout,employee);
+            EditController editController = new EditController(model,firstLayout,employee,this);
             this.firstLayout.getChildren().add(editController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
         });
     }
 
+    public void setEmployeeName(String employeeName) {
+        this.employeeName.setText(employeeName);
+    }
+
+    public void setEmployeeType(EmployeeType employeeType) {
+        this.employeeType.setText(employeeType.toString());
+    }
+
+    public void setCountry(String country) {
+        this.country.setText(country);
+    }
+
+    public void setTeam(String team) {
+        this.team.setText(team);
+    }
 }

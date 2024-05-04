@@ -30,11 +30,11 @@ public class Team {
         this.id = id;
     }
 
-    public String getTeam() {
+    public String getTeamName() {
         return team;
     }
 
-    public void setTeam(String team) {
+    public void setTeamName(String team) {
         this.team = team;
     }
 

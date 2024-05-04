@@ -140,6 +140,12 @@ public class Model implements IModel {
         coutriesList.setAll(countries.values());
         return coutriesList;
     }
+
+    @Override
+    public boolean updateEditedEmployee(Employee employee, Employee editedEmployee) {
+        return true;
+    }
+
     public  synchronized List<TeamWithEmployees> getCountryTeams() {
         Country selectedCountry = countries.get(this.selectedCountry);
         List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);

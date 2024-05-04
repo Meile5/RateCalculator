@@ -44,4 +44,6 @@ public interface IModel {
     ObservableList<Country> getCountiesValues();
 
 
+    /**save the updated employee to the database*/
+    boolean updateEditedEmployee(Employee employee, Employee editedEmployee);
 }

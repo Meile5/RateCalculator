@@ -225,7 +225,7 @@ public class EmployeesDAO implements IEmployeeDAO {
         Integer teamID = null;
         String sql = "INSERT INTO Teams (Name) VALUES (?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            psmt.setString(1, team.getTeam());
+            psmt.setString(1, team.getTeamName());
             psmt.executeUpdate();
             try (ResultSet res = psmt.getGeneratedKeys()) {
                 if (res.next()) {

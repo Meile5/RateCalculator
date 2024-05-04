@@ -1,4 +1,5 @@
 package easv.ui.pages.createPage;
+import easv.Utility.EmployeeValidation;
 import easv.be.*;
 import easv.exception.RateException;
 import easv.ui.pages.modelFactory.IModel;
@@ -84,8 +85,8 @@ public class CreateController implements Initializable {
             team = (Team) teamCB.getSelectedItem();
         }
 
-        Currency currency = Currency.valueOf(currencyCB.getText());
 
+        Currency currency = Currency.valueOf(currencyCB.getText());
         BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
         BigDecimal fixedAnnualAmount = new BigDecimal(annualAmountTF.getText());
         BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
@@ -94,6 +95,7 @@ public class CreateController implements Initializable {
         LocalDateTime savedDate = LocalDateTime.now();
         Employee employee = new Employee(name, country, team, employeeType, currency);
         Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
+        employee.setActiveConfiguration(configuration);
         model.addEmployee(employee, configuration);
         clearFields();
     }
