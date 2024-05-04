@@ -110,7 +110,7 @@ public class EmployeesDAO implements IEmployeeDAO {
         String sql = "SELECT " +
                 "conf.ConfigurationID, conf.AnnualSalary, conf.FixedAnnualAmount, " +
                 "conf.OverheadMultiplier, conf.UtilizationPercentage, conf.WorkingHours, " +
-                "conf.Date AS ConfigurationDate " +
+                "conf.Date AS ConfigurationDate, conf.Active " +
                 "FROM " +
                 "EmployeeConfigurations ec " +
                 "INNER JOIN Configurations conf ON ec.ConfigurationID = conf.ConfigurationID " +
@@ -127,6 +127,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 BigDecimal utilizationPercentage = res.getBigDecimal("UtilizationPercentage");
                 BigDecimal workingHours = res.getBigDecimal("WorkingHours");
                 LocalDateTime configurationDate = res.getTimestamp("ConfigurationDate").toLocalDateTime();
+                boolean active = Boolean.parseBoolean(res.getString("Active"));
 
                 Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate,true);
                 configurations.add(configuration);

@@ -14,7 +14,7 @@ public class Employee {
     private BigDecimal dailyRate;
     private BigDecimal hourlyRate;
     private List<Configuration> configurations;
-    private Configuration latestConfiguration;
+
     private BigDecimal overhead;
     private Configuration  activeConfiguration;
 
@@ -22,14 +22,6 @@ public class Employee {
 
     public void setOverhead(BigDecimal overhead) {
         this.overhead = overhead;
-    }
-
-    public Configuration getLatestConfiguration() {
-        return latestConfiguration;
-    }
-
-    public void setLatestConfiguration(Configuration latestConfiguration) {
-        this.latestConfiguration = latestConfiguration;
     }
 
 
