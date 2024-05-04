@@ -1,5 +1,6 @@
 package easv.ui.pages.modelFactory;
 import easv.Utility.DisplayEmployees;
+import easv.Utility.EmployeeValidation;
 import easv.be.*;
 import easv.bll.EmployeesLogic.EmployeeManager;
 import easv.bll.EmployeesLogic.IEmployeeManager;
@@ -77,6 +78,8 @@ public class Model implements IModel {
         this.countryTeams = new ArrayList<>();
         populateCountries();
         populateTeams();
+        EmployeeValidation.getCountries(validMapViewCountryNameValues);
+        EmployeeValidation.getTeams(teams);
     }
 
     public void setDisplayer(DisplayEmployees displayEmployees){
