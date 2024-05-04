@@ -59,6 +59,7 @@ public class EmployeeInfoController implements Initializable {
         this.employee = employee;
         this.deleteEmployeeController=deleteEmployeeController;
         this.firstLayout= firstLayout;
+        this.model= model;
         try {
             employeeComponent = loader.load();
         } catch (IOException e) {
@@ -103,7 +104,7 @@ public class EmployeeInfoController implements Initializable {
 
     private void addEditAction(){
         this.editButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
-            EditController editController = new EditController(model,firstLayout);
+            EditController editController = new EditController(model,firstLayout,employee);
             this.firstLayout.getChildren().add(editController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
         });

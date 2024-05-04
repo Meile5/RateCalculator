@@ -67,6 +67,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
                 .values()
                         .forEach(e -> {
                             DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
+                            System.out.println(e);
                             EmployeeInfoController employeeInfoController = new EmployeeInfoController( e, deleteEmployeeController,model,firstLayout);
                             employeesContainer.getChildren().add(employeeInfoController.getRoot());
 

@@ -36,7 +36,7 @@
                   <Insets bottom="10.0" />
                </padding>
             </HBox>
-            <HBox prefHeight="425.0" prefWidth="844.0" style="-fx-background-color: #CCCCCC; -fx-background-radius: 30; -fx-border-radius: 30;">
+            <HBox fx:id="inputsParent" prefHeight="425.0" prefWidth="844.0" style="-fx-background-color: #CCCCCC; -fx-background-radius: 30; -fx-border-radius: 30;">
                <children>
                   <VBox prefHeight="425.0" prefWidth="269.0" spacing="10.0">
                      <children>

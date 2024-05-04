@@ -127,7 +127,6 @@ public class EmployeesDAO implements IEmployeeDAO {
                 BigDecimal utilizationPercentage = res.getBigDecimal("UtilizationPercentage");
                 BigDecimal workingHours = res.getBigDecimal("WorkingHours");
                 LocalDateTime configurationDate = res.getTimestamp("ConfigurationDate").toLocalDateTime();
-
                 Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate,true);
                 configurations.add(configuration);
             }

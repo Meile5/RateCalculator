@@ -34,6 +34,21 @@ public class EmployeeValidation {
 
 
 
+    //TODO instead of calling this class method to get the countries, and teams in the model,
+    //you can create in the model class methods to retrieve them, and in your controller you will call the
+
+    //public static void getCountries(List<String> listCountries){
+      //  countries = listCountries;
+   // }
+
+    //public static void getTeams(ObservableMap<Integer, Team> listTeams){
+     //   teams = new ArrayList<>(listTeams.values());
+    //}
+
+    //because in the controller you already know about the model.
+
+
+
 
     /**
      * validate the user inputs for the add operation

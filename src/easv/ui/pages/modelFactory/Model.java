@@ -12,8 +12,8 @@ import easv.exception.RateException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import java.util.*;
@@ -133,9 +133,15 @@ public class Model implements IModel {
     public Map<String, Country> getCountries() {
         return countries;
     }
+
+    /**retrieve the countries as an observable list*/
+    public ObservableList<Country> getCountiesValues(){
+        ObservableList<Country> coutriesList= FXCollections.observableArrayList();
+        coutriesList.setAll(countries.values());
+        return coutriesList;
+    }
     public  synchronized List<TeamWithEmployees> getCountryTeams() {
         Country selectedCountry = countries.get(this.selectedCountry);
-        System.out.println(selectedCountry+" " +selectedCountry.getId() + " " + selectedCountry.getCountryName());
         List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
         this.countryTeams.addAll(countryTeams);
         currentIndexToRetrieve += OFFSET;
@@ -143,15 +149,11 @@ public class Model implements IModel {
     }
 
 
-
-
-
     /**
      * reset the currentIndexToRetrieve when retrieving for a new country
      */
     public void resetCurrentIndexToRetrieve() {
         this.currentIndexToRetrieve = 0;
-        System.out.println( "currentIndex is changed" + currentIndexToRetrieve);
         countryTeams.clear();
     }
 
@@ -161,16 +163,15 @@ public class Model implements IModel {
 
 
     public void setSelectedCountry(String selectedCountry) {
-        System.out.println(selectedCountry + "the country is beeing seted");
         this.selectedCountry = selectedCountry;
-        System.out.println(this.selectedCountry + "after");
     }
     private void populateTeams() throws RateException {
         this.teams.putAll(teamManager.getTeams());
-
     }
 
     public ObservableMap<Integer, Team> getTeams() {
         return teams;
     }
+
+
 }
