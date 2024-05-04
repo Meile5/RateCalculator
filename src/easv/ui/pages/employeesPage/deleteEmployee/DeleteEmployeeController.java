@@ -2,11 +2,16 @@ package easv.ui.pages.employeesPage.deleteEmployee;
 
 import easv.Utility.WindowsManagement;
 import easv.be.Employee;
+import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
 import easv.ui.components.confirmationView.ConfirmationWindowController;
 import easv.ui.components.confirmationView.OperationHandler;
 import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,6 +36,8 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
     private Employee employee;
     private VBox employeesContainer;
     private HBox employeeComponent;
+    private ConfirmationWindowController confirmationWindowController;
+    private Service<Void> deleteEmployee;
 
     public DeleteEmployeeController(StackPane firstLayout , IModel model, Employee employee) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DeleteEmployeeComponenet.fxml"));
@@ -70,10 +77,37 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
     }
 
     @Override
-    public void performOperation() throws RateException {
-        model.deleteEmployee(employee);
-        WindowsManagement.closeStackPane(firstLayout);
+    public void performOperation() {
+        initializeDelete();
 
+
+    }
+    private void initializeDelete() {
+
+        deleteEmployee = new Service<Void>() {
+
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        Thread.sleep(2000);
+                        model.deleteEmployee(employee);
+                        return null;
+                    }
+                };
+            }
+        };
+
+
+        deleteEmployee.setOnSucceeded(event -> WindowsManagement.closeStackPane(firstLayout));
+
+        deleteEmployee.setOnFailed(event -> {
+            confirmationWindowController.setErrorMessage(ErrorCode.DELETING_EMPLOYEES_FAILED.getValue());
+        });
+
+        deleteEmployee.restart();
     }
 
 }
+

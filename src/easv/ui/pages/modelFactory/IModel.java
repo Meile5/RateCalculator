@@ -15,7 +15,7 @@ public interface IModel {
 
 
 
-    ObservableMap<Integer, Employee> returnEmployees() throws SQLException, RateException;
+    ObservableMap<Integer, Employee> returnEmployees() throws RateException;
     void deleteEmployee(Employee employee) throws RateException ;
 
     void setDisplayer(DisplayEmployees displayEmployees);
