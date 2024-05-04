@@ -1,0 +1,19 @@
+
+
+
+.employeeComponent {
+    -fx-background-color: #ffffff; /* Button color */
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent; /* No border initially */
+    -fx-border-radius: 17px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0), 0, 0, 0, 0);
+    -fx-transition: all 0.3s;
+}
+
+.employeeComponent:hover {
+    -fx-border-color: #cccccc; /* Border color on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Shadow on hover */
+}

@@ -8,6 +8,21 @@
     -fx-font-weight: 600;
     -fx-font-size: 13px;
 }
+.text-field{
+    -fx-background-radius: 12;
+    -fx-border-color: rgb(50, 210, 84);
+    -fx-border-radius: 12;
+    -fx-border-width: 2;
+}
+
+#employees{
+    -fx-text-fill: rgba(47, 46, 46, 1);
+    -fx-font-family: 'Open Sans' , sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: 500;
+
+
+}
 
 
 
