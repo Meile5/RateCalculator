@@ -5,13 +5,19 @@ import easv.be.Team;
 import easv.exception.ExceptionHandler;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.animation.PauseTransition;
 import javafx.collections.ObservableMap;
 import javafx.css.PseudoClass;
 import javafx.scene.control.Tooltip;
+import javafx.util.Duration;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class EmployeeValidation {
     private static final PseudoClass ERROR_PSEUDO_CLASS = PseudoClass.getPseudoClass("error");
@@ -22,9 +28,12 @@ public class EmployeeValidation {
     private static final String VALID_PERCENTAGE_FORMAT = "Please enter the percentage in this format XX or XX.XX (e.g., 59 or 70.50).";
     private static final String VALID_OVERHEAD_COST_FORMAT = "Please select one of the options (e.g., Overhead or Resource).";
     private static final String VALID_CURRENCY_FORMAT = "Please select the currency to apply (e.g., EUR or USD).";
-
+    private final static String validNamePattern = "^[A-Za-z]+(\\s[A-Za-z]+)*$";
     private static List<String> countries = new ArrayList<>();
     private static List<Team> teams;
+
+
+
 
     /**
      * validate the user inputs for the add operation
@@ -171,5 +180,79 @@ public class EmployeeValidation {
 
     public static void getTeams(ObservableMap<Integer, Team> listTeams){
         teams = new ArrayList<>(listTeams.values());
+    }
+
+    /**add validation for the utilization percentage */
+    public static void addUtilizationListener(MFXTextField percentageDisplayer){
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
+        percentageDisplayer.textProperty().addListener(((observable, oldValue, newValue) -> {
+            if(!newValue.isEmpty()){
+                pauseTransition.setOnFinished((event)->{
+                    try{
+                        double value =  Double.parseDouble(newValue);
+                        if(value>100){
+                            percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,true);
+                            return;
+                        }
+                        percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,false);
+                    }catch(NumberFormatException e){
+                        percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,true);
+                    }
+                });
+                pauseTransition.playFromStart();
+            }
+        }));
+    }
+    /**add validation listeners for the input fields, to nopt be empty and to be digits
+     *  if later we need to check for the cap than we need to modify the method*/
+
+    public static void addInputDigitsListeners(MFXTextField normalDigitInputs){
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
+        normalDigitInputs.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            pauseTransition.setOnFinished((event -> {
+                double value  = parseFormattedNumber(newValue, Locale.GERMANY);
+                if(Double.isNaN(value)){
+                    value=parseFormattedNumber(newValue,Locale.US);
+                }
+                normalDigitInputs.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, Double.isNaN(value));
+            }));
+
+            pauseTransition.playFromStart();
+        });
+    }
+
+
+    private static double parseFormattedNumber(String numberStr, Locale locale) {
+
+        DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(locale);
+        DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+        format.setDecimalFormatSymbols(symbols);
+
+        try {
+            Number number = format.parse(numberStr);
+            return number.doubleValue();
+        } catch (ParseException e) {
+            return Double.NaN;
+        }
+    }
+
+
+    /**Add validation for name and country*/
+    public static void addLettersOnlyInputListener(MFXTextField input) {
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
+        input.textProperty().addListener(((observable, oldValue, newValue) -> {
+            pauseTransition.setOnFinished((e) -> {
+                input.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isInputValid(newValue));
+            });
+            pauseTransition.playFromStart();
+        }));
+    }
+
+    /**check if the inserted value contains only letters and has no empty space at the end*/
+    private static boolean isInputValid(String value) {
+        return !value.isEmpty() && value.matches(validNamePattern);
     }
 }

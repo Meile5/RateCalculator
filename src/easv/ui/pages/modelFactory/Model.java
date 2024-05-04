@@ -36,6 +36,7 @@ public class Model implements IModel {
     private ObservableMap<Integer, Employee> employees;
 
 
+
     private IEmployeeManager employeeManager;
     // the bussines logic object responsible of team logic
     private ITeamLogic teamManager;
