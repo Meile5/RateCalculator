@@ -54,7 +54,6 @@ public class EditController implements Initializable {
         this.closeButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event->
                 WindowsManagement.closeStackPane(firstLayout));
    }
-
     public VBox getRoot() {
         return editRoot;
     }
