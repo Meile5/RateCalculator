@@ -1,0 +1,16 @@
+.closeButton:hover{
+    -fx-background-color: #C42B1C;
+    -fx-background-radius: 0 10 0 0 ;
+}
+
+.closeButton:hover > .svgClose{
+   -fx-fill: #fff;
+}
+
+.saveButton:hover{
+    -fx-background-color: #2ba746;
+}
+
+.saveButton:hover > .svgSave{
+    -fx-fill:#fff;
+}

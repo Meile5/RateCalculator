@@ -3,7 +3,6 @@
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -11,14 +10,19 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="650.0" maxWidth="800.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="800.0" style="-fx-background-color: #F9F9F9; -fx-background-radius: 30;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER"   stylesheets="@../../styling/EditPage.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="800.0" style="-fx-background-color: #F9F9F9; -fx-background-radius: 30;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
             <children>
       <HBox minHeight="-Infinity" prefHeight="30.0" prefWidth="800.0" style="-fx-background-radius: 30 30 0 0; -fx-background-color: #CCCCCC;">
          <children>
-            <Region prefHeight="20.0" prefWidth="0.0" style="-fx-background-color: #CCCCCC; -fx-background-radius: 30 0 0  0;" HBox.hgrow="ALWAYS" />
-            <HBox fx:id="closeButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="60.0" styleClass="countryBackground,closeContainer">
+            <Region maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" prefWidth="0.0" style="-fx-background-color: #CCCCCC; -fx-background-radius: 30 0 0  0;" HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER"  fx:id="saveButton" styleClass="saveButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="30.0">
                <children>
-                  <SVGPath content="M9.76,77.76,39.52,48,9.76,18.24a6,6,0,1,1,8.49-8.48L48,39.52,77.76,9.76a6,6,0,1,1,8.49,8.48L56.48,48,86.24,77.76a6,6,0,1,1-8.49,8.48L48,56.48,18.24,86.24a6,6,0,0,1-8.49-8.48ZM9.76,77.76,39.52,48,9.76,18.24a6,6,0,1,1,8.49-8.48L48,39.52,77.76,9.76a6,6,0,1,1,8.49,8.48L56.48,48,86.24,77.76a6,6,0,1,1-8.49,8.48L48,56.48,18.24,86.24a6,6,0,0,1-8.49-8.48Z" layoutX="5.0" layoutY="5.0" scaleX="0.2" scaleY="0.2" HBox.hgrow="NEVER" />
+                  <SVGPath  styleClass="svgSave" content="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5 M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" fillRule="EVEN_ODD" scaleX="1.5" scaleY="1.5" strokeLineCap="ROUND" strokeWidth="2.0" />
+               </children>
+            </HBox>
+            <HBox fx:id="closeButton"   alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="60.0" styleClass="closeButton">
+               <children>
+                  <SVGPath styleClass="svgClose" content="M9.76,77.76,39.52,48,9.76,18.24a6,6,0,1,1,8.49-8.48L48,39.52,77.76,9.76a6,6,0,1,1,8.49,8.48L56.48,48,86.24,77.76a6,6,0,1,1-8.49,8.48L48,56.48,18.24,86.24a6,6,0,0,1-8.49-8.48ZM9.76,77.76,39.52,48,9.76,18.24a6,6,0,1,1,8.49-8.48L48,39.52,77.76,9.76a6,6,0,1,1,8.49,8.48L56.48,48,86.24,77.76a6,6,0,1,1-8.49,8.48L48,56.48,18.24,86.24a6,6,0,0,1-8.49-8.48Z" layoutX="5.0" layoutY="5.0" scaleX="0.2" scaleY="0.2" HBox.hgrow="NEVER" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="2.0" right="5.0" top="5.0" />
@@ -36,7 +40,7 @@
                                     </font></Label>
                                 <MFXTextField fx:id="nameTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
                                     <VBox.margin>
-                                        <Insets bottom="20.0" />
+                                        <Insets />
                                     </VBox.margin>
                                 </MFXTextField>
                                 <Label text="Country">
@@ -45,7 +49,7 @@
                                     </font></Label>
                                 <MFXComboBox fx:id="countryCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
                                     <VBox.margin>
-                                        <Insets bottom="20.0" />
+                                        <Insets />
                                     </VBox.margin>
                                 </MFXComboBox>
                                 <Label text="Team">
@@ -53,9 +57,15 @@
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
                                 <MFXComboBox fx:id="teamCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
+                  <Label text="GM %">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font>
+                  </Label>
+                  <MFXTextField fx:id="nameTF1" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
                             </children>
                             <padding>
-                                <Insets left="30.0" top="20.0" />
+                                <Insets left="30.0" top="10.0" />
                             </padding>
                         </VBox>
                         <VBox prefHeight="500.0" prefWidth="269.0" spacing="10.0">
@@ -66,7 +76,7 @@
                                     </font></Label>
                                 <MFXTextField fx:id="salaryTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
                                     <VBox.margin>
-                                        <Insets bottom="20.0" />
+                                        <Insets />
                                     </VBox.margin>
                                 </MFXTextField>
                                 <Label layoutX="10.0" layoutY="10.0" text="Annual Working Hours">
@@ -75,7 +85,7 @@
                                     </font></Label>
                                 <MFXTextField fx:id="workingHoursTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
                                     <VBox.margin>
-                                        <Insets bottom="20.0" />
+                                        <Insets />
                                     </VBox.margin>
                                 </MFXTextField>
                                 <Label layoutX="10.0" layoutY="27.0" text="Fixed Annual Amount">
@@ -87,12 +97,18 @@
                                         <Insets />
                                     </VBox.margin>
                                 </MFXTextField>
+                  <Label text="Markup">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font>
+                  </Label>
+                  <MFXTextField fx:id="annualAmountTF1" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
                             </children>
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
                             <padding>
-                                <Insets left="30.0" top="20.0" />
+                                <Insets left="30.0" top="10.0" />
                             </padding>
                         </VBox>
                         <VBox prefHeight="500.0" prefWidth="269.0" spacing="10.0">
@@ -103,7 +119,7 @@
                                     </font></Label>
                                 <MFXTextField fx:id="utilPercentageTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
                                     <VBox.margin>
-                                        <Insets bottom="20.0" />
+                                        <Insets />
                                     </VBox.margin>
                                 </MFXTextField>
                                 <Label text="Overhead or Resource">
@@ -112,7 +128,7 @@
                                     </font></Label>
                                 <MFXComboBox fx:id="overOrResourceCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
                                     <VBox.margin>
-                                        <Insets bottom="20.0" />
+                                        <Insets />
                                     </VBox.margin>
                                 </MFXComboBox>
                                 <Label text="Overhead Multiplier %">
@@ -121,21 +137,22 @@
                                     </font></Label>
                                 <MFXTextField fx:id="multiplierTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
                                     <VBox.margin>
-                                        <Insets bottom="20.0" />
+                                        <Insets />
                                     </VBox.margin></MFXTextField>
                                 <Label text="Currency">
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
                                 <MFXComboBox fx:id="currencyCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
-                              <Button fx:id="saveBTN" mnemonicParsing="false" prefHeight="36.0" prefWidth="134.0" style="-fx-background-color: #63B2E1;" text="Save" textFill="WHITE">
-                                  <font>
-                                      <Font name="Open Sans Regular" size="14.0" />
-                                  </font>
-                        </Button>
+                  <Label text="Configurations">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font>
+                  </Label>
+                  <MFXComboBox fx:id="currencyCB1" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
                             </children>
                             <padding>
-                                <Insets left="30.0" top="20.0" />
+                                <Insets left="30.0" top="10.0" />
                             </padding>
                         </VBox>
                     </children>

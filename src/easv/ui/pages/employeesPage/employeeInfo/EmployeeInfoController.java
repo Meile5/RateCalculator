@@ -103,7 +103,7 @@ public class EmployeeInfoController implements Initializable {
 
     private void addEditAction(){
         this.editButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
-            EditController editController = new EditController(model);
+            EditController editController = new EditController(model,firstLayout);
             this.firstLayout.getChildren().add(editController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
         });
