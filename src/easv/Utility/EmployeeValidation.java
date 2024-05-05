@@ -36,85 +36,129 @@ public class EmployeeValidation {
     private static List<Team> teams;
 
 
-    //TODO instead of calling this class method to get the countries, and teams in the model,
-    //you can create in the model class methods to retrieve them, and in your controller you will call the
-
-    //public static void getCountries(List<String> listCountries){
-    //  countries = listCountries;
-    // }
-
-    //public static void getTeams(ObservableMap<Integer, Team> listTeams){
-    //   teams = new ArrayList<>(listTeams.values());
-    //}
-
-    //because in the controller you already know about the model.
-
-
-    //Todo the problem with this method is that is too long, when you want to test something in isolation, will not be posibile
-    // also this method will open a lot off Error alert at the same time for different invalid inputs
-    // if the intention was to display errors one by one , you need to return after each invalid input
-    // also the method is designed to check the employee not the fields, if one of the fields will be empty than when you try to create
-    // an employee object an error will be trowed, like the   "No enum constant easv.be.EmployeeType. "
-    // the fields needs to be validated before you create the employee object
-
     /**
      * validate the user inputs for the add operation
      */
-    public static boolean isEmployeeValid(Employee employee) {
+    public static boolean arePercentagesValid(MFXTextField utilization, MFXTextField overheadMultiplier) {
         boolean isValid = true;
 
-
-        if (employee.getName().isEmpty()) {
-            isValid = false;
-            ExceptionHandler.errorAlertMessage("This field cannot be empty.");
+        String utilizationText = utilization.getText();
+        if (utilizationText.isEmpty()) {
+            utilization.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Utilization % field cannot be empty.");
+            return false;
+        } else {
+            BigDecimal utilizationValue = new BigDecimal(utilizationText);
+            if (utilizationValue.compareTo(BigDecimal.ZERO) < 0 || utilizationValue.compareTo(new BigDecimal("100")) > 0) {
+                utilization.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                ExceptionHandler.errorAlertMessage("The Utilization % should be equal or greater than 0.");
+                return false;
+            }
         }
 
-        if (!countries.contains(employee.getCountry().getCountryName())) {
-            isValid = false;
+        String overheadMultiplierText = overheadMultiplier.getText();
+        if (overheadMultiplierText.isEmpty()) {
+            overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Overhead Multiplier % field cannot be empty.");
+            return false;
+        } else {
+            BigDecimal multiplierValue = new BigDecimal(overheadMultiplierText);
+            if (multiplierValue.compareTo(BigDecimal.ZERO) < 0 || multiplierValue.compareTo(new BigDecimal("100")) > 0) {
+                overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                ExceptionHandler.errorAlertMessage("The Overhead Multiplier % should be equal or greater than 0.");
+                return false;
+            }
+        }
+        return isValid;
+    }
+
+    public static boolean areNumbersValid(MFXTextField salary, MFXTextField hours, MFXTextField fixedAmount) {
+        boolean isValid = true;
+
+        String salaryText = salary.getText();
+        if (salaryText.isEmpty()) {
+            salary.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Salary field cannot be empty.");
+            return false;
+        } else {
+            BigDecimal salaryValue = new BigDecimal(salaryText);
+            if (salaryValue.compareTo(BigDecimal.ZERO) < 0) {
+                salary.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                ExceptionHandler.errorAlertMessage("The Salary should be equal or greater than 0.");
+                return false;
+            }
+        }
+
+        String hoursText = hours.getText();
+        if (hoursText.isEmpty()) {
+            hours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Working Hours field cannot be empty.");
+            return false;
+        } else {
+            BigDecimal hoursValue = new BigDecimal(hoursText);
+            if (hoursValue.compareTo(BigDecimal.ZERO) < 0) {
+                hours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                ExceptionHandler.errorAlertMessage("The Working Hours should be equal or greater than 0.");
+                return false;
+            }
+        }
+
+        String fixedAmountText = fixedAmount.getText();
+        if (fixedAmountText.isEmpty()) {
+            fixedAmount.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Fixed Annual Amount field cannot be empty.");
+            return false;
+        } else {
+            BigDecimal fixedAmountValue = new BigDecimal(fixedAmountText);
+            if (fixedAmountValue.compareTo(BigDecimal.ZERO) < 0) {
+                fixedAmount.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                ExceptionHandler.errorAlertMessage("The Fixed Annual Amount should be equal or greater than 0.");
+                return false;
+            }
+        }
+        return isValid;
+    }
+
+    public static boolean areNamesValid(MFXTextField name, MFXComboBox country, MFXComboBox team) {
+        boolean isValid = true;
+
+        if (name.getText().isEmpty()) {
+            name.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("This field cannot be empty.");
+            return false;
+        }
+
+        if (!countries.contains(country.getText())) {
+            country.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("Country Not Found: We couldn't find the country you entered. Please check your spelling and try again.");
-        } else if (employee.getCountry().getCountryName().isEmpty()) {
-            isValid = false;
+            return false;
+        } else if (country.getText().isEmpty()) {
             ExceptionHandler.errorAlertMessage("This field cannot be empty.");
+            return false;
+
         }
 
-        if (!teams.contains(employee.getTeam()) && employee.getTeam().getTeamName().isEmpty()) {
-            isValid = false;
+        if (!teams.contains((Team) team.getSelectedItem()) && team.getText().isEmpty()) {
+            team.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("This field cannot be empty.");
+            return false;
+        }
+        return isValid;
+    }
+
+    public static boolean isItemSelected(MFXComboBox currency, MFXComboBox overOrResource) {
+        boolean isValid = true;
+
+        if (currency.getSelectedItem() == null || currency.getText().isEmpty()) {
+            currency.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("Please select a currency.");
+            return false;
         }
 
-        if (employee.getActiveConfiguration().getAnnualSalary() == null || employee.getActiveConfiguration().getAnnualSalary().compareTo(BigDecimal.ZERO) < 0) {
-            isValid = false;
-            ExceptionHandler.errorAlertMessage("The Salary should be equal or greater than 0.");
-        }
-
-        if (employee.getActiveConfiguration().getWorkingHours() == null || employee.getActiveConfiguration().getWorkingHours().compareTo(BigDecimal.ZERO) < 0) {
-            isValid = false;
-            ExceptionHandler.errorAlertMessage("The Working Hours should be equal or greater than 0.");
-        }
-
-        if (employee.getActiveConfiguration().getFixedAnnualAmount() == null || employee.getActiveConfiguration().getFixedAnnualAmount().compareTo(BigDecimal.ZERO) < 0) {
-            isValid = false;
-            ExceptionHandler.errorAlertMessage("The Fixed Amount should be equal or greater than 0.");
-        }
-
-        if (employee.getActiveConfiguration().getUtilizationPercentage() == null || employee.getActiveConfiguration().getUtilizationPercentage().compareTo(BigDecimal.ZERO) < 0 || employee.getActiveConfiguration().getUtilizationPercentage().compareTo(new BigDecimal("100")) > 0) {
-            isValid = false;
-            ExceptionHandler.errorAlertMessage("The Utilization % should be greater than or equal to 0 and less than or equal to 100.");
-        }
-
-        if (employee.getActiveConfiguration().getOverheadMultiplier() == null || employee.getActiveConfiguration().getOverheadMultiplier().compareTo(BigDecimal.ZERO) < 0 || employee.getActiveConfiguration().getOverheadMultiplier().compareTo(new BigDecimal("100")) > 0) {
-            isValid = false;
-            ExceptionHandler.errorAlertMessage("The Overhead Multiplier % should be greater than or equal to 0 and less than or equal to 100.");
-        }
-
-        if (employee.getCurrency() == null) {
-            isValid = false;
-            ExceptionHandler.errorAlertMessage("Please choose a Currency.");
-        }
-
-        if (employee.getType() == null) {
-            isValid = false;
-            ExceptionHandler.errorAlertMessage("Please choose between 'Overhead' or 'Resource'.");
+        if (overOrResource.getSelectedItem() == null || overOrResource.getText().isEmpty()) {
+            overOrResource.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("Please select Overhead or Resource.");
+            return false;
         }
         return isValid;
     }

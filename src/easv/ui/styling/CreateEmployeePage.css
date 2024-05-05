@@ -1,0 +1,14 @@
+.nameTF:error{
+    -fx-border-color: red;
+    -fx-border-width: 2;
+}
+
+.salaryTF:error{
+    -fx-border-color: red;
+    -fx-border-width: 2;
+}
+
+.utilPercentageTF:error{
+    -fx-border-color: red;
+    -fx-border-width: 2;
+}

@@ -167,6 +167,10 @@ public class Model implements IModel {
         this.validMapViewCountryNameValues.addAll(validCountries);
     }
 
+    public List<String> getValidCountries(){
+        return validMapViewCountryNameValues;
+    }
+
 
     public void setSelectedCountry(String selectedCountry) {
         this.selectedCountry = selectedCountry;
