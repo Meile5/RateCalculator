@@ -17,3 +17,12 @@
     -fx-border-color: #cccccc; /* Border color on hover */
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Shadow on hover */
 }
+
+.employeeComponentClicked{
+    -fx-border-color: #cccccc; /* Border color on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Shadow on hover */
+}
+
+
+
+
