@@ -152,9 +152,12 @@ public class EditController implements Initializable {
      */
     private void saveEdit() {
         this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (inputsValid()) {
+            if (EmployeeValidation.areNamesValid(nameInput, countryCB, teamCB) &&
+                    EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
+                    EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
+                    EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB)
+                    && EmployeeValidation.validateAditionalMultipliers(markup, grossMargin)) {
                 Configuration editedConfiguration = getConfiguration();
-                if (editedConfiguration == null) return;
                 Employee editedEmployee = getEmployee(editedConfiguration);
                 if (model.isEditOperationPerformed(employee, editedEmployee)) {
                     try {
@@ -200,12 +203,12 @@ public class EditController implements Initializable {
         BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
         double markupValue = 0;
         double grossMarginValue = 0;
-          if (!isTextFieldEmpty(markup)) {
-        markupValue = Double.parseDouble(this.markup.getText());
-          }
-          if (!isTextFieldEmpty(grossMargin)) {
-        grossMarginValue = Double.parseDouble(this.grossMargin.getText());
-          }
+        if (!isTextFieldEmpty(markup)) {
+            markupValue = Double.parseDouble(this.markup.getText());
+        }
+        if (!isTextFieldEmpty(grossMargin)) {
+            grossMarginValue = Double.parseDouble(this.grossMargin.getText());
+        }
         return new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true, markupValue, grossMarginValue);
     }
 
@@ -261,7 +264,6 @@ public class EditController implements Initializable {
         if (teamCB.getSelectedItem() == null) {
         } else {
             team = teamCB.getSelectedItem();
-            System.out.println(team.getId() + team.getTeamName());
         }
         return team;
     }
@@ -292,17 +294,6 @@ public class EditController implements Initializable {
     private void initializeLettersValidationListeners() {
         EmployeeValidation.addLettersOnlyInputListener(nameInput);
         EmployeeValidation.addLettersOnlyInputListener(countryCB);
-    }
-
-    /**
-     * validate inputs before saving to the database
-     */
-    private boolean inputsValid() {
-        boolean areNumbersValid = EmployeeValidation.areNumbersValid(this.salaryTF, this.workingHoursTF, this.annualAmountTF);
-        boolean areNamesValid = EmployeeValidation.areNamesValid(nameInput, countryCB, teamCB);
-        boolean arePercentagesValid = EmployeeValidation.arePercentagesValid(utilPercentageTF, this.multiplierTF);
-        boolean areAdditionalMarkupsValid = EmployeeValidation.validateAditionalMultipliers(this.markup, this.grossMargin);
-        return areNamesValid && areNumbersValid && arePercentagesValid && areAdditionalMarkupsValid;
     }
 
 }

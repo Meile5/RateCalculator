@@ -305,30 +305,6 @@ public class EmployeeValidation {
 
     }
 
-
-    /**
-     * if the inputs are not empty  check if they are  in the following formats
-     * 0 00 00.00  and between 0 and 100
-     *
-     * @param percentageDisplayer the input that is accepting percentage values
-     * @param pauseTransition     the transition that will change the color off the input
-     * @param value               input value that needs to be validated
-     */
-    private static void percentageInputsValidation(MFXTextField percentageDisplayer, PauseTransition pauseTransition, String value) {
-        pauseTransition.setOnFinished((event) -> {
-            try {
-                if (!value.matches("^\\d{1,3}([.,]\\d{1,2})?$")) {
-                    percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-                    return;
-                }
-                percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValueWithinValidRange(value));
-            } catch (NumberFormatException e) {
-                percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            }
-        });
-    }
-
-
     /**
      * add validation listeners for the input fields, to not be empty and to be digits
      * if later we need to check for the cap than we need to modify the method

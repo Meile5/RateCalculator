@@ -94,13 +94,6 @@ public class EmployeeManager implements IEmployeeManager {
     public boolean isEmployeeEdited(Employee originalEmployee,Employee editedEmployee){
         boolean isActiveConfigurationEdited = !originalEmployee.getActiveConfiguration().isEqualTo(editedEmployee.getActiveConfiguration());
         boolean areEmployeeValuesEdited = !originalEmployee.equals(editedEmployee);
-        System.out.println(originalEmployee+" original");
-
-
-
-        System.out.println(editedEmployee +"edited" + " "  + editedEmployee.getTeam().getId());
-        System.out.println(editedEmployee.getActiveConfiguration().printConfiguration());
-
         return isActiveConfigurationEdited || areEmployeeValuesEdited;
     }
 

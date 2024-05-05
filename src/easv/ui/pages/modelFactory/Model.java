@@ -149,8 +149,9 @@ public class Model implements IModel {
 
     @Override
     public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
-      Employee editedEmployeeSaved= employeeManager.saveEditOperation(editedEmployee, editedEmployee.getActiveConfiguration().getConfigurationId());
-        if(editedEmployeeSaved!=null) {
+      Employee editedEmployeeSaved= employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
+        System.out.println(originalEmployee.getActiveConfiguration().getConfigurationId()+"from model");
+      if(editedEmployeeSaved!=null) {
             editedEmployeeSaved.addConfiguration(editedEmployeeSaved.getActiveConfiguration());
             this.employees.put(editedEmployee.getId(),editedEmployeeSaved);
             return true;

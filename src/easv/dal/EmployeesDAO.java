@@ -146,8 +146,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 BigDecimal workingHours = res.getBigDecimal("WorkingHours");
                 LocalDateTime configurationDate = res.getTimestamp("ConfigurationDate").toLocalDateTime();
                 boolean active = Boolean.parseBoolean(res.getString("Active"));
-
-                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, true);
+                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active);
                 configurations.add(configuration);
             }
         }
@@ -374,6 +373,7 @@ public class EmployeesDAO implements IEmployeeDAO {
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             psmt.setString(1, "false");
             psmt.setInt(2, configurationId);
+            psmt.executeUpdate();
         } catch (SQLException e) {
             throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
         }

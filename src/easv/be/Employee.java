@@ -86,9 +86,8 @@ public class Employee {
     }
     private void deactivateOldConfiguration() {
         for (Configuration config : this.configurations) {
-            if (config.equals(this.activeConfiguration)) {
+            if (config.isActive()) {
                 config.setActive(false);
-                break;
             }
         }
     }

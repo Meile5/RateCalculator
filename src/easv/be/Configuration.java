@@ -104,7 +104,7 @@ public class Configuration {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        String activeStatus = isActive() ? "active" : "";
+        String activeStatus = this.isActive() ? "active" : "";
         return savedDate.format(formatter) + " " + activeStatus;
     }
 
@@ -172,7 +172,7 @@ public String printConfiguration(){
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+    this.active = active;
     }
 
 
