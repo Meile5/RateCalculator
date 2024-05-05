@@ -46,10 +46,16 @@ public interface IModel {
 
 
     /**save the updated employee to the database*/
-    boolean updateEditedEmployee(Employee employee, Employee editedEmployee);
+    boolean updateEditedEmployee(Employee employee, Employee editedEmployee) throws RateException;
 
     List<String> getValidCountries();
+
     ObservableList<Employee> getSearchResult(String filter);
 
     void performSelectUserSearchOperation (int employeeId, Employee employee) throws RateException ;
+
+
+    /**check if edit operation was performed*/
+    boolean isEditOperationPerformed( Employee originalEmployee, Employee editedEmployee);
+
 }

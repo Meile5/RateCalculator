@@ -17,5 +17,12 @@ public interface IEmployeeManager {
     Employee addEmployee(Employee employee, ObservableMap<String, Country> countries, ObservableMap<Integer, Team> teams, Configuration configuration) throws RateException;
     Map<Integer, Employee> returnEmployees() throws RateException;
     Boolean deleteEmployee(Employee employee) throws RateException;
+
     public List<Employee> performSearchOperation (Collection<Employee> employees, String filter);
+
+    /**check if an edit operation was performed on the epmloyee object*/
+    boolean isEmployeeEdited(Employee originalEmployee,Employee editedEmployee);
+    /**save the edit operation*/
+    Employee saveEditOperation(Employee editedEmployee,int oldConfigurationId) throws RateException;
+
 }

@@ -2,6 +2,7 @@
 package easv.be;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 
 public class Employee {
@@ -14,7 +15,6 @@ public class Employee {
     private BigDecimal dailyRate;
     private BigDecimal hourlyRate;
     private List<Configuration> configurations;
-
     private BigDecimal overhead;
     private Configuration  activeConfiguration;
 
@@ -60,12 +60,36 @@ public class Employee {
     }
 
 
+
+    /**equals method is used to compare  if the original employee is equal with the
+     * edited employee based on name,country, team, employee type ,currency and id */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return id == employee.id && Objects.equals(name, employee.name) && employeeType == employee.employeeType && Objects.equals(country, employee.country) && Objects.equals(team, employee.team) && currency == employee.currency;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, employeeType, country, team, id, currency, configurations, activeConfiguration);
+    }
+
     public Configuration getActiveConfiguration() {
         return activeConfiguration;
     }
 
     public void setActiveConfiguration(Configuration activeConfiguration) {
+        deactivateOldConfiguration();
         this.activeConfiguration = activeConfiguration;
+    }
+    private void deactivateOldConfiguration() {
+        for (Configuration config : this.configurations) {
+            if (config.isActive()) {
+                config.setActive(false);
+            }
+        }
     }
 
 

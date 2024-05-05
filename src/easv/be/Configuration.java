@@ -13,7 +13,6 @@ public class Configuration {
     private BigDecimal utilizationPercentage;
     private BigDecimal workingHours;
     private LocalDateTime savedDate;
-
     private double markupMultiplier;
     private double grossMargin;
     private boolean active;
@@ -105,7 +104,7 @@ public class Configuration {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        String activeStatus = isActive() ? "active" : "";
+        String activeStatus = this.isActive() ? "active" : "";
         return savedDate.format(formatter) + " " + activeStatus;
     }
 
@@ -126,6 +125,39 @@ public class Configuration {
         return Objects.hash(savedDate);
     }
 
+/**used to compare to configuration objects if are equal */
+public boolean isEqualTo(Configuration other) {
+    if (other == null) {
+        return false;
+    }
+    return Objects.equals(this.getAnnualSalary(), other.getAnnualSalary())
+            && Objects.equals(this.getFixedAnnualAmount(), other.getFixedAnnualAmount())
+            && Objects.equals(this.getOverheadMultiplier(), other.getOverheadMultiplier())
+            && Objects.equals(this.getUtilizationPercentage(), other.getUtilizationPercentage())
+            && Objects.equals(this.getWorkingHours(), other.getWorkingHours())
+            && Objects.equals(this.getMarkupMultiplier(), other.getMarkupMultiplier())
+            && Objects.equals(this.getGrossMargin(), other.getGrossMargin());
+}
+
+
+public String printConfiguration(){
+
+        return "Configuration{" +
+                "configurationId=" + configurationId +
+                ", annualSalary=" + annualSalary +
+                ", fixedAnnualAmount=" + fixedAnnualAmount +
+                ", overheadMultiplier=" + overheadMultiplier +
+                ", utilizationPercentage=" + utilizationPercentage +
+                ", workingHours=" + workingHours +
+                ", savedDate=" + savedDate +
+                ", markupMultiplier=" + markupMultiplier +
+                ", grossMargin=" + grossMargin +
+                ", active=" + active +
+                '}';
+
+    }
+
+
     public LocalDateTime getSavedDate() {
         return savedDate;
     }
@@ -140,7 +172,7 @@ public class Configuration {
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+    this.active = active;
     }
 
 

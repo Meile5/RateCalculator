@@ -65,9 +65,6 @@ public class TeamDao implements ITeamDao {
            throw new RuntimeException(e);
        }
        List<TeamWithEmployees> teams = new ArrayList<>(teamsMap.values());
-       System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>.");
-       teams.forEach(e-> System.out.println(e.getTeamName() +"team name from dao"));
-       System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>.");
        return teams;
    }
 

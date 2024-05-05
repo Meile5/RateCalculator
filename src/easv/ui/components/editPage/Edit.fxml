@@ -38,7 +38,7 @@
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
-                                <MFXTextField fx:id="nameInput"  floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="letters">
+                                <MFXTextField fx:id="nameInput" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="letters">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
@@ -47,7 +47,7 @@
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
-                                <MFXComboBox fx:id="countryCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="letters">
+                                <MFXComboBox fx:id="countryCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="letters">
                                     <VBox.margin>
                                         <Insets />
                                     </VBox.margin>
@@ -56,7 +56,7 @@
                                     <font>
                                         <Font name="Open Sans Regular" size="14.0" />
                                     </font></Label>
-                                <MFXComboBox fx:id="teamCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
+                                <MFXComboBox fx:id="teamCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
                   <Label text="GM %">
                      <font>
                         <Font name="Open Sans Regular" size="14.0" />
@@ -149,7 +149,7 @@
                         <Font name="Open Sans Regular" size="14.0" />
                      </font>
                   </Label>
-                  <MFXComboBox fx:id="configurations" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" editable="false" />
+                  <MFXComboBox fx:id="configurations" editable="false" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
                             </children>
                             <padding>
                                 <Insets left="30.0" top="10.0" />

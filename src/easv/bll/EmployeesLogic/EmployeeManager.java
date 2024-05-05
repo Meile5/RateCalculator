@@ -36,6 +36,8 @@ public class EmployeeManager implements IEmployeeManager {
         return employee;
     }
 
+
+
     private boolean checkIfNewCountry(Country country, ObservableMap<String, Country> countries) {
         if (country == null) {
             return false;
@@ -86,14 +88,32 @@ public class EmployeeManager implements IEmployeeManager {
         return employeeDAO.deleteEmployee(employee);
     }
 
+
     @Override
     public List<Employee> performSearchOperation (Collection<Employee> employees, String filter) {
         String filterToLowerCase = filter.toLowerCase();
-        return employees.stream().filter((employee)->{
+        return employees.stream().filter((employee) -> {
             String name = employee.getName().toLowerCase();
 
             return name.contains(filterToLowerCase);
         }).toList();
+    }
+
+    /**check if the editOperation was performed on the employee object
+     *@param originalEmployee the original employee object
+     *@param editedEmployee the edited employee object*/
+
+    public boolean isEmployeeEdited(Employee originalEmployee,Employee editedEmployee){
+        boolean isActiveConfigurationEdited = !originalEmployee.getActiveConfiguration().isEqualTo(editedEmployee.getActiveConfiguration());
+        boolean areEmployeeValuesEdited = !originalEmployee.equals(editedEmployee);
+        return isActiveConfigurationEdited || areEmployeeValuesEdited;
+    }
+
+
+    /**save the edit operation*/
+    public Employee saveEditOperation(Employee editedEmployee,int oldConfigurationId) throws RateException {
+        return employeeDAO.saveEditOperation(editedEmployee,oldConfigurationId);
+
     }
 
 }

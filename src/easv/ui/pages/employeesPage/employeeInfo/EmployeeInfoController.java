@@ -128,4 +128,8 @@ public class EmployeeInfoController implements Initializable {
     public void setTeam(String team) {
         this.team.setText(team);
     }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
 }

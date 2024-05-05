@@ -5,11 +5,15 @@ import easv.Utility.WindowsManagement;
 import easv.be.*;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
+import easv.exception.RateException;
 import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +22,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -96,6 +101,171 @@ public class EditController implements Initializable {
         //save the edit configuration
         saveEdit();
 
+        countryCB.getItems().addListener((ListChangeListener<Country>) change -> {
+
+
+        });
+
+    }
+
+    /**
+     * populate input fields with the employee data
+     */
+    private void populateInputs() {
+        //set country info
+        this.countryCB.setItems(model.getCountiesValues());
+        String employeeCountryName = employee.getCountry().getCountryName();
+        Country countryToSelect = countryCB.getItems().stream()
+                .filter(c -> c.getCountryName().equals(employeeCountryName))
+                .findFirst()
+                .orElse(null);
+        countryCB.selectItem(countryToSelect);
+
+        this.nameInput.setText(employee.getName());
+
+        //set team info
+        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
+        this.teamCB.setItems(teams);
+        String employeeTeamName = employee.getTeam().getTeamName();
+        Team teamToSelect = teamCB.getItems().stream()
+                .filter(c -> c.getTeamName().equals(employeeTeamName))
+                .findFirst()
+                .orElse(null);
+        teamCB.selectItem(teamToSelect);
+        //set configuration info
+        Configuration config = employee.getActiveConfiguration();
+        setInputsValuesWithConfiguration(config);
+        //set currency inputs
+        this.currencyCB.setItems(FXCollections.observableArrayList(Currency.values()));
+        this.currencyCB.selectItem(employee.getCurrency());
+        //set resource fields
+        this.overOrResourceCB.setItems(FXCollections.observableArrayList(EmployeeType.values()));
+        this.overOrResourceCB.selectItem(employee.getType());
+        //set configurations items
+        this.configurations.setItems(FXCollections.observableArrayList(employee.getConfigurations()));
+        this.configurations.selectItem(employee.getActiveConfiguration());
+    }
+
+
+    /**
+     * save the edited employee
+     */
+    private void saveEdit() {
+        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (EmployeeValidation.areNamesValid(nameInput, countryCB, teamCB) &&
+                    EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
+                    EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
+                    EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB)
+                    && EmployeeValidation.validateAditionalMultipliers(markup, grossMargin)) {
+                Configuration editedConfiguration = getConfiguration();
+                Employee editedEmployee = getEmployee(editedConfiguration);
+                if (model.isEditOperationPerformed(employee, editedEmployee)) {
+                    try {
+                        if (model.updateEditedEmployee(this.employee, editedEmployee)) {
+                            updateUserValues(editedEmployee);
+                        }
+                    } catch (RateException e) {
+                        ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
+                    }
+                } else {
+                    WindowsManagement.closeStackPane(this.firstLayout);
+                }
+            }
+        });
+    }
+
+
+    /**
+     * create the employee object with the edited values
+     */
+    private Employee getEmployee(Configuration editedConfiguration) {
+        Country country = countryCB.getSelectedItem();
+        Currency currency = this.currencyCB.getSelectedItem();
+        Team team = getSelectedTeam();
+        String name = this.nameInput.getText();
+        EmployeeType employeeType = overOrResourceCB.getSelectedItem();
+        Employee editedEmployee = new Employee(name, country, team, employeeType, currency);
+        editedEmployee.setConfigurations(employee.getConfigurations());
+        editedEmployee.setActiveConfiguration(editedConfiguration);
+        editedEmployee.setId(employee.getId());
+        return editedEmployee;
+    }
+
+
+    /**
+     * create the Configuration object
+     */
+    private Configuration getConfiguration() {
+        BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
+        BigDecimal fixedAnnualAmount = new BigDecimal(annualAmountTF.getText());
+        BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
+        BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
+        BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
+        double markupValue = 0;
+        double grossMarginValue = 0;
+        if (!isTextFieldEmpty(markup)) {
+            markupValue = Double.parseDouble(this.markup.getText());
+        }
+        if (!isTextFieldEmpty(grossMargin)) {
+            grossMarginValue = Double.parseDouble(this.grossMargin.getText());
+        }
+        return new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true, markupValue, grossMarginValue);
+    }
+
+
+    /**
+     * populate the input fields with the selected configuration values
+     */
+    private void populateSelectedConfiguration() {
+        this.configurations.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                setInputsValuesWithConfiguration(newValue);
+            }
+        });
+    }
+
+    /**
+     * set the input values with the configuration values
+     *
+     * @param configuration the configuration object that is active for an employee
+     */
+    private void setInputsValuesWithConfiguration(Configuration configuration) {
+        this.utilPercentageTF.setText(String.valueOf(configuration.getUtilizationPercentage()));
+        this.multiplierTF.setText(String.valueOf(configuration.getOverheadMultiplier()));
+        this.salaryTF.setText(String.valueOf(configuration.getAnnualSalary()));
+        this.workingHoursTF.setText(String.valueOf(configuration.getWorkingHours()));
+        this.annualAmountTF.setText(String.valueOf(configuration.getFixedAnnualAmount()));
+        if (configuration.getMarkupMultiplier() != 0) {
+            this.markup.setText(String.valueOf(configuration.getMarkupMultiplier()));
+        }
+        if (configuration.getGrossMargin() != 0) {
+            this.grossMargin.setText(String.valueOf(configuration.getGrossMargin()));
+        }
+    }
+
+    /**
+     * call the EmployeeInfoControllerTo update the edited userValues
+     */
+    private void updateUserValues(Employee employee) {
+        this.employeeDisplayer.setEmployeeName(employee.getName());
+        this.employeeDisplayer.setCountry(employee.getCountry().getCountryName());
+        this.employeeDisplayer.setEmployeeType(employee.getEmployeeType());
+        this.employeeDisplayer.setTeam(employee.getTeam().getTeamName());
+        this.employeeDisplayer.setEmployee(employee);
+        WindowsManagement.closeStackPane(this.firstLayout);
+    }
+
+    private boolean isTextFieldEmpty(MFXTextField textField) {
+        return textField.getText().isEmpty();
+    }
+
+    private Team getSelectedTeam() {
+        Team team = null;
+        if (teamCB.getSelectedItem() == null) {
+        } else {
+            team = teamCB.getSelectedItem();
+        }
+        return team;
     }
 
 
@@ -126,107 +296,5 @@ public class EditController implements Initializable {
         EmployeeValidation.addLettersOnlyInputListener(countryCB);
     }
 
-    private void populateInputs() {
-        this.countryCB.setItems(model.getCountiesValues());
-        this.countryCB.selectItem(employee.getCountry());
-        this.nameInput.setText(employee.getName());
-        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
-        Configuration config = employee.getActiveConfiguration();
-        setInputsValuesWithConfiguration(config);
-        this.currencyCB.setItems(FXCollections.observableArrayList(Currency.values()));
-        this.currencyCB.selectItem(employee.getCurrency());
-        this.teamCB.setItems(teams);
-        this.teamCB.selectItem(employee.getTeam());
-        this.overOrResourceCB.setItems(FXCollections.observableArrayList(EmployeeType.values()));
-        this.overOrResourceCB.selectItem(employee.getType());
-        this.configurations.setItems(FXCollections.observableArrayList(employee.getConfigurations()));
-        this.configurations.selectItem(employee.getActiveConfiguration());
-    }
-
-
-    /**
-     * save the edited employee
-     */
-    private void saveEdit() {
-        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
-            BigDecimal fixedAnnualAmount = new BigDecimal(annualAmountTF.getText());
-            BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
-            BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
-            BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
-            double markupValue = 0;
-            double grossMarginValue = 0;
-
-            if (EmployeeValidation.validateAditionalMultipliers(markup, grossMargin).isEmpty()) {
-                if (!isTextFieldEmpty(markup)) {
-                    markupValue = Double.parseDouble(this.markup.getText());
-                }
-                if (!isTextFieldEmpty(grossMargin)) {
-                    grossMarginValue = Double.parseDouble(this.grossMargin.getText());
-                }
-            } else {
-                return;
-            }
-
-            Configuration editedConfiguration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true, markupValue, grossMarginValue);
-            String name = this.nameInput.getText();
-            Country country = this.countryCB.getSelectedItem();
-            Currency currency = this.currencyCB.getSelectedItem();
-            Team team = this.teamCB.getSelectedItem();
-            EmployeeType employeeType = overOrResourceCB.getSelectedItem();
-            Employee editedEmployee = new Employee(name, country, team, employeeType, currency);
-            editedEmployee.setActiveConfiguration(editedConfiguration);
-            if (model.updateEditedEmployee(this.employee, editedEmployee)) {
-                updateUserValues(editedEmployee);
-            }
-        });
-    }
-
-
-    /**
-     * populate the input fields with the selected configuration values
-     */
-    private void populateSelectedConfiguration() {
-        this.configurations.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                setInputsValuesWithConfiguration(newValue);
-            }
-        });
-
-    }
-
-    /**
-     * set the input values with the configuration values
-     *
-     * @param configuration the configuration object that is active for an employee
-     */
-    private void setInputsValuesWithConfiguration(Configuration configuration) {
-        this.utilPercentageTF.setText(String.valueOf(configuration.getUtilizationPercentage()));
-        this.multiplierTF.setText(String.valueOf(configuration.getOverheadMultiplier()));
-        this.salaryTF.setText(String.valueOf(configuration.getAnnualSalary()));
-        this.workingHoursTF.setText(String.valueOf(configuration.getWorkingHours()));
-        this.annualAmountTF.setText(String.valueOf(configuration.getFixedAnnualAmount()));
-        if (configuration.getMarkupMultiplier() != 0) {
-            this.markup.setText(String.valueOf(configuration.getMarkupMultiplier()));
-        }
-        if (configuration.getGrossMargin() != 0) {
-            this.grossMargin.setText(String.valueOf(configuration.getGrossMargin()));
-        }
-    }
-
-    /**
-     * call the EmployeeInfoControllerTo update the edited userValues
-     */
-    private void updateUserValues(Employee employee) {
-        this.employeeDisplayer.setEmployeeName(employee.getName());
-        this.employeeDisplayer.setCountry(employee.getCountry().getCountryName());
-        this.employeeDisplayer.setEmployeeType(employee.getEmployeeType());
-        this.employeeDisplayer.setTeam(employee.getTeam().getTeamName());
-        WindowsManagement.closeStackPane(this.firstLayout);
-    }
-
-    private boolean isTextFieldEmpty(MFXTextField textField) {
-        return textField.getText().isEmpty();
-    }
 }
 

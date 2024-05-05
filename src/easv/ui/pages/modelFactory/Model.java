@@ -11,11 +11,9 @@ import easv.bll.countryLogic.ICountryLogic;
 import easv.exception.RateException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import java.sql.SQLException;
-
 import java.util.*;
 
 public class Model implements IModel {
@@ -35,9 +33,9 @@ public class Model implements IModel {
 
     private ObservableMap<Integer, Employee> employees;
 
-
-
     private IEmployeeManager employeeManager;
+
+
     // the bussines logic object responsible of team logic
     private ITeamLogic teamManager;
     /**
@@ -49,18 +47,24 @@ public class Model implements IModel {
      */
     private final ObservableMap<String, Country> countries;
 
-    /**displayer of employees*/
+    /**
+     * displayer of employees
+     */
     private DisplayEmployees displayEmployees;
 
     // collection that holds all the teams related to a country, with all the associated overhead
     private List<TeamWithEmployees> countryTeams;
 
 
-    /**the value off the selected country from the view map*/
+    /**
+     * the value off the selected country from the view map
+     */
     private String selectedCountry;
 
 
-    /**used to check if the inserted country is valid*/
+    /**
+     * used to check if the inserted country is valid
+     */
 
     private List<String> validMapViewCountryNameValues;
 
@@ -86,10 +90,9 @@ public class Model implements IModel {
         EmployeeValidation.getTeams(teams);
     }
 
-    public void setDisplayer(DisplayEmployees displayEmployees){
-        this.displayEmployees=displayEmployees;
+    public void setDisplayer(DisplayEmployees displayEmployees) {
+        this.displayEmployees = displayEmployees;
     }
-
 
 
     private void populateCountries() throws RateException {
@@ -100,9 +103,8 @@ public class Model implements IModel {
     @Override
 
     public void returnEmployees() throws RateException {
-        this.employees.putAll (employeeManager.returnEmployees());
+        this.employees.putAll(employeeManager.returnEmployees());
         this.displayedEmployees = employees;
-
     }
 
 
@@ -112,8 +114,12 @@ public class Model implements IModel {
         if (succeeded) {
             // If the deletion was successful, remove the employee from the observable map
             employees.remove(employee.getId());
+
             displayedEmployees = employees;
-            Platform.runLater(()-> {
+
+
+            Platform.runLater(() -> {
+
                 try {
                     displayEmployees.displayEmployees();
                 } catch (RateException e) {
@@ -138,19 +144,35 @@ public class Model implements IModel {
         return countries;
     }
 
-    /**retrieve the countries as an observable list*/
-    public ObservableList<Country> getCountiesValues(){
-        ObservableList<Country> coutriesList= FXCollections.observableArrayList();
+
+    /**
+     * retrieve the countries as an observable list
+     */
+    public ObservableList<Country> getCountiesValues() {
+        ObservableList<Country> coutriesList = FXCollections.observableArrayList();
         coutriesList.setAll(countries.values());
         return coutriesList;
     }
 
     @Override
-    public boolean updateEditedEmployee(Employee employee, Employee editedEmployee) {
-        return true;
+    public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
+      Employee editedEmployeeSaved= employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
+        System.out.println(originalEmployee.getActiveConfiguration().getConfigurationId()+"from model");
+      if(editedEmployeeSaved!=null) {
+            editedEmployeeSaved.addConfiguration(editedEmployeeSaved.getActiveConfiguration());
+            this.employees.put(editedEmployee.getId(),editedEmployeeSaved);
+            return true;
+        }
+        // if database failed display the error message , and do not close the window;
+        return false;
     }
 
-    public  synchronized List<TeamWithEmployees> getCountryTeams() {
+    /**check if edit operation was performed*/
+    public boolean isEditOperationPerformed( Employee originalEmployee, Employee editedEmployee){
+      return employeeManager.isEmployeeEdited(originalEmployee,editedEmployee);
+    }
+
+    public synchronized List<TeamWithEmployees> getCountryTeams() {
         Country selectedCountry = countries.get(this.selectedCountry);
         List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
         this.countryTeams.addAll(countryTeams);
@@ -171,7 +193,7 @@ public class Model implements IModel {
         this.validMapViewCountryNameValues.addAll(validCountries);
     }
 
-    public List<String> getValidCountries(){
+    public List<String> getValidCountries() {
         return validMapViewCountryNameValues;
     }
 
@@ -179,6 +201,7 @@ public class Model implements IModel {
     public void setSelectedCountry(String selectedCountry) {
         this.selectedCountry = selectedCountry;
     }
+
     private void populateTeams() throws RateException {
         this.teams.putAll(teamManager.getTeams());
     }
