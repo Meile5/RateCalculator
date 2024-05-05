@@ -17,9 +17,12 @@
 
 .mfx-text-field:focus-within {
     -fx-background-insets: 2;
-    -fx-border-color: #2ba746; ;
+    -fx-border-color: #2ba746;
     -fx-border-width: 1.5;
     -fx-border-insets: -0.5;
+}
+.spinnerLayer{
+    -fx-background-color:transparent ;
 }
 .percentage:error{
     -fx-border-color: #C42B1C;

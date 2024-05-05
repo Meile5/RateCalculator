@@ -10,8 +10,9 @@ import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -53,21 +54,26 @@ public class EditController implements Initializable {
     private MFXComboBox<EmployeeType> overOrResourceCB;
     @FXML
     private MFXComboBox<Configuration> configurations;
+    @FXML
+    private StackPane componentParent;
+    @FXML
+    private StackPane spinnerLayer;
 
     private StackPane firstLayout;
 
     private Employee employee;
     private EmployeeInfoController employeeDisplayer;
+    private Service<Boolean> editService;
 
     public EditController(IModel model, StackPane firstLayout, Employee employee, EmployeeInfoController employeeDisplayer) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("EditNew.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("EditStackPane.fxml"));
         loader.setController(this);
         this.model = model;
         this.firstLayout = firstLayout;
         this.employee = employee;
         this.employeeDisplayer = employeeDisplayer;
         try {
-            componentRoot = loader.load();
+            componentParent = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
@@ -79,8 +85,8 @@ public class EditController implements Initializable {
                 WindowsManagement.closeStackPane(firstLayout));
     }
 
-    public HBox getRoot() {
-        return componentRoot;
+    public StackPane getRoot() {
+        return componentParent;
     }
 
     @Override
@@ -152,13 +158,16 @@ public class EditController implements Initializable {
                 Configuration editedConfiguration = getConfiguration();
                 Employee editedEmployee = getEmployee(editedConfiguration);
                 if (model.isEditOperationPerformed(employee, editedEmployee)) {
-                    try {
-                        if (model.updateEditedEmployee(this.employee, editedEmployee)) {
-                            updateUserValues(editedEmployee);
-                        }
-                    } catch (RateException e) {
-                        ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
-                    }
+//                    try {
+//                        if (model.updateEditedEmployee(this.employee, editedEmployee)) {
+//                            updateUserValues(editedEmployee);
+//                        }
+//                    } catch (RateException e) {
+//                        ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
+//                    }
+                     spinnerLayer.setDisable(false);
+                     spinnerLayer.setVisible(true);
+                    initializeService(employee,editedEmployee);
                 } else {
                     WindowsManagement.closeStackPane(this.firstLayout);
                 }
@@ -289,6 +298,38 @@ public class EditController implements Initializable {
         EmployeeValidation.addLettersOnlyInputListener(nameInput);
         EmployeeValidation.addLettersOnlyInputListener(countryCB);
     }
+ private  void  initializeService(Employee originalEmployee,Employee editedEmployee){
+        this.editService= new Service<>() {
+            @Override
+            protected Task<Boolean> createTask() {
+                return new Task<>() {
+                    @Override
+                    protected Boolean call() throws Exception {
+                        return model.updateEditedEmployee(originalEmployee,editedEmployee);
+                    }
+                };
+            }
+        };
+
+        this.editService.setOnSucceeded((edit)->{
+            if(editService.getValue()){
+                updateUserValues(editedEmployee);
+            }else{
+                this.spinnerLayer.setVisible(false);
+                this.spinnerLayer.setDisable(true);
+            }
+        });
+
+        this.editService.setOnFailed((error)->{
+            ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
+            this.spinnerLayer.setVisible(false);
+            this.spinnerLayer.setDisable(true);
+        });
+        editService.restart();
+
+ }
+
+
 
 }
 
