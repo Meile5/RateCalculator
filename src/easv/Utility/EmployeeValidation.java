@@ -1,6 +1,5 @@
 package easv.Utility;
 
-import easv.be.Employee;
 import easv.be.Team;
 import easv.exception.ExceptionHandler;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
@@ -194,46 +193,6 @@ public class EmployeeValidation {
         return value > 0 && value <= 100;
     }
 
-    /*
-    /**
-     * listeners for the inputs on textfields
-
-    public static void addTicketListeners(MFXTextField typeTF, MFXTextField priceTF, MFXTextField quantityTF) {
-        typeTF.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty()) {
-                typeTF.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            } else
-                typeTF.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, false);
-        });
-
-        priceTF.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                if (newValue.isEmpty() || new BigDecimal(newValue).compareTo(BigDecimal.ZERO) < 0) {
-                    priceTF.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-                } else {
-                    priceTF.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, false);
-                }
-            } catch (NumberFormatException | NullPointerException ex) {
-                // Handle invalid input (not a number)
-                priceTF.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            }
-        });
-
-        quantityTF.textProperty().addListener(((observable, oldValue, newValue) -> {
-            try {
-                if (newValue.isEmpty() || Integer.parseInt(newValue) <= 0) {
-                    quantityTF.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-                } else {
-                    quantityTF.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, false);
-                }
-            } catch (NumberFormatException | NullPointerException ex) {
-                // Handle invalid input (not a number)
-                quantityTF.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            }
-        }));
-    }
-    */
-
     public static void addNameToolTip(MFXTextField nameTF) {
         Tooltip errorTooltip = new Tooltip(VALID_NAME_FORMAT);
         nameTF.setTooltip(errorTooltip);
@@ -256,21 +215,17 @@ public class EmployeeValidation {
         fixedValueTF.setTooltip(errorTooltip);
     }
 
-    public static void addValueToolTip(MFXTextField utilizationPercentageTF, MFXTextField overheadMultiplierTF) {
+    public static void addPercentageToolTip(MFXTextField utilizationPercentageTF, MFXTextField overheadMultiplierTF) {
         Tooltip errorTooltip = new Tooltip(VALID_PERCENTAGE_FORMAT);
         utilizationPercentageTF.setTooltip(errorTooltip);
         overheadMultiplierTF.setTooltip(errorTooltip);
     }
 
-    //TODO the overOrResource field need to be disabled from editing , we only supoort overhead and resource
-    //if the user enters another value we will have massive errors
     public static void addOverOrResourceToolTip(MFXComboBox overOrResourceCB) {
         Tooltip tooltip = new Tooltip(VALID_OVERHEAD_COST_FORMAT);
         overOrResourceCB.setTooltip(tooltip);
     }
 
-    //TODO the currency field needs to be disabled from editing, we only support usd and dollars
-    //  if the user enter another value we will have massive errors
     public static void addCurrencyToolTip(MFXComboBox currencyCB) {
         Tooltip tooltip = new Tooltip(VALID_CURRENCY_FORMAT);
         currencyCB.setTooltip(tooltip);

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox stylesheets="/easv/ui/styling/CreateEmployeePage.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="1200.0" style="-fx-background-color: #F9F9F9;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="1200.0" style="-fx-background-color: #F9F9F9;" stylesheets="/easv/ui/styling/CreateEmployeePage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Region maxHeight="620.0" maxWidth="112.5" minHeight="620.0" minWidth="112.5" prefHeight="620.0" prefWidth="112.5" style="-fx-background-color: #F9F9F9;" />
       <VBox alignment="CENTER" maxHeight="620.0" maxWidth="1087.5" minHeight="620.0" minWidth="1087.5" prefHeight="620.0" prefWidth="1088.0" style="-fx-background-color: #F9F9F9;">
@@ -44,7 +44,7 @@
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font></Label>
-                        <MFXTextField fx:id="nameTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                        <MFXTextField fx:id="nameTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
                               <Insets bottom="20.0" />
                            </VBox.margin>
@@ -53,7 +53,7 @@
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font></Label>
-                        <MFXComboBox fx:id="countryCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                        <MFXComboBox fx:id="countryCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox">
                            <VBox.margin>
                               <Insets bottom="20.0" />
                            </VBox.margin>
@@ -62,7 +62,7 @@
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font></Label>
-                        <MFXComboBox fx:id="teamCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
+                        <MFXComboBox fx:id="teamCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox" />
                      </children>
                      <padding>
                         <Insets left="30.0" top="20.0" />
@@ -74,7 +74,7 @@
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font></Label>
-                        <MFXTextField fx:id="salaryTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                        <MFXTextField fx:id="salaryTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
                               <Insets bottom="20.0" />
                            </VBox.margin>
@@ -83,7 +83,7 @@
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font></Label>
-                        <MFXTextField fx:id="workingHoursTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                        <MFXTextField fx:id="workingHoursTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
                               <Insets bottom="20.0" />
                            </VBox.margin>
@@ -92,7 +92,7 @@
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font></Label>
-                        <MFXTextField fx:id="annualAmountTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                        <MFXTextField fx:id="annualAmountTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
@@ -111,7 +111,7 @@
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font></Label>
-                        <MFXTextField fx:id="utilPercentageTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                        <MFXTextField fx:id="utilPercentageTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
                               <Insets bottom="20.0" />
                            </VBox.margin>
@@ -120,7 +120,7 @@
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font></Label>
-                        <MFXComboBox fx:id="overOrResourceCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                        <MFXComboBox fx:id="overOrResourceCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox">
                            <VBox.margin>
                               <Insets bottom="20.0" />
                            </VBox.margin>
@@ -129,7 +129,7 @@
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font></Label>
-                        <MFXTextField fx:id="multiplierTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0">
+                        <MFXTextField fx:id="multiplierTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
                               <Insets bottom="20.0" />
                            </VBox.margin></MFXTextField>
@@ -137,7 +137,7 @@
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font></Label>
-                        <MFXComboBox fx:id="currencyCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
+                        <MFXComboBox fx:id="currencyCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox" />
                      </children>
                      <padding>
                         <Insets left="30.0" top="20.0" />

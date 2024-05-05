@@ -40,13 +40,11 @@ public class CreateController implements Initializable {
     @FXML
     private VBox vBox1, vBox2, vBox3;
     @FXML
-    private IModel model;
-    @FXML
     private HBox inputsParent;
-    @FXML
+
     private ObservableList<Country> countries;
     private ObservableList<Team> teams;
-
+    private IModel model;
 
     public CreateController(IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Create.fxml"));
@@ -65,6 +63,8 @@ public class CreateController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
             populateComboBoxes();
             clickClearHandler();
+            addListenersToInputs();
+            addTooltips();
     }
 
 
@@ -124,7 +124,6 @@ public class CreateController implements Initializable {
         return country;
     }
 
-    @FXML
     private void clickClearHandler(){
         Platform.runLater(() -> {
             clearIMG.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -132,7 +131,6 @@ public class CreateController implements Initializable {
         });});
     }
 
-    @FXML
     private void clearFields(){
          inputsParent.getChildren().forEach((child)->{
            if(child instanceof VBox){
@@ -148,16 +146,42 @@ public class CreateController implements Initializable {
          });
     }
 
-    public void populateComboBoxes() {
+    private void populateComboBoxes() {
             countries = model.getCountiesValues();
             teams = FXCollections.observableArrayList(model.getTeams().values());
-            ObservableList<String> currencies = FXCollections.observableArrayList("$", "€");
+            ObservableList<String> currencies = FXCollections.observableArrayList("USD", "EUR");
             ObservableList<String> overOrResource = FXCollections.observableArrayList("Overhead", "Resource");
 
             countryCB.setItems(countries);
             teamCB.setItems(teams);
             currencyCB.setItems(currencies);
             overOrResourceCB.setItems(overOrResource);
+    }
+
+    private void addListenersToInputs(){
+        //Listeners for the percentages
+        EmployeeValidation.addNonEmptyPercentageListener(utilPercentageTF);
+        EmployeeValidation.addNonEmptyPercentageListener(multiplierTF);
+        //
+        EmployeeValidation.addInputDigitsListeners(salaryTF);
+        EmployeeValidation.addInputDigitsListeners(workingHoursTF);
+        EmployeeValidation.addInputDigitsListeners(annualAmountTF);
+        //
+        EmployeeValidation.addLettersOnlyInputListener(nameTF);
+        EmployeeValidation.addLettersOnlyInputListener(countryCB);
+        EmployeeValidation.addLettersOnlyInputListener(teamCB);
+        EmployeeValidation.addLettersOnlyInputListener(overOrResourceCB);
+        EmployeeValidation.addLettersOnlyInputListener(currencyCB);
+    }
+
+    private void addTooltips(){
+        EmployeeValidation.addNameToolTip(nameTF);
+        EmployeeValidation.addCountryToolTip(countryCB);
+        EmployeeValidation.addTeamToolTip(teamCB);
+        EmployeeValidation.addOverOrResourceToolTip(overOrResourceCB);
+        EmployeeValidation.addCurrencyToolTip(currencyCB);
+        EmployeeValidation.addValueToolTip(salaryTF, workingHoursTF, annualAmountTF);
+        EmployeeValidation.addPercentageToolTip(utilPercentageTF, multiplierTF);
     }
 
     private void parseCountriesAndTeamsToValidator(){
