@@ -31,6 +31,7 @@ public class EmployeeValidation {
     private final static String validNamePattern = "^[A-Za-z]+(\\s[A-Za-z]+)*$";
 
     private final static String INVALID_MARKUP = "The  multiplier should be between 0 and 100";
+    private final static String  INVALID_FORMAT = "Please insert a value in the following formats : '0 00 00,0 00,00 00.0 00.00'";
 
     private static List<String> countries = new ArrayList<>();
     private static List<Team> teams;
@@ -71,6 +72,7 @@ public class EmployeeValidation {
         }
         return isValid;
     }
+
 
     public static boolean areNumbersValid(MFXTextField salary, MFXTextField hours, MFXTextField fixedAmount) {
         boolean isValid = true;
@@ -124,7 +126,7 @@ public class EmployeeValidation {
 
         if (name.getText().isEmpty()) {
             name.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            ExceptionHandler.errorAlertMessage("This field cannot be empty.");
+            ExceptionHandler.errorAlertMessage("Name field cannot be empty.");
             return false;
         }
 
@@ -133,14 +135,12 @@ public class EmployeeValidation {
             ExceptionHandler.errorAlertMessage("Country Not Found: We couldn't find the country you entered. Please check your spelling and try again.");
             return false;
         } else if (country.getText().isEmpty()) {
-            ExceptionHandler.errorAlertMessage("This field cannot be empty.");
+            ExceptionHandler.errorAlertMessage("Country  field cannot be empty.");
             return false;
-
         }
-
         if (!teams.contains((Team) team.getSelectedItem()) && team.getText().isEmpty()) {
             team.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            ExceptionHandler.errorAlertMessage("This field cannot be empty.");
+            ExceptionHandler.errorAlertMessage("Team field cannot be empty.");
             return false;
         }
         return isValid;
@@ -170,19 +170,36 @@ public class EmployeeValidation {
      * @param markup
      * @param grossMargin
      */
-    public static String validateAditionalMultipliers(MFXTextField markup, MFXTextField grossMargin) {
-        boolean areInputsValid = true;
+    public static boolean validateAditionalMultipliers(MFXTextField markup, MFXTextField grossMargin) {
+
+        System.out.println(markup.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$"));
+
         if (!markup.getText().isEmpty()) {
+            if(!markup.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$")){
+                ExceptionHandler.errorAlertMessage(INVALID_FORMAT);
+                return false;
+            }
             boolean isValid = isValueWithinValidRange(markup.getText());
             markup.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
-            areInputsValid = isValid;
+            ExceptionHandler.errorAlertMessage(INVALID_MARKUP);
+            System.out.println("Markup not valid");
+            return false;
         }
         if (!grossMargin.getText().isEmpty()) {
+
+            if(!grossMargin.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$")){
+                ExceptionHandler.errorAlertMessage(INVALID_FORMAT);
+                return false;
+            }
             boolean isValid = isValueWithinValidRange(grossMargin.getText());
             grossMargin.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
-            areInputsValid = isValid;
+            ExceptionHandler.errorAlertMessage(INVALID_MARKUP);
+            System.out.println("Markupgross not valid");
+            return false;
         }
-       return areInputsValid?"":INVALID_MARKUP;
+
+        System.out.println("all valid");
+        return true;
     }
 
 
@@ -285,9 +302,9 @@ public class EmployeeValidation {
     }
 
 
-
     /**
      * add validation for the  percentage input fields that can not be empty
+     *
      * @param percentageDisplayer the container off the percentage values
      */
     public static void addNonEmptyPercentageListener(MFXTextField percentageDisplayer) {
@@ -295,7 +312,7 @@ public class EmployeeValidation {
         percentageDisplayer.textProperty().addListener(((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((event) -> {
                 try {
-                    if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$"))  {
+                    if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
                         percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                         return;
                     }
@@ -318,16 +335,15 @@ public class EmployeeValidation {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
         percentageDisplayer.textProperty().addListener(((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((event) -> {
-                if(newValue.isEmpty()){
-                    percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,false);
+                if (newValue.isEmpty()) {
+                    percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, false);
                     return;
                 }
-                   if (!newValue.matches("^\\d{1,3}([.,]\\d{1,2})?$"))  {
-                       System.out.println(" is value wrong");
-                       percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-                      return;
-                   }
-                  percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValueWithinValidRange(newValue));
+                if (!newValue.matches("^\\d{1,3}([.,]\\d{1,2})?$")) {
+                    percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                    return;
+                }
+                percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValueWithinValidRange(newValue));
             });
             pauseTransition.playFromStart();
         }));
@@ -335,11 +351,14 @@ public class EmployeeValidation {
     }
 
 
-    /** if the inputs are not empty  check if they are  in the following formats
+    /**
+     * if the inputs are not empty  check if they are  in the following formats
      * 0 00 00.00  and between 0 and 100
+     *
      * @param percentageDisplayer the input that is accepting percentage values
-     * @param pauseTransition  the transition that will change the color off the input
-     * @param value input value that needs to be validated */
+     * @param pauseTransition     the transition that will change the color off the input
+     * @param value               input value that needs to be validated
+     */
     private static void percentageInputsValidation(MFXTextField percentageDisplayer, PauseTransition pauseTransition, String value) {
         pauseTransition.setOnFinished((event) -> {
             try {
@@ -376,8 +395,9 @@ public class EmployeeValidation {
     }
 
 
-
-    /**convert the format of the input strings to  accept US and Europe values*/
+    /**
+     * convert the format of the input strings to  accept US and Europe values
+     */
     private static double parseMultiplierToNumber(String numberStr, Locale locale) {
         DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(locale);
         DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
@@ -399,17 +419,15 @@ public class EmployeeValidation {
 
 
     //convert form comma decimal to point decimal
-    private static String convertToDecimalPoint(String value){
+    private static String convertToDecimalPoint(String value) {
         String validFormat = null;
-        if(value.contains(",")){
-            validFormat=value.replace(",",".");
-        }else{
-            validFormat=value;
+        if (value.contains(",")) {
+            validFormat = value.replace(",", ".");
+        } else {
+            validFormat = value;
         }
         return validFormat;
     }
-
-
 
 
     /**

@@ -23,4 +23,5 @@ public interface IEmployeeDAO {
     Integer addConfiguration(Configuration configuration, Connection conn) throws RateException, SQLException;
     void addEmployeeConfiguration(int employeeID, int configurationID, Connection conn) throws RateException, SQLException;
 
+    Employee saveEditOperation(Employee editedEmployee,int oldConfigurationId) throws RateException;
 }
