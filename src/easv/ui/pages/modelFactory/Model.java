@@ -1,4 +1,5 @@
 package easv.ui.pages.modelFactory;
+
 import easv.Utility.DisplayEmployees;
 import easv.Utility.EmployeeValidation;
 import easv.be.*;
@@ -13,7 +14,8 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import java.sql.SQLException;
+
+import java.math.BigDecimal;
 import java.util.*;
 
 public class Model implements IModel {
@@ -156,20 +158,21 @@ public class Model implements IModel {
 
     @Override
     public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
-      Employee editedEmployeeSaved= employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
-        System.out.println(originalEmployee.getActiveConfiguration().getConfigurationId()+"from model");
-      if(editedEmployeeSaved!=null) {
+        Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
+        if (editedEmployeeSaved != null) {
             editedEmployeeSaved.addConfiguration(editedEmployeeSaved.getActiveConfiguration());
-            this.employees.put(editedEmployee.getId(),editedEmployeeSaved);
+            this.employees.put(editedEmployee.getId(), editedEmployeeSaved);
             return true;
         }
         // if database failed display the error message , and do not close the window;
         return false;
     }
 
-    /**check if edit operation was performed*/
-    public boolean isEditOperationPerformed( Employee originalEmployee, Employee editedEmployee){
-      return employeeManager.isEmployeeEdited(originalEmployee,editedEmployee);
+    /**
+     * check if edit operation was performed
+     */
+    public boolean isEditOperationPerformed(Employee originalEmployee, Employee editedEmployee) {
+        return employeeManager.isEmployeeEdited(originalEmployee, editedEmployee);
     }
 
     public synchronized List<TeamWithEmployees> getCountryTeams() {
@@ -215,16 +218,33 @@ public class Model implements IModel {
         searchResults.setAll(employeeManager.performSearchOperation(employees.values(), filter));
         return searchResults;
     }
-    public void performSelectUserSearchOperation (int employeeId, Employee employee) throws RateException {
+
+    public void performSelectUserSearchOperation(int employeeId, Employee employee) throws RateException {
         displayedEmployees.clear();
         displayedEmployees.put(employeeId, employee);
         displayEmployees.displayEmployees();
     }
 
 
-   public ObservableMap<Integer, Employee> getUsersToDisplay() {
-       return this.displayedEmployees;
-   }
+    public ObservableMap<Integer, Employee> getUsersToDisplay() {
+        return this.displayedEmployees;
+    }
+
+
+    /**
+     * calculate the hourly rate for an employee
+     */
+    public BigDecimal getComputedHourlyRate(Employee employee, double configurableHours) {
+        return employeeManager.getHourlyRate(employee, configurableHours);
+    }
+
+    /**
+     * calculate the day rate for an employee
+     */
+
+    public BigDecimal getComputedDayRate(Employee employee) {
+        return employeeManager.getDayRate(employee);
+    }
 
 
 }

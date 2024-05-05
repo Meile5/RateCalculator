@@ -8,6 +8,7 @@ import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,5 +25,11 @@ public interface IEmployeeManager {
     boolean isEmployeeEdited(Employee originalEmployee,Employee editedEmployee);
     /**save the edit operation*/
     Employee saveEditOperation(Employee editedEmployee,int oldConfigurationId) throws RateException;
+
+    /**calculate the day rate for an employee*/
+   BigDecimal getDayRate(Employee employee);
+
+    /**calculate the hourly rate for an employee, with the configurable hours*/
+     BigDecimal getHourlyRate(Employee employee,double configurableHours);
 
 }

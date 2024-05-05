@@ -34,7 +34,6 @@ public class TeamLogic implements ITeamLogic {
      @param numberOfElements how manny elements to retrieve
      */
     public List<TeamWithEmployees> getTeamsOverheadByCountry(Country country, int offset, int numberOfElements) {
-        System.out.println(country.getId()+"from logic");
         List<TeamWithEmployees> teams = teamDao.getTeamsByCountry(country, offset, numberOfElements);
         for (TeamWithEmployees team : teams) {
             team.setTeamOverheadValues(calculateTeamOverhead(team));
@@ -54,7 +53,8 @@ public class TeamLogic implements ITeamLogic {
         teamOverhead.put(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD,salaryOverhead);
         teamOverhead.put(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD,expensesOverhead);
         teamOverhead.put(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD,productiveOverhead);
-        return teamOverhead;}
+        return teamOverhead;
+    }
 
     private List<Map<String,Double>> calculateTeamPercentage(TeamWithEmployees team){
         List<Map<String,Double>> teamPercentagePerEmployee =team.getTeamMembers().stream().map(e-> employeePercentage(e,team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD))).toList();

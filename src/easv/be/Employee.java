@@ -18,8 +18,6 @@ public class Employee {
     private BigDecimal overhead;
     private Configuration  activeConfiguration;
 
-
-
     public void setOverhead(BigDecimal overhead) {
         this.overhead = overhead;
     }
