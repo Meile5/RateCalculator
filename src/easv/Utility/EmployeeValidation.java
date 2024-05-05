@@ -146,7 +146,7 @@ public class EmployeeValidation {
      * check if the  input is a valid number between 0 an 100
      */
     private static boolean isValueWithinValidRange(String inputValue) {
-        double value = Double.parseDouble(inputValue);
+        double value = Double.parseDouble(convertToDecimalPoint(inputValue));
         return value > 0 && value <= 100;
     }
 
@@ -240,6 +240,8 @@ public class EmployeeValidation {
         teams = new ArrayList<>(listTeams.values());
     }
 
+
+
     /**
      * add validation for the  percentage input fields that can not be empty
      * @param percentageDisplayer the container off the percentage values
@@ -247,11 +249,22 @@ public class EmployeeValidation {
     public static void addNonEmptyPercentageListener(MFXTextField percentageDisplayer) {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
         percentageDisplayer.textProperty().addListener(((observable, oldValue, newValue) -> {
-            if (!newValue.isEmpty()) {
-                percentageInputsValidation(percentageDisplayer, pauseTransition, newValue);
-            }
+            pauseTransition.setOnFinished((event) -> {
+                try {
+                    if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$"))  {
+                        percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                        return;
+                    }
+                    percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValueWithinValidRange(newValue));
+                } catch (NumberFormatException e) {
+                    percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                }
+            });
+            pauseTransition.playFromStart();
         }));
+
     }
+
 
     /**
      * add validation listeners for the markup and the grossMargin multipliers,
@@ -260,13 +273,21 @@ public class EmployeeValidation {
     public static void addAdditionalMarkupsListeners(MFXTextField percentageDisplayer) {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
         percentageDisplayer.textProperty().addListener(((observable, oldValue, newValue) -> {
-            if(newValue.isEmpty()){
-                percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,false);
-           }else {
-                percentageInputsValidation(percentageDisplayer, pauseTransition, newValue);
-            }
-
+            pauseTransition.setOnFinished((event) -> {
+                if(newValue.isEmpty()){
+                    percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS,false);
+                    return;
+                }
+                   if (!newValue.matches("^\\d{1,3}([.,]\\d{1,2})?$"))  {
+                       System.out.println(" is value wrong");
+                       percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                      return;
+                   }
+                  percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValueWithinValidRange(newValue));
+            });
+            pauseTransition.playFromStart();
         }));
+
     }
 
 
@@ -278,7 +299,7 @@ public class EmployeeValidation {
     private static void percentageInputsValidation(MFXTextField percentageDisplayer, PauseTransition pauseTransition, String value) {
         pauseTransition.setOnFinished((event) -> {
             try {
-                if (!value.matches("^\\d{1,3}([.,]\\d{2})?$")) {
+                if (!value.matches("^\\d{1,3}([.,]\\d{1,2})?$")) {
                     percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                     return;
                 }
@@ -287,7 +308,6 @@ public class EmployeeValidation {
                 percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             }
         });
-        pauseTransition.playFromStart();
     }
 
 
@@ -308,11 +328,12 @@ public class EmployeeValidation {
                 normalDigitInputs.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValueValid);
             }));
             pauseTransition.playFromStart();
-
         });
     }
 
 
+
+    /**convert the format of the input strings to  accept US and Europe values*/
     private static double parseMultiplierToNumber(String numberStr, Locale locale) {
         DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(locale);
         DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
@@ -331,6 +352,20 @@ public class EmployeeValidation {
             return Double.NaN;
         }
     }
+
+
+    //convert form comma decimal to point decimal
+    private static String convertToDecimalPoint(String value){
+        String validFormat = null;
+        if(value.contains(",")){
+            validFormat=value.replace(",",".");
+        }else{
+            validFormat=value;
+        }
+        return validFormat;
+    }
+
+
 
 
     /**
