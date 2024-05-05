@@ -43,6 +43,9 @@ public class CreateController implements Initializable {
     private IModel model;
     @FXML
     private HBox inputsParent;
+    @FXML
+    private ObservableList<Country> countries;
+    private ObservableList<Team> teams;
 
 
     public CreateController(IModel model) {
@@ -60,44 +63,65 @@ public class CreateController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-            clickClearHandler();
             populateComboBoxes();
+            clickClearHandler();
     }
 
 
 
     @FXML
     private void saveEmployee() throws RateException {
-        String name = nameTF.getText();
-        EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText());
+        parseCountriesAndTeamsToValidator();
 
-        Country country = null;
-        if(countryCB.getSelectedItem() == null){
-            country = new Country(countryCB.getText());
-        } else {
-            country = (Country) countryCB.getSelectedItem();
+        if(EmployeeValidation.areNamesValid(nameTF, countryCB,teamCB) &&
+           EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
+           EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
+           EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB))
+        {
+            String name = nameTF.getText();
+            EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText());
+
+            Country country = getSelectedCountry();
+
+            Team team = getSelectedTeam();
+
+            Currency currency = Currency.valueOf(currencyCB.getText());
+            BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
+            BigDecimal fixedAnnualAmount = new BigDecimal(annualAmountTF.getText());
+            BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
+            BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
+            BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
+            LocalDateTime savedDate = LocalDateTime.now();
+            Employee employee = new Employee(name, country, team, employeeType, currency);
+            Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
+            employee.setActiveConfiguration(configuration);
+            model.addEmployee(employee, configuration);
+            clearFields();
         }
+    }
 
+    private Team getSelectedTeam() {
         Team team = null;
         if(teamCB.getSelectedItem() == null){
             team = new Team(teamCB.getText());
+            teams.add(team);
+            teamCB.setItems(teams);
         } else {
             team = (Team) teamCB.getSelectedItem();
         }
+        return team;
+    }
 
-
-        Currency currency = Currency.valueOf(currencyCB.getText());
-        BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
-        BigDecimal fixedAnnualAmount = new BigDecimal(annualAmountTF.getText());
-        BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
-        BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
-        BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
-        LocalDateTime savedDate = LocalDateTime.now();
-        Employee employee = new Employee(name, country, team, employeeType, currency);
-        Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
-        employee.setActiveConfiguration(configuration);
-        model.addEmployee(employee, configuration);
-        clearFields();
+    private Country getSelectedCountry() {
+        Country country = null;
+        if(countryCB.getSelectedItem() == null){
+            country = new Country(countryCB.getText());
+            countries.add(country);
+            countryCB.setItems(countries);
+        } else {
+            country = (Country) countryCB.getSelectedItem();
+        }
+        return country;
     }
 
     @FXML
@@ -109,48 +133,7 @@ public class CreateController implements Initializable {
     }
 
     @FXML
-    private void clearFields() {
-        for (int i = 0; i < vBox1.getChildren().size(); i++) {
-            if (vBox1.getChildren().get(i) instanceof MFXTextField) {
-                MFXTextField textField = (MFXTextField) vBox1.getChildren().get(i);
-                textField.clear();
-            }
-            if(vBox1.getChildren().get(i) instanceof MFXComboBox){
-                MFXComboBox comboBox = (MFXComboBox) vBox1.getChildren().get(i);
-                comboBox.clearSelection();
-                comboBox.clear();
-            }
-        }
-
-        for (int i = 0; i < vBox2.getChildren().size(); i++) {
-            if (vBox2.getChildren().get(i) instanceof MFXTextField) {
-                MFXTextField textField = (MFXTextField) vBox2.getChildren().get(i);
-                textField.clear();
-            }
-            if(vBox2.getChildren().get(i) instanceof MFXComboBox){
-                MFXComboBox comboBox = (MFXComboBox) vBox2.getChildren().get(i);
-                comboBox.clearSelection();
-                comboBox.clear();
-            }
-        }
-
-        for (int i = 0; i < vBox3.getChildren().size(); i++) {
-            if (vBox3.getChildren().get(i) instanceof MFXTextField) {
-                MFXTextField textField = (MFXTextField) vBox3.getChildren().get(i);
-                textField.clear();
-            }
-            if(vBox3.getChildren().get(i) instanceof MFXComboBox){
-                MFXComboBox comboBox = (MFXComboBox) vBox3.getChildren().get(i);
-                comboBox.clearSelection();
-                comboBox.clear();
-            }
-        }
-    }
-
-    //Todo  the bellow method is it how i imagined that needs to be implemented, when i told you about
-    //it is much shorter and simpler, if you want you can use it,
-
-    private void clearFields2(){
+    private void clearFields(){
          inputsParent.getChildren().forEach((child)->{
            if(child instanceof VBox){
                ((VBox) child).getChildren().forEach((input)->{
@@ -165,22 +148,24 @@ public class CreateController implements Initializable {
          });
     }
 
-
-
     public void populateComboBoxes() {
-        ObservableList<Country> countries = FXCollections.observableArrayList(model.getCountries().values());
-        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
-        ObservableList<String> currencies = FXCollections.observableArrayList("$", "€");
-        ObservableList<String> overOrResource = FXCollections.observableArrayList("Overhead", "Resource");
+            countries = model.getCountiesValues();
+            teams = FXCollections.observableArrayList(model.getTeams().values());
+            ObservableList<String> currencies = FXCollections.observableArrayList("$", "€");
+            ObservableList<String> overOrResource = FXCollections.observableArrayList("Overhead", "Resource");
 
-        countryCB.setItems(countries);
-        teamCB.setItems(teams);
-        currencyCB.setItems(currencies);
-        overOrResourceCB.setItems(overOrResource);
+            countryCB.setItems(countries);
+            teamCB.setItems(teams);
+            currencyCB.setItems(currencies);
+            overOrResourceCB.setItems(overOrResource);
+    }
+
+    private void parseCountriesAndTeamsToValidator(){
+        EmployeeValidation.getCountries(model.getValidCountries());
+        EmployeeValidation.getTeams(model.getTeams());
     }
 
     public Parent getCreatePage() {
         return createPage;
     }
-
 }
