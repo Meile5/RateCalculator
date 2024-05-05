@@ -11,6 +11,7 @@ import javafx.collections.ObservableMap;
 
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,16 @@ public class EmployeeManager implements IEmployeeManager {
 
     public Boolean deleteEmployee(Employee employee) throws RateException {
         return employeeDAO.deleteEmployee(employee);
+    }
+
+    @Override
+    public List<Employee> performSearchOperation (Collection<Employee> employees, String filter) {
+        String filterToLowerCase = filter.toLowerCase();
+        return employees.stream().filter((employee)->{
+            String name = employee.getName().toLowerCase();
+
+            return name.contains(filterToLowerCase);
+        }).toList();
     }
 
 }

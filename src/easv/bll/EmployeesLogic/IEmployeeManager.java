@@ -8,11 +8,14 @@ import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface IEmployeeManager {
     Employee addEmployee(Employee employee, ObservableMap<String, Country> countries, ObservableMap<Integer, Team> teams, Configuration configuration) throws RateException;
     Map<Integer, Employee> returnEmployees() throws RateException;
     Boolean deleteEmployee(Employee employee) throws RateException;
+    public List<Employee> performSearchOperation (Collection<Employee> employees, String filter);
 }

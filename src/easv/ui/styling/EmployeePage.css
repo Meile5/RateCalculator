@@ -14,7 +14,12 @@
     -fx-border-radius: 12;
     -fx-border-width: 2;
 }
-
+.text-field:focused {
+    -fx-border-color: rgba(99, 178, 225, 1); /* Border color when TextField is focused */
+}
+.text-field:empty {
+    -fx-border-color: rgb(50, 210, 84); /* Revert to default border color when TextField is empty */
+}
 #employees{
     -fx-text-fill: rgba(47, 46, 46, 1);
     -fx-font-family: 'Open Sans' , sans-serif;

@@ -67,6 +67,8 @@ public class Model implements IModel {
 
     private final ObservableMap<Integer, Team> teams;
 
+    private ObservableMap<Integer, Employee> displayedEmployees;
+
 
     public Model() throws RateException {
         this.employees = FXCollections.observableMap(new LinkedHashMap<>());
@@ -77,6 +79,7 @@ public class Model implements IModel {
         this.validMapViewCountryNameValues = new ArrayList<>();
         this.teams = FXCollections.observableHashMap();
         this.countryTeams = new ArrayList<>();
+        this.displayedEmployees = FXCollections.observableMap(new LinkedHashMap<>());
         populateCountries();
         populateTeams();
         EmployeeValidation.getCountries(validMapViewCountryNameValues);
@@ -96,9 +99,9 @@ public class Model implements IModel {
 
     @Override
 
-    public ObservableMap<Integer, Employee> returnEmployees() throws RateException {
-        employees.putAll (employeeManager.returnEmployees());
-        return  employees;
+    public void returnEmployees() throws RateException {
+        this.employees.putAll (employeeManager.returnEmployees());
+        this.displayedEmployees = employees;
 
     }
 
@@ -109,10 +112,11 @@ public class Model implements IModel {
         if (succeeded) {
             // If the deletion was successful, remove the employee from the observable map
             employees.remove(employee.getId());
+            displayedEmployees = employees;
             Platform.runLater(()-> {
                 try {
                     displayEmployees.displayEmployees();
-                } catch (RateException | SQLException e) {
+                } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
             });
@@ -182,6 +186,22 @@ public class Model implements IModel {
     public ObservableMap<Integer, Team> getTeams() {
         return teams;
     }
+
+    public ObservableList<Employee> getSearchResult(String filter) {
+        ObservableList searchResults = FXCollections.observableArrayList();
+        searchResults.setAll(employeeManager.performSearchOperation(employees.values(), filter));
+        return searchResults;
+    }
+    public void performSelectUserSearchOperation (int employeeId, Employee employee) throws RateException {
+        displayedEmployees.clear();
+        displayedEmployees.put(employeeId, employee);
+        displayEmployees.displayEmployees();
+    }
+
+
+   public ObservableMap<Integer, Employee> getUsersToDisplay() {
+       return this.displayedEmployees;
+   }
 
 
 }

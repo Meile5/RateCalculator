@@ -5,6 +5,6 @@ import easv.exception.RateException;
 import java.sql.SQLException;
 
 public interface DisplayEmployees {
-    void displayEmployees() throws RateException, SQLException;
+    void displayEmployees() throws RateException;
 
 }

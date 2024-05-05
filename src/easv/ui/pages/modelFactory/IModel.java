@@ -15,10 +15,11 @@ public interface IModel {
 
 
 
-    ObservableMap<Integer, Employee> returnEmployees() throws RateException;
+    void returnEmployees() throws RateException;
     void deleteEmployee(Employee employee) throws RateException ;
 
     void setDisplayer(DisplayEmployees displayEmployees);
+    ObservableMap<Integer, Employee> getUsersToDisplay();
 
 
 
@@ -48,4 +49,7 @@ public interface IModel {
     boolean updateEditedEmployee(Employee employee, Employee editedEmployee);
 
     List<String> getValidCountries();
+    ObservableList<Employee> getSearchResult(String filter);
+
+    void performSelectUserSearchOperation (int employeeId, Employee employee) throws RateException ;
 }

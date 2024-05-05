@@ -136,15 +136,9 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" +
-                "name='" + name + '\'' +
-                ", employeeType=" + employeeType +
-                ", country=" + country +
-                ", team=" + team +
-                ", id=" + id +
-                ", currency=" + currency +
-                '}';
+        return name;
     }
+
 
 
     public void addConfiguration(Configuration config){
