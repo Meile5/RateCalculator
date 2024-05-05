@@ -31,6 +31,9 @@ import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class EditController implements Initializable {
+
+    @FXML
+    private HBox componentRoot;
     @FXML
     private VBox editRoot;
     @FXML
@@ -62,14 +65,14 @@ public class EditController implements Initializable {
     private EmployeeInfoController employeeDisplayer;
 
     public EditController(IModel model, StackPane firstLayout, Employee employee, EmployeeInfoController employeeDisplayer) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Edit.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("EditNew.fxml"));
         loader.setController(this);
         this.model = model;
         this.firstLayout = firstLayout;
         this.employee = employee;
         this.employeeDisplayer = employeeDisplayer;
         try {
-            editRoot = loader.load();
+            componentRoot = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
@@ -81,8 +84,8 @@ public class EditController implements Initializable {
                 WindowsManagement.closeStackPane(firstLayout));
     }
 
-    public VBox getRoot() {
-        return editRoot;
+    public HBox getRoot() {
+        return componentRoot;
     }
 
     @Override
