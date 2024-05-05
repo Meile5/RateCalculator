@@ -23,10 +23,10 @@ public class EmployeeValidation {
     private static final String VALID_NAME_FORMAT = "Please enter the name of the Employee (e.g., Nelson Mandela).";
     private static final String VALID_COUNTRY_FORMAT = "Please select or enter the Country where the Employee works (e.g., Denmark).";
     private static final String VALID_TEAM_FORMAT = "Please select or enter the Team of the Employee (e.g., Project Management).";
-    private static final String VALID_VALUE_FORMAT = "Please enter the value in this format XXXX or XXXX.XX (e.g., 1000 or 150000.50).";
-    private static final String VALID_PERCENTAGE_FORMAT = "Please enter the percentage in this format XX or XX.XX (e.g., 59 or 70.50).";
-    private static final String VALID_OVERHEAD_COST_FORMAT = "Please select one of the options (e.g., Overhead or Resource).";
-    private static final String VALID_CURRENCY_FORMAT = "Please select the currency to apply (e.g., EUR or USD).";
+    private static final String VALID_VALUE_FORMAT = "Please enter the value in this format: e.g., 100 or 150000.50.";
+    private static final String VALID_PERCENTAGE_FORMAT = "Please enter the percentage in this format: e.g., 59 or 70.50.";
+    private static final String VALID_OVERHEAD_COST_FORMAT = "Please select one of the options: Overhead or Resource.";
+    private static final String VALID_CURRENCY_FORMAT = "Please select one of the currencies: EUR or USD.";
     private final static String validNamePattern = "^[A-Za-z]+(\\s[A-Za-z]+)*$";
 
     private final static String INVALID_MARKUP = "The  multiplier should be between 0 and 100";
