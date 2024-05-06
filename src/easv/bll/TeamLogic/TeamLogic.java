@@ -34,7 +34,6 @@ public class TeamLogic implements ITeamLogic {
      @param numberOfElements how manny elements to retrieve
      */
     public List<TeamWithEmployees> getTeamsOverheadByCountry(Country country, int offset, int numberOfElements) {
-        System.out.println(country.getId()+"from logic");
         List<TeamWithEmployees> teams = teamDao.getTeamsByCountry(country, offset, numberOfElements);
         for (TeamWithEmployees team : teams) {
             team.setTeamOverheadValues(calculateTeamOverhead(team));
@@ -54,7 +53,8 @@ public class TeamLogic implements ITeamLogic {
         teamOverhead.put(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD,salaryOverhead);
         teamOverhead.put(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD,expensesOverhead);
         teamOverhead.put(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD,productiveOverhead);
-        return teamOverhead;}
+        return teamOverhead;
+    }
 
     private List<Map<String,Double>> calculateTeamPercentage(TeamWithEmployees team){
         List<Map<String,Double>> teamPercentagePerEmployee =team.getTeamMembers().stream().map(e-> employeePercentage(e,team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD))).toList();
@@ -65,6 +65,14 @@ public class TeamLogic implements ITeamLogic {
     private Map<String,Double> employeePercentage(Employee employee, BigDecimal totalOverhead){
         Map<String,Double> emplPercentage = new HashMap<>();
         BigDecimal employeeOverhead = employee.getOverhead();
+        System.out.println(employee.getId());
+        System.out.println(employee.getActiveConfiguration().getConfigurationId());
+        System.out.println(employeeOverhead+"overhead");
+
+        if(employeeOverhead.compareTo(BigDecimal.ZERO)==0){
+            emplPercentage.put(employee.getName(), 0.0);
+            return emplPercentage;
+        }
         double percentage = employeeOverhead.divide(totalOverhead, MathContext.DECIMAL32).doubleValue() * 100;
         emplPercentage.put(employee.getName(), percentage);
         return emplPercentage;

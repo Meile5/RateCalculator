@@ -115,7 +115,19 @@ public class EmployeeManager implements IEmployeeManager {
     /**save the edit operation*/
     public Employee saveEditOperation(Employee editedEmployee,int oldConfigurationId) throws RateException {
         return employeeDAO.saveEditOperation(editedEmployee,oldConfigurationId);
-
     }
+
+    /**calculate the day rate for an employee*/
+    public BigDecimal getDayRate(Employee employee){
+        return rateCalculator.calculateDayRate(employee);
+    }
+
+    /**calculate the hourly rate for an employee*/
+    public BigDecimal getHourlyRate(Employee employee,double configurableHours){
+        return rateCalculator.calculateHourlyRate(employee,configurableHours);
+    }
+
+
+
 
 }

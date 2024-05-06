@@ -1,36 +1,65 @@
-.closeButton:hover{
+.editContainer {
+    -fx-background-color: #CCCCCC;
+    -fx-background-radius: 0 0 25 25;
+    -fx-border-radius: 25;
+}
+.inputFields{
+    -fx-background-color: #F9F9F9;
+    -fx-background-radius: 25 ;
+}
+
+.topRoundedCorners{
+    -fx-background-radius: 25 25 0 0;
+    -fx-background-color: #CCCCCC;
+}
+.leftRoundedCorner{
+    -fx-background-radius: 30 0 0 0;
+    -fx-background-color: #CCCCCC;
+}
+
+
+
+
+
+.closeButton:hover {
     -fx-background-color: #C42B1C;
-    -fx-background-radius: 0 10 0 0 ;
+    -fx-background-radius: 0 10 0 0;
 }
 
-.closeButton:hover > .svgClose{
-   -fx-fill: #fff;
+.closeButton:hover > .svgClose {
+    -fx-fill: #fff;
 }
 
-.saveButton:hover{
+.saveButton:hover {
     -fx-background-color: #2ba746;
 }
 
-.saveButton:hover > .svgSave{
-    -fx-fill:#fff;
+.saveButton:hover > .svgSave {
+    -fx-fill: #fff;
 }
 
 .mfx-text-field:focus-within {
     -fx-background-insets: 2;
-    -fx-border-color: #2ba746; ;
+    -fx-border-color: #2ba746;
     -fx-border-width: 1.5;
     -fx-border-insets: -0.5;
 }
-.percentage:error{
+
+.spinnerLayer {
+    -fx-background-color: transparent;
+}
+
+.percentage:error {
     -fx-border-color: #C42B1C;
     -fx-text-fill: #C42B1C;
 }
 
-.digits:error{
+.digits:error {
     -fx-border-color: #C42B1C;
     -fx-text-fill: #C42B1C;
 }
-.letters:error{
+
+.letters:error {
     -fx-border-color: #C42B1C;
     -fx-text-fill: #C42B1C;
 }

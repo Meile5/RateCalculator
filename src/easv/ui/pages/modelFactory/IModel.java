@@ -6,49 +6,63 @@ import easv.exception.RateException;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
+import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Map;
 
 public interface IModel {
-
-
-
     void returnEmployees() throws RateException;
-    void deleteEmployee(Employee employee) throws RateException ;
+
+    void deleteEmployee(Employee employee) throws RateException;
 
     void setDisplayer(DisplayEmployees displayEmployees);
+
     ObservableList<Employee> getUsersToDisplay();
 
 
 
     Map<String, Country> getCountries();
 
-
     void addEmployee(Employee employee, Configuration configuration) throws RateException;
 
-
-    /**retrieve the teams with the overhead computed*/
+    /**
+     * retrieve the teams with the overhead computed
+     */
     List<TeamWithEmployees> getCountryTeams();
-    /**used to reset the  index of the database retrieval */
+
+    /**
+     * used to reset the  index of the database retrieval
+     */
     public void resetCurrentIndexToRetrieve();
 
     ObservableMap<Integer, Team> getTeams();
-    /**used for country input validation*/
+
+    /**
+     * used for country input validation
+     */
     void populateValidCountries(List<String> validCountries);
 
-    /**set the country that user has selected from the map*/
+    /**
+     * set the country that user has selected from the map
+     */
     void setSelectedCountry(String selectedCountry);
 
-    /**get countries values as a Observable list */
+    /**
+     * get countries values as a Observable list
+     */
     ObservableList<Country> getCountiesValues();
 
 
-    /**save the updated employee to the database*/
+    /**
+     * save the updated employee to the database
+     */
     boolean updateEditedEmployee(Employee employee, Employee editedEmployee) throws RateException;
 
     List<String> getValidCountries();
 
     ObservableList<Employee> getSearchResult(String filter);
+
 
     void performSelectUserSearchOperation (Employee employee) throws RateException ;
 
@@ -56,5 +70,21 @@ public interface IModel {
     /**check if edit operation was performed*/
     boolean isEditOperationPerformed( Employee originalEmployee, Employee editedEmployee);
     void performEmployeeSearchUndoOperation() throws RateException;
+
+
+
+
+
+    /**
+     * calculate the hourly rate for an employee
+     */
+    BigDecimal getComputedHourlyRate(Employee employee, double configurableHours);
+
+    /**
+     * calculate the day rate for an employee
+     */
+
+    BigDecimal getComputedDayRate(Employee employee);
+
 
 }

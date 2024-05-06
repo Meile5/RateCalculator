@@ -1,5 +1,4 @@
 package easv.ui.components.editPage;
-
 import easv.Utility.EmployeeValidation;
 import easv.Utility.WindowsManagement;
 import easv.be.*;
@@ -10,11 +9,10 @@ import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,8 +20,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -58,21 +54,26 @@ public class EditController implements Initializable {
     private MFXComboBox<EmployeeType> overOrResourceCB;
     @FXML
     private MFXComboBox<Configuration> configurations;
+    @FXML
+    private StackPane componentParent;
+    @FXML
+    private StackPane spinnerLayer;
 
     private StackPane firstLayout;
 
     private Employee employee;
     private EmployeeInfoController employeeDisplayer;
+    private Service<Boolean> editService;
 
     public EditController(IModel model, StackPane firstLayout, Employee employee, EmployeeInfoController employeeDisplayer) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("EditNew.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("EditStackPane.fxml"));
         loader.setController(this);
         this.model = model;
         this.firstLayout = firstLayout;
         this.employee = employee;
         this.employeeDisplayer = employeeDisplayer;
         try {
-            componentRoot = loader.load();
+            componentParent = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
@@ -84,8 +85,8 @@ public class EditController implements Initializable {
                 WindowsManagement.closeStackPane(firstLayout));
     }
 
-    public HBox getRoot() {
-        return componentRoot;
+    public StackPane getRoot() {
+        return componentParent;
     }
 
     @Override
@@ -103,12 +104,6 @@ public class EditController implements Initializable {
         populateSelectedConfiguration();
         //save the edit configuration
         saveEdit();
-
-        countryCB.getItems().addListener((ListChangeListener<Country>) change -> {
-
-
-        });
-
     }
 
     /**
@@ -163,13 +158,16 @@ public class EditController implements Initializable {
                 Configuration editedConfiguration = getConfiguration();
                 Employee editedEmployee = getEmployee(editedConfiguration);
                 if (model.isEditOperationPerformed(employee, editedEmployee)) {
-                    try {
-                        if (model.updateEditedEmployee(this.employee, editedEmployee)) {
-                            updateUserValues(editedEmployee);
-                        }
-                    } catch (RateException e) {
-                        ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
-                    }
+//                    try {
+//                        if (model.updateEditedEmployee(this.employee, editedEmployee)) {
+//                            updateUserValues(editedEmployee);
+//                        }
+//                    } catch (RateException e) {
+//                        ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
+//                    }
+                     spinnerLayer.setDisable(false);
+                     spinnerLayer.setVisible(true);
+                    initializeService(employee,editedEmployee);
                 } else {
                     WindowsManagement.closeStackPane(this.firstLayout);
                 }
@@ -228,7 +226,7 @@ public class EditController implements Initializable {
     }
 
     /**
-     * set the input values with the configuration values
+     * set the input values with the configuration selected from the history values
      *
      * @param configuration the configuration object that is active for an employee
      */
@@ -247,7 +245,7 @@ public class EditController implements Initializable {
     }
 
     /**
-     * call the EmployeeInfoControllerTo update the edited userValues
+     * call the EmployeeInfoController to update the edited userValues
      */
     private void updateUserValues(Employee employee) {
         this.employeeDisplayer.setEmployeeName(employee.getName());
@@ -255,6 +253,8 @@ public class EditController implements Initializable {
         this.employeeDisplayer.setEmployeeType(employee.getEmployeeType());
         this.employeeDisplayer.setTeam(employee.getTeam().getTeamName());
         this.employeeDisplayer.setEmployee(employee);
+        this.employeeDisplayer.setDayRate(model.getComputedDayRate(employee).toString());
+        this.employeeDisplayer.setHourlyRate(model.getComputedHourlyRate(employee,0).toString());
         WindowsManagement.closeStackPane(this.firstLayout);
     }
 
@@ -298,6 +298,35 @@ public class EditController implements Initializable {
         EmployeeValidation.addLettersOnlyInputListener(nameInput);
         EmployeeValidation.addLettersOnlyInputListener(countryCB);
     }
+ private  void  initializeService(Employee originalEmployee,Employee editedEmployee){
+        this.editService= new Service<>() {
+            @Override
+            protected Task<Boolean> createTask() {
+                return new Task<>() {
+                    @Override
+                    protected Boolean call() throws Exception {
+                        return model.updateEditedEmployee(originalEmployee,editedEmployee);
+                    }
+                };
+            }
+        };
+
+        this.editService.setOnSucceeded((edit)->{
+            if(editService.getValue()){
+                updateUserValues(editedEmployee);
+            }else{
+                this.spinnerLayer.setVisible(false);
+                this.spinnerLayer.setDisable(true);
+            }
+        });
+
+        this.editService.setOnFailed((error)->{
+            ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
+            this.spinnerLayer.setVisible(false);
+            this.spinnerLayer.setDisable(true);
+        });
+        editService.restart();
+ }
 
 }
 

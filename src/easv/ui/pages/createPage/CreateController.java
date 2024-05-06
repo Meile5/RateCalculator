@@ -1,18 +1,25 @@
 package easv.ui.pages.createPage;
 import easv.Utility.EmployeeValidation;
 import easv.be.*;
+import easv.exception.ErrorCode;
 import easv.exception.RateException;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
+import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
+import javafx.animation.PauseTransition;
+import javafx.css.PseudoClass;
+import javafx.util.Duration;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -38,13 +45,16 @@ public class CreateController implements Initializable {
     @FXML
     private ImageView clearIMG, employeeIMG;
     @FXML
-    private VBox vBox1, vBox2, vBox3;
-    @FXML
     private HBox inputsParent;
+    @FXML
+    private MFXProgressSpinner operationSpinner;
+    @FXML
+    private Label spinnerLB;
 
     private ObservableList<Country> countries;
     private ObservableList<Team> teams;
     private IModel model;
+    private Service<Void> saveEmployee;
 
     public CreateController(IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Create.fxml"));
@@ -65,9 +75,8 @@ public class CreateController implements Initializable {
             clickClearHandler();
             addListenersToInputs();
             addTooltips();
+            disableSpinner();
     }
-
-
 
     @FXML
     private void saveEmployee() throws RateException {
@@ -78,6 +87,7 @@ public class CreateController implements Initializable {
            EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
            EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB))
         {
+            enableSpinner();
             String name = nameTF.getText();
             EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText());
 
@@ -85,7 +95,7 @@ public class CreateController implements Initializable {
 
             Team team = getSelectedTeam();
 
-            Currency currency = Currency.valueOf(currencyCB.getText());
+            Currency currency = getCurrency();
             BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
             BigDecimal fixedAnnualAmount = new BigDecimal(annualAmountTF.getText());
             BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
@@ -95,9 +105,47 @@ public class CreateController implements Initializable {
             Employee employee = new Employee(name, country, team, employeeType, currency);
             Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
             //employee.setActiveConfiguration(configuration);
+
             model.addEmployee(employee, configuration);
             clearFields();
+
+            saveEmployeeOperation(employee, configuration);
+
         }
+    }
+
+    private void saveEmployeeOperation(Employee employee, Configuration configuration) {
+        saveEmployee = new Service<Void>(){
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        Thread.sleep(2000);
+                        model.addEmployee(employee, configuration);
+                        return null;
+                    }
+                };
+            }
+        };
+
+        saveEmployee.setOnSucceeded(event -> {
+            showOperationStatus("Operation Successful!", Duration.seconds(2));
+            clearFields();
+        });
+
+        saveEmployee.setOnFailed(event ->
+                showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5)));
+
+        saveEmployee.restart();
+    }
+
+    private void showOperationStatus(String message, Duration duration) {
+        spinnerLB.setText(message);
+
+        PauseTransition delay = new PauseTransition(duration);
+        delay.setOnFinished(event -> Platform.runLater(() -> disableSpinner()));
+        delay.play();
     }
 
     private Team getSelectedTeam() {
@@ -124,6 +172,17 @@ public class CreateController implements Initializable {
         return country;
     }
 
+    private Currency getCurrency(){
+        Currency currency = null;
+        if(currencyCB.getText().equals("USD")){
+            currency = Currency.valueOf("$");
+        }
+        if(currencyCB.getText().equals("EUR")){
+            currency = Currency.valueOf("€");
+        }
+        return currency;
+    }
+
     private void clickClearHandler(){
         Platform.runLater(() -> {
             clearIMG.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -137,9 +196,11 @@ public class CreateController implements Initializable {
                ((VBox) child).getChildren().forEach((input)->{
                    if(input instanceof  MFXTextField){
                        ((MFXTextField) input).clear();
+                       input.pseudoClassStateChanged(PseudoClass.getPseudoClass("focus-within"), true);
                    }
                    if(input instanceof MFXComboBox<?>){
                        ((MFXComboBox<?>) input).clear();
+                       input.pseudoClassStateChanged(PseudoClass.getPseudoClass("focus-within"), true);
                    }
                });
            }
@@ -150,6 +211,7 @@ public class CreateController implements Initializable {
             countries = model.getCountiesValues();
             teams = FXCollections.observableArrayList(model.getTeams().values());
             ObservableList<String> currencies = FXCollections.observableArrayList("USD", "EUR");
+
             ObservableList<String> overOrResource = FXCollections.observableArrayList("Overhead", "Resource");
 
             countryCB.setItems(countries);
@@ -188,8 +250,21 @@ public class CreateController implements Initializable {
         EmployeeValidation.getCountries(model.getValidCountries());
         EmployeeValidation.getTeams(model.getTeams());
     }
+    
+    private void enableSpinner() {
+        spinnerLB.setText("Processing...");
+        operationSpinner.setVisible(true);
+        operationSpinner.setDisable(false);
+    }
+    
+    private void disableSpinner() {
+        operationSpinner.setVisible(false);
+        operationSpinner.setDisable(true);
+        spinnerLB.setText("");
+    }
 
     public Parent getCreatePage() {
         return createPage;
     }
+
 }
