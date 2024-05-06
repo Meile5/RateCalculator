@@ -4,7 +4,6 @@ import easv.Utility.WindowsManagement;
 import easv.be.*;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
-import easv.exception.RateException;
 import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
@@ -24,6 +23,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class EditController implements Initializable {
@@ -47,7 +47,7 @@ public class EditController implements Initializable {
     @FXML
     private MFXComboBox<Country> countryCB;
     @FXML
-    private MFXComboBox<Currency> currencyCB;
+    private MFXComboBox<String> currencyCB;
     @FXML
     private MFXComboBox<Team> teamCB;
     @FXML
@@ -95,7 +95,7 @@ public class EditController implements Initializable {
         //initialize the percentage inputs listeners
         initializePercentageInputValidationListeners();
         //initialize the digits inputs listeners
-        initializeDigitsValidationListaners();
+        initializeDigitsValidationListeners();
         // initialize the letters inputs listeners
         initializeLettersValidationListeners();
         //populate inputs with the selected employee to edit data
@@ -134,8 +134,8 @@ public class EditController implements Initializable {
         Configuration config = employee.getActiveConfiguration();
         setInputsValuesWithConfiguration(config);
         //set currency inputs
-        this.currencyCB.setItems(FXCollections.observableArrayList(Currency.values()));
-        this.currencyCB.selectItem(employee.getCurrency());
+        this.currencyCB.setItems(FXCollections.observableArrayList(Arrays.stream(Currency.values()).map(Enum::name).toList()));
+        this.currencyCB.selectItem(employee.getCurrency().name());
         //set resource fields
         this.overOrResourceCB.setItems(FXCollections.observableArrayList(EmployeeType.values()));
         this.overOrResourceCB.selectItem(employee.getType());
@@ -158,13 +158,6 @@ public class EditController implements Initializable {
                 Configuration editedConfiguration = getConfiguration();
                 Employee editedEmployee = getEmployee(editedConfiguration);
                 if (model.isEditOperationPerformed(employee, editedEmployee)) {
-//                    try {
-//                        if (model.updateEditedEmployee(this.employee, editedEmployee)) {
-//                            updateUserValues(editedEmployee);
-//                        }
-//                    } catch (RateException e) {
-//                        ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
-//                    }
                      spinnerLayer.setDisable(false);
                      spinnerLayer.setVisible(true);
                     initializeService(employee,editedEmployee);
@@ -181,7 +174,7 @@ public class EditController implements Initializable {
      */
     private Employee getEmployee(Configuration editedConfiguration) {
         Country country = countryCB.getSelectedItem();
-        Currency currency = this.currencyCB.getSelectedItem();
+        Currency currency = Currency.valueOf(this.currencyCB.getSelectedItem());
         Team team = getSelectedTeam();
         String name = this.nameInput.getText();
         EmployeeType employeeType = overOrResourceCB.getSelectedItem();
@@ -194,21 +187,22 @@ public class EditController implements Initializable {
 
 
     /**
-     * create the Configuration object
+     * create the Configuration object from the inputs fields
      */
     private Configuration getConfiguration() {
-        BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
-        BigDecimal fixedAnnualAmount = new BigDecimal(annualAmountTF.getText());
-        BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
-        BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
-        BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
+        BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText()));
+        BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText()));
+        BigDecimal overheadMultiplier = new BigDecimal(convertToDecimalPoint(multiplierTF.getText()));
+        BigDecimal utilizationPercentage = new BigDecimal(convertToDecimalPoint(utilPercentageTF.getText()));
+        BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText()));
         double markupValue = 0;
         double grossMarginValue = 0;
         if (!isTextFieldEmpty(markup)) {
-            markupValue = Double.parseDouble(this.markup.getText());
+            markupValue = Double.parseDouble(convertToDecimalPoint(this.markup.getText()));
+
         }
         if (!isTextFieldEmpty(grossMargin)) {
-            grossMarginValue = Double.parseDouble(this.grossMargin.getText());
+            grossMarginValue = Double.parseDouble(convertToDecimalPoint(this.grossMargin.getText()));
         }
         return new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true, markupValue, grossMarginValue);
     }
@@ -285,7 +279,7 @@ public class EditController implements Initializable {
     /**
      * initialize digits inputs validation listeners
      */
-    private void initializeDigitsValidationListaners() {
+    private void initializeDigitsValidationListeners() {
         EmployeeValidation.addInputDigitsListeners(salaryTF);
         EmployeeValidation.addInputDigitsListeners(workingHoursTF);
         EmployeeValidation.addInputDigitsListeners(annualAmountTF);
@@ -327,6 +321,17 @@ public class EditController implements Initializable {
         });
         editService.restart();
  }
+
+ /**convert from comma to point*/
+    private String convertToDecimalPoint(String value) {
+        String validFormat = null;
+        if (value.contains(",")) {
+            validFormat = value.replace(",", ".");
+        } else {
+            validFormat = value;
+        }
+        return validFormat;
+    }
 
 }
 

@@ -27,54 +27,55 @@ public class TeamLogic implements ITeamLogic {
     }
 
     /**
-
-     retrieve the teams and related team overhead for a specific country
-     @param country country to retrieve for
-     @param offset the index from where to retrieve
-     @param numberOfElements how manny elements to retrieve
+     * retrieve the teams and related team overhead for a specific country
+     *
+     * @param country          country to retrieve for
+     * @param offset           the index from where to retrieve
+     * @param numberOfElements how manny elements to retrieve
      */
     public List<TeamWithEmployees> getTeamsOverheadByCountry(Country country, int offset, int numberOfElements) {
         List<TeamWithEmployees> teams = teamDao.getTeamsByCountry(country, offset, numberOfElements);
         for (TeamWithEmployees team : teams) {
             team.setTeamOverheadValues(calculateTeamOverhead(team));
-            team.setEmployeesOverheadPercentage(calculateTeamPercentage(team));}
-        return teams;}
+            team.setEmployeesOverheadPercentage(calculateTeamPercentage(team));
+        }
+        return teams;
+    }
 
     /**
-
-     compute the overhead for a team*
-     @param team the team to calculate for
-     returns a List that contains salaryOverhead,totalOverhead,productiveOverhead*/
+     * compute the overhead for a team*
+     *
+     * @param team the team to calculate for
+     *             returns a List that contains salaryOverhead,totalOverhead,productiveOverhead
+     */
     private Map<TeamWithEmployees.TeamOverheadType, BigDecimal> calculateTeamOverhead(TeamWithEmployees team) {
-        Map<TeamWithEmployees.TeamOverheadType,BigDecimal> teamOverhead = new HashMap<>();
-        BigDecimal salaryOverhead =rateCalculator.calculateTeamSalaryOverhead(team);
-        BigDecimal expensesOverhead = rateCalculator.calculateTeamTotalOverhead(team);
-        BigDecimal productiveOverhead =  rateCalculator.calculateProductiveOverHead(team);
-        teamOverhead.put(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD,salaryOverhead);
-        teamOverhead.put(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD,expensesOverhead);
-        teamOverhead.put(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD,productiveOverhead);
+        Map<TeamWithEmployees.TeamOverheadType, BigDecimal> teamOverhead = new HashMap<>();
+        BigDecimal salaryOverhead = rateCalculator.calculateTeamSalaryOverhead(team);
+        BigDecimal expensesOverhead = rateCalculator.calculateTeamOverheadWithoutPercentage(team);
+        BigDecimal productiveOverhead = rateCalculator.calculateProductiveOverHead(team);
+        teamOverhead.put(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD, salaryOverhead);
+        teamOverhead.put(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD, expensesOverhead);
+        teamOverhead.put(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD, productiveOverhead);
         return teamOverhead;
     }
 
-    private List<Map<String,Double>> calculateTeamPercentage(TeamWithEmployees team){
-        List<Map<String,Double>> teamPercentagePerEmployee =team.getTeamMembers().stream().map(e-> employeePercentage(e,team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD))).toList();
+    private List<Map<String, Double>> calculateTeamPercentage(TeamWithEmployees team) {
+        List<Map<String, Double>> teamPercentagePerEmployee = team.getTeamMembers().stream().map(e -> employeePercentage(e, team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD))).toList();
         return teamPercentagePerEmployee;
     }
 
 
-    private Map<String,Double> employeePercentage(Employee employee, BigDecimal totalOverhead){
-        Map<String,Double> emplPercentage = new HashMap<>();
+    private Map<String, Double> employeePercentage(Employee employee, BigDecimal totalOverhead) {
+        Map<String, Double> emplPercentage = new HashMap<>();
         BigDecimal employeeOverhead = employee.getOverhead();
-        System.out.println(employee.getId());
-        System.out.println(employee.getActiveConfiguration().getConfigurationId());
-        System.out.println(employeeOverhead+"overhead");
-
-        if(employeeOverhead.compareTo(BigDecimal.ZERO)==0){
+        if (employeeOverhead.compareTo(BigDecimal.ZERO) == 0) {
             emplPercentage.put(employee.getName(), 0.0);
             return emplPercentage;
         }
+
         double percentage = employeeOverhead.divide(totalOverhead, MathContext.DECIMAL32).doubleValue() * 100;
-        emplPercentage.put(employee.getName(), percentage);
+        String formattedPercentage = String.format("%.2f", percentage);
+        emplPercentage.put(employee.getName() + " " + formattedPercentage, percentage);
         return emplPercentage;
     }
 

@@ -75,6 +75,8 @@ public class Configuration {
      */
     public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime savedDate, boolean active, double markup, double grossMargin) {
         this(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours);
+        this.markupMultiplier = markup;
+        this.grossMargin = grossMargin;
         this.savedDate = savedDate;
         this.active = active;
     }

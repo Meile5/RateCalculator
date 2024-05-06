@@ -12,7 +12,7 @@ public interface IRateCalculator {
     /**calculate the team salary overhead*/
     BigDecimal calculateTeamSalaryOverhead(TeamWithEmployees team);
     /**calculate team total overhead*/
-    BigDecimal calculateTeamTotalOverhead(TeamWithEmployees team);
+    BigDecimal calculateTeamOverheadWithoutPercentage(TeamWithEmployees team);
     /**calculate team productive overhead*/
     BigDecimal calculateProductiveOverHead(TeamWithEmployees team);
 

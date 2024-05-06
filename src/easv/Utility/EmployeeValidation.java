@@ -191,34 +191,31 @@ public class EmployeeValidation {
      * @param grossMargin
      */
     public static boolean validateAditionalMultipliers(MFXTextField markup, MFXTextField grossMargin) {
-
-        System.out.println(markup.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$"));
-
         if (!markup.getText().isEmpty()) {
             if(!markup.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$")){
                 ExceptionHandler.errorAlertMessage(INVALID_FORMAT);
                 return false;
             }
             boolean isValid = isValueWithinValidRange(markup.getText());
-            markup.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
-            ExceptionHandler.errorAlertMessage(INVALID_MARKUP);
-            System.out.println("Markup not valid");
-            return false;
+            if(!isValid){
+                markup.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
+                ExceptionHandler.errorAlertMessage(INVALID_MARKUP);
+                return false;
+            }
         }
-        if (!grossMargin.getText().isEmpty()) {
 
+        if (!grossMargin.getText().isEmpty()) {
             if(!grossMargin.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$")){
                 ExceptionHandler.errorAlertMessage(INVALID_FORMAT);
                 return false;
             }
             boolean isValid = isValueWithinValidRange(grossMargin.getText());
-            grossMargin.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
-            ExceptionHandler.errorAlertMessage(INVALID_MARKUP);
-            System.out.println("Markupgross not valid");
-            return false;
+            if(!isValid){
+                grossMargin.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
+                ExceptionHandler.errorAlertMessage(INVALID_MARKUP);
+                return false;
+            }
         }
-
-        System.out.println("all valid");
         return true;
     }
 

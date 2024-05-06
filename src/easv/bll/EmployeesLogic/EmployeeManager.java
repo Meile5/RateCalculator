@@ -58,8 +58,6 @@ public class EmployeeManager implements IEmployeeManager {
                 BigDecimal hourRate = rateCalculator.calculateHourlyRate(employee);
                 employee.setDailyRate(dayRate);
                 employee.setHourlyRate(hourRate);
-
-
         });
         return employees;
     }
@@ -100,6 +98,7 @@ public class EmployeeManager implements IEmployeeManager {
     public Employee saveEditOperation(Employee editedEmployee,int oldConfigurationId) throws RateException {
         return employeeDAO.saveEditOperation(editedEmployee,oldConfigurationId);
     }
+
 
     /**calculate the day rate for an employee*/
     public BigDecimal getDayRate(Employee employee){
