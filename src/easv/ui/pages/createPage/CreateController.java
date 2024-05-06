@@ -95,7 +95,7 @@ public class CreateController implements Initializable {
 
             Team team = getSelectedTeam();
 
-            Currency currency = getCurrency();
+            Currency currency = Currency.valueOf(currencyCB.getText().trim());
             BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText().trim()));
             BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText().trim()));
             BigDecimal overheadMultiplier = new BigDecimal(convertToDecimalPoint(multiplierTF.getText().trim()));
@@ -105,12 +105,7 @@ public class CreateController implements Initializable {
             Employee employee = new Employee(name, country, team, employeeType, currency);
             Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
             //employee.setActiveConfiguration(configuration);
-
-            model.addEmployee(employee, configuration);
-            clearFields();
-
             saveEmployeeOperation(employee, configuration);
-
         }
     }
 
@@ -170,17 +165,6 @@ public class CreateController implements Initializable {
             country = (Country) countryCB.getSelectedItem();
         }
         return country;
-    }
-
-    private Currency getCurrency(){
-        Currency currency = null;
-        if(currencyCB.getText().equals("USD")){
-            currency = Currency.valueOf("$");
-        }
-        if(currencyCB.getText().equals("EUR")){
-            currency = Currency.valueOf("€");
-        }
-        return currency;
     }
 
     private void clickClearHandler(){
