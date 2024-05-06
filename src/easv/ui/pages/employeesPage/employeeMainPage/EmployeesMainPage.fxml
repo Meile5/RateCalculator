@@ -61,8 +61,8 @@
                         </Button>
                      </children>
                   </StackPane>
-                  <MFXComboBox fx:id="countriesFilterCB" allowEdit="true" prefHeight="42.0" prefWidth="150.0" promptText="Countries" selectable="true" GridPane.columnIndex="2" />
-                  <MFXComboBox fx:id="teamsFilterCB" allowEdit="true" prefWidth="150.0" promptText="Teams" selectable="true" GridPane.columnIndex="3" />
+                  <MFXComboBox fx:id="countriesFilterCB" alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="150.0" promptText="Countries" selectable="true" GridPane.columnIndex="2" />
+                  <MFXComboBox fx:id="teamsFilterCB" alignment="CENTER_RIGHT" prefWidth="150.0" promptText="Teams" selectable="true" GridPane.columnIndex="3" />
                </children>
                <padding>
                   <Insets bottom="10.0" />
@@ -108,7 +108,26 @@
       </VBox>
       <VBox prefHeight="600.0" prefWidth="191.0">
          <children>
+            <Region prefHeight="180.0" prefWidth="190.0" />
+            <VBox alignment="CENTER_LEFT" prefHeight="130.0" prefWidth="150.0" spacing="3.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;">
+               <children>
+                  <Label text="Total Day Rate" />
+                  <TextField fx:id="dayRateField" editable="false">
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Label text="Total Hourly Rate" />
+                  <TextField fx:id="hourlyRateField" editable="false" prefHeight="26.0" prefWidth="68.0" />
+               </children>
+               <padding>
+                  <Insets left="20.0" right="20.0" />
+               </padding>
+            </VBox>
             <Region prefHeight="200.0" prefWidth="200.0" />
-         </children></VBox>
+         </children>
+         <padding>
+            <Insets right="40.0" />
+         </padding></VBox>
    </children>
 </HBox>

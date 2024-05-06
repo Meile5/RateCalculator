@@ -77,11 +77,14 @@ public class Model implements IModel {
 
     private ObservableList<Employee> displayedEmployees;
     private ObservableList<Employee> sortedEmployeesByName;
-    private ObservableList<Employee> filteredEmployees;
+    private ObservableList<Employee> filteredEmployeesList;
+    private ObservableMap<Integer, Employee> filteredEmployeesMap;
 
 
     public Model() throws RateException {
         this.employees = FXCollections.observableMap(new LinkedHashMap<>());
+        this.filteredEmployeesMap = FXCollections.observableMap(new LinkedHashMap<>());
+        this.filteredEmployeesList = FXCollections.observableArrayList();
         this.countries = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
         this.countryLogic = new CountryLogic();
@@ -245,24 +248,41 @@ public class Model implements IModel {
 
     @Override
     public void filterByCountry(Country country) throws RateException {
-        filteredEmployees = FXCollections.observableArrayList();
-        filteredEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
-        displayedEmployees.setAll(filteredEmployees);
+        filteredEmployeesList.setAll(employeeManager.filterByCountry(employees.values(), country));
+        filteredEmployeesList.stream().forEach(employee -> filteredEmployeesMap.put(employee.getId(), employee));
+        displayedEmployees.setAll(filteredEmployeesList);
         displayEmployees.displayEmployees();
     }
 
     @Override
     public void filterByTeam(Team team) throws RateException {
-        filteredEmployees = FXCollections.observableArrayList();
-        filteredEmployees.setAll(employeeManager.filterByTeam(employees.values(), team));
-        displayedEmployees.setAll(filteredEmployees);
+        filteredEmployeesList.setAll(employeeManager.filterByTeam(employees.values(), team));
+        filteredEmployeesList.stream().forEach(employee -> filteredEmployeesMap.put(employee.getId(), employee));
+        displayedEmployees.setAll(filteredEmployeesList);
         displayEmployees.displayEmployees();
     }
 
-   public ObservableList<Employee> getUsersToDisplay() {
+    @Override
+    public BigDecimal calculateGroupDayRate() {
+        return employeeManager.calculateGroupDayRate(displayedEmployees);
+    }
+
+    @Override
+    public BigDecimal calculateGroupHourlyRate() {
+        return employeeManager.calculateGroupHourlyRate(displayedEmployees);
+    }
+
+    public ObservableList<Employee> getUsersToDisplay() {
        return displayedEmployees;
    }
 
+   public ObservableList<Employee> getFilteredEmployeesList() {
+       return filteredEmployeesList;
+   }
+
+   public ObservableMap<Integer, Employee> getFilteredEmployeesMap() {
+       return filteredEmployeesMap;
+   }
 
 
 
