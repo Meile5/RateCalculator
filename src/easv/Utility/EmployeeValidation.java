@@ -28,6 +28,8 @@ public class EmployeeValidation {
     private static final String VALID_OVERHEAD_COST_FORMAT = "Please select one of the options: Overhead or Resource.";
     private static final String VALID_CURRENCY_FORMAT = "Please select one of the currencies: EUR or USD.";
     private final static String validNamePattern = "^[A-Za-z]+(\\s[A-Za-z]+)*$";
+    private final static String validPercentagePattern = "^\\d{0,3}([.,]\\d{1,2})?$";
+    private final static String validNumberPattern = "^\\d{1,12}([.,]\\d{1,2})?$";
 
     private final static String INVALID_MARKUP = "The  multiplier should be between 0 and 100";
     private final static String  INVALID_FORMAT = "Please insert a value in the following formats : '0 00 00,0 00,00 00.0 00.00'";
@@ -47,11 +49,15 @@ public class EmployeeValidation {
             utilization.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("The Utilization % field cannot be empty.");
             return false;
+        } else if (!utilizationText.matches(validPercentagePattern)) {
+            utilization.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Utilization % should be a number.");
+            return false;
         } else {
-            BigDecimal utilizationValue = new BigDecimal(utilizationText);
+            BigDecimal utilizationValue = new BigDecimal(convertToDecimalPoint(utilizationText));
             if (utilizationValue.compareTo(BigDecimal.ZERO) < 0 || utilizationValue.compareTo(new BigDecimal("100")) > 0) {
                 utilization.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-                ExceptionHandler.errorAlertMessage("The Utilization % should be equal or greater than 0.");
+                ExceptionHandler.errorAlertMessage("The Utilization % should be between 0 and 100.");
                 return false;
             }
         }
@@ -61,11 +67,15 @@ public class EmployeeValidation {
             overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("The Overhead Multiplier % field cannot be empty.");
             return false;
-        } else {
-            BigDecimal multiplierValue = new BigDecimal(overheadMultiplierText);
+        } else if (!overheadMultiplierText.matches(validPercentagePattern)) {
+            overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Overhead Multiplier % should be a number.");
+            return false;
+        } else{
+            BigDecimal multiplierValue = new BigDecimal(convertToDecimalPoint(overheadMultiplierText));
             if (multiplierValue.compareTo(BigDecimal.ZERO) < 0 || multiplierValue.compareTo(new BigDecimal("100")) > 0) {
                 overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-                ExceptionHandler.errorAlertMessage("The Overhead Multiplier % should be equal or greater than 0.");
+                ExceptionHandler.errorAlertMessage("The Overhead Multiplier % should be between 0 and 100.");
                 return false;
             }
         }
@@ -81,8 +91,12 @@ public class EmployeeValidation {
             salary.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("The Salary field cannot be empty.");
             return false;
-        } else {
-            BigDecimal salaryValue = new BigDecimal(salaryText);
+        } else if (!salaryText.matches(validNumberPattern)) {
+            salary.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Salary should be a number.");
+            return false;
+        } else{
+            BigDecimal salaryValue = new BigDecimal(convertToDecimalPoint(salaryText));
             if (salaryValue.compareTo(BigDecimal.ZERO) < 0) {
                 salary.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                 ExceptionHandler.errorAlertMessage("The Salary should be equal or greater than 0.");
@@ -95,8 +109,12 @@ public class EmployeeValidation {
             hours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("The Working Hours field cannot be empty.");
             return false;
-        } else {
-            BigDecimal hoursValue = new BigDecimal(hoursText);
+        } else if (!hoursText.matches(validNumberPattern)) {
+            hours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Working Hours should be a number.");
+            return false;
+        } else{
+            BigDecimal hoursValue = new BigDecimal(convertToDecimalPoint(hoursText));
             if (hoursValue.compareTo(BigDecimal.ZERO) < 0) {
                 hours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                 ExceptionHandler.errorAlertMessage("The Working Hours should be equal or greater than 0.");
@@ -109,8 +127,12 @@ public class EmployeeValidation {
             fixedAmount.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("The Fixed Annual Amount field cannot be empty.");
             return false;
+        } else if (!fixedAmountText.matches(validNumberPattern)) {
+            fixedAmount.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Fixed Annual Amount should be a number.");
+            return false;
         } else {
-            BigDecimal fixedAmountValue = new BigDecimal(fixedAmountText);
+            BigDecimal fixedAmountValue = new BigDecimal(convertToDecimalPoint(fixedAmountText));
             if (fixedAmountValue.compareTo(BigDecimal.ZERO) < 0) {
                 fixedAmount.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                 ExceptionHandler.errorAlertMessage("The Fixed Annual Amount should be equal or greater than 0.");
@@ -128,13 +150,12 @@ public class EmployeeValidation {
             ExceptionHandler.errorAlertMessage("Name field cannot be empty.");
             return false;
         }
-
-        if (!countries.contains(country.getText())) {
+        if (country.getText().isEmpty()) {
+            ExceptionHandler.errorAlertMessage("Country  field cannot be empty.");
+            return false;
+        } else if (!countries.contains(country.getText())) {
             country.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("Country Not Found: We couldn't find the country you entered. Please check your spelling and try again.");
-            return false;
-        } else if (country.getText().isEmpty()) {
-            ExceptionHandler.errorAlertMessage("Country  field cannot be empty.");
             return false;
         }
         if (!teams.contains((Team) team.getSelectedItem()) && team.getText().isEmpty()) {
@@ -256,6 +277,18 @@ public class EmployeeValidation {
         teams = new ArrayList<>(listTeams.values());
     }
 
+    public static void listenerForEmptyFieldsAfterSaving(MFXTextField textField){
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
+        textField.textProperty().addListener(((observable, oldValue, newValue) -> {
+            pauseTransition.setOnFinished((event) -> {
+                if (newValue.isEmpty()) {
+                    textField.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, false);
+                    return;
+                }
+            });
+            pauseTransition.playFromStart();
+        }));
+    }
 
     /**
      * add validation for the  percentage input fields that can not be empty
