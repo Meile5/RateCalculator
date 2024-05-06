@@ -135,6 +135,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
             progressBar.setVisible(false);
         });
         loadEmployeesFromDB.setOnFailed((event)->{
+            loadEmployeesFromDB.getException().printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
         });
         loadEmployeesFromDB.restart();
