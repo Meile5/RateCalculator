@@ -18,17 +18,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.Parent;
-import javafx.scene.control.ListView;
-import javafx.scene.control.PopupControl;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class EmployeeMainPageController implements Initializable , DisplayEmployees {
@@ -53,7 +54,13 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     private TextField searchField;
     @FXML
     private ListView<Employee> searchResponseHolder;
+    @FXML
+    private Button goBackButton;
     private Service<Void> loadEmployeesFromDB;
+    private final Image revertImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/easv/resources/images/revert.png")));
+    private final Image searchImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/easv/resources/images/search (1).png")));
+
+
 
 
     public EmployeeMainPageController(StackPane firstLayout) {
@@ -79,11 +86,13 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
 
             model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
             progressBar.setVisible(true);
+            showSearchImage();
             initializeEmployeeLoadingService();
 
             createPopUpWindow();
             searchFieldListener();
             addSelectionListener();
+
 
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
@@ -92,7 +101,6 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     public void displayEmployees() {
         employeesContainer.getChildren().clear();
         model.getUsersToDisplay()
-                .values()
                 .forEach(e -> {
                     DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
                     EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout);
@@ -130,6 +138,21 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
         loadEmployeesFromDB.restart();
     }
 
+    private void showRevertImage(){
+        goBackButton.setGraphic(new ImageView(revertImage));
+    }
+    private void showSearchImage(){
+        goBackButton.setGraphic(new ImageView(searchImage));
+    }
+
+    @FXML
+    private void goBack() throws RateException {
+        model.performEmployeeSearchUndoOperation();
+        System.out.println("nnn");
+        Platform.runLater(this::showSearchImage);
+
+    }
+
 
     private void createPopUpWindow() {
         popupWindow = new PopupControl();
@@ -149,9 +172,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     }
 
     private void searchFieldListener() {
-
-        this.searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-           // pauseTransition.setOnFinished((event) -> {
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue.isEmpty()) {
                     searchResponseHolder.setItems(model.getSearchResult(newValue));
                     if (!searchResponseHolder.getItems().isEmpty()) {
@@ -162,11 +183,12 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
 
                     }
                 } else {
+                    showRevertImage();
                     popupWindow.hide();
                 }
 
         });
-        this.searchField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+        searchField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 popupWindow.hide();
             }
@@ -174,24 +196,20 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     }
 
     private void addSelectionListener() throws RateException  {
-
         searchResponseHolder.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                if (newValue instanceof Employee) {
-
-                    try {
-                        model.performSelectUserSearchOperation(((Employee) newValue).getId(), newValue);
-                    } catch (RateException e) {
-                        throw new RuntimeException(e);
-                    }
-
+                try {
+                    model.performSelectUserSearchOperation(newValue);
+                } catch (RateException e) {
+                    ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
                 }
+
                 Platform.runLater(() -> {
                     if (!searchResponseHolder.getItems().isEmpty()) {
                         searchResponseHolder.getSelectionModel().clearSelection();
                     }
                 });
-
+                showRevertImage();
                 popupWindow.hide();
             }
         });

@@ -54,7 +54,7 @@
                      </padding></TextField>
                   <StackPane maxHeight="32.0" maxWidth="40.0" prefHeight="27.0" prefWidth="29.0">
                      <children>
-                        <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="19.0" style="-fx-background-color: transparent;">
+                        <Button fx:id="goBackButton" mnemonicParsing="false" onAction="#goBack" prefHeight="33.0" prefWidth="19.0" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="31.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

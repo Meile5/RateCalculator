@@ -6,8 +6,6 @@ import easv.exception.RateException;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
-import java.sql.SQLException;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +17,7 @@ public interface IModel {
     void deleteEmployee(Employee employee) throws RateException ;
 
     void setDisplayer(DisplayEmployees displayEmployees);
-    ObservableMap<Integer, Employee> getUsersToDisplay();
+    ObservableList<Employee> getUsersToDisplay();
 
 
 
@@ -52,10 +50,11 @@ public interface IModel {
 
     ObservableList<Employee> getSearchResult(String filter);
 
-    void performSelectUserSearchOperation (int employeeId, Employee employee) throws RateException ;
+    void performSelectUserSearchOperation (Employee employee) throws RateException ;
 
 
     /**check if edit operation was performed*/
     boolean isEditOperationPerformed( Employee originalEmployee, Employee editedEmployee);
+    void performEmployeeSearchUndoOperation() throws RateException;
 
 }

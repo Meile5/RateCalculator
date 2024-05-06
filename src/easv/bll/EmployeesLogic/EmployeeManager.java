@@ -11,10 +11,8 @@ import javafx.collections.ObservableMap;
 
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class EmployeeManager implements IEmployeeManager {
     private IEmployeeDAO employeeDAO;
@@ -97,6 +95,10 @@ public class EmployeeManager implements IEmployeeManager {
 
             return name.contains(filterToLowerCase);
         }).toList();
+    }
+    /**sort employees by name  alphabetically */
+    public List<Employee> sortedEmployeesByName(Collection<Employee> values){
+        return values.stream().sorted(Comparator.comparing(Employee::getName)).collect(Collectors.toList());
     }
 
     /**check if the editOperation was performed on the employee object

@@ -94,7 +94,7 @@ public class CreateController implements Initializable {
             LocalDateTime savedDate = LocalDateTime.now();
             Employee employee = new Employee(name, country, team, employeeType, currency);
             Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
-            employee.setActiveConfiguration(configuration);
+            //employee.setActiveConfiguration(configuration);
             model.addEmployee(employee, configuration);
             clearFields();
         }

@@ -24,5 +24,6 @@ public interface IEmployeeManager {
     boolean isEmployeeEdited(Employee originalEmployee,Employee editedEmployee);
     /**save the edit operation*/
     Employee saveEditOperation(Employee editedEmployee,int oldConfigurationId) throws RateException;
+    List<Employee> sortedEmployeesByName(Collection<Employee> values);
 
 }

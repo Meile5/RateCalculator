@@ -13,7 +13,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import java.sql.SQLException;
+
 import java.util.*;
 
 public class Model implements IModel {
@@ -71,7 +71,8 @@ public class Model implements IModel {
 
     private final ObservableMap<Integer, Team> teams;
 
-    private ObservableMap<Integer, Employee> displayedEmployees;
+    private ObservableList<Employee> displayedEmployees;
+    private ObservableList<Employee> sortedEmployeesByName;
 
 
     public Model() throws RateException {
@@ -83,7 +84,8 @@ public class Model implements IModel {
         this.validMapViewCountryNameValues = new ArrayList<>();
         this.teams = FXCollections.observableHashMap();
         this.countryTeams = new ArrayList<>();
-        this.displayedEmployees = FXCollections.observableMap(new LinkedHashMap<>());
+        this.displayedEmployees = FXCollections.observableArrayList();
+        this.sortedEmployeesByName = FXCollections.observableArrayList();
         populateCountries();
         populateTeams();
         EmployeeValidation.getCountries(validMapViewCountryNameValues);
@@ -97,14 +99,22 @@ public class Model implements IModel {
 
     private void populateCountries() throws RateException {
         this.countries.putAll(countryLogic.getCountries());
+
     }
+
+
 
 
     @Override
 
     public void returnEmployees() throws RateException {
         this.employees.putAll(employeeManager.returnEmployees());
-        this.displayedEmployees = employees;
+        sortDisplayedEmployee();
+        this.displayedEmployees = sortedEmployeesByName;
+        System.out.println(employees + "all employees");
+    }
+    private void sortDisplayedEmployee() {
+        sortedEmployeesByName.setAll(employeeManager.sortedEmployeesByName(employees.values()));
     }
 
 
@@ -114,8 +124,8 @@ public class Model implements IModel {
         if (succeeded) {
             // If the deletion was successful, remove the employee from the observable map
             employees.remove(employee.getId());
-
-            displayedEmployees = employees;
+            sortDisplayedEmployee();
+            displayedEmployees = sortedEmployeesByName;
 
 
             Platform.runLater(() -> {
@@ -215,16 +225,21 @@ public class Model implements IModel {
         searchResults.setAll(employeeManager.performSearchOperation(employees.values(), filter));
         return searchResults;
     }
-    public void performSelectUserSearchOperation (int employeeId, Employee employee) throws RateException {
-        displayedEmployees.clear();
-        displayedEmployees.put(employeeId, employee);
+    public void performSelectUserSearchOperation (Employee employee) throws RateException {
+        displayedEmployees.setAll(employee);
+        displayEmployees.displayEmployees();
+        System.out.println(employees + "after selection");
+    }
+    public void performEmployeeSearchUndoOperation() throws RateException {
+        sortDisplayedEmployee();
+        displayedEmployees = sortedEmployeesByName;
         displayEmployees.displayEmployees();
     }
 
-
-   public ObservableMap<Integer, Employee> getUsersToDisplay() {
-       return this.displayedEmployees;
+   public ObservableList<Employee> getUsersToDisplay() {
+       return displayedEmployees;
    }
+
 
 
 }
