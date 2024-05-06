@@ -65,6 +65,14 @@ public class TeamLogic implements ITeamLogic {
     private Map<String,Double> employeePercentage(Employee employee, BigDecimal totalOverhead){
         Map<String,Double> emplPercentage = new HashMap<>();
         BigDecimal employeeOverhead = employee.getOverhead();
+        System.out.println(employee.getId());
+        System.out.println(employee.getActiveConfiguration().getConfigurationId());
+        System.out.println(employeeOverhead+"overhead");
+
+        if(employeeOverhead.compareTo(BigDecimal.ZERO)==0){
+            emplPercentage.put(employee.getName(), 0.0);
+            return emplPercentage;
+        }
         double percentage = employeeOverhead.divide(totalOverhead, MathContext.DECIMAL32).doubleValue() * 100;
         emplPercentage.put(employee.getName(), percentage);
         return emplPercentage;

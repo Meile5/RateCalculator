@@ -20,7 +20,7 @@
 
 .employeeComponentClicked{
     -fx-border-color: #cccccc; /* Border color on hover */
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Shadow on hover */
+    -fx-effect: dropshadow(gaussian, rgba(86,234,140,0.5), 10, 0, 0, 5); /* Lighter green shadow on hover */
 }
 
 
