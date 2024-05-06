@@ -68,6 +68,22 @@ public class EmployeeManager implements IEmployeeManager {
         return employeeDAO.deleteEmployee(employee);
     }
 
+    @Override
+    public List<Employee> filterByCountry(Collection<Employee> employees, Country country) {
+        return employees.stream().filter((employee) -> {
+            Country employeeCountry = employee.getCountry();
+            return employeeCountry != null && employeeCountry.getCountryName().equals(country.getCountryName());
+        }).toList();
+    }
+
+    @Override
+    public List<Employee> filterByTeam(Collection<Employee> employees, Team team) {
+        return employees.stream().filter((employee) -> {
+            Team employeeTeam = employee.getTeam();
+            return employeeTeam != null && employeeTeam.getTeamName().equals(team.getTeamName());
+        }).toList();
+    }
+
 
     @Override
     public List<Employee> performSearchOperation (Collection<Employee> employees, String filter) {
