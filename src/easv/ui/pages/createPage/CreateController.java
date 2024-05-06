@@ -9,7 +9,6 @@ import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
 import javafx.animation.PauseTransition;
-import javafx.css.PseudoClass;
 import javafx.util.Duration;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -74,6 +73,7 @@ public class CreateController implements Initializable {
             populateComboBoxes();
             clickClearHandler();
             addListenersToInputs();
+            listenerForEmptyFieldsAfterSaving();
             addTooltips();
             disableSpinner();
     }
@@ -88,29 +88,24 @@ public class CreateController implements Initializable {
            EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB))
         {
             enableSpinner();
-            String name = nameTF.getText();
-            EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText());
+            String name = nameTF.getText().trim();
+            EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText().trim());
 
             Country country = getSelectedCountry();
 
             Team team = getSelectedTeam();
 
-            Currency currency = getCurrency();
-            BigDecimal annualSalary = new BigDecimal(salaryTF.getText());
-            BigDecimal fixedAnnualAmount = new BigDecimal(annualAmountTF.getText());
-            BigDecimal overheadMultiplier = new BigDecimal(multiplierTF.getText());
-            BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
-            BigDecimal workingHours = new BigDecimal(workingHoursTF.getText());
+            Currency currency = Currency.valueOf(currencyCB.getText().trim());
+            BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText().trim()));
+            BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText().trim()));
+            BigDecimal overheadMultiplier = new BigDecimal(convertToDecimalPoint(multiplierTF.getText().trim()));
+            BigDecimal utilizationPercentage = new BigDecimal(convertToDecimalPoint(utilPercentageTF.getText().trim()));
+            BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText().trim()));
             LocalDateTime savedDate = LocalDateTime.now();
             Employee employee = new Employee(name, country, team, employeeType, currency);
             Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
             //employee.setActiveConfiguration(configuration);
-
-            model.addEmployee(employee, configuration);
-            clearFields();
-
             saveEmployeeOperation(employee, configuration);
-
         }
     }
 
@@ -151,7 +146,7 @@ public class CreateController implements Initializable {
     private Team getSelectedTeam() {
         Team team = null;
         if(teamCB.getSelectedItem() == null){
-            team = new Team(teamCB.getText());
+            team = new Team(teamCB.getText().trim());
             teams.add(team);
             teamCB.setItems(teams);
         } else {
@@ -163,24 +158,13 @@ public class CreateController implements Initializable {
     private Country getSelectedCountry() {
         Country country = null;
         if(countryCB.getSelectedItem() == null){
-            country = new Country(countryCB.getText());
+            country = new Country(countryCB.getText().trim());
             countries.add(country);
             countryCB.setItems(countries);
         } else {
             country = (Country) countryCB.getSelectedItem();
         }
         return country;
-    }
-
-    private Currency getCurrency(){
-        Currency currency = null;
-        if(currencyCB.getText().equals("USD")){
-            currency = Currency.valueOf("$");
-        }
-        if(currencyCB.getText().equals("EUR")){
-            currency = Currency.valueOf("€");
-        }
-        return currency;
     }
 
     private void clickClearHandler(){
@@ -196,15 +180,26 @@ public class CreateController implements Initializable {
                ((VBox) child).getChildren().forEach((input)->{
                    if(input instanceof  MFXTextField){
                        ((MFXTextField) input).clear();
-                       input.pseudoClassStateChanged(PseudoClass.getPseudoClass("focus-within"), true);
                    }
                    if(input instanceof MFXComboBox<?>){
                        ((MFXComboBox<?>) input).clear();
-                       input.pseudoClassStateChanged(PseudoClass.getPseudoClass("focus-within"), true);
                    }
                });
            }
          });
+    }
+
+    private void listenerForEmptyFieldsAfterSaving(){
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(nameTF);
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(annualAmountTF);
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(workingHoursTF);
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(multiplierTF);
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(utilPercentageTF);
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(salaryTF);
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(countryCB);
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(currencyCB);
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(teamCB);
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(overOrResourceCB);
     }
 
     private void populateComboBoxes() {
@@ -250,17 +245,28 @@ public class CreateController implements Initializable {
         EmployeeValidation.getCountries(model.getValidCountries());
         EmployeeValidation.getTeams(model.getTeams());
     }
-    
+
     private void enableSpinner() {
         spinnerLB.setText("Processing...");
         operationSpinner.setVisible(true);
         operationSpinner.setDisable(false);
     }
-    
+
     private void disableSpinner() {
         operationSpinner.setVisible(false);
         operationSpinner.setDisable(true);
         spinnerLB.setText("");
+    }
+
+    //convert form comma decimal to point decimal
+    private String convertToDecimalPoint(String value) {
+        String validFormat = null;
+        if (value.contains(",")) {
+            validFormat = value.replace(",", ".");
+        } else {
+            validFormat = value;
+        }
+        return validFormat;
     }
 
     public Parent getCreatePage() {

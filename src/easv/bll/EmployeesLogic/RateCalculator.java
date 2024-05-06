@@ -13,35 +13,14 @@ import java.math.RoundingMode;
 public class RateCalculator implements IRateCalculator {
     private long HoursInDay = 8;
 
-    public BigDecimal calculateDayRate(Employee employee, Configuration latestConfiguration) {
-        BigDecimal annualSalary = latestConfiguration.getAnnualSalary();
-        BigDecimal overheadMultiplier = latestConfiguration.getOverheadMultiplier().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32).add(BigDecimal.ONE);
-        BigDecimal fixedAnnualAmount = latestConfiguration.getFixedAnnualAmount();
-        BigDecimal annualEffectiveWorkingHours = latestConfiguration.getWorkingHours();
-        BigDecimal utilizationPercentage = latestConfiguration.getUtilizationPercentage().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
-
-        BigDecimal dayRate = ((annualSalary.add(fixedAnnualAmount))
-                .multiply(overheadMultiplier)
-                .multiply(utilizationPercentage)
-                .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP)).multiply(BigDecimal.valueOf(HoursInDay));
-        return dayRate;
-    }
-
-    public BigDecimal calculateHourlyRate(Employee employee, Configuration latestConfiguration) {
-
-        BigDecimal hourlyRate = calculateDayRate(employee, latestConfiguration)
-                .divide(BigDecimal.valueOf(HoursInDay));
-
-        return hourlyRate;
-    }
-
-
     /**method can be improved for readability and testing
      * this method is calculating the day rate for an employee
      *
      * @param employee the employee to calculate for
      *if no values are present for the employee returns BigDecimal.ZERO*/
+
     public BigDecimal calculateDayRate(Employee employee) {
+
         BigDecimal annualSalary = employee.getActiveConfiguration().getAnnualSalary();
         BigDecimal overheadMultiplier = employee.getActiveConfiguration().getOverheadMultiplier().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32).add(BigDecimal.ONE);
         BigDecimal fixedAnnualAmount = employee.getActiveConfiguration().getFixedAnnualAmount();
@@ -62,8 +41,14 @@ public class RateCalculator implements IRateCalculator {
         }
 
         return dayRate.setScale(2,RoundingMode.HALF_UP);
+    }
 
+    public BigDecimal calculateHourlyRate(Employee employee) {
 
+        BigDecimal hourlyRate = calculateDayRate(employee)
+                .divide(BigDecimal.valueOf(HoursInDay));
+
+        return hourlyRate;
     }
 
     /**

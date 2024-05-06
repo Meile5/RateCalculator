@@ -28,9 +28,9 @@ public interface IEmployeeManager {
     List<Employee> sortedEmployeesByName(Collection<Employee> values);
 
     /**calculate the day rate for an employee*/
-   BigDecimal getDayRate(Employee employee);
+    BigDecimal getDayRate(Employee employee);
 
     /**calculate the hourly rate for an employee, with the configurable hours*/
-     BigDecimal getHourlyRate(Employee employee,double configurableHours);
+    BigDecimal getHourlyRate(Employee employee,double configurableHours);
 
 }

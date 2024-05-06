@@ -54,13 +54,8 @@ public class EmployeeManager implements IEmployeeManager {
     public Map<Integer, Employee> returnEmployees() throws RateException {
         LinkedHashMap<Integer, Employee> employees = employeeDAO.returnEmployees();
         employees.values().forEach(( employee) -> {
-                // Find the latest configuration for the employee
-                Configuration latestConfiguration = findActiveConfiguration(employee);
-                // Set the latest configuration to the employee
-                employee.setActiveConfiguration(latestConfiguration);
-                // Calculate rates based on the latest configuration
-            BigDecimal dayRate = rateCalculator.calculateDayRate(employee, latestConfiguration);
-                BigDecimal hourRate = rateCalculator.calculateHourlyRate(employee, latestConfiguration);
+            BigDecimal dayRate = rateCalculator.calculateDayRate(employee);
+                BigDecimal hourRate = rateCalculator.calculateHourlyRate(employee);
                 employee.setDailyRate(dayRate);
                 employee.setHourlyRate(hourRate);
 
@@ -70,17 +65,6 @@ public class EmployeeManager implements IEmployeeManager {
     }
 
 
-    private Configuration findActiveConfiguration(Employee employee) {
-        List<Configuration> configurations = employee.getConfigurations();
-        if (configurations != null && !configurations.isEmpty()) {
-            for (Configuration configuration : configurations) {
-                if (configuration.isActive()) {
-                    return configuration;
-                }
-            }
-        }
-        return null;
-    }
 
     public Boolean deleteEmployee(Employee employee) throws RateException {
         return employeeDAO.deleteEmployee(employee);

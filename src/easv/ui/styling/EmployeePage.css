@@ -10,23 +10,82 @@
 }
 .text-field{
     -fx-background-radius: 12;
-    -fx-border-color: rgb(50, 210, 84);
+    -fx-border-color: rgb(126, 123, 123);
     -fx-border-radius: 12;
     -fx-border-width: 2;
 }
 .text-field:focused {
-    -fx-border-color: rgba(99, 178, 225, 1); /* Border color when TextField is focused */
+    -fx-border-color: rgb(100, 208, 70); /* Border color when TextField is focused */
 }
 .text-field:empty {
-    -fx-border-color: rgb(50, 210, 84); /* Revert to default border color when TextField is empty */
+    -fx-border-color: rgb(114, 112, 112); /* Revert to default border color when TextField is empty */
 }
-#employees{
+.employees{
     -fx-text-fill: rgba(47, 46, 46, 1);
-    -fx-font-family: 'Open Sans' , sans-serif;
+    -fx-font-family: Open Sans;
     -fx-font-size: 16px;
-    -fx-font-weight: 500;
+    -fx-font-weight: 700;
 
 
+}
+.tableLabels{
+    -fx-text-fill: rgba(47, 46, 46, 1);
+    -fx-font-family: Open Sans;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+
+
+}
+.svg-revert {
+    -fx-fill: #2BA746FF; /* Green color */
+    -fx-stroke: #2BA746FF; /* Green color */
+    -fx-stroke-width: 0.8;
+    -fx-scale-x: 0.9;
+    -fx-scale-y: 0.9;
+
+}
+.svg-revert:hover{
+    -fx-fill: #63b2e1;
+    -fx-stroke: #63b2e1;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+.svg-search {
+    -fx-fill: #2BA746FF; /* Green color */
+    -fx-stroke: #2BA746FF; /* Green color */
+    -fx-stroke-width: 1.2;
+    -fx-scale-x: 0.6;
+    -fx-scale-y: 0.6;
+}
+.popupView{
+    -fx-background-color: white;
+    -fx-border-radius: 10;
+
+}
+.list-view {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0 0 5 5;
+    -fx-border-radius: 0 0 5 5;
+}
+.list-view .viewport {
+    -fx-border-radius: 0 0 5 5;
+    -fx-background-radius: 0 0 5 5;
+}
+
+.list-view .list-cell {
+    -fx-text-fill: #102c57;
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+.list-view .list-cell:hover {
+    -fx-text-fill: #081a2d;
+    -fx-background-color: #c2d1e2;
+}
+
+.list-view .list-cell:filled:selected {
+    -fx-background-color: #051017;
+    -fx-text-fill: #c2d1e2;
 }
 
 
