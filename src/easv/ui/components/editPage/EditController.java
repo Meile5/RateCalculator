@@ -326,10 +326,7 @@ public class EditController implements Initializable {
             this.spinnerLayer.setDisable(true);
         });
         editService.restart();
-
  }
-
-
 
 }
 

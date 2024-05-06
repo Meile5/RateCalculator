@@ -55,6 +55,8 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     private ListView<Employee> searchResponseHolder;
     private Service<Void> loadEmployeesFromDB;
 
+    private EmployeeInfoController selectedToEdit;
+
 
     public EmployeeMainPageController(StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeesMainPage.fxml"));
@@ -95,7 +97,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
                 .values()
                 .forEach(e -> {
                     DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
-                    EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout);
+                    EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout,this);
                     employeesContainer.getChildren().add(employeeInfoController.getRoot());
                 });
     }
@@ -198,7 +200,13 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     }
 
 
-
+public void setSelectedComponentStyleToSelected(EmployeeInfoController selectedToEdit){
+        if(this.selectedToEdit!=null){
+            this.selectedToEdit.getRoot().getStyleClass().remove("employeeComponentClicked");
+        }
+        this.selectedToEdit=selectedToEdit;
+        this.selectedToEdit.getRoot().getStyleClass().add("employeeComponentClicked");
+}
 
 
 }

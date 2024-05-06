@@ -7,6 +7,7 @@ import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.components.editPage.EditController;
 import easv.ui.pages.employeesPage.deleteEmployee.DeleteEmployeeController;
+import easv.ui.pages.employeesPage.employeeMainPage.EmployeeMainPageController;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -53,16 +54,18 @@ public class EmployeeInfoController implements Initializable {
     private Employee employee;
     private StackPane firstLayout;
     private DeleteEmployeeController deleteEmployeeController;
+    private EmployeeMainPageController employeeController;
 
     private IModel model;
 
-    public EmployeeInfoController(Employee employee, DeleteEmployeeController deleteEmployeeController, IModel model, StackPane firstLayout) {
+    public EmployeeInfoController(Employee employee, DeleteEmployeeController deleteEmployeeController, IModel model, StackPane firstLayout,EmployeeMainPageController employeeController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeComponent.fxml"));
         loader.setController(this);
         this.employee = employee;
         this.deleteEmployeeController = deleteEmployeeController;
         this.firstLayout = firstLayout;
         this.model = model;
+        this.employeeController=employeeController;
         try {
             employeeComponent = loader.load();
         } catch (IOException e) {
@@ -109,6 +112,7 @@ public class EmployeeInfoController implements Initializable {
         this.editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             EditController editController = new EditController(model, firstLayout, employee, this);
             this.firstLayout.getChildren().add(editController.getRoot());
+            employeeController.setSelectedComponentStyleToSelected(this);
             WindowsManagement.showStackPane(firstLayout);
         });
     }
