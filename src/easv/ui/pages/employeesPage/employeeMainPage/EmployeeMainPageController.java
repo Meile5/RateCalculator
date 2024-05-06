@@ -1,6 +1,8 @@
 package easv.ui.pages.employeesPage.employeeMainPage;
 import easv.Utility.DisplayEmployees;
+import easv.be.Country;
 import easv.be.Employee;
+import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
@@ -8,9 +10,11 @@ import easv.ui.pages.employeesPage.deleteEmployee.DeleteEmployeeController;
 import easv.ui.pages.modelFactory.ModelFactory;
 import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -19,18 +23,12 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
-import javafx.util.Duration;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class EmployeeMainPageController implements Initializable , DisplayEmployees {
@@ -43,6 +41,8 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
 
     @FXML
     private MFXProgressSpinner progressBar;
+    @FXML
+    private MFXComboBox countriesFilterCB, teamsFilterCB;
 
     public VBox getEmployeesContainer() {
         return employeesContainer;
@@ -60,6 +60,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     private Service<Void> loadEmployeesFromDB;
     @FXML
     private SVGPath svgPath;
+
 
 
     private EmployeeInfoController selectedToEdit;
@@ -94,7 +95,9 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
             createPopUpWindow();
             searchFieldListener();
             addSelectionListener();
-
+            populateFilterComboBox();
+            filterByCountryListener();
+            filterByTeamListener();
 
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
@@ -208,6 +211,42 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
                 popupWindow.hide();
             }
         });
+    }
+
+    private void populateFilterComboBox(){
+        ObservableList<Country> countries = model.getCountiesValues();
+        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
+
+        countriesFilterCB.setItems(countries);
+        teamsFilterCB.setItems(teams);
+    }
+
+    private void filterByCountryListener() {
+        countriesFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                try {
+                    model.filterByCountry((Country) newValue);
+                } catch (RateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+    private void filterByTeamListener() {
+        teamsFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                try {
+                    model.filterByTeam((Team) newValue);
+                } catch (RateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+    private void filterByTeamAndCountryListener() {
+
     }
 
     private void addSelectionListener() throws RateException  {

@@ -77,6 +77,7 @@ public class Model implements IModel {
 
     private ObservableList<Employee> displayedEmployees;
     private ObservableList<Employee> sortedEmployeesByName;
+    private ObservableList<Employee> filteredEmployees;
 
 
     public Model() throws RateException {
@@ -242,6 +243,22 @@ public class Model implements IModel {
         displayEmployees.displayEmployees();
     }
 
+    @Override
+    public void filterByCountry(Country country) throws RateException {
+        filteredEmployees = FXCollections.observableArrayList();
+        filteredEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
+        displayedEmployees.setAll(filteredEmployees);
+        displayEmployees.displayEmployees();
+    }
+
+    @Override
+    public void filterByTeam(Team team) throws RateException {
+        filteredEmployees = FXCollections.observableArrayList();
+        filteredEmployees.setAll(employeeManager.filterByTeam(employees.values(), team));
+        displayedEmployees.setAll(filteredEmployees);
+        displayEmployees.displayEmployees();
+    }
+
    public ObservableList<Employee> getUsersToDisplay() {
        return displayedEmployees;
    }
@@ -263,7 +280,6 @@ public class Model implements IModel {
     public BigDecimal getComputedDayRate(Employee employee) {
         return employeeManager.getDayRate(employee);
     }
-
 
 
 
