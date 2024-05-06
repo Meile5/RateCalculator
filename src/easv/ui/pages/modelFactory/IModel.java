@@ -90,4 +90,8 @@ public interface IModel {
 
 
     void filterByTeam(Team team) throws RateException;
+
+    BigDecimal calculateGroupDayRate();
+
+    BigDecimal calculateGroupHourlyRate();
 }

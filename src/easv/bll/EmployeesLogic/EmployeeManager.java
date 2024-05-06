@@ -11,6 +11,7 @@ import javafx.collections.ObservableMap;
 
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -86,6 +87,31 @@ public class EmployeeManager implements IEmployeeManager {
         }).toList();
     }
 
+    @Override
+    public BigDecimal calculateGroupDayRate(Collection<Employee> employees) {
+        if(!employees.isEmpty()){
+            BigDecimal totalDayRate = employees.stream()
+                    .map(Employee::getDailyRate)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            return totalDayRate.divide(BigDecimal.valueOf(employees.size()), RoundingMode.HALF_UP);
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    @Override
+    public BigDecimal calculateGroupHourlyRate(Collection<Employee> employees) {
+        if(!employees.isEmpty()){
+            BigDecimal totalHourlyRate = employees.stream()
+                    .map(Employee::getHourlyRate)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            return totalHourlyRate.divide(BigDecimal.valueOf(employees.size()), RoundingMode.HALF_UP);
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
 
     @Override
     public List<Employee> performSearchOperation (Collection<Employee> employees, String filter) {

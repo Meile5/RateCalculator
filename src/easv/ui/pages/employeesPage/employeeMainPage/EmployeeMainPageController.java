@@ -52,7 +52,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     @FXML
     private PopupControl popupWindow;
     @FXML
-    private TextField searchField;
+    private TextField searchField, dayRateField, hourlyRateField;
     @FXML
     private ListView<Employee> searchResponseHolder;
     @FXML
@@ -110,6 +110,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
                     DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
                     EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout,this);
                     employeesContainer.getChildren().add(employeeInfoController.getRoot());
+                    setTotalRates();
                 });
     }
 
@@ -133,7 +134,6 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
         loadEmployeesFromDB.setOnSucceeded((event) -> {
             // Update the UI with loaded employees
             displayEmployees();
-
             // Hide the progress bar
             progressBar.setVisible(false);
         });
@@ -226,6 +226,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
             if (newValue != null) {
                 try {
                     model.filterByCountry((Country) newValue);
+                    setTotalRates();
                 } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
@@ -238,6 +239,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
             if (newValue != null) {
                 try {
                     model.filterByTeam((Team) newValue);
+                    setTotalRates();
                 } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
@@ -247,6 +249,11 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
 
     private void filterByTeamAndCountryListener() {
 
+    }
+
+    public void setTotalRates(){
+        dayRateField.setText(model.calculateGroupDayRate().toString());
+        hourlyRateField.setText(model.calculateGroupHourlyRate().toString());
     }
 
     private void addSelectionListener() throws RateException  {

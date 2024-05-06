@@ -144,4 +144,8 @@ public class EmployeeInfoController implements Initializable {
     public void setHourlyRate(String value) {
         this.hourlyRate.setText(value);
     }
+
+    public void refreshRates() {
+        employeeController.setTotalRates();
+    }
 }
