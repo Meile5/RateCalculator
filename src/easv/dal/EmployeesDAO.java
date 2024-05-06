@@ -96,6 +96,13 @@ public class EmployeesDAO implements IEmployeeDAO {
             for (Employee employee : employees.values()) {
                 List<Configuration> configurations = retrieveConfigurationsForEmployee(employee.getId(), conn);
                 employee.setConfigurations(configurations);
+                for (Configuration configuration : configurations) {
+                    if (configuration.isActive()) {
+                        employee.setActiveConfiguration(configuration);
+
+                    }
+                    }
+
             }
             conn.commit(); // Commit transaction
         } catch (SQLException | RateException e) {
