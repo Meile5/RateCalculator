@@ -175,6 +175,9 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
         searchResponseHolder.setPrefWidth(searchField.getWidth());
         searchResponseHolder.setMaxWidth(searchField.getWidth());
         searchResponseHolder.setMaxHeight(250);
+        popupWindow.getScene().getStylesheets().add("/easv/ui/styling/EmployeePage.css");
+        ((Parent) popupWindow.getScene().getRoot()).getStyleClass().add("popupView");
+        searchResponseHolder.getStylesheets().add("/easv/ui/styling/EmployeePage.css");
         popupWindow.setPrefWidth(searchField.getWidth());
         popupWindow.setMaxWidth(searchField.getWidth());
         popupWindow.setMaxHeight(250);
