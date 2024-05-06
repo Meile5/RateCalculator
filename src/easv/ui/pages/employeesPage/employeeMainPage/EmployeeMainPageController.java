@@ -150,7 +150,6 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     @FXML
     private void goBack() throws RateException {
         model.performEmployeeSearchUndoOperation();
-        System.out.println("nnn");
         Platform.runLater(this::showSearchImage);
 
     }
