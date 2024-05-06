@@ -1,0 +1,20 @@
+.button-save:hover{
+    -fx-background-color: #209be5;
+    -fx-width: 90px;
+    -fx-height: 40px;
+}
+.button-cancel:hover{
+    -fx-background-color: #7e7b7b;
+    -fx-width: 90px;
+    -fx-height: 40px;
+}
+
+.button-cancel {
+    -fx-background-color: #D1D0D0;
+}
+
+.button-save {
+    -fx-background-color: rgba(99, 178, 225, 1);
+}
+
+
