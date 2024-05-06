@@ -18,6 +18,7 @@ public class Configuration {
     private boolean active;
 
 
+
     public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours) {
         this.annualSalary = annualSalary;
         this.fixedAnnualAmount = fixedAnnualAmount;

@@ -97,7 +97,11 @@ public class TeamDao implements ITeamDao {
                 BigDecimal utilizationPercentage = rs.getBigDecimal("UtilizationPercentage");
                 BigDecimal workingHours = rs.getBigDecimal("WorkingHours");
                 boolean active = Boolean.parseBoolean(rs.getString("Active"));
+                double markupMultiplier = rs.getDouble("Markup");
+                double grossMargin = rs.getDouble("GrossMargin");
                 config = new Configuration(configurationId,annualSalary,fixedAnnualAmount,overheadMultiplier,utilizationPercentage,workingHours,active);
+                config.setMarkupMultiplier(markupMultiplier);
+                config.setGrossMargin(grossMargin);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
