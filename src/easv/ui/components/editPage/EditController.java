@@ -8,6 +8,7 @@ import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -64,6 +65,8 @@ public class EditController implements Initializable {
     private Employee employee;
     private EmployeeInfoController employeeDisplayer;
     private Service<Boolean> editService;
+
+    private Service<Boolean> calculateEditOperationPerformedEdit;
 
     public EditController(IModel model, StackPane firstLayout, Employee employee, EmployeeInfoController employeeDisplayer) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EditStackPane.fxml"));
@@ -199,7 +202,6 @@ public class EditController implements Initializable {
         double grossMarginValue = 0;
         if (!isTextFieldEmpty(markup)) {
             markupValue = Double.parseDouble(convertToDecimalPoint(this.markup.getText()));
-
         }
         if (!isTextFieldEmpty(grossMargin)) {
             grossMarginValue = Double.parseDouble(convertToDecimalPoint(this.grossMargin.getText()));
@@ -333,6 +335,14 @@ public class EditController implements Initializable {
         }
         return validFormat;
     }
+
+
+    private void startPerformRedoCalculations(){
+
+    }
+
+
+
 
 }
 

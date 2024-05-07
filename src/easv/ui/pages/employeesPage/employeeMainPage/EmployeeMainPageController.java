@@ -120,7 +120,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             revertCountryFilter(countryRevertButton,countryRevertSvg);
             revertTeamFilter(teamRevertButton,teamRevertSvg);
             setTotalRatesDefault();
-
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }

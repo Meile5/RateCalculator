@@ -166,6 +166,13 @@ public class Employee {
     }
 
 
+    public String printEmployeeData(){
+        return this.getId() + ": " + this.getName() + " " + this.getActiveConfiguration().getConfigurationId() + " " + this.getEmployeeType() + this.activeConfiguration.printConfiguration();
+    }
+
+
+
+
 
     public void addConfiguration(Configuration config){
         this.configurations.add(config);
