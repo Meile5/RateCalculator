@@ -1,5 +1,4 @@
 package easv.ui.pages.employeesPage.employeeMainPage;
-
 import easv.Utility.DisplayEmployees;
 import easv.be.Country;
 import easv.be.Employee;
@@ -67,11 +66,11 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private Button goBackButton;
     private Service<Void> loadEmployeesFromDB;
     @FXML
-    private HBox countryRevertButton;
+    private HBox countryRevert;
     @FXML
-    private HBox teamRevertButton;
-    @FXML
-    private SVGPath svgPathButton;
+    private HBox teamRevert;
+     @FXML
+    private SVGPath svgPath;
     @FXML
     private SVGPath countriesSvgPath;
     @FXML
@@ -81,16 +80,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private SVGPath teamRevertSvg;
     @FXML
     private SVGPath countryRevertSvg;
-    @FXML
-    private SVGPath svgPath;
     private ObservableList<Team> teams;
     private ObservableList<Country> countries;
-
-
-
-
-
-
     private EmployeeInfoController selectedToEdit;
 
 
@@ -124,15 +115,16 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             populateFilterComboBox();
             filterByCountryListener();
             filterByTeamListener();
-            addFocusListener(countriesFilterCB, countryRevertButton);
-            addFocusListener(teamsFilterCB, teamRevertButton);
-            revertCountryFilter(countryRevertButton,countryRevertSvg);
-            revertTeamFilter(teamRevertButton,teamRevertSvg);
-         } catch (RateException e) {
+            addFocusListener(countriesFilterCB,countryRevert);
+            addFocusListener(teamsFilterCB,teamRevert);
+            revertCountryFilter(countryRevertSvg);
+            revertTeamFilter(teamRevertSvg);
+            setTotalRatesDefault();
+
+        } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
-
     public void displayEmployees() {
         employeesContainer.getChildren().clear();
         model.getUsersToDisplay()
@@ -140,14 +132,14 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
                     EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout,this);
                     employeesContainer.getChildren().add(employeeInfoController.getRoot());
-                    setTotalRates();
                 });
     }
 
 
-    private void initializeEmployeeLoadingService() {
+
+    private void initializeEmployeeLoadingService(){
         progressBar.setVisible(true);
-        loadEmployeesFromDB = new Service<Void>() {
+        loadEmployeesFromDB= new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
@@ -155,9 +147,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     protected Void call() throws Exception {
                         model.returnEmployees();
                         return null;
-                    }
-
-                    ;
+                    };
                 };
             }
         };
@@ -168,7 +158,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             // Hide the progress bar
             progressBar.setVisible(false);
         });
-        loadEmployeesFromDB.setOnFailed((event) -> {
+        loadEmployeesFromDB.setOnFailed((event)->{
 
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
         });
@@ -263,12 +253,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
-    private void populateFilterComboBox() {
-        ObservableList<Country> countries = model.getCountiesValues();
-        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
+    private void populateFilterComboBox(){
+        countries = model.getCountiesValues();
+        teams = FXCollections.observableArrayList(model.getTeams().values());
 
-        countriesFilterCB.setItems(countries);
-        teamsFilterCB.setItems(teams);
+        countriesFilterCB.setItems(countries.sorted());
+        teamsFilterCB.setItems(teams.sorted());
     }
 
     private void filterByCountryListener() {
@@ -276,22 +266,14 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             if (newValue != null) {
                 try {
                     Country selectedCountry = (Country) newValue;
-                    ObservableList <Team> teamsForCountry =  FXCollections.observableArrayList();
-                    // i have putted this lines of code , because i had  IndexOutOfBoundException ,
-                    // becouse model.getTeamsForCountry(selectedCountry) was empty sometimes , or
-                    if(!model.getTeamsForCountry(selectedCountry).isEmpty()){
-                        teamsForCountry.setAll(model.getTeamsForCountry(selectedCountry));
-                    }
+                    ObservableList<Team> teamsForCountry = (ObservableList<Team>) model.getTeamsForCountry(selectedCountry);
                     teamsFilterCB.getSelectionModel().clearSelection();
-                    //here it ends what i modifyed
-                        teamsFilterCB.getItems().setAll(teamsForCountry);
-                        teamsFilterCB.clear();
-
+                    teamsFilterCB.setItems(teamsForCountry.sorted());
                     model.filterByCountry(selectedCountry);
 
                     filterActive = true;
                     setTotalRates();
-                    showRevertButtonByFilterActive(countryRevertButton,countryRevertSvg);
+                    showRevertButtonByFilterActive(countryRevertSvg);
                 } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
@@ -303,10 +285,18 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         teamsFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
-                    model.filterByTeam((Team) newValue);
+                    Team selectedTeam = (Team) newValue;
+                    Country selectedCountry = (Country) countriesFilterCB.getSelectionModel().getSelectedItem();
+                    if(selectedCountry==null){
+                        teamsFilterCB.setItems(teams.sorted());
+                        model.filterByTeam(selectedTeam);
+
+                    } else {
+                        model.filterByCountryAndTeam(selectedCountry, selectedTeam);
+                    }
                     filterActive = true;
                     setTotalRates();
-                    showRevertButtonByFilterActive(teamRevertButton,teamRevertSvg);
+                    showRevertButtonByFilterActive(teamRevertSvg);
                 } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
@@ -319,7 +309,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         hourlyRateField.setText(model.calculateGroupHourlyRate().toString());
     }
 
-    private void addSelectionListener() throws RateException {
+    public void setTotalRatesDefault(){
+        dayRateField.setText("");
+        hourlyRateField.setText("");
+    }
+
+    private void addSelectionListener() throws RateException  {
         searchResponseHolder.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
@@ -351,21 +346,38 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
     @FXML
     private void goBackFromCountries() throws RateException {
-        model.performEmployeeSearchUndoOperation();
-        searchField.clear();
- //       countriesSvgPath.setContent("");
+            model.performEmployeeSearchUndoOperation();
+            countriesFilterCB.clearSelection();
+            teamsFilterCB.clearSelection();
+            searchField.clear();
+            filterActive = false;
+            countriesSvgPath.setContent("");
+            teamsSvgPath.setContent("");
+            setTotalRatesDefault();
+
     }
 
     @FXML
     private void goBackFromTeams() throws RateException {
-        model.performEmployeeSearchUndoOperation();
-        searchField.clear();
-   //     teamsSvgPath.setContent("");
+        if(filterActive && countriesFilterCB.getSelectionModel().getSelectedItem()!=null){
+            model.teamFilterActiveRevert();
+            teamsFilterCB.clearSelection();
+            searchField.clear();
+            teamsSvgPath.setContent("");
+
+        } else {
+            model.performEmployeeSearchUndoOperation();
+            teamsFilterCB.clearSelection();
+            filterActive = false;
+            teamsSvgPath.setContent("");
+            setTotalRatesDefault();
+        }
     }
 
 
-    private void addFocusListener(MFXTextField filterInput, HBox sibling) {
-        filterInput.focusWithinProperty().addListener((obs, wasFocused, isNowFocused) -> {
+
+    private void addFocusListener(MFXComboBox filterInput,HBox sibling){
+        filterInput.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
             if (isNowFocused) {
                 sibling.getStyleClass().add("countryFilterFocused");
             } else {
@@ -375,41 +387,42 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     }
 
 
-    private void showRevertButtonByFilterActive(HBox button,SVGPath revertSvg) {
+    private void showRevertButtonByFilterActive(SVGPath revertSvg) {
+        System.out.println("called");
         revertSvg.setVisible(true);
-        button.setDisable(false);
     }
 
-    private void hideRevertButton(SVGPath svgPath,HBox button) {
+    private void hideRevertButton(SVGPath svgPath) {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
         pauseTransition.setOnFinished((event) -> {
             svgPath.setVisible(false);
-            button.setDisable(true);
         });
         pauseTransition.playFromStart();
     }
 
-    private void revertCountryFilter(HBox button, SVGPath revertIcon) throws RateException{
-        button.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
+    private void revertCountryFilter(SVGPath svgPath) throws RateException{
+        svgPath.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
             try {
                 goBackFromCountries();
-                hideRevertButton(revertIcon,button);
+                hideRevertButton(svgPath);
+                System.out.println("clicked on country");
             } catch (RateException e) {
                 throw new RuntimeException();
             }
         });
     }
 
-    private void revertTeamFilter(HBox button,SVGPath revertIcon) throws RateException{
-        button.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
+    private void revertTeamFilter(SVGPath svgPath) throws RateException{
+        svgPath.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
             try {
                 goBackFromTeams();
-                hideRevertButton(revertIcon,button);
+                hideRevertButton(svgPath);
             } catch (RateException e) {
                 throw new RuntimeException();
             }
         });
     }
+
 }
 
 
