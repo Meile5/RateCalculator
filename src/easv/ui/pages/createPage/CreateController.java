@@ -9,6 +9,7 @@ import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
 import javafx.animation.PauseTransition;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import javafx.collections.FXCollections;
@@ -57,12 +58,14 @@ public class CreateController implements Initializable {
     private ObservableList<Team> teams;
     private IModel model;
     private Service<Void> saveEmployee;
+    private StackPane firstLayout;
 
 
-    public CreateController(IModel model) {
+    public CreateController(IModel model, StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Create.fxml"));
         loader.setController(this);
         this.model=model;
+        this.firstLayout= firstLayout;
         try {
             createPage=loader.load();
         } catch (IOException e) {

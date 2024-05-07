@@ -167,12 +167,23 @@ public class Model implements IModel {
 
 
 
+    /**save the  edited employee to the database , and if the operation is performed
+     * add it to the all employees map and update the filtered employees list
+     * @param originalEmployee the employee before editing
+     * @param editedEmployee the employee after editing  */
     @Override
     public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
         Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
         if (editedEmployeeSaved != null) {
             editedEmployeeSaved.addConfiguration(editedEmployeeSaved.getActiveConfiguration());
-            this.employees.put(editedEmployee.getId(), editedEmployeeSaved);
+            // update the filter list with the new updated values
+            for (int i = 0; i < filteredEmployeesList.size(); i++) {
+                if (filteredEmployeesList.get(i).getId()==editedEmployee.getId()) {
+                    filteredEmployeesList.set(i, editedEmployee);
+                    break;
+                }
+            }
+
             return true;
         }
         return false;

@@ -38,7 +38,7 @@ public class CallBackFactory {
                 observer.addSubject(navigateToDistribution);
             }
             case CREATE -> {
-                NavigateToCreate navigateToCreate = new NavigateToCreate(pageManager,model);
+                NavigateToCreate navigateToCreate = new NavigateToCreate(pageManager,model,modalLayout);
                 callBack = navigateToCreate;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToCreate);
