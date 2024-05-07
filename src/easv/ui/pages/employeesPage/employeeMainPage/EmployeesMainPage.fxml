@@ -54,9 +54,9 @@
                      </padding></TextField>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2">
                      <children>
-                        <HBox fx:id="countryRevertButton"  alignment="CENTER" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="29.0" styleClass="countryFilter">
+                        <HBox fx:id="countryRevertButton" alignment="CENTER" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="29.0" styleClass="countryFilter">
                            <children>
-                              <SVGPath  fx:id="countryRevertSvg" content="M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z " fill="#2ba746" stroke="#2ba746" visible="false" />
+                              <SVGPath fx:id="countryRevertSvg" content="M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z " fill="#2ba746" stroke="#2ba746" visible="false" />
                            </children>
                            <HBox.margin>
                               <Insets right="-1.0" />
@@ -67,7 +67,7 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="3">
                      <children>
-                        <HBox fx:id="teamRevertButton" disable="true" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="29.0" styleClass="countryFilter">
+                        <HBox fx:id="teamRevertButton" alignment="CENTER" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="29.0" styleClass="countryFilter">
                            <children>
                               <SVGPath fx:id="teamRevertSvg" content="M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z " fill="#2ba746" stroke="#2ba746" visible="false" />
                            </children>
@@ -87,7 +87,6 @@
                         </Button>
                      </children>
                   </StackPane>
-                  <SVGPath fx:id="countriesSvgPath" content="M40,60 C42,48 44,30 25,32" GridPane.columnIndex="1" />
 <!--                  <MFXComboBox fx:id="countriesFilterCB" alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="150.0" promptText="Countries" selectable="true" GridPane.columnIndex="2" />-->
 <!--                  <MFXComboBox fx:id="teamsFilterCB" alignment="CENTER_RIGHT" prefWidth="150.0" promptText="Teams" selectable="true" GridPane.columnIndex="3" />-->
 <!--                  <StackPane maxHeight="30.0" maxWidth="40.0" prefHeight="29.0" prefWidth="29.0" GridPane.columnIndex="2">-->
@@ -154,7 +153,6 @@
       <VBox alignment="CENTER_LEFT" prefHeight="600.0" prefWidth="191.0">
          <children>
             <Region maxHeight="-Infinity" prefHeight="180.0" prefWidth="148.0" VBox.vgrow="ALWAYS" />
-            <SVGPath fx:id="teamsSvgPath" content="M40,60 C42,48 44,30 25,32" />
             <VBox alignment="CENTER_LEFT" prefHeight="130.0" prefWidth="150.0" spacing="3.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;">
                <children>
                   <Label text="Total Day Rate" />
