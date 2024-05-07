@@ -31,11 +31,11 @@ public class RateCalculator implements IRateCalculator {
         BigDecimal dayRate = BigDecimal.ZERO;
 
         if (employee.getEmployeeType() == EmployeeType.Overhead) {
-            dayRate = ((annualSalary.add(fixedAnnualAmount))
-                    .multiply(overheadMultiplier)
-                    .multiply(utilizationPercentage));
+//            dayRate = ((annualSalary.add(fixedAnnualAmount))
+//                    .multiply(overheadMultiplier)
+//                    .multiply(utilizationPercentage));
 
-
+          dayRate = (((annualSalary.multiply(overheadMultiplier)).add(fixedAnnualAmount)).multiply(utilizationPercentage));
             //calculate markup multiplier
             dayRate = calculateEmployeeOverheadMarkupMultiplier(employee.getActiveConfiguration().getMarkupMultiplier(), dayRate);
 
@@ -44,8 +44,11 @@ public class RateCalculator implements IRateCalculator {
                     .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(HoursInDay));
         } else {
-            dayRate = ((annualSalary.add(fixedAnnualAmount))
-                    .multiply(overheadMultiplier)
+            dayRate = (
+//                    (annualSalary.add(fixedAnnualAmount))
+//                    .multiply(overheadMultiplier)
+
+            (annualSalary.multiply(overheadMultiplier)).add(fixedAnnualAmount)
                     .multiply(BigDecimal.ONE.subtract(utilizationPercentage)));
             //add markup multiplier
 
