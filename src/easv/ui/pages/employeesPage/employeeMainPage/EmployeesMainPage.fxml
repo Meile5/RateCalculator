@@ -87,6 +87,7 @@
                         </Button>
                      </children>
                   </StackPane>
+                  <SVGPath fx:id="countriesSvgPath" content="M40,60 C42,48 44,30 25,32" GridPane.columnIndex="1" />
 <!--                  <MFXComboBox fx:id="countriesFilterCB" alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="150.0" promptText="Countries" selectable="true" GridPane.columnIndex="2" />-->
 <!--                  <MFXComboBox fx:id="teamsFilterCB" alignment="CENTER_RIGHT" prefWidth="150.0" promptText="Teams" selectable="true" GridPane.columnIndex="3" />-->
 <!--                  <StackPane maxHeight="30.0" maxWidth="40.0" prefHeight="29.0" prefWidth="29.0" GridPane.columnIndex="2">-->
@@ -153,6 +154,7 @@
       <VBox alignment="CENTER_LEFT" prefHeight="600.0" prefWidth="191.0">
          <children>
             <Region maxHeight="-Infinity" prefHeight="180.0" prefWidth="148.0" VBox.vgrow="ALWAYS" />
+            <SVGPath fx:id="teamsSvgPath" content="M40,60 C42,48 44,30 25,32" />
             <VBox alignment="CENTER_LEFT" prefHeight="130.0" prefWidth="150.0" spacing="3.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;">
                <children>
                   <Label text="Total Day Rate" />

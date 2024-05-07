@@ -73,7 +73,7 @@ public interface IModel {
     boolean isEditOperationPerformed( Employee originalEmployee, Employee editedEmployee);
     void performEmployeeSearchUndoOperation() throws RateException;
 
-    List<Team> getTeamsForCountry(Country country);
+    ObservableList<Team> getTeamsForCountry(Country country);
     void filterByCountryAndTeam(Country selectedCountry ,Team selectedTeam) throws RateException;
 
 
