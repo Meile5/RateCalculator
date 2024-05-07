@@ -70,6 +70,8 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     @FXML
     private SVGPath teamsSvgPath;
     private boolean filterActive = false;
+    private ObservableList<Team> teams;
+    private ObservableList<Country> countries;
 
 
 
@@ -247,8 +249,8 @@ e.printStackTrace();
     }
 
     private void populateFilterComboBox(){
-        ObservableList<Country> countries = model.getCountiesValues();
-        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
+        countries = model.getCountiesValues();
+        teams = FXCollections.observableArrayList(model.getTeams().values());
 
         countriesFilterCB.setItems(countries);
         teamsFilterCB.setItems(teams);
@@ -258,7 +260,12 @@ e.printStackTrace();
         countriesFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
-                    model.filterByCountry((Country) newValue);
+                    Country selectedCountry = (Country) newValue;
+                    ObservableList<Team> teamsForCountry = (ObservableList<Team>) model.getTeamsForCountry(selectedCountry);
+                    teamsFilterCB.getItems().setAll(teamsForCountry);
+                    teamsFilterCB.getSelectionModel().clearSelection();
+                    model.filterByCountry(selectedCountry);
+
                     filterActive = true;
                     setTotalRates();
 //                    loadRevertSVGCountries();
@@ -273,7 +280,15 @@ e.printStackTrace();
         teamsFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
-                    model.filterByTeam((Team) newValue);
+                    Team selectedTeam = (Team) newValue;
+                    Country selectedCountry = (Country) countriesFilterCB.getSelectionModel().getSelectedItem();
+                    if(selectedCountry==null){
+                        teamsFilterCB.setItems(teams);
+                        model.filterByTeam(selectedTeam);
+
+                    } else {
+                        model.filterByCountryAndTeam(selectedCountry, selectedTeam);
+                    }
                     filterActive = true;
                     setTotalRates();
 //                    loadRevertSVGTeams();
@@ -282,10 +297,6 @@ e.printStackTrace();
                 }
             }
         });
-    }
-
-    private void filterByTeamAndCountryListener() {
-
     }
 
     public void setTotalRates(){
