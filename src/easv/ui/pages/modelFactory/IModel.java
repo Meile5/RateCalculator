@@ -94,4 +94,5 @@ public interface IModel {
     BigDecimal calculateGroupDayRate();
 
     BigDecimal calculateGroupHourlyRate();
+    void teamFilterActiveRevert()throws RateException;
 }

@@ -238,7 +238,7 @@ public class Model implements IModel {
     public void performSelectUserSearchOperation (Employee employee) throws RateException {
         displayedEmployees.setAll(employee);
         displayEmployees.displayEmployees();
-        System.out.println(employees + "after selection");
+
     }
     public void performEmployeeSearchUndoOperation() throws RateException {
         sortDisplayedEmployee();
@@ -261,6 +261,12 @@ public class Model implements IModel {
         displayedEmployees.setAll(filteredEmployeesList);
         displayEmployees.displayEmployees();
     }
+
+    public void teamFilterActiveRevert() throws RateException {
+        displayedEmployees = filteredEmployeesList;
+        displayEmployees.displayEmployees();
+    }
+
 
     @Override
     public BigDecimal calculateGroupDayRate() {
