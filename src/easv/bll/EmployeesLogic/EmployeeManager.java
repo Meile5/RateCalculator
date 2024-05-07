@@ -86,13 +86,23 @@ public class EmployeeManager implements IEmployeeManager {
     }
 
     @Override
+    public List<Employee> filterByCountryAndTeam(Collection<Employee> employees, Country country, Team team) {
+        return employees.stream()
+                .filter(employee -> {
+                    Country employeeCountry = employee.getCountry();
+                    Team employeeTeam = employee.getTeam();
+                    return employeeCountry != null && employeeCountry.equals(country) &&
+                            employeeTeam != null && employeeTeam.equals(team);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public BigDecimal calculateGroupDayRate(Collection<Employee> employees) {
-        if(!employees.isEmpty()){
-            BigDecimal totalDayRate = employees.stream()
+        if (!employees.isEmpty()) {
+            return employees.stream()
                     .map(Employee::getDailyRate)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-            return totalDayRate.divide(BigDecimal.valueOf(employees.size()), RoundingMode.HALF_UP);
         } else {
             return BigDecimal.ZERO;
         }
@@ -101,11 +111,9 @@ public class EmployeeManager implements IEmployeeManager {
     @Override
     public BigDecimal calculateGroupHourlyRate(Collection<Employee> employees) {
         if(!employees.isEmpty()){
-            BigDecimal totalHourlyRate = employees.stream()
+            return employees.stream()
                     .map(Employee::getHourlyRate)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-            return totalHourlyRate.divide(BigDecimal.valueOf(employees.size()), RoundingMode.HALF_UP);
         } else {
             return BigDecimal.ZERO;
         }

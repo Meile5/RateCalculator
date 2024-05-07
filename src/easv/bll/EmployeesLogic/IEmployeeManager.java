@@ -40,4 +40,6 @@ public interface IEmployeeManager {
     List<Employee> filterByCountry(Collection<Employee> employees, Country country);
 
     List<Employee> filterByTeam(Collection<Employee> employees, Team team);
+
+    List<Employee> filterByCountryAndTeam(Collection<Employee> employees, Country country, Team team);
 }

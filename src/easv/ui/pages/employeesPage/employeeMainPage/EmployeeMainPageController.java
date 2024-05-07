@@ -81,6 +81,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private SVGPath teamRevertSvg;
     @FXML
     private SVGPath countryRevertSvg;
+    private ObservableList<Team> teams;
+    private ObservableList<Country> countries;
+
+
+
+
 
 
     private EmployeeInfoController selectedToEdit;
@@ -130,7 +136,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         model.getUsersToDisplay()
                 .forEach(e -> {
                     DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
-                    EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout, this);
+                    EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout,this);
                     employeesContainer.getChildren().add(employeeInfoController.getRoot());
                     setTotalRates();
                 });
@@ -207,6 +213,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         }
         searchField.clear();
         Platform.runLater(this::loadSearchSVG);
+
+
     }
 
 
@@ -265,7 +273,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         countriesFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
-                    model.filterByCountry((Country) newValue);
+                    Country selectedCountry = (Country) newValue;
+                    ObservableList<Team> teamsForCountry = (ObservableList<Team>) model.getTeamsForCountry(selectedCountry);
+                    teamsFilterCB.getItems().setAll(teamsForCountry);
+                    teamsFilterCB.getSelectionModel().clearSelection();
+                    model.filterByCountry(selectedCountry);
+
                     filterActive = true;
                     setTotalRates();
                     showRevertButtonByFilterActive(countryRevertSvg);
@@ -291,11 +304,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
-    private void filterByTeamAndCountryListener() {
-
-    }
-
-    public void setTotalRates() {
+    public void setTotalRates(){
         dayRateField.setText(model.calculateGroupDayRate().toString());
         hourlyRateField.setText(model.calculateGroupHourlyRate().toString());
     }

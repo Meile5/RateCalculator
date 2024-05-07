@@ -262,6 +262,25 @@ public class Model implements IModel {
         displayEmployees.displayEmployees();
     }
 
+    @Override
+    public void filterByCountryAndTeam(Country selectedCountry ,Team selectedTeam) throws RateException {
+        filteredEmployeesList.setAll(employeeManager.filterByCountryAndTeam(employees.values(), selectedCountry, selectedTeam));
+        filteredEmployeesList.stream().forEach(employee -> filteredEmployeesMap.put(employee.getId(), employee));
+        displayedEmployees.setAll(filteredEmployeesList);
+        displayEmployees.displayEmployees();
+    }
+
+    @Override
+    public ObservableList<Team> getTeamsForCountry(Country country) {
+        ObservableList<Team> teamsForCountry = FXCollections.observableArrayList();
+        for (Employee employee : employees.values()) {
+            if (employee.getCountry().equals(country) && !teamsForCountry.contains(employee.getTeam())) {
+                teamsForCountry.add(employee.getTeam());
+            }
+        }
+        return teamsForCountry;
+    }
+
     public void teamFilterActiveRevert() throws RateException {
         displayedEmployees = filteredEmployeesList;
         displayEmployees.displayEmployees();
