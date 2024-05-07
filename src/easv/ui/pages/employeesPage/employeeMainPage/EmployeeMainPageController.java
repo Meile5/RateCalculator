@@ -60,6 +60,10 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     private Service<Void> loadEmployeesFromDB;
     @FXML
     private SVGPath svgPath;
+    private boolean filterActive = false;
+
+
+
 
 
 
@@ -138,7 +142,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
             progressBar.setVisible(false);
         });
         loadEmployeesFromDB.setOnFailed((event)->{
-            loadEmployeesFromDB.getException().printStackTrace();
+
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
         });
         loadEmployeesFromDB.restart();
@@ -161,9 +165,15 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     }
     @FXML
     private void goBack() throws RateException {
-        model.performEmployeeSearchUndoOperation();
+        if (filterActive) {
+            model.teamFilterActiveRevert();
+
+        } else {
+            model.performEmployeeSearchUndoOperation();
+        }
         searchField.clear();
         Platform.runLater(this::loadSearchSVG);
+
 
     }
 
@@ -226,6 +236,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
             if (newValue != null) {
                 try {
                     model.filterByCountry((Country) newValue);
+                    filterActive = true;
                     setTotalRates();
                 } catch (RateException e) {
                     throw new RuntimeException(e);
@@ -239,6 +250,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
             if (newValue != null) {
                 try {
                     model.filterByTeam((Team) newValue);
+                    filterActive = true;
                     setTotalRates();
                 } catch (RateException e) {
                     throw new RuntimeException(e);
