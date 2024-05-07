@@ -74,16 +74,15 @@ public class TeamComponentController  implements Initializable {
             initializeTeamOverheadData();
         }
 
-
         /**initialize the team ovearhead values
          * */
         private void initializeTeamOverheadData(){
         BigDecimal salaryOverheadValue  = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD).setScale(2, RoundingMode.HALF_UP);
-        salaryOverhead.setText(String.valueOf(salaryOverheadValue));
+        salaryOverhead.setText(salaryOverheadValue + " " + team.getTeamMembers().getFirst().getCurrency());
         BigDecimal expensesOverheadValue = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD).setScale(2,RoundingMode.HALF_UP);
-        expensesOverhead.setText(String.valueOf(expensesOverheadValue));
+        expensesOverhead.setText(expensesOverheadValue + " " + team.getTeamMembers().getFirst().getCurrency());
         BigDecimal totalOverheadValue =   team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD).setScale(2,RoundingMode.HALF_UP);
-        totalOverhead.setText(String.valueOf(totalOverheadValue));
+        totalOverhead.setText(totalOverheadValue + " " + team.getTeamMembers().getFirst().getCurrency());
         }
 
 

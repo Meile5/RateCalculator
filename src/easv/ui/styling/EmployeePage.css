@@ -1,3 +1,4 @@
+
 .scroll-bar{
     -fx-opacity: 0;
 }
@@ -86,6 +87,24 @@
 .list-view .list-cell:filled:selected {
     -fx-background-color: #051017;
     -fx-text-fill: #c2d1e2;
+}
+
+.mfx-combo-box:focus-within .caret .mfx-font-icon {
+    -mfx-color: #2ba746;
+}
+
+
+.mfx-combo-box:focus-within{
+    -fx-border-color: #2ba746;
+    -fx-text-fill: #2ba746;
+}
+
+.mfx-combo-box-cell:hover {
+    -fx-background-color: #56EA8C7F;
+}
+
+.mfx-combo-box-cell:selected {
+    -fx-background-color: #2ba746;
 }
 
 

@@ -3,7 +3,7 @@
     -fx-background-radius: 0 0 25 25;
     -fx-border-radius: 25;
 }
-.inputFields{
+.inputFields >{
     -fx-background-color: #F9F9F9;
     -fx-background-radius: 25 ;
 }
@@ -17,9 +17,13 @@
     -fx-background-color: #CCCCCC;
 }
 
-
-
-
+.label{
+    font-family: Open Sans;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19.07px;
+    text-align: left;
+}
 
 .closeButton:hover {
     -fx-background-color: #C42B1C;
