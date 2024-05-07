@@ -303,7 +303,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     }
                     filterActive = true;
                     setTotalRates();
-                    showRevertButtonByFilterActive(teamRevertSvg);
+                    showRevertButtonByFilterActive(teamRevertButton,teamRevertSvg);
                 } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
