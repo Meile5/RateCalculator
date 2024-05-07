@@ -24,6 +24,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -340,7 +341,7 @@ e.printStackTrace();
 
 
     private void addFocusListener(MFXTextField filterInput, HBox sibling){
-        filterInput.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        filterInput.focusWithinProperty().addListener((obs, wasFocused, isNowFocused) -> {
             System.out.println("Focus changed for filterInput: " + isNowFocused);
             if (isNowFocused) {
                 sibling.getStyleClass().add("countryFilterFocused");

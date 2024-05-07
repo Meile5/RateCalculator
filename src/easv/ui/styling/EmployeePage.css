@@ -111,6 +111,7 @@
     -fx-border-color: #2ba746;
     -fx-text-fill: #2ba746;
     -fx-border-width: 1 1 1 0;
+-fx-background-color: #fff;
 }
 
 .mfx-combo-box-cell:hover {
@@ -141,8 +142,12 @@
 
 
 .countryFilterFocused{
-    -fx-border-color: rgb(100, 208, 70);
+
     -fx-border-width: 1 0 1 1;
+    -fx-background-insets: 2;
+    -fx-border-color: #2ba746;
+    -fx-border-insets: -0.5;
+
 }
 
 .countryFilterComboBox .text-field{
