@@ -63,6 +63,24 @@
                   </StackPane>
                   <MFXComboBox fx:id="countriesFilterCB" alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="150.0" promptText="Countries" selectable="true" GridPane.columnIndex="2" />
                   <MFXComboBox fx:id="teamsFilterCB" alignment="CENTER_RIGHT" prefWidth="150.0" promptText="Teams" selectable="true" GridPane.columnIndex="3" />
+                  <StackPane maxHeight="30.0" maxWidth="40.0" prefHeight="29.0" prefWidth="29.0" GridPane.columnIndex="2">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#goBackFromCountries" prefHeight="55.0" prefWidth="57.0" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <SVGPath fx:id="countriesSvgPath" />
+                           </graphic>
+                        </Button>
+                     </children>
+                  </StackPane>
+                  <StackPane layoutX="469.0" layoutY="23.0" maxHeight="30.0" maxWidth="40.0" prefHeight="29.0" prefWidth="29.0" GridPane.columnIndex="3">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#goBackFromTeams" prefHeight="49.0" prefWidth="51.0" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <SVGPath fx:id="teamsSvgPath" />
+                           </graphic>
+                        </Button>
+                     </children>
+                  </StackPane>
                </children>
                <padding>
                   <Insets bottom="10.0" />
