@@ -1,5 +1,4 @@
 package easv.ui.pages.employeesPage.employeeMainPage;
-
 import easv.Utility.DisplayEmployees;
 import easv.be.Country;
 import easv.be.Employee;
@@ -70,7 +69,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private HBox countryRevert;
     @FXML
     private HBox teamRevert;
-    @FXML
+     @FXML
     private SVGPath svgPath;
     @FXML
     private SVGPath countriesSvgPath;
@@ -83,12 +82,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private SVGPath countryRevertSvg;
     private ObservableList<Team> teams;
     private ObservableList<Country> countries;
-
-
-
-
-
-
     private EmployeeInfoController selectedToEdit;
 
 
@@ -126,7 +119,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             addFocusListener(teamsFilterCB, teamRevert);
             revertCountryFilter(countryRevertSvg);
             revertTeamFilter(teamRevertSvg);
-         } catch (RateException e) {
+            setTotalRatesDefault();
+        } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
@@ -138,7 +132,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
                     EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout,this);
                     employeesContainer.getChildren().add(employeeInfoController.getRoot());
-                    setTotalRates();
                 });
     }
 
@@ -261,12 +254,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
-    private void populateFilterComboBox() {
-        ObservableList<Country> countries = model.getCountiesValues();
-        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
+    private void populateFilterComboBox(){
+        countries = model.getCountiesValues();
+        teams = FXCollections.observableArrayList(model.getTeams().values());
 
-        countriesFilterCB.setItems(countries);
-        teamsFilterCB.setItems(teams);
+        countriesFilterCB.setItems(countries.sorted());
+        teamsFilterCB.setItems(teams.sorted());
     }
 
     private void filterByCountryListener() {
@@ -274,9 +267,9 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             if (newValue != null) {
                 try {
                     Country selectedCountry = (Country) newValue;
-                    ObservableList<Team> teamsForCountry = (ObservableList<Team>) model.getTeamsForCountry(selectedCountry);
-                    teamsFilterCB.getItems().setAll(teamsForCountry);
+                    ObservableList<Team> teamsForCountry = model.getTeamsForCountry(selectedCountry);
                     teamsFilterCB.getSelectionModel().clearSelection();
+                    teamsFilterCB.setItems(teamsForCountry.sorted());
                     model.filterByCountry(selectedCountry);
 
                     filterActive = true;
@@ -293,7 +286,15 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         teamsFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
-                    model.filterByTeam((Team) newValue);
+                    Team selectedTeam = (Team) newValue;
+                    Country selectedCountry = (Country) countriesFilterCB.getSelectionModel().getSelectedItem();
+                    if(selectedCountry==null){
+                        teamsFilterCB.setItems(teams.sorted());
+                        model.filterByTeam(selectedTeam);
+
+                    } else {
+                        model.filterByCountryAndTeam(selectedCountry, selectedTeam);
+                    }
                     filterActive = true;
                     setTotalRates();
                     showRevertButtonByFilterActive(teamRevertSvg);
@@ -309,7 +310,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         hourlyRateField.setText(model.calculateGroupHourlyRate().toString());
     }
 
-    private void addSelectionListener() throws RateException {
+    public void setTotalRatesDefault(){
+        dayRateField.setText("");
+        hourlyRateField.setText("");
+    }
+
+    private void addSelectionListener() throws RateException  {
         searchResponseHolder.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
@@ -341,22 +347,38 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
     @FXML
     private void goBackFromCountries() throws RateException {
-        model.performEmployeeSearchUndoOperation();
-        searchField.clear();
- //       countriesSvgPath.setContent("");
+            model.performEmployeeSearchUndoOperation();
+            countriesFilterCB.clearSelection();
+            teamsFilterCB.clearSelection();
+            searchField.clear();
+            filterActive = false;
+            countriesSvgPath.setContent("");
+            teamsSvgPath.setContent("");
+            setTotalRatesDefault();
+
     }
 
     @FXML
     private void goBackFromTeams() throws RateException {
-        model.performEmployeeSearchUndoOperation();
-        searchField.clear();
-   //     teamsSvgPath.setContent("");
+        if(filterActive && countriesFilterCB.getSelectionModel().getSelectedItem()!=null){
+            model.teamFilterActiveRevert();
+            teamsFilterCB.clearSelection();
+            searchField.clear();
+            teamsSvgPath.setContent("");
+
+        } else {
+            model.performEmployeeSearchUndoOperation();
+            teamsFilterCB.clearSelection();
+            filterActive = false;
+            teamsSvgPath.setContent("");
+            setTotalRatesDefault();
+        }
     }
 
 
-    private void addFocusListener(MFXTextField filterInput, HBox sibling) {
-        filterInput.focusWithinProperty().addListener((obs, wasFocused, isNowFocused) -> {
-            System.out.println("Focus changed for filterInput: " + isNowFocused);
+
+    private void addFocusListener(MFXComboBox filterInput,HBox sibling){
+        filterInput.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
             if (isNowFocused) {
                 sibling.getStyleClass().add("countryFilterFocused");
             } else {
