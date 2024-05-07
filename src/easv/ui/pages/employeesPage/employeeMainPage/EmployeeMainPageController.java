@@ -12,6 +12,7 @@ import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,13 +22,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -110,11 +111,7 @@ e.printStackTrace();
             filterByCountryListener();
             filterByTeamListener();
             addFocusListener(countriesFilterCB,countryRevert);
-            addFocusListener(teamsFilterCB,teamRevert
-
-
-               );
-
+            addFocusListener(teamsFilterCB,teamRevert);
 
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
@@ -342,8 +339,9 @@ e.printStackTrace();
 
 
 
-    private void addFocusListener(MFXComboBox filterInput,HBox sibling){
+    private void addFocusListener(MFXTextField filterInput, HBox sibling){
         filterInput.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            System.out.println("Focus changed for filterInput: " + isNowFocused);
             if (isNowFocused) {
                 sibling.getStyleClass().add("countryFilterFocused");
             } else {
@@ -351,6 +349,8 @@ e.printStackTrace();
             }
         });
     }
+
+
 
 
 
