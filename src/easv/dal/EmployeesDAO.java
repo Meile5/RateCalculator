@@ -135,7 +135,7 @@ public class EmployeesDAO implements IEmployeeDAO {
         String sql = "SELECT " +
                 "conf.ConfigurationID, conf.AnnualSalary, conf.FixedAnnualAmount, " +
                 "conf.OverheadMultiplier, conf.UtilizationPercentage, conf.WorkingHours, " +
-                "conf.Date AS ConfigurationDate, conf.Active " +
+                "conf.Date AS ConfigurationDate, conf.Active, conf.Markup,conf.GrossMargin " +
                 "FROM " +
                 "EmployeeConfigurations ec " +
                 "INNER JOIN Configurations conf ON ec.ConfigurationID = conf.ConfigurationID " +
@@ -153,7 +153,9 @@ public class EmployeesDAO implements IEmployeeDAO {
                 BigDecimal workingHours = res.getBigDecimal("WorkingHours");
                 LocalDateTime configurationDate = res.getTimestamp("ConfigurationDate").toLocalDateTime();
                 boolean active = Boolean.parseBoolean(res.getString("Active"));
-                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active);
+                double markupMultiplier = res.getDouble("Markup");
+                double grossMargin = res.getDouble("GrossMargin");
+                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active,markupMultiplier,grossMargin);
                 configurations.add(configuration);
             }
         }
@@ -340,12 +342,12 @@ public class EmployeesDAO implements IEmployeeDAO {
                 psmt.setString(2, editedEmployee.getType().toString());
                 psmt.setInt(3, editedEmployee.getCountry().getId());
                 psmt.setInt(4, editedEmployee.getTeam().getId());
-                psmt.setString(5, editedEmployee.getCurrency().toString());
+                psmt.setString(5, editedEmployee.getCurrency().name());
                 psmt.setInt(6, editedEmployee.getId());
                 psmt.executeUpdate();
             }
 
-            editedEmployee.getActiveConfiguration().setConfigurationId(addConfiguration(editedEmployee.getActiveConfiguration(), conn));
+            editedEmployee.getActiveConfiguration().setConfigurationId(addConfigurationWithAdditionalMultipliers(conn,editedEmployee.getActiveConfiguration()));
             setOldConfigurationToInactive(oldConfigurationId, conn);
             addEmployeeConfiguration(editedEmployee.getId(), editedEmployee.getActiveConfiguration().getConfigurationId(), conn);
             conn.commit();
@@ -385,6 +387,33 @@ public class EmployeesDAO implements IEmployeeDAO {
             throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
         }
     }
+
+    /**add configuration with grossMargin and markup */
+    private Integer addConfigurationWithAdditionalMultipliers(Connection conn, Configuration configuration) throws SQLException, RateException {
+       Integer configurationID =null;
+        String sql = "INSERT INTO Configurations (AnnualSalary, FixedAnnualAmount, OverheadMultiplier, UtilizationPercentage, WorkingHours, Date,Active,Markup,GrossMargin) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
+        try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            psmt.setBigDecimal(1, configuration.getAnnualSalary());
+            psmt.setBigDecimal(2, configuration.getFixedAnnualAmount());
+            psmt.setBigDecimal(3, configuration.getOverheadMultiplier());
+            psmt.setBigDecimal(4, configuration.getUtilizationPercentage());
+            psmt.setBigDecimal(5, configuration.getWorkingHours());
+            psmt.setTimestamp(6, Timestamp.valueOf(configuration.getSavedDate()));
+            psmt.setString(7, String.valueOf(configuration.isActive()));
+            psmt.setDouble(8, configuration.getMarkupMultiplier());
+            psmt.setDouble(9, configuration.getGrossMargin());
+            psmt.executeUpdate();
+            try (ResultSet res = psmt.getGeneratedKeys()) {
+                if (res.next()) {
+                    configurationID = res.getInt(1);
+                } else {
+                    throw new RateException(ErrorCode.OPERATION_DB_FAILED);
+                }
+            }
+        }
+       return configurationID;
+    }
+
 }
 
 

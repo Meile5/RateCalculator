@@ -66,6 +66,8 @@ public interface IModel {
 
     void performSelectUserSearchOperation (Employee employee) throws RateException ;
 
+    void filterByCountry(Country country) throws RateException;
+
 
     /**check if edit operation was performed*/
     boolean isEditOperationPerformed( Employee originalEmployee, Employee editedEmployee);
@@ -87,4 +89,9 @@ public interface IModel {
     BigDecimal getComputedDayRate(Employee employee);
 
 
+    void filterByTeam(Team team) throws RateException;
+
+    BigDecimal calculateGroupDayRate();
+
+    BigDecimal calculateGroupHourlyRate();
 }

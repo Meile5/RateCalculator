@@ -19,6 +19,10 @@ public interface IEmployeeManager {
     Map<Integer, Employee> returnEmployees() throws RateException;
     Boolean deleteEmployee(Employee employee) throws RateException;
 
+    BigDecimal calculateGroupDayRate(Collection<Employee> employees);
+
+    BigDecimal calculateGroupHourlyRate(Collection<Employee> employees);
+
     public List<Employee> performSearchOperation (Collection<Employee> employees, String filter);
 
     /**check if an edit operation was performed on the epmloyee object*/
@@ -33,4 +37,7 @@ public interface IEmployeeManager {
     /**calculate the hourly rate for an employee, with the configurable hours*/
     BigDecimal getHourlyRate(Employee employee,double configurableHours);
 
+    List<Employee> filterByCountry(Collection<Employee> employees, Country country);
+
+    List<Employee> filterByTeam(Collection<Employee> employees, Team team);
 }

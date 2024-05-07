@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 
-<HBox fx:id="employeesMainPageContainer" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: F9F9F9;" stylesheets="/easv/ui/styling/EmployeePage.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<HBox fx:id="employeesMainPageContainer" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: F9F9F9;" stylesheets="/easv/ui/styling/EmployeePage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Region prefHeight="700.0" prefWidth="80.0" />
       <VBox alignment="CENTER" prefHeight="600.0" prefWidth="933.0" spacing="10.0" HBox.hgrow="ALWAYS">
@@ -29,8 +39,10 @@
             </GridPane>
             <GridPane maxWidth="788.0" prefHeight="66.0" prefWidth="788.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="389.0" minWidth="10.0" prefWidth="223.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="701.0" minWidth="10.0" prefWidth="565.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="260.0" minWidth="10.0" prefWidth="223.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="701.0" minWidth="10.0" prefWidth="235.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="701.0" minWidth="10.0" prefWidth="166.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="701.0" minWidth="10.0" prefWidth="163.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -49,6 +61,8 @@
                         </Button>
                      </children>
                   </StackPane>
+                  <MFXComboBox fx:id="countriesFilterCB" alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="150.0" promptText="Countries" selectable="true" GridPane.columnIndex="2" />
+                  <MFXComboBox fx:id="teamsFilterCB" alignment="CENTER_RIGHT" prefWidth="150.0" promptText="Teams" selectable="true" GridPane.columnIndex="3" />
                </children>
                <padding>
                   <Insets bottom="10.0" />
@@ -92,6 +106,28 @@
             </VBox>
          </children>
       </VBox>
-      <VBox prefHeight="600.0" prefWidth="191.0" />
+      <VBox prefHeight="600.0" prefWidth="191.0">
+         <children>
+            <Region prefHeight="180.0" prefWidth="190.0" />
+            <VBox alignment="CENTER_LEFT" prefHeight="130.0" prefWidth="150.0" spacing="3.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;">
+               <children>
+                  <Label text="Total Day Rate" />
+                  <TextField fx:id="dayRateField" editable="false">
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Label text="Total Hourly Rate" />
+                  <TextField fx:id="hourlyRateField" editable="false" prefHeight="26.0" prefWidth="68.0" />
+               </children>
+               <padding>
+                  <Insets left="20.0" right="20.0" />
+               </padding>
+            </VBox>
+            <Region prefHeight="200.0" prefWidth="200.0" />
+         </children>
+         <padding>
+            <Insets right="40.0" />
+         </padding></VBox>
    </children>
 </HBox>

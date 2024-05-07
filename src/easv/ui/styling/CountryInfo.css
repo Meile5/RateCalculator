@@ -1,5 +1,6 @@
 .countryBackground{
-    -fx-background-color: #F2F3F2;
+    /*-fx-background-color: #F2F3F2;*/
+-fx-background-color: rgb(82, 80, 80)
 }
 .closeContainer{
     -fx-background-radius: 0 10 0 0;
