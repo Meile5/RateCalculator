@@ -233,7 +233,6 @@ public class Model implements IModel {
         filteredEmployeesList.setAll(displayedEmployees);
         displayedEmployees.setAll(employee);
         displayEmployees.displayEmployees();
-
     }
     public void performEmployeeSearchUndoOperation() throws RateException {
         sortDisplayedEmployee();
@@ -266,9 +265,13 @@ public class Model implements IModel {
 
     @Override
     public void filterByCountryAndTeam(Country selectedCountry ,Team selectedTeam) throws RateException {
+
         filteredEmployeesList.setAll(displayedEmployees);
+
         displayedEmployees.setAll(employeeManager.filterByCountryAndTeam(employees.values(), selectedCountry, selectedTeam));
         displayEmployees.displayEmployees();
+
+
         System.out.println(displayedEmployees + "displayed employees CT");
         System.out.println(filteredEmployeesList + "filtered employees");
     }

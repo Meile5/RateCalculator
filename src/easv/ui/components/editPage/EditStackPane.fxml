@@ -183,6 +183,7 @@
                </children>
             </VBox>
             <Region disable="true" prefHeight="200.0" prefWidth="191.0" HBox.hgrow="ALWAYS" />
+            <Region maxWidth="400.0" prefHeight="10.0" prefWidth="10.0" />
          </children>
       </HBox>
       <StackPane fx:id="spinnerLayer" disable="true" prefHeight="600.0" prefWidth="1200.0" styleClass="spinnerLayer" visible="false">
