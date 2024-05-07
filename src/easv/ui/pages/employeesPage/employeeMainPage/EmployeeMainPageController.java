@@ -276,14 +276,17 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             if (newValue != null) {
                 try {
                     Country selectedCountry = (Country) newValue;
-                    ObservableList<Team> teamsForCountry = (ObservableList<Team>) model.getTeamsForCountry(selectedCountry);
-
-
-                    if(!teamsForCountry.isEmpty()){
-                        teamsFilterCB.getItems().setAll(teamsForCountry);
+                    ObservableList <Team> teamsForCountry =  FXCollections.observableArrayList();
+                    // i have putted this lines of code , because i had  IndexOutOfBoundException ,
+                    // becouse model.getTeamsForCountry(selectedCountry) was empty sometimes , or
+                    if(!model.getTeamsForCountry(selectedCountry).isEmpty()){
+                        teamsForCountry.setAll(model.getTeamsForCountry(selectedCountry));
                     }
-
                     teamsFilterCB.getSelectionModel().clearSelection();
+                    //here it ends what i modifyed
+                        teamsFilterCB.getItems().setAll(teamsForCountry);
+                        teamsFilterCB.clear();
+
                     model.filterByCountry(selectedCountry);
 
                     filterActive = true;
