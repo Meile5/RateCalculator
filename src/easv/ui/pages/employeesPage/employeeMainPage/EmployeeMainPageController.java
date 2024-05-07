@@ -115,16 +115,16 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             populateFilterComboBox();
             filterByCountryListener();
             filterByTeamListener();
-            addFocusListener(countriesFilterCB, countryRevert);
-            addFocusListener(teamsFilterCB, teamRevert);
+            addFocusListener(countriesFilterCB,countryRevert);
+            addFocusListener(teamsFilterCB,teamRevert);
             revertCountryFilter(countryRevertSvg);
             revertTeamFilter(teamRevertSvg);
             setTotalRatesDefault();
+
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
-
     public void displayEmployees() {
         employeesContainer.getChildren().clear();
         model.getUsersToDisplay()
@@ -136,9 +136,10 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     }
 
 
-    private void initializeEmployeeLoadingService() {
+
+    private void initializeEmployeeLoadingService(){
         progressBar.setVisible(true);
-        loadEmployeesFromDB = new Service<Void>() {
+        loadEmployeesFromDB= new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
@@ -146,9 +147,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     protected Void call() throws Exception {
                         model.returnEmployees();
                         return null;
-                    }
-
-                    ;
+                    };
                 };
             }
         };
@@ -159,7 +158,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             // Hide the progress bar
             progressBar.setVisible(false);
         });
-        loadEmployeesFromDB.setOnFailed((event) -> {
+        loadEmployeesFromDB.setOnFailed((event)->{
 
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
         });
@@ -267,7 +266,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             if (newValue != null) {
                 try {
                     Country selectedCountry = (Country) newValue;
-                    ObservableList<Team> teamsForCountry = model.getTeamsForCountry(selectedCountry);
+                    ObservableList<Team> teamsForCountry = (ObservableList<Team>) model.getTeamsForCountry(selectedCountry);
                     teamsFilterCB.getSelectionModel().clearSelection();
                     teamsFilterCB.setItems(teamsForCountry.sorted());
                     model.filterByCountry(selectedCountry);
