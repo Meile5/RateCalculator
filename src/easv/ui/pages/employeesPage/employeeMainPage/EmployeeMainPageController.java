@@ -69,12 +69,10 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private HBox countryRevertButton;
     @FXML
     private HBox teamRevertButton;
+
+    //Todo remove this if not needed and also the methods that are commented
     @FXML
     private SVGPath svgPathButton;
-    @FXML
-    private SVGPath countriesSvgPath;
-    @FXML
-    private SVGPath teamsSvgPath;
     private boolean filterActive = false;
     @FXML
     private SVGPath teamRevertSvg;
@@ -183,19 +181,19 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         svgPath.setContent(alternativeSVGPath);
     }
 
-    private void loadRevertSVGCountries() {
-        String alternativeSVGPath = "M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z ";
-        countriesSvgPath.getStyleClass().clear();
-        countriesSvgPath.getStyleClass().add("svg-revert");
-        countriesSvgPath.setContent(alternativeSVGPath);
-    }
+//    private void loadRevertSVGCountries() {
+//        String alternativeSVGPath = "M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z ";
+//        countriesSvgPath.getStyleClass().clear();
+//        countriesSvgPath.getStyleClass().add("svg-revert");
+//        countriesSvgPath.setContent(alternativeSVGPath);
+//    }
 
-    private void loadRevertSVGTeams() {
-        String alternativeSVGPath = "M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z ";
-        teamsSvgPath.getStyleClass().clear();
-        teamsSvgPath.getStyleClass().add("svg-revert");
-        teamsSvgPath.setContent(alternativeSVGPath);
-    }
+//    private void loadRevertSVGTeams() {
+//        String alternativeSVGPath = "M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z ";
+//        teamsSvgPath.getStyleClass().clear();
+//        teamsSvgPath.getStyleClass().add("svg-revert");
+//        teamsSvgPath.setContent(alternativeSVGPath);
+//    }
 
     @FXML
     private void goBack() throws RateException {
@@ -258,7 +256,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private void populateFilterComboBox(){
         countries = model.getCountiesValues();
         teams = FXCollections.observableArrayList(model.getTeams().values());
-
         countriesFilterCB.setItems(countries.sorted());
         teamsFilterCB.setItems(teams.sorted());
     }
@@ -358,10 +355,9 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             teamsFilterCB.clearSelection();
             searchField.clear();
             filterActive = false;
-
             setTotalRatesDefault();
-
     }
+
 
     @FXML
     private void goBackFromTeams() throws RateException {
@@ -369,7 +365,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             model.teamFilterActiveRevert();
             teamsFilterCB.clearSelection();
             searchField.clear();
-
         } else {
             model.performEmployeeSearchUndoOperation();
             teamsFilterCB.clearSelection();
@@ -409,6 +404,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             try {
                 goBackFromCountries();
                 hideRevertButton(revertIcon,button);
+                hideRevertButton(this.teamRevertSvg,teamRevertButton);
             } catch (RateException e) {
                 ExceptionHandler.errorAlertMessage(ErrorCode.UNDO_FAILED.getValue());
             }

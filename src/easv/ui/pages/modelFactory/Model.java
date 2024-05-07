@@ -109,8 +109,6 @@ public class Model implements IModel {
     }
 
 
-
-
     @Override
 
     public void returnEmployees() throws RateException {
@@ -123,7 +121,6 @@ public class Model implements IModel {
         sortedEmployeesByName.setAll(employeeManager.sortedEmployeesByName(employees.values()));
     }
 
-
     @Override
     public void deleteEmployee(Employee employee) throws RateException {
         boolean succeeded = employeeManager.deleteEmployee(employee);
@@ -132,10 +129,7 @@ public class Model implements IModel {
             employees.remove(employee.getId());
             sortDisplayedEmployee();
             displayedEmployees = sortedEmployeesByName;
-
-
             Platform.runLater(() -> {
-
                 try {
                     displayEmployees.displayEmployees();
                 } catch (RateException e) {
@@ -152,6 +146,7 @@ public class Model implements IModel {
             employees.put(employee.getId(), employee);
         }
     }
+
 
     /**
      * return the operational countries
@@ -170,6 +165,8 @@ public class Model implements IModel {
         return coutriesList;
     }
 
+
+
     @Override
     public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
         Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
@@ -178,7 +175,6 @@ public class Model implements IModel {
             this.employees.put(editedEmployee.getId(), editedEmployeeSaved);
             return true;
         }
-        // if database failed display the error message , and do not close the window;
         return false;
     }
 
@@ -245,15 +241,20 @@ public class Model implements IModel {
         displayEmployees.displayEmployees();
     }
 
+
+    //TODO i do not get the point why  you set the filteredEmployeeList with the displayedEmployees,they work without also;
     @Override
     public void filterByCountry(Country country) throws RateException {
         filteredEmployeesList.setAll(displayedEmployees);
+
         displayedEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
         displayEmployees.displayEmployees();
         System.out.println(displayedEmployees + "displayed employees C");
         System.out.println(filteredEmployeesList + "filtered employees");
     }
 
+
+   // TODO the same here , i do not get the point,they work without also
     @Override
     public void filterByTeam(Team team) throws RateException {
         filteredEmployeesList.setAll(displayedEmployees);

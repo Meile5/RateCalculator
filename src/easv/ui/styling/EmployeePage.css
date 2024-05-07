@@ -123,12 +123,30 @@
 }
 
 
+.revertIcon{
+    -fx-fill:#2ba746;
+    -fx-stroke:#2ba746;
+}
+
 .countryFilter {
     -fx-background-radius: 12 0 0 12;
     -fx-border-color: #7E7B7BFF;
     -fx-border-radius: 12 0 0 12;
     -fx-border-width: 1 0 1 1;
     -fx-background-color: #fff;
+}
+
+.countryFilter:hover{
+    -fx-background-color:#63b2e1 ;
+        /*-fx-fill: #63b2e1;*/
+        /*-fx-stroke: #63b2e1;*/
+    -fx-scale-x: 1;
+        -fx-scale-y: 1;
+}
+
+.countryFilter:hover .revertIcon{
+    -fx-fill:#fff;
+    -fx-stroke:#fff;
 }
 
 
@@ -142,7 +160,6 @@
 
 
 .countryFilterFocused{
-
     -fx-border-width: 1 0 1 1;
     -fx-background-insets: 2;
     -fx-border-color: #2ba746;
