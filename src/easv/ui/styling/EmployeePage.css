@@ -1,27 +1,31 @@
 
-.scroll-bar{
+.scroll-bar {
     -fx-opacity: 0;
 }
 
-.label{
+.label {
     -fx-text-fill: rgba(47, 46, 46, 1);
-    -fx-font-family: 'Open Sans' , sans-serif;
+    -fx-font-family: 'Open Sans', sans-serif;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
 }
-.text-field{
+
+.text-field {
     -fx-background-radius: 12;
     -fx-border-color: rgb(126, 123, 123);
     -fx-border-radius: 12;
     -fx-border-width: 2;
 }
+
 .text-field:focused {
     -fx-border-color: rgb(100, 208, 70); /* Border color when TextField is focused */
 }
+
 .text-field:empty {
     -fx-border-color: rgb(114, 112, 112); /* Revert to default border color when TextField is empty */
 }
-.employees{
+
+.employees {
     -fx-text-fill: rgba(47, 46, 46, 1);
     -fx-font-family: Open Sans;
     -fx-font-size: 16px;
@@ -29,7 +33,8 @@
 
 
 }
-.tableLabels{
+
+.tableLabels {
     -fx-text-fill: rgba(47, 46, 46, 1);
     -fx-font-family: Open Sans;
     -fx-font-size: 13px;
@@ -37,6 +42,7 @@
 
 
 }
+
 .svg-revert {
     -fx-fill: #2BA746FF; /* Green color */
     -fx-stroke: #2BA746FF; /* Green color */
@@ -45,12 +51,14 @@
     -fx-scale-y: 0.9;
 
 }
-.svg-revert:hover{
+
+.svg-revert:hover {
     -fx-fill: #63b2e1;
     -fx-stroke: #63b2e1;
     -fx-scale-x: 1;
     -fx-scale-y: 1;
 }
+
 .svg-search {
     -fx-fill: #2BA746FF; /* Green color */
     -fx-stroke: #2BA746FF; /* Green color */
@@ -58,16 +66,19 @@
     -fx-scale-x: 0.6;
     -fx-scale-y: 0.6;
 }
-.popupView{
+
+.popupView {
     -fx-background-color: white;
     -fx-border-radius: 10;
 
 }
+
 .list-view {
     -fx-background-color: #ffffff;
     -fx-background-radius: 0 0 5 5;
     -fx-border-radius: 0 0 5 5;
 }
+
 .list-view .viewport {
     -fx-border-radius: 0 0 5 5;
     -fx-background-radius: 0 0 5 5;
@@ -79,6 +90,7 @@
     -fx-border-radius: 5;
     -fx-background-radius: 5;
 }
+
 .list-view .list-cell:hover {
     -fx-text-fill: #081a2d;
     -fx-background-color: #c2d1e2;
@@ -89,14 +101,16 @@
     -fx-text-fill: #c2d1e2;
 }
 
+
 .mfx-combo-box:focus-within .caret .mfx-font-icon {
     -mfx-color: #2ba746;
 }
 
 
-.mfx-combo-box:focus-within{
+.mfx-combo-box:focus-within {
     -fx-border-color: #2ba746;
     -fx-text-fill: #2ba746;
+    -fx-border-width: 1 1 1 0;
 }
 
 .mfx-combo-box-cell:hover {
@@ -108,5 +122,51 @@
 }
 
 
+.countryFilter {
+    -fx-background-radius: 12 0 0 12;
+    -fx-border-color: #7E7B7BFF;
+    -fx-border-radius: 12 0 0 12;
+    -fx-border-width: 1 0 1 1;
+    -fx-background-color: #fff;
+}
+
+
+
+.countryFilterComboBox {
+    -fx-background-radius: 0 12 0 12;
+    -fx-border-color: #7E7B7BFF;
+    -fx-border-radius: 0 12 12 0;
+    -fx-border-width: 1 1 1 0;
+}
+
+
+.countryFilterFocused{
+    -fx-border-color: rgb(100, 208, 70);
+    -fx-border-width: 1 0 1 1;
+}
+
+.countryFilterComboBox .text-field{
+    -fx-background-radius: 0;
+    -fx-border-color: #fff;
+    -fx-border-radius: 0;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-alignment: center;
+}
+
+
+
+
+/*.countryFilter > .text-field:focused{*/
+
+/*}*/
+
+/*.text-field:focused {*/
+/*    -fx-border-color: rgb(100, 208, 70); !* Border color when TextField is focused *!*/
+/*}*/
+
+/*.text-field:empty {*/
+/*    -fx-border-color: rgb(114, 112, 112); !* Revert to default border color when TextField is empty *!*/
+/*}*/
 
 

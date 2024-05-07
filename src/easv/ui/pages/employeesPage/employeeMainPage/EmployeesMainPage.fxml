@@ -19,7 +19,7 @@
 <HBox fx:id="employeesMainPageContainer" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: F9F9F9;" stylesheets="/easv/ui/styling/EmployeePage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Region prefHeight="700.0" prefWidth="80.0" />
-      <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="600.0" prefWidth="933.0" spacing="10.0" HBox.hgrow="ALWAYS">
+      <VBox alignment="CENTER" prefHeight="600.0" prefWidth="933.0" spacing="10.0" HBox.hgrow="ALWAYS">
          <children>
             <GridPane alignment="CENTER" maxHeight="600.0" maxWidth="801.0" prefHeight="22.0" prefWidth="801.0">
               <columnConstraints>
@@ -37,12 +37,12 @@
                   </HBox>
                </children>
             </GridPane>
-            <GridPane maxWidth="788.0" prefHeight="66.0" prefWidth="788.0">
+            <GridPane hgap="5.0" maxWidth="788.0" prefHeight="66.0" prefWidth="788.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="260.0" minWidth="10.0" prefWidth="223.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="701.0" minWidth="10.0" prefWidth="235.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="701.0" minWidth="10.0" prefWidth="166.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="701.0" minWidth="10.0" prefWidth="163.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="701.0" minWidth="10.0" prefWidth="172.2" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="701.0" minWidth="10.0" prefWidth="181.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="701.0" minWidth="10.0" prefWidth="181.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -52,6 +52,32 @@
                      <padding>
                         <Insets left="40.0" />
                      </padding></TextField>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2">
+                     <children>
+                        <HBox fx:id="countryRevert" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="29.0" styleClass="countryFilter">
+                           <children>
+                              <SVGPath content="M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z " fill="#2ba746" stroke="#2ba746" visible="false" />
+                           </children>
+                           <HBox.margin>
+                              <Insets right="-1.0" />
+                           </HBox.margin>
+                        </HBox>
+                        <MFXComboBox fx:id="countriesFilterCB" editable="false" floatMode="DISABLED" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="150.0" promptText="Countries" styleClass="countryFilterComboBox" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="3">
+                     <children>
+                        <HBox fx:id="teamRevert" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="29.0" styleClass="countryFilter">
+                           <children>
+                              <SVGPath content="M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z " fill="#2ba746" stroke="#2ba746" visible="false" />
+                           </children>
+                           <HBox.margin>
+                              <Insets right="-1.0" />
+                           </HBox.margin>
+                        </HBox>
+                        <MFXComboBox fx:id="teamsFilterCB" editable="false" floatMode="DISABLED" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="150.0" promptText="Teams" styleClass="countryFilterComboBox" />
+                     </children>
+                  </HBox>
                   <StackPane maxHeight="32.0" maxWidth="40.0" prefHeight="27.0" prefWidth="29.0">
                      <children>
                         <Button fx:id="goBackButton" mnemonicParsing="false" onAction="#goBack" prefHeight="33.0" prefWidth="19.0" style="-fx-background-color: transparent;">
@@ -61,26 +87,26 @@
                         </Button>
                      </children>
                   </StackPane>
-                  <MFXComboBox fx:id="countriesFilterCB" alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="150.0" promptText="Countries" selectable="true" GridPane.columnIndex="2" />
-                  <MFXComboBox fx:id="teamsFilterCB" alignment="CENTER_RIGHT" prefWidth="150.0" promptText="Teams" selectable="true" GridPane.columnIndex="3" />
-                  <StackPane maxHeight="30.0" maxWidth="40.0" prefHeight="29.0" prefWidth="29.0" GridPane.columnIndex="2">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#goBackFromCountries" prefHeight="55.0" prefWidth="57.0" style="-fx-background-color: transparent;">
-                           <graphic>
-                              <SVGPath fx:id="countriesSvgPath" />
-                           </graphic>
-                        </Button>
-                     </children>
-                  </StackPane>
-                  <StackPane layoutX="469.0" layoutY="23.0" maxHeight="30.0" maxWidth="40.0" prefHeight="29.0" prefWidth="29.0" GridPane.columnIndex="3">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#goBackFromTeams" prefHeight="49.0" prefWidth="51.0" style="-fx-background-color: transparent;">
-                           <graphic>
-                              <SVGPath fx:id="teamsSvgPath" />
-                           </graphic>
-                        </Button>
-                     </children>
-                  </StackPane>
+<!--                  <MFXComboBox fx:id="countriesFilterCB" alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="150.0" promptText="Countries" selectable="true" GridPane.columnIndex="2" />-->
+<!--                  <MFXComboBox fx:id="teamsFilterCB" alignment="CENTER_RIGHT" prefWidth="150.0" promptText="Teams" selectable="true" GridPane.columnIndex="3" />-->
+<!--                  <StackPane maxHeight="30.0" maxWidth="40.0" prefHeight="29.0" prefWidth="29.0" GridPane.columnIndex="2">-->
+<!--                     <children>-->
+<!--                        <Button mnemonicParsing="false" onAction="#goBackFromCountries" prefHeight="55.0" prefWidth="57.0" style="-fx-background-color: transparent;">-->
+<!--                           <graphic>-->
+<!--                              <SVGPath fx:id="countriesSvgPath" />-->
+<!--                           </graphic>-->
+<!--                        </Button>-->
+<!--                     </children>-->
+<!--                  </StackPane>-->
+<!--                  <StackPane layoutX="469.0" layoutY="23.0" maxHeight="30.0" maxWidth="40.0" prefHeight="29.0" prefWidth="29.0" GridPane.columnIndex="3">-->
+<!--                     <children>-->
+<!--                        <Button mnemonicParsing="false" onAction="#goBackFromTeams" prefHeight="49.0" prefWidth="51.0" style="-fx-background-color: transparent;">-->
+<!--                           <graphic>-->
+<!--                              <SVGPath fx:id="teamsSvgPath" />-->
+<!--                           </graphic>-->
+<!--                        </Button>-->
+<!--                     </children>-->
+<!--                  </StackPane>-->
                </children>
                <padding>
                   <Insets bottom="10.0" />
@@ -124,9 +150,9 @@
             </VBox>
          </children>
       </VBox>
-      <VBox prefHeight="600.0" prefWidth="191.0">
+      <VBox alignment="CENTER_LEFT" prefHeight="600.0" prefWidth="191.0">
          <children>
-            <Region prefHeight="180.0" prefWidth="190.0" />
+            <Region maxHeight="-Infinity" prefHeight="180.0" prefWidth="148.0" VBox.vgrow="ALWAYS" />
             <VBox alignment="CENTER_LEFT" prefHeight="130.0" prefWidth="150.0" spacing="3.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;">
                <children>
                   <Label text="Total Day Rate" />
@@ -142,10 +168,11 @@
                   <Insets left="20.0" right="20.0" />
                </padding>
             </VBox>
-            <Region prefHeight="200.0" prefWidth="200.0" />
+            <Region maxHeight="400.0" prefHeight="0.0" prefWidth="0.0" VBox.vgrow="ALWAYS" />
          </children>
          <padding>
             <Insets right="40.0" />
          </padding></VBox>
+      <Region maxWidth="400.0" prefHeight="10.0" prefWidth="10.0" HBox.hgrow="ALWAYS" />
    </children>
 </HBox>

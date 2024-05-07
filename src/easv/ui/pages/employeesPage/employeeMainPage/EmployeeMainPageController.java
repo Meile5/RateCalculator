@@ -23,6 +23,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
@@ -59,6 +60,10 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     private Button goBackButton;
     private Service<Void> loadEmployeesFromDB;
     @FXML
+    private HBox countryRevert;
+    @FXML
+    private HBox teamRevert;
+     @FXML
     private SVGPath svgPath;
     @FXML
     private SVGPath countriesSvgPath;
@@ -81,7 +86,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
         try {
             employeePage = loader.load();
         } catch (IOException e) {
-
+e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -94,18 +99,22 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-
             model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
             progressBar.setVisible(true);
             loadSearchSVG();
             initializeEmployeeLoadingService();
-
             createPopUpWindow();
             searchFieldListener();
             addSelectionListener();
             populateFilterComboBox();
             filterByCountryListener();
             filterByTeamListener();
+            addFocusListener(countriesFilterCB,countryRevert);
+            addFocusListener(teamsFilterCB,teamRevert
+
+
+               );
+
 
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
@@ -221,9 +230,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
                     if (!searchResponseHolder.getItems().isEmpty()) {
                         configurePopUpWindow();
                     } else {
-
                         popupWindow.hide();
-
                     }
                 } else {
                     loadRevertSVG();
@@ -254,7 +261,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
                     model.filterByCountry((Country) newValue);
                     filterActive = true;
                     setTotalRates();
-                    loadRevertSVGCountries();
+//                    loadRevertSVGCountries();
                 } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
@@ -269,7 +276,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
                     model.filterByTeam((Team) newValue);
                     filterActive = true;
                     setTotalRates();
-                    loadRevertSVGTeams();
+//                    loadRevertSVGTeams();
                 } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
@@ -331,6 +338,18 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
         teamsSvgPath.setContent("");
 
 
+    }
+
+
+
+    private void addFocusListener(MFXComboBox filterInput,HBox sibling){
+        filterInput.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (isNowFocused) {
+                sibling.getStyleClass().add("countryFilterFocused");
+            } else {
+                sibling.getStyleClass().remove("countryFilterFocused");
+            }
+        });
     }
 
 

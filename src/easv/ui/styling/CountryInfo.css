@@ -15,7 +15,7 @@
     -fx-background-radius: 25;
 }
 .teamsContainer{
-    -fx-background-radius: 25;
+    -fx-background-radius: 0 0 25 25;
     -fx-background-color: rgb(82, 80, 80)
 }
 .test{

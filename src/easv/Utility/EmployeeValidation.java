@@ -296,6 +296,7 @@ public class EmployeeValidation {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
         percentageDisplayer.textProperty().addListener(((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((event) -> {
+
                 try {
                     if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
                         percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
