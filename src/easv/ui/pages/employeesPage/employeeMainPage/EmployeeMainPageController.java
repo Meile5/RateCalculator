@@ -278,7 +278,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     Country selectedCountry = (Country) newValue;
                     ObservableList <Team> teamsForCountry =  FXCollections.observableArrayList();
                     // i have putted this lines of code , because i had  IndexOutOfBoundException ,
-                    // becouse model.getTeamsForCountry(selectedCountry) was empty sometimes , or
+                    // because model.getTeamsForCountry(selectedCountry) was empty sometimes , or
                     if(!model.getTeamsForCountry(selectedCountry).isEmpty()){
                         teamsForCountry.setAll(model.getTeamsForCountry(selectedCountry));
                     }
@@ -395,18 +395,18 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                 goBackFromCountries();
                 hideRevertButton(revertIcon,button);
             } catch (RateException e) {
-                throw new RuntimeException();
+                ExceptionHandler.errorAlertMessage(ErrorCode.UNDO_FAILED.getValue());
             }
         });
     }
 
-    private void revertTeamFilter(HBox button,SVGPath revertIcon) throws RateException{
+    private void revertTeamFilter(HBox button,SVGPath revertIcon){
         button.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
             try {
                 goBackFromTeams();
                 hideRevertButton(revertIcon,button);
             } catch (RateException e) {
-                throw new RuntimeException();
+                ExceptionHandler.errorAlertMessage(ErrorCode.UNDO_FAILED.getValue());
             }
         });
     }
