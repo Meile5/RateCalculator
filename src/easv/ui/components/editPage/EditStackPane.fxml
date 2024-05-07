@@ -19,7 +19,7 @@
             <Region disable="true" prefHeight="200.0" prefWidth="82.0" HBox.hgrow="ALWAYS" />
             <VBox alignment="CENTER" prefHeight="600.0" prefWidth="933.0">
                <children>
-                  <Region prefHeight="112.0" prefWidth="200.0" VBox.vgrow="NEVER" />
+                  <Region prefHeight="90.0" prefWidth="180.0" VBox.vgrow="NEVER" />
                   <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="464.0" prefWidth="804.0" styleClass="inputFields" stylesheets="@../../styling/EditPage.css">
                      <children>
                         <HBox alignment="CENTER" minHeight="-Infinity" prefHeight="30.0" prefWidth="800.0" styleClass="topRoundedCorners">

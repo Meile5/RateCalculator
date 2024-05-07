@@ -21,6 +21,7 @@ public class TeamDao implements ITeamDao {
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }
 
+    //TODO get the teams not the employyes by pagination
 
    /** retrieves the teams and the associated members
     * @param offset the number off elements that needs to be skipped
@@ -28,14 +29,14 @@ public class TeamDao implements ITeamDao {
    public List<TeamWithEmployees> getTeamsByCountry(Country country,int offset,int numberOfElements) {
        Map<Integer, TeamWithEmployees> teamsMap = new HashMap<>();
        String sql = "SELECT e.EmployeeId,e.Name,e.employeeType,e.Currency,t.TeamId,t.Name as TeamName FROM Employees e "
-               +"JOIN Teams t ON e.TeamId = t.TeamId WHERE e.CountryId = ? ORDER BY e.TeamId "+
-               "OFFSET ? ROWS " +
-               "FETCH NEXT ? ROWS ONLY ";
+               +"JOIN Teams t ON e.TeamId = t.TeamId WHERE e.CountryId = ? ORDER BY e.TeamId ";
+//               "OFFSET ? ROWS " +
+//               "FETCH NEXT ? ROWS ONLY ";
        try (Connection conn = connectionManager.getConnection()) {
            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                psmt.setInt(1, country.getId());
-               psmt.setInt(2,offset);
-               psmt.setInt(3,numberOfElements);
+//               psmt.setInt(2,offset);
+//               psmt.setInt(3,numberOfElements);
                ResultSet rs = psmt.executeQuery();
                while (rs.next()) {
                    int teamId = rs.getInt("TeamId");
@@ -80,14 +81,15 @@ public class TeamDao implements ITeamDao {
     * @param conn database connection*/
     private Configuration getConfiguration(int employeeId,Connection conn) {
         Configuration config = null;
-        String sql = "SELECT TOP 1 c.* " +
+        String sql = "SELECT c.* " +
                 "FROM EmployeeConfigurations ec " +
                 "JOIN Employees e ON e.EmployeeId = ec.EmployeeId " +
                 "JOIN Configurations c ON ec.ConfigurationId = c.ConfigurationId " +
                 "WHERE ec.EmployeeId = ? " +
-                "ORDER BY c.Date DESC";
+                "AND c.Active=?";
         try(PreparedStatement psmt = conn.prepareStatement(sql)){
             psmt.setInt(1,employeeId);
+            psmt.setString(2,"true");
             ResultSet rs = psmt.executeQuery();
             while(rs.next()){
                 int configurationId =  rs.getInt("ConfigurationId");
