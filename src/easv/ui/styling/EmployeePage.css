@@ -30,8 +30,6 @@
     -fx-font-family: Open Sans;
     -fx-font-size: 16px;
     -fx-font-weight: 700;
-
-
 }
 
 .tableLabels {
@@ -111,7 +109,7 @@
     -fx-border-color: #2ba746;
     -fx-text-fill: #2ba746;
     -fx-border-width: 1 1 1 0;
--fx-background-color: #fff;
+    -fx-background-color: #fff;
 }
 
 .mfx-combo-box-cell:hover {
@@ -123,43 +121,45 @@
 }
 
 
-.revertIcon{
-    -fx-fill:#2ba746;
-    -fx-stroke:#2ba746;
+.revertIcon {
+    -fx-fill: #2ba746;
+    -fx-stroke: #2ba746;
 }
 
+
+/*style the filter undo button hbox */
 .countryFilter {
     -fx-background-radius: 12 0 0 12;
     -fx-border-color: #7E7B7BFF;
     -fx-border-radius: 12 0 0 12;
-    -fx-border-width: 1 0 1 1;
+    -fx-border-width: 2 0 2 2;
     -fx-background-color: #fff;
 }
 
-.countryFilter:hover{
-    -fx-background-color:#63b2e1 ;
-        /*-fx-fill: #63b2e1;*/
-        /*-fx-stroke: #63b2e1;*/
+/*style for filter button for on hover*/
+.countryFilter:hover {
+    -fx-background-color: #63b2e1;
     -fx-scale-x: 1;
-        -fx-scale-y: 1;
+    -fx-scale-y: 1;
 }
 
-.countryFilter:hover .revertIcon{
-    -fx-fill:#fff;
-    -fx-stroke:#fff;
+/*style the svg icon when hovering over the button*/
+.countryFilter:hover .revertIcon {
+    -fx-fill: #fff;
+    -fx-stroke: #fff;
 }
 
-
-
+/*style the filters comboboxes*/
 .countryFilterComboBox {
     -fx-background-radius: 0 12 0 12;
     -fx-border-color: #7E7B7BFF;
     -fx-border-radius: 0 12 12 0;
-    -fx-border-width: 1 1 1 0;
+    -fx-border-width: 2 2 2 0;
 }
 
 
-.countryFilterFocused{
+/**style the filter button  box when the combobox has the focus*/
+.countryFilterFocused {
     -fx-border-width: 1 0 1 1;
     -fx-background-insets: 2;
     -fx-border-color: #2ba746;
@@ -167,7 +167,8 @@
 
 }
 
-.countryFilterComboBox .text-field{
+/*style the text inside the comboboxes */
+.countryFilterComboBox .text-field {
     -fx-background-radius: 0;
     -fx-border-color: #fff;
     -fx-border-radius: 0;
