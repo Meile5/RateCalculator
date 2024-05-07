@@ -22,3 +22,28 @@
     -fx-border-insets: -0.5;
 }
 
+.clear:hover{
+    -fx-background-color:#63b2e1;
+    -fx-background-radius: 5;
+}
+
+
+.clear:hover > .svgFill{
+    -fx-fill:#63b2e1 ;
+    -fx-stroke: #fff;
+}
+
+.button{
+    -fx-background-color: transparent;
+}
+
+.button-save:hover{
+    -fx-background-color: #209be5;
+
+}
+.button-save{
+    -fx-background-color: #63B2E1;
+
+}
+
+

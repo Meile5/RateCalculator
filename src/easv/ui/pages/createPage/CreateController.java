@@ -9,6 +9,7 @@ import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
 import javafx.animation.PauseTransition;
+import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -43,6 +44,8 @@ public class CreateController implements Initializable {
     private MFXComboBox countryCB, teamCB, currencyCB, overOrResourceCB;
     @FXML
     private ImageView clearIMG, employeeIMG;
+
+
     @FXML
     private HBox inputsParent;
     @FXML
@@ -71,7 +74,7 @@ public class CreateController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
             populateComboBoxes();
-            clickClearHandler();
+            //clickClearHandler();
             addListenersToInputs();
             listenerForEmptyFieldsAfterSaving();
             addTooltips();
@@ -167,11 +170,16 @@ public class CreateController implements Initializable {
         return country;
     }
 
-    private void clickClearHandler(){
+   /* private void clickClearHandler(){
         Platform.runLater(() -> {
             clearIMG.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             clearFields();
         });});
+    }*/
+
+    @FXML
+    private void clearInfo(){
+        clearFields();
     }
 
     private void clearFields(){
