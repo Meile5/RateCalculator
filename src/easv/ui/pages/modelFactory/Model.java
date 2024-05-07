@@ -78,12 +78,10 @@ public class Model implements IModel {
     private ObservableList<Employee> displayedEmployees;
     private ObservableList<Employee> sortedEmployeesByName;
     private ObservableList<Employee> filteredEmployeesList;
-    private ObservableMap<Integer, Employee> filteredEmployeesMap;
 
 
     public Model() throws RateException {
         this.employees = FXCollections.observableMap(new LinkedHashMap<>());
-        this.filteredEmployeesMap = FXCollections.observableMap(new LinkedHashMap<>());
         this.filteredEmployeesList = FXCollections.observableArrayList();
         this.countries = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
@@ -236,6 +234,7 @@ public class Model implements IModel {
     }
 
     public void performSelectUserSearchOperation (Employee employee) throws RateException {
+        filteredEmployeesList.setAll(displayedEmployees);
         displayedEmployees.setAll(employee);
         displayEmployees.displayEmployees();
 
@@ -248,26 +247,29 @@ public class Model implements IModel {
 
     @Override
     public void filterByCountry(Country country) throws RateException {
-        filteredEmployeesList.setAll(employeeManager.filterByCountry(employees.values(), country));
-        filteredEmployeesList.stream().forEach(employee -> filteredEmployeesMap.put(employee.getId(), employee));
-        displayedEmployees.setAll(filteredEmployeesList);
+        filteredEmployeesList.setAll(displayedEmployees);
+        displayedEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
         displayEmployees.displayEmployees();
+        System.out.println(displayedEmployees + "displayed employees C");
+        System.out.println(filteredEmployeesList + "filtered employees");
     }
 
     @Override
     public void filterByTeam(Team team) throws RateException {
-        filteredEmployeesList.setAll(employeeManager.filterByTeam(employees.values(), team));
-        filteredEmployeesList.stream().forEach(employee -> filteredEmployeesMap.put(employee.getId(), employee));
-        displayedEmployees.setAll(filteredEmployeesList);
+        filteredEmployeesList.setAll(displayedEmployees);
+        displayedEmployees.setAll(employeeManager.filterByTeam(employees.values(), team));
         displayEmployees.displayEmployees();
+        System.out.println(displayedEmployees + "displayed employees T");
+        System.out.println(filteredEmployeesList + "filtered employees");
     }
 
     @Override
     public void filterByCountryAndTeam(Country selectedCountry ,Team selectedTeam) throws RateException {
-        filteredEmployeesList.setAll(employeeManager.filterByCountryAndTeam(employees.values(), selectedCountry, selectedTeam));
-        filteredEmployeesList.stream().forEach(employee -> filteredEmployeesMap.put(employee.getId(), employee));
-        displayedEmployees.setAll(filteredEmployeesList);
+        filteredEmployeesList.setAll(displayedEmployees);
+        displayedEmployees.setAll(employeeManager.filterByCountryAndTeam(employees.values(), selectedCountry, selectedTeam));
         displayEmployees.displayEmployees();
+        System.out.println(displayedEmployees + "displayed employees CT");
+        System.out.println(filteredEmployeesList + "filtered employees");
     }
 
     @Override
@@ -282,6 +284,8 @@ public class Model implements IModel {
     }
 
     public void teamFilterActiveRevert() throws RateException {
+        System.out.println(displayedEmployees + "displayed employees R");
+        System.out.println(filteredEmployeesList + "filtered employees");
         displayedEmployees = filteredEmployeesList;
         displayEmployees.displayEmployees();
     }
@@ -304,11 +308,6 @@ public class Model implements IModel {
    public ObservableList<Employee> getFilteredEmployeesList() {
        return filteredEmployeesList;
    }
-
-   public ObservableMap<Integer, Employee> getFilteredEmployeesMap() {
-       return filteredEmployeesMap;
-   }
-
 
 
     /**

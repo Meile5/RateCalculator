@@ -1,5 +1,4 @@
 package easv.ui.pages.employeesPage.employeeMainPage;
-
 import easv.Utility.DisplayEmployees;
 import easv.be.Country;
 import easv.be.Employee;
@@ -85,12 +84,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private SVGPath svgPath;
     private ObservableList<Team> teams;
     private ObservableList<Country> countries;
-
-
-
-
-
-
     private EmployeeInfoController selectedToEdit;
 
 
@@ -124,15 +117,16 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             populateFilterComboBox();
             filterByCountryListener();
             filterByTeamListener();
-            addFocusListener(countriesFilterCB, countryRevertButton);
-            addFocusListener(teamsFilterCB, teamRevertButton);
+            addFocusListener(countriesFilterCB,countryRevertButton);
+            addFocusListener(teamsFilterCB,teamRevertButton);
             revertCountryFilter(countryRevertButton,countryRevertSvg);
             revertTeamFilter(teamRevertButton,teamRevertSvg);
-         } catch (RateException e) {
+            setTotalRatesDefault();
+
+        } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
-
     public void displayEmployees() {
         employeesContainer.getChildren().clear();
         model.getUsersToDisplay()
@@ -140,14 +134,14 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
                     EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout,this);
                     employeesContainer.getChildren().add(employeeInfoController.getRoot());
-                    setTotalRates();
                 });
     }
 
 
-    private void initializeEmployeeLoadingService() {
+
+    private void initializeEmployeeLoadingService(){
         progressBar.setVisible(true);
-        loadEmployeesFromDB = new Service<Void>() {
+        loadEmployeesFromDB= new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
@@ -155,9 +149,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     protected Void call() throws Exception {
                         model.returnEmployees();
                         return null;
-                    }
-
-                    ;
+                    };
                 };
             }
         };
@@ -168,7 +160,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             // Hide the progress bar
             progressBar.setVisible(false);
         });
-        loadEmployeesFromDB.setOnFailed((event) -> {
+        loadEmployeesFromDB.setOnFailed((event)->{
 
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
         });
@@ -263,12 +255,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
-    private void populateFilterComboBox() {
-        ObservableList<Country> countries = model.getCountiesValues();
-        ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
+    private void populateFilterComboBox(){
+        countries = model.getCountiesValues();
+        teams = FXCollections.observableArrayList(model.getTeams().values());
 
-        countriesFilterCB.setItems(countries);
-        teamsFilterCB.setItems(teams);
+        countriesFilterCB.setItems(countries.sorted());
+        teamsFilterCB.setItems(teams.sorted());
     }
 
     private void filterByCountryListener() {
@@ -283,10 +275,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                         teamsForCountry.setAll(model.getTeamsForCountry(selectedCountry));
                     }
                     teamsFilterCB.getSelectionModel().clearSelection();
-                    //here it ends what i modifyed
-                        teamsFilterCB.getItems().setAll(teamsForCountry);
-                        teamsFilterCB.clear();
-
+                    teamsFilterCB.setItems(teamsForCountry.sorted());
                     model.filterByCountry(selectedCountry);
 
                     filterActive = true;
@@ -303,10 +292,18 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         teamsFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
-                    model.filterByTeam((Team) newValue);
+                    Team selectedTeam = (Team) newValue;
+                    Country selectedCountry = (Country) countriesFilterCB.getSelectionModel().getSelectedItem();
+                    if(selectedCountry==null){
+                        teamsFilterCB.setItems(teams.sorted());
+                        model.filterByTeam(selectedTeam);
+
+                    } else {
+                        model.filterByCountryAndTeam(selectedCountry, selectedTeam);
+                    }
                     filterActive = true;
                     setTotalRates();
-                    showRevertButtonByFilterActive(teamRevertButton,teamRevertSvg);
+                    showRevertButtonByFilterActive(teamRevertSvg);
                 } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
@@ -319,7 +316,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         hourlyRateField.setText(model.calculateGroupHourlyRate().toString());
     }
 
-    private void addSelectionListener() throws RateException {
+    public void setTotalRatesDefault(){
+        dayRateField.setText("");
+        hourlyRateField.setText("");
+    }
+
+    private void addSelectionListener() throws RateException  {
         searchResponseHolder.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
@@ -351,16 +353,29 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
     @FXML
     private void goBackFromCountries() throws RateException {
-        model.performEmployeeSearchUndoOperation();
-        searchField.clear();
- //       countriesSvgPath.setContent("");
+            model.performEmployeeSearchUndoOperation();
+            countriesFilterCB.clearSelection();
+            teamsFilterCB.clearSelection();
+            searchField.clear();
+            filterActive = false;
+
+            setTotalRatesDefault();
+
     }
 
     @FXML
     private void goBackFromTeams() throws RateException {
-        model.performEmployeeSearchUndoOperation();
-        searchField.clear();
-   //     teamsSvgPath.setContent("");
+        if(filterActive && countriesFilterCB.getSelectionModel().getSelectedItem()!=null){
+            model.teamFilterActiveRevert();
+            teamsFilterCB.clearSelection();
+            searchField.clear();
+
+        } else {
+            model.performEmployeeSearchUndoOperation();
+            teamsFilterCB.clearSelection();
+            filterActive = false;
+            setTotalRatesDefault();
+        }
     }
 
 
@@ -400,7 +415,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
-    private void revertTeamFilter(HBox button,SVGPath revertIcon){
+    private void revertTeamFilter(HBox button,SVGPath revertIcon) throws RateException{
         button.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
             try {
                 goBackFromTeams();
@@ -410,6 +425,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             }
         });
     }
+
 }
 
 
