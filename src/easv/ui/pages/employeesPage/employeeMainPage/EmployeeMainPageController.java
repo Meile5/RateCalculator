@@ -1,4 +1,5 @@
 package easv.ui.pages.employeesPage.employeeMainPage;
+
 import easv.Utility.DisplayEmployees;
 import easv.be.Country;
 import easv.be.Employee;
@@ -13,6 +14,7 @@ import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,15 +28,18 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import javafx.util.Duration;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class EmployeeMainPageController implements Initializable , DisplayEmployees {
+public class EmployeeMainPageController implements Initializable, DisplayEmployees {
     @FXML
     private VBox employeesContainer;
     @FXML
@@ -65,17 +70,17 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
     private HBox countryRevert;
     @FXML
     private HBox teamRevert;
-     @FXML
+    @FXML
     private SVGPath svgPath;
     @FXML
     private SVGPath countriesSvgPath;
     @FXML
     private SVGPath teamsSvgPath;
     private boolean filterActive = false;
-
-
-
-
+    @FXML
+    private SVGPath teamRevertSvg;
+    @FXML
+    private SVGPath countryRevertSvg;
 
 
     private EmployeeInfoController selectedToEdit;
@@ -88,7 +93,7 @@ public class EmployeeMainPageController implements Initializable , DisplayEmploy
         try {
             employeePage = loader.load();
         } catch (IOException e) {
-e.printStackTrace();
+            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -111,29 +116,30 @@ e.printStackTrace();
             populateFilterComboBox();
             filterByCountryListener();
             filterByTeamListener();
-            addFocusListener(countriesFilterCB,countryRevert);
-            addFocusListener(teamsFilterCB,teamRevert);
-
-        } catch (RateException e) {
+            addFocusListener(countriesFilterCB, countryRevert);
+            addFocusListener(teamsFilterCB, teamRevert);
+            revertCountryFilter(countryRevertSvg);
+            revertTeamFilter(teamRevertSvg);
+         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
+
     public void displayEmployees() {
         employeesContainer.getChildren().clear();
         model.getUsersToDisplay()
                 .forEach(e -> {
                     DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
-                    EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout,this);
+                    EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout, this);
                     employeesContainer.getChildren().add(employeeInfoController.getRoot());
                     setTotalRates();
                 });
     }
 
 
-
-    private void initializeEmployeeLoadingService(){
+    private void initializeEmployeeLoadingService() {
         progressBar.setVisible(true);
-        loadEmployeesFromDB= new Service<Void>() {
+        loadEmployeesFromDB = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
@@ -141,7 +147,9 @@ e.printStackTrace();
                     protected Void call() throws Exception {
                         model.returnEmployees();
                         return null;
-                    };
+                    }
+
+                    ;
                 };
             }
         };
@@ -152,7 +160,7 @@ e.printStackTrace();
             // Hide the progress bar
             progressBar.setVisible(false);
         });
-        loadEmployeesFromDB.setOnFailed((event)->{
+        loadEmployeesFromDB.setOnFailed((event) -> {
 
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
         });
@@ -174,18 +182,21 @@ e.printStackTrace();
         svgPath.getStyleClass().add("svg-revert");
         svgPath.setContent(alternativeSVGPath);
     }
+
     private void loadRevertSVGCountries() {
         String alternativeSVGPath = "M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z ";
         countriesSvgPath.getStyleClass().clear();
         countriesSvgPath.getStyleClass().add("svg-revert");
         countriesSvgPath.setContent(alternativeSVGPath);
     }
+
     private void loadRevertSVGTeams() {
         String alternativeSVGPath = "M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z ";
         teamsSvgPath.getStyleClass().clear();
         teamsSvgPath.getStyleClass().add("svg-revert");
         teamsSvgPath.setContent(alternativeSVGPath);
     }
+
     @FXML
     private void goBack() throws RateException {
         if (filterActive) {
@@ -196,8 +207,6 @@ e.printStackTrace();
         }
         searchField.clear();
         Platform.runLater(this::loadSearchSVG);
-
-
     }
 
 
@@ -223,18 +232,18 @@ e.printStackTrace();
 
     private void searchFieldListener() {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (!newValue.isEmpty()) {
-                    searchResponseHolder.setItems(model.getSearchResult(newValue));
-                    if (!searchResponseHolder.getItems().isEmpty()) {
-                        configurePopUpWindow();
-                    } else {
-                        popupWindow.hide();
-                    }
+            if (!newValue.isEmpty()) {
+                searchResponseHolder.setItems(model.getSearchResult(newValue));
+                if (!searchResponseHolder.getItems().isEmpty()) {
+                    configurePopUpWindow();
                 } else {
-                    loadRevertSVG();
-                    searchField.clear();
                     popupWindow.hide();
                 }
+            } else {
+                loadRevertSVG();
+                searchField.clear();
+                popupWindow.hide();
+            }
 
         });
         searchField.focusedProperty().addListener((observable, oldValue, newValue) -> {
@@ -244,7 +253,7 @@ e.printStackTrace();
         });
     }
 
-    private void populateFilterComboBox(){
+    private void populateFilterComboBox() {
         ObservableList<Country> countries = model.getCountiesValues();
         ObservableList<Team> teams = FXCollections.observableArrayList(model.getTeams().values());
 
@@ -259,7 +268,7 @@ e.printStackTrace();
                     model.filterByCountry((Country) newValue);
                     filterActive = true;
                     setTotalRates();
-//                    loadRevertSVGCountries();
+                    showRevertButtonByFilterActive(countryRevertSvg);
                 } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
@@ -274,7 +283,7 @@ e.printStackTrace();
                     model.filterByTeam((Team) newValue);
                     filterActive = true;
                     setTotalRates();
-//                    loadRevertSVGTeams();
+                    showRevertButtonByFilterActive(teamRevertSvg);
                 } catch (RateException e) {
                     throw new RuntimeException(e);
                 }
@@ -286,12 +295,12 @@ e.printStackTrace();
 
     }
 
-    public void setTotalRates(){
+    public void setTotalRates() {
         dayRateField.setText(model.calculateGroupDayRate().toString());
         hourlyRateField.setText(model.calculateGroupHourlyRate().toString());
     }
 
-    private void addSelectionListener() throws RateException  {
+    private void addSelectionListener() throws RateException {
         searchResponseHolder.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 try {
@@ -312,35 +321,31 @@ e.printStackTrace();
     }
 
 
-    public void setSelectedComponentStyleToSelected(EmployeeInfoController selectedToEdit){
-        if(this.selectedToEdit!=null){
+    public void setSelectedComponentStyleToSelected(EmployeeInfoController selectedToEdit) {
+        if (this.selectedToEdit != null) {
             this.selectedToEdit.getRoot().getStyleClass().remove("employeeComponentClicked");
         }
-        this.selectedToEdit=selectedToEdit;
+        this.selectedToEdit = selectedToEdit;
         this.selectedToEdit.getRoot().getStyleClass().add("employeeComponentClicked");
     }
+
+
     @FXML
     private void goBackFromCountries() throws RateException {
-
         model.performEmployeeSearchUndoOperation();
         searchField.clear();
-        countriesSvgPath.setContent("");
-
-
+ //       countriesSvgPath.setContent("");
     }
 
     @FXML
     private void goBackFromTeams() throws RateException {
         model.performEmployeeSearchUndoOperation();
         searchField.clear();
-        teamsSvgPath.setContent("");
-
-
+   //     teamsSvgPath.setContent("");
     }
 
 
-
-    private void addFocusListener(MFXTextField filterInput, HBox sibling){
+    private void addFocusListener(MFXTextField filterInput, HBox sibling) {
         filterInput.focusWithinProperty().addListener((obs, wasFocused, isNowFocused) -> {
             System.out.println("Focus changed for filterInput: " + isNowFocused);
             if (isNowFocused) {
@@ -352,9 +357,41 @@ e.printStackTrace();
     }
 
 
+    private void showRevertButtonByFilterActive(SVGPath revertSvg) {
+        System.out.println("called");
+        revertSvg.setVisible(true);
+    }
 
+    private void hideRevertButton(SVGPath svgPath) {
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
+        pauseTransition.setOnFinished((event) -> {
+            svgPath.setVisible(false);
+        });
+        pauseTransition.playFromStart();
+    }
 
+    private void revertCountryFilter(SVGPath svgPath) throws RateException{
+        svgPath.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
+            try {
+                goBackFromCountries();
+                hideRevertButton(svgPath);
+                System.out.println("clicked on country");
+            } catch (RateException e) {
+                throw new RuntimeException();
+            }
+        });
+    }
 
+    private void revertTeamFilter(SVGPath svgPath) throws RateException{
+        svgPath.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
+            try {
+                goBackFromTeams();
+                hideRevertButton(svgPath);
+            } catch (RateException e) {
+                throw new RuntimeException();
+            }
+        });
+    }
 
 }
 
