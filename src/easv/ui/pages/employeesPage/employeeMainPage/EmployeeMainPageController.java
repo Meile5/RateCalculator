@@ -196,16 +196,19 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
     @FXML
     private void goBack() throws RateException {
-        if (filterActive) {
+        if (filterActive && countriesFilterCB.getSelectionModel().getSelectedItem() != null &&
+                teamsFilterCB.getSelectionModel().getSelectedItem() != null) {
             model.teamFilterActiveRevert();
-
+            setTotalRates();
+        } else if (filterActive && countriesFilterCB.getSelectionModel().getSelectedItem() != null) {
+            model.returnEmployeesByCountry();
+            setTotalRates();
         } else {
             model.performEmployeeSearchUndoOperation();
+            setTotalRatesDefault();
         }
         searchField.clear();
         Platform.runLater(this::loadSearchSVG);
-
-
     }
 
 
@@ -233,6 +236,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.isEmpty()) {
                 searchResponseHolder.setItems(model.getSearchResult(newValue));
+                setTotalRates();
                 if (!searchResponseHolder.getItems().isEmpty()) {
                     configurePopUpWindow();
                 } else {
@@ -265,8 +269,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                 try {
                     Country selectedCountry = (Country) newValue;
                     ObservableList <Team> teamsForCountry =  FXCollections.observableArrayList();
-                    // i have putted this lines of code , because i had  IndexOutOfBoundException ,
-                    // because model.getTeamsForCountry(selectedCountry) was empty sometimes , or
                     if(!model.getTeamsForCountry(selectedCountry).isEmpty()){
                         teamsForCountry.setAll(model.getTeamsForCountry(selectedCountry));
                     }
@@ -293,7 +295,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     if(selectedCountry==null){
                         teamsFilterCB.setItems(teams.sorted());
                         model.filterByTeam(selectedTeam);
-
                     } else {
                         model.filterByCountryAndTeam(selectedCountry, selectedTeam);
                     }
@@ -322,6 +323,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             if (newValue != null) {
                 try {
                     model.performSelectUserSearchOperation(newValue);
+                    setTotalRates();
                 } catch (RateException e) {
                     ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
                 }
@@ -352,18 +354,22 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             model.performEmployeeSearchUndoOperation();
             countriesFilterCB.clearSelection();
             teamsFilterCB.clearSelection();
+            teamsFilterCB.setItems(teams.sorted());
             searchField.clear();
             filterActive = false;
             setTotalRatesDefault();
+            Platform.runLater(this::loadSearchSVG);
     }
 
 
     @FXML
     private void goBackFromTeams() throws RateException {
+        System.out.println("Boolean" + filterActive);
         if(filterActive && countriesFilterCB.getSelectionModel().getSelectedItem()!=null){
-            model.teamFilterActiveRevert();
+            model.returnEmployeesByCountry();
             teamsFilterCB.clearSelection();
             searchField.clear();
+            setTotalRates();
         } else {
             model.performEmployeeSearchUndoOperation();
             teamsFilterCB.clearSelection();

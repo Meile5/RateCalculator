@@ -78,11 +78,13 @@ public class Model implements IModel {
     private ObservableList<Employee> displayedEmployees;
     private ObservableList<Employee> sortedEmployeesByName;
     private ObservableList<Employee> filteredEmployeesList;
+    private ObservableList<Employee> listEmployeeByCountryTemp;
 
 
     public Model() throws RateException {
         this.employees = FXCollections.observableMap(new LinkedHashMap<>());
         this.filteredEmployeesList = FXCollections.observableArrayList();
+        this.listEmployeeByCountryTemp = FXCollections.observableArrayList();
         this.countries = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
         this.countryLogic = new CountryLogic();
@@ -218,6 +220,7 @@ public class Model implements IModel {
     }
 
     public List<String> getValidCountries() {
+        System.out.println(validMapViewCountryNameValues);
         return validMapViewCountryNameValues;
     }
 
@@ -244,47 +247,40 @@ public class Model implements IModel {
         filteredEmployeesList.setAll(displayedEmployees);
         displayedEmployees.setAll(employee);
         displayEmployees.displayEmployees();
+        System.out.println("Selected user" + displayedEmployees);
+        System.out.println("Selected user" + filteredEmployeesList);
     }
+
     public void performEmployeeSearchUndoOperation() throws RateException {
         sortDisplayedEmployee();
         displayedEmployees = sortedEmployeesByName;
         displayEmployees.displayEmployees();
     }
 
-
-    //TODO i do not get the point why  you set the filteredEmployeeList with the displayedEmployees,they work without also;
     @Override
     public void filterByCountry(Country country) throws RateException {
-        filteredEmployeesList.setAll(displayedEmployees);
-
         displayedEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
         displayEmployees.displayEmployees();
-        System.out.println(displayedEmployees + "displayed employees C");
-        System.out.println(filteredEmployeesList + "filtered employees");
+        filteredEmployeesList.setAll(displayedEmployees);
+        listEmployeeByCountryTemp.setAll(displayedEmployees);
     }
 
-
-   // TODO the same here , i do not get the point,they work without also
     @Override
     public void filterByTeam(Team team) throws RateException {
-        filteredEmployeesList.setAll(displayedEmployees);
+        //filteredEmployeesList.setAll(displayedEmployees);
         displayedEmployees.setAll(employeeManager.filterByTeam(employees.values(), team));
         displayEmployees.displayEmployees();
-        System.out.println(displayedEmployees + "displayed employees T");
-        System.out.println(filteredEmployeesList + "filtered employees");
     }
 
     @Override
     public void filterByCountryAndTeam(Country selectedCountry ,Team selectedTeam) throws RateException {
-
-        filteredEmployeesList.setAll(displayedEmployees);
-
         displayedEmployees.setAll(employeeManager.filterByCountryAndTeam(employees.values(), selectedCountry, selectedTeam));
         displayEmployees.displayEmployees();
-
-
-        System.out.println(displayedEmployees + "displayed employees CT");
-        System.out.println(filteredEmployeesList + "filtered employees");
+        if (areObservableListsEqual(filteredEmployeesList, displayedEmployees)) {
+            filteredEmployeesList.setAll(displayedEmployees);
+        }
+        System.out.println("CT Disp" + displayedEmployees);
+        System.out.println("CT Filt" + filteredEmployeesList);
     }
 
     @Override
@@ -299,10 +295,22 @@ public class Model implements IModel {
     }
 
     public void teamFilterActiveRevert() throws RateException {
-        System.out.println(displayedEmployees + "displayed employees R");
-        System.out.println(filteredEmployeesList + "filtered employees");
         displayedEmployees = filteredEmployeesList;
         displayEmployees.displayEmployees();
+    }
+
+    public void returnEmployeesByCountry() throws RateException {
+        displayedEmployees.setAll(listEmployeeByCountryTemp);
+        displayEmployees.displayEmployees();
+    }
+
+    private boolean areObservableListsEqual(ObservableList<Employee> list1, ObservableList<Employee> list2) {
+        for (Employee employee : list1) {
+            if (!list2.contains(employee)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -320,11 +328,6 @@ public class Model implements IModel {
     public ObservableList<Employee> getUsersToDisplay() {
        return displayedEmployees;
    }
-
-   public ObservableList<Employee> getFilteredEmployeesList() {
-       return filteredEmployeesList;
-   }
-
 
     /**
      * calculate the hourly rate for an employee

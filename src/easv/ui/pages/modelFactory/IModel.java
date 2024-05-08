@@ -98,4 +98,6 @@ public interface IModel {
 
     BigDecimal calculateGroupHourlyRate();
     void teamFilterActiveRevert()throws RateException;
+
+    void returnEmployeesByCountry() throws RateException;
 }

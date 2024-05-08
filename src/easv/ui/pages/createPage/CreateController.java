@@ -78,7 +78,6 @@ public class CreateController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
             populateComboBoxes();
-            //clickClearHandler();
             addListenersToInputs();
             listenerForEmptyFieldsAfterSaving();
             addTooltips();
@@ -111,7 +110,6 @@ public class CreateController implements Initializable {
             LocalDateTime savedDate = LocalDateTime.now();
             Employee employee = new Employee(name, country, team, employeeType, currency);
             Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
-            //employee.setActiveConfiguration(configuration);
             saveEmployeeOperation(employee, configuration);
         }
     }
@@ -123,8 +121,9 @@ public class CreateController implements Initializable {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        Thread.sleep(2000);
+                        Thread.sleep(200);
                         model.addEmployee(employee, configuration);
+                        disableFields();
                         return null;
                     }
                 };
@@ -132,12 +131,14 @@ public class CreateController implements Initializable {
         };
 
         saveEmployee.setOnSucceeded(event -> {
-            showOperationStatus("Operation Successful!", Duration.seconds(2));
+            showOperationStatus("Operation Successful!", Duration.seconds(1));
+            enableFields();
             clearFields();
         });
 
         saveEmployee.setOnFailed(event ->
                 showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5)));
+                enableFields();
 
         saveEmployee.restart();
     }
@@ -174,18 +175,6 @@ public class CreateController implements Initializable {
         return country;
     }
 
-   /* private void clickClearHandler(){
-        Platform.runLater(() -> {
-            clearIMG.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            clearFields();
-        });});
-    }*/
-
-    @FXML
-    private void clearInfo(){
-        clearFields();
-    }
-
     private void clearFields(){
          inputsParent.getChildren().forEach((child)->{
            if(child instanceof VBox){
@@ -195,10 +184,41 @@ public class CreateController implements Initializable {
                    }
                    if(input instanceof MFXComboBox<?>){
                        ((MFXComboBox<?>) input).clear();
+                       ((MFXComboBox<?>) input).clearSelection();
                    }
                });
            }
          });
+    }
+
+    private void disableFields(){
+        inputsParent.getChildren().forEach((child)->{
+            if(child instanceof VBox){
+                ((VBox) child).getChildren().forEach((input)->{
+                    if(input instanceof  MFXTextField){
+                        ((MFXTextField) input).setEditable(false);
+                    }
+                    if(input instanceof MFXComboBox<?>){
+                        ((MFXComboBox<?>) input).setSelectable(false);
+                    }
+                });
+            }
+        });
+    }
+
+    private void enableFields(){
+        inputsParent.getChildren().forEach((child)->{
+            if(child instanceof VBox){
+                ((VBox) child).getChildren().forEach((input)->{
+                    if(input instanceof  MFXTextField){
+                        input.setDisable(false);
+                    }
+                    if(input instanceof MFXComboBox<?>){
+                        input.setDisable(false);
+                    }
+                });
+            }
+        });
     }
 
     private void listenerForEmptyFieldsAfterSaving(){
