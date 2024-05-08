@@ -1,5 +1,6 @@
 package easv.ui.pages.createPage;
 import easv.Utility.EmployeeValidation;
+import easv.Utility.WindowsManagement;
 import easv.be.*;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
@@ -87,13 +88,15 @@ public class CreateController implements Initializable {
     @FXML
     private void saveEmployee() throws RateException {
         parseCountriesAndTeamsToValidator();
-
         if(EmployeeValidation.areNamesValid(nameTF, countryCB,teamCB) &&
            EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
            EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
            EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB))
         {
             enableSpinner();
+            firstLayout.getChildren().add(operationSpinner);
+            WindowsManagement.showStackPane(firstLayout);
+
             String name = nameTF.getText().trim();
             EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText().trim());
 
@@ -121,9 +124,9 @@ public class CreateController implements Initializable {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        Thread.sleep(200);
+                       // Thread.sleep(200);
                         model.addEmployee(employee, configuration);
-                        disableFields();
+              //          disableFields();
                         return null;
                     }
                 };
@@ -132,22 +135,23 @@ public class CreateController implements Initializable {
 
         saveEmployee.setOnSucceeded(event -> {
             showOperationStatus("Operation Successful!", Duration.seconds(1));
-            enableFields();
-            clearFields();
+            //enableFields();
+            //WindowsManagement.closeStackPane(firstLayout);
+            closeWindowSpinner(firstLayout);
+
         });
 
         saveEmployee.setOnFailed(event ->
                 showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5)));
-                enableFields();
 
+              //  enableFields();
         saveEmployee.restart();
     }
 
     private void showOperationStatus(String message, Duration duration) {
         spinnerLB.setText(message);
-
         PauseTransition delay = new PauseTransition(duration);
-        delay.setOnFinished(event -> Platform.runLater(() -> disableSpinner()));
+        delay.setOnFinished(event -> Platform.runLater(this::disableSpinner));
         delay.play();
     }
 
@@ -238,9 +242,7 @@ public class CreateController implements Initializable {
             countries = model.getCountiesValues();
             teams = FXCollections.observableArrayList(model.getTeams().values());
             ObservableList<String> currencies = FXCollections.observableArrayList("USD", "EUR");
-
             ObservableList<String> overOrResource = FXCollections.observableArrayList("Overhead", "Resource");
-
             countryCB.setItems(countries);
             teamCB.setItems(teams);
             currencyCB.setItems(currencies);
@@ -305,4 +307,13 @@ public class CreateController implements Initializable {
         return createPage;
     }
 
+
+    private void closeWindowSpinner(StackPane stackPane){
+        PauseTransition pauseTransition =  new PauseTransition(Duration.millis(2000));
+        pauseTransition.setOnFinished((e)->{
+            WindowsManagement.closeStackPane(firstLayout);
+            clearFields();
+        });
+        pauseTransition.playFromStart();
+    }
 }

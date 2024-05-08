@@ -6,7 +6,6 @@ public class WindowsManagement {
 
 
     public static void closeStackPane(StackPane stackPane){
-        System.out.println("aloo");
         stackPane.getChildren().clear();
         stackPane.setVisible(false);
         stackPane.setDisable(true);
