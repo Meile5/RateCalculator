@@ -19,7 +19,7 @@
             <Region disable="true" maxWidth="160.0" prefHeight="200.0" prefWidth="82.0" style="-fx-background-color: red;" HBox.hgrow="ALWAYS" />
             <VBox alignment="CENTER" prefHeight="600.0" prefWidth="933.0" style="-fx-border-color: orange;">
                <children>
-                  <Region maxWidth="98.0" prefHeight="130.0" prefWidth="180.0" style="-fx-background-color: purple;" VBox.vgrow="ALWAYS" />
+                  <Region maxHeight="106.0" maxWidth="98.0" prefHeight="106.0" prefWidth="180.0" style="-fx-background-color: purple;" VBox.vgrow="ALWAYS" />
                   <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="464.0" prefWidth="804.0" styleClass="inputFields" stylesheets="@../../styling/EditPage.css">
                      <children>
                         <HBox alignment="CENTER" minHeight="-Infinity" prefHeight="30.0" prefWidth="800.0" style="-fx-border-color: black;" styleClass="topRoundedCorners">
@@ -183,7 +183,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <Region maxHeight="30.0" maxWidth="20.0" minHeight="5.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: yellow;" VBox.vgrow="ALWAYS" />
+                  <Region maxHeight="10.0" maxWidth="20.0" minHeight="5.0" prefHeight="10.0" prefWidth="200.0" style="-fx-background-color: yellow;" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
             <Region disable="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: blue;" HBox.hgrow="ALWAYS" />

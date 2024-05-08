@@ -18,7 +18,6 @@
 
 .countryContainer{
     -fx-background-radius: 25 25 0 0;
-    -fx-background-color: red;
 }
 .teamsContainer{
     -fx-background-radius: 25 25 25 25;
