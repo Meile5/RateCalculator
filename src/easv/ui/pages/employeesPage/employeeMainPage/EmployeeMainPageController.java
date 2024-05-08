@@ -457,15 +457,15 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             if(calculateEditOperationPerformedEdit.getValue()){
                   dayRateField.setText(dayRateValue);
                   hourlyRateField.setText(hourlyRateValue);
-                ExceptionHandler.errorAlertMessage("operation succesfull");
+              //  ExceptionHandler.errorAlertMessage("operation succesfull");
             }else{
-                ExceptionHandler.errorAlertMessage("operation fails");
+               // ExceptionHandler.errorAlertMessage("operation fails");
             }
 
         });
         calculateEditOperationPerformedEdit.setOnFailed((e)->{
            calculateEditOperationPerformedEdit.getException().printStackTrace();
-            ExceptionHandler.errorAlertMessage("thread failed to perform operations");
+         //   ExceptionHandler.errorAlertMessage("thread failed to perform operations");
         });
         this.calculateEditOperationPerformedEdit.restart();
     }

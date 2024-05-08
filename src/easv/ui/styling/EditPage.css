@@ -27,7 +27,7 @@
 
 .closeButton:hover {
     -fx-background-color: #C42B1C;
-    -fx-background-radius: 0 25 0 0;
+    /*-fx-background-radius: 25;*/
 }
 
 .closeButton:hover > .svgClose {

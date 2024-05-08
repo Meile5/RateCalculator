@@ -251,8 +251,8 @@ public class EditController implements Initializable {
         this.employeeDisplayer.setEmployee(employee);
         this.employeeDisplayer.setDayRate(model.getComputedDayRate(employee).toString());
         this.employeeDisplayer.setHourlyRate(model.getComputedHourlyRate(employee,0).toString());
-        this.employeeDisplayer.refreshRates();
-       // this.employeeDisplayer.callService();
+       // this.employeeDisplayer.refreshRates();
+        this.employeeDisplayer.callService();
         WindowsManagement.closeStackPane(this.firstLayout);
     }
 
