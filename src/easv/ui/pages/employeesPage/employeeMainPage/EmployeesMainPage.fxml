@@ -18,7 +18,7 @@
 
 <HBox fx:id="employeesMainPageContainer" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: F9F9F9;" stylesheets="/easv/ui/styling/EmployeePage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Region prefHeight="700.0" prefWidth="80.0" style="-fx-background-color: brown;" />
+      <Region prefHeight="700.0" prefWidth="80.0" />
       <VBox alignment="CENTER" prefHeight="600.0" prefWidth="933.0" spacing="10.0" HBox.hgrow="ALWAYS">
          <children>
             <GridPane alignment="CENTER" maxHeight="600.0" maxWidth="788.0" prefHeight="22.0" prefWidth="788.0">
@@ -173,6 +173,6 @@
          <padding>
             <Insets right="40.0" />
          </padding></VBox>
-      <Region maxWidth="400.0" prefHeight="10.0" prefWidth="10.0" style="-fx-background-color: pink;" HBox.hgrow="ALWAYS" />
+      <Region maxWidth="400.0" prefHeight="10.0" prefWidth="10.0" HBox.hgrow="ALWAYS" />
    </children>
 </HBox>

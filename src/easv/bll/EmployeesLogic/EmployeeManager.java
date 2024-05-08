@@ -124,7 +124,6 @@ public class EmployeeManager implements IEmployeeManager {
         String filterToLowerCase = filter.toLowerCase();
         return employees.stream().filter((employee) -> {
             String name = employee.getName().toLowerCase();
-
             return name.contains(filterToLowerCase);
         }).toList();
     }

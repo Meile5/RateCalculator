@@ -22,8 +22,7 @@ public class RateCalculator implements IRateCalculator {
      */
 
     public BigDecimal calculateDayRate(Employee employee) {
-        //System.out.println(employee + " " + employee.getEmployeeType()+ "  heck employee");
-        //System.out.println(employee.getActiveConfiguration().printConfiguration());
+
 
         BigDecimal annualSalary = employee.getActiveConfiguration().getAnnualSalary();
         BigDecimal overheadMultiplier = employee.getActiveConfiguration().getOverheadMultiplier().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32).add(BigDecimal.ONE);
@@ -31,27 +30,6 @@ public class RateCalculator implements IRateCalculator {
         BigDecimal annualEffectiveWorkingHours = employee.getActiveConfiguration().getWorkingHours();
         BigDecimal utilizationPercentage = employee.getActiveConfiguration().getUtilizationPercentage().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
         BigDecimal dayRate = BigDecimal.ZERO;
-
-if(annualSalary==null){
-    System.out.println("anual salary" + "nulled");
-}
-
-if(overheadMultiplier == null){
-    System.out.println("overhead nulll");
-}
-
-if(fixedAnnualAmount ==  null){
-    System.out.println("fixed annual ammount ");
-}
-
-if(annualEffectiveWorkingHours == null ){
-    System.out.println(" anuaEfective ahours");
-}
-
-if(utilizationPercentage == null){
-    System.out.println("utilization Perentage");
-}
-
 
         if (employee.getEmployeeType() == EmployeeType.Overhead) {
           dayRate = (((annualSalary.multiply(overheadMultiplier)).add(fixedAnnualAmount)).multiply(utilizationPercentage));

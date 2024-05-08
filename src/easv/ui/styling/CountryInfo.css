@@ -1,21 +1,27 @@
 .countryBackground{
 -fx-background-color: rgb(82, 80, 80)
 }
+
+
+
+/*style the close button*/
 .closeContainer{
     -fx-background-radius: 0 25 0 0;
 
 }
 
+/*style the close button when hover*/
 .closeContainer:hover{
     -fx-background-color: #C42B1C;
     -fx-background-radius: 0 25 0 0;
 }
 
 .countryContainer{
-    -fx-background-radius: 25;
+    -fx-background-radius: 25 25 0 0;
+    -fx-background-color: red;
 }
 .teamsContainer{
-    -fx-background-radius: 0 0 25 25;
+    -fx-background-radius: 25 25 25 25;
     -fx-background-color: rgb(82, 80, 80)
 }
 .test{

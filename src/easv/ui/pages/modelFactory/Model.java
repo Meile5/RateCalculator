@@ -319,7 +319,6 @@ public class Model implements IModel {
 
     @Override
     public BigDecimal calculateGroupDayRate() {
-     //   displayedEmployees.forEach(e-> System.out.println(e.printEmployeeData()+ " " + e.getName()));
         return employeeManager.calculateGroupDayRate(displayedEmployees);
     }
 
@@ -346,7 +345,5 @@ public class Model implements IModel {
     public BigDecimal getComputedDayRate(Employee employee) {
         return employeeManager.getDayRate(employee);
     }
-
-
 
 }

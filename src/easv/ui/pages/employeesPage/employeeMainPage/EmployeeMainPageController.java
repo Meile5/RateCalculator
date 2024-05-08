@@ -277,7 +277,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     teamsFilterCB.getSelectionModel().clearSelection();
                     teamsFilterCB.setItems(teamsForCountry.sorted());
                     model.filterByCountry(selectedCountry);
-
                     filterActive = true;
                     setTotalRates();
                     showRevertButtonByFilterActive(countryRevertButton,countryRevertSvg);

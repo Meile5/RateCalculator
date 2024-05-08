@@ -183,7 +183,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <Region minHeight="5.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: yellow;" VBox.vgrow="ALWAYS" />
+                  <Region maxHeight="30.0" maxWidth="20.0" minHeight="5.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: yellow;" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
             <Region disable="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: blue;" HBox.hgrow="ALWAYS" />

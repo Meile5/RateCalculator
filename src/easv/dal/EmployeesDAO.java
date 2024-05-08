@@ -268,7 +268,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     @Override
     public Integer addConfiguration(Configuration configuration, Connection conn) throws RateException, SQLException {
         Integer configurationID = null;
-        String sql = "INSERT INTO Configurations (AnnualSalary, FixedAnnualAmount, OverheadMultiplier, UtilizationPercentage, WorkingHours, Date,Active) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Configurations (AnnualSalary, FixedAnnualAmount, OverheadMultiplier, UtilizationPercentage, WorkingHours, Date,Active,Markup,GrossMargin) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             psmt.setBigDecimal(1, configuration.getAnnualSalary());
             psmt.setBigDecimal(2, configuration.getFixedAnnualAmount());
@@ -277,6 +277,8 @@ public class EmployeesDAO implements IEmployeeDAO {
             psmt.setBigDecimal(5, configuration.getWorkingHours());
             psmt.setTimestamp(6, Timestamp.valueOf(configuration.getSavedDate()));
             psmt.setString(7, String.valueOf(configuration.isActive()));
+            psmt.setDouble(8,0);
+            psmt.setDouble(9,0);
             psmt.executeUpdate();
             try (ResultSet res = psmt.getGeneratedKeys()) {
                 if (res.next()) {
