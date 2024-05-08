@@ -251,7 +251,8 @@ public class EditController implements Initializable {
         this.employeeDisplayer.setEmployee(employee);
         this.employeeDisplayer.setDayRate(model.getComputedDayRate(employee).toString());
         this.employeeDisplayer.setHourlyRate(model.getComputedHourlyRate(employee,0).toString());
-        this.employeeDisplayer.refreshRates();
+        //this.employeeDisplayer.refreshRates();
+        this.employeeDisplayer.callService();
         WindowsManagement.closeStackPane(this.firstLayout);
     }
 
@@ -314,6 +315,8 @@ public class EditController implements Initializable {
             }else{
                 this.spinnerLayer.setVisible(false);
                 this.spinnerLayer.setDisable(true);
+                WindowsManagement.closeStackPane(firstLayout);
+                ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
             }
         });
 
@@ -336,13 +339,10 @@ public class EditController implements Initializable {
         return validFormat;
     }
 
-
-    private void startPerformRedoCalculations(){
-
     }
 
 
 
 
-}
+
 

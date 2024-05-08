@@ -22,6 +22,8 @@ public class RateCalculator implements IRateCalculator {
      */
 
     public BigDecimal calculateDayRate(Employee employee) {
+        //System.out.println(employee + " " + employee.getEmployeeType()+ "  heck employee");
+        //System.out.println(employee.getActiveConfiguration().printConfiguration());
 
         BigDecimal annualSalary = employee.getActiveConfiguration().getAnnualSalary();
         BigDecimal overheadMultiplier = employee.getActiveConfiguration().getOverheadMultiplier().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32).add(BigDecimal.ONE);
@@ -30,11 +32,28 @@ public class RateCalculator implements IRateCalculator {
         BigDecimal utilizationPercentage = employee.getActiveConfiguration().getUtilizationPercentage().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
         BigDecimal dayRate = BigDecimal.ZERO;
 
-        if (employee.getEmployeeType() == EmployeeType.Overhead) {
-//            dayRate = ((annualSalary.add(fixedAnnualAmount))
-//                    .multiply(overheadMultiplier)
-//                    .multiply(utilizationPercentage));
+if(annualSalary==null){
+    System.out.println("anual salary" + "nulled");
+}
 
+if(overheadMultiplier == null){
+    System.out.println("overhead nulll");
+}
+
+if(fixedAnnualAmount ==  null){
+    System.out.println("fixed annual ammount ");
+}
+
+if(annualEffectiveWorkingHours == null ){
+    System.out.println(" anuaEfective ahours");
+}
+
+if(utilizationPercentage == null){
+    System.out.println("utilization Perentage");
+}
+
+
+        if (employee.getEmployeeType() == EmployeeType.Overhead) {
           dayRate = (((annualSalary.multiply(overheadMultiplier)).add(fixedAnnualAmount)).multiply(utilizationPercentage));
             //calculate markup multiplier
             dayRate = calculateEmployeeOverheadMarkupMultiplier(employee.getActiveConfiguration().getMarkupMultiplier(), dayRate);
@@ -44,16 +63,10 @@ public class RateCalculator implements IRateCalculator {
                     .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(HoursInDay));
         } else {
-            dayRate = (
-//                    (annualSalary.add(fixedAnnualAmount))
-//                    .multiply(overheadMultiplier)
-
-            (annualSalary.multiply(overheadMultiplier)).add(fixedAnnualAmount)
+            dayRate = ((annualSalary.multiply(overheadMultiplier)).add(fixedAnnualAmount)
                     .multiply(BigDecimal.ONE.subtract(utilizationPercentage)));
             //add markup multiplier
-
             dayRate = calculateEmployeeOverheadMarkupMultiplier(employee.getActiveConfiguration().getMarkupMultiplier(), dayRate);
-
             //calculate grossMargin multiplier
             dayRate = calculateEmployeeOverheadWithGrossMargin(employee.getActiveConfiguration().getGrossMargin(), dayRate)
                     .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(HoursInDay));

@@ -83,7 +83,9 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private ObservableList<Team> teams;
     private ObservableList<Country> countries;
     private EmployeeInfoController selectedToEdit;
-
+    private Service<Boolean> calculateEditOperationPerformedEdit;
+    private String dayRateValue;
+    private String hourlyRateValue;
 
     public EmployeeMainPageController(StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeesMainPage.fxml"));
@@ -309,8 +311,10 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     }
 
     public void setTotalRates(){
+        System.out.println(model.calculateGroupDayRate()+" day rate");
         dayRateField.setText(model.calculateGroupDayRate().toString());
         hourlyRateField.setText(model.calculateGroupHourlyRate().toString());
+        System.out.println(model.calculateGroupHourlyRate() + "hourly rate");
     }
 
     public void setTotalRatesDefault(){
@@ -426,6 +430,47 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             }
         });
     }
+
+    public void callService(){
+        startPerformRedoCalculations();
+    }
+
+    private void startPerformRedoCalculations() {
+        this.calculateEditOperationPerformedEdit = new Service<Boolean>() {
+            @Override
+            protected Task<Boolean> createTask() {
+                return new Task<Boolean>() {
+                    @Override
+                    protected Boolean call() throws Exception {
+                        try {
+                            dayRateValue=model.calculateGroupDayRate().toString();
+                            hourlyRateValue=model.calculateGroupHourlyRate().toString();
+                            return true;
+                        } catch (NumberFormatException e) {
+                            ExceptionHandler.errorAlertMessage("error Message");
+                            return false;
+                        }
+                    }
+                };
+            }
+        };
+        calculateEditOperationPerformedEdit.setOnSucceeded((e)->{
+            if(calculateEditOperationPerformedEdit.getValue()){
+                  dayRateField.setText(dayRateValue);
+                  hourlyRateField.setText(hourlyRateValue);
+                ExceptionHandler.errorAlertMessage("operation succesfull");
+            }else{
+                ExceptionHandler.errorAlertMessage("operation fails");
+            }
+
+        });
+        calculateEditOperationPerformedEdit.setOnFailed((e)->{
+           calculateEditOperationPerformedEdit.getException().printStackTrace();
+            ExceptionHandler.errorAlertMessage("thread failed to perform operations");
+        });
+        this.calculateEditOperationPerformedEdit.restart();
+    }
+
 
 }
 

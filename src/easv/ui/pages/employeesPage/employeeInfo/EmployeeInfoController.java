@@ -148,4 +148,8 @@ public class EmployeeInfoController implements Initializable {
     public void refreshRates() {
         employeeController.setTotalRates();
     }
+
+    public void callService(){
+        employeeController.callService();
+    }
 }

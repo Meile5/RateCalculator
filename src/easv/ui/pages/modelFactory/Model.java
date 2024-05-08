@@ -181,8 +181,11 @@ public class Model implements IModel {
             this.employees.put(editedEmployee.getId(), editedEmployeeSaved);
             // update the filter list with the new updated values
             for (int i = 0; i < filteredEmployeesList.size(); i++) {
-                if (displayedEmployees.get(i).getId()==editedEmployee.getId()) {
-                    displayedEmployees.set(i, editedEmployee);
+                if (displayedEmployees.get(i).getId()==editedEmployeeSaved.getId()) {
+                    System.out.println(editedEmployee.getActiveConfiguration().printConfiguration() + " from edit");
+                     editedEmployeeSaved.setHourlyRate(employeeManager.getHourlyRate(editedEmployeeSaved,0));
+                     editedEmployeeSaved.setDailyRate(employeeManager.getDayRate(editedEmployeeSaved));
+                    displayedEmployees.set(i, editedEmployeeSaved);
                     break;
                 }
             }
@@ -316,7 +319,7 @@ public class Model implements IModel {
 
     @Override
     public BigDecimal calculateGroupDayRate() {
-        displayedEmployees.forEach(e-> System.out.println(e.printEmployeeData()+ " " + e.getName()));
+     //   displayedEmployees.forEach(e-> System.out.println(e.printEmployeeData()+ " " + e.getName()));
         return employeeManager.calculateGroupDayRate(displayedEmployees);
     }
 

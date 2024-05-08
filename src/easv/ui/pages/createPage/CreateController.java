@@ -76,6 +76,9 @@ public class CreateController implements Initializable {
         }
     }
 
+
+    //TOdo Nelsson i added the stack pane that blocks the ui while saving, you can have a look , if is ok ,
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
             populateComboBoxes();
