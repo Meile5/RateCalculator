@@ -184,12 +184,10 @@ public class Model implements IModel {
             // update the filter list with the new updated values
             for (int i = 0; i < filteredEmployeesList.size(); i++) {
                 if (displayedEmployees.get(i).getId()==editedEmployeeSaved.getId()) {
-                    System.out.println(editedEmployee.getActiveConfiguration().printConfiguration() + " from edit");
                     displayedEmployees.set(i, editedEmployeeSaved);
                     break;
                 }
             }
-
             return true;
         }
         return false;
