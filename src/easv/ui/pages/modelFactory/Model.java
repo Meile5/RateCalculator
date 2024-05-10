@@ -178,13 +178,12 @@ public class Model implements IModel {
         Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
         if (editedEmployeeSaved != null) {
             editedEmployeeSaved.addConfiguration(editedEmployeeSaved.getActiveConfiguration());
+            editedEmployeeSaved.setHourlyRate(employeeManager.getHourlyRate(editedEmployeeSaved,0));
+            editedEmployeeSaved.setDailyRate(employeeManager.getDayRate(editedEmployeeSaved));
             this.employees.put(editedEmployee.getId(), editedEmployeeSaved);
             // update the filter list with the new updated values
             for (int i = 0; i < filteredEmployeesList.size(); i++) {
                 if (displayedEmployees.get(i).getId()==editedEmployeeSaved.getId()) {
-                    System.out.println(editedEmployee.getActiveConfiguration().printConfiguration() + " from edit");
-                     editedEmployeeSaved.setHourlyRate(employeeManager.getHourlyRate(editedEmployeeSaved,0));
-                     editedEmployeeSaved.setDailyRate(employeeManager.getDayRate(editedEmployeeSaved));
                     displayedEmployees.set(i, editedEmployeeSaved);
                     break;
                 }
