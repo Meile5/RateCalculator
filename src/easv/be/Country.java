@@ -1,10 +1,12 @@
 package easv.be;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Country {
     private String countryName;
     private int id;
+    private List<Team> teams;
 
     public Country(String country) {
         this.countryName = country;
@@ -50,5 +52,13 @@ public class Country {
     @Override
     public int hashCode() {
         return Objects.hash(countryName, id);
+    }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
+        this.teams = teams;
     }
 }

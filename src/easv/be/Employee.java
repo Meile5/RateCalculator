@@ -15,6 +15,9 @@ public class Employee {
     private BigDecimal dailyRate;
     private BigDecimal hourlyRate;
     private List<Configuration> configurations;
+    private List<Region> regions;
+    private List<Country> countries;
+    private List<Team> teams;
     private BigDecimal overhead;
     private Configuration  activeConfiguration;
 
@@ -188,5 +191,29 @@ public class Employee {
 
     public BigDecimal getOverhead() {
         return overhead;
+    }
+
+    public List<Region> getRegions() {
+        return regions;
+    }
+
+    public void setRegions(List<Region> regions) {
+        this.regions = regions;
+    }
+
+    public List<Country> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(List<Country> countries) {
+        this.countries = countries;
+    }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
+        this.teams = teams;
     }
 }
