@@ -99,6 +99,12 @@
                               <Insets />
                            </VBox.margin>
                         </MFXTextField>
+                        <Label text="Dailly Working Hours">
+                           <font>
+                              <Font name="Open Sans Regular" size="14.0" />
+                           </font>
+                        </Label>
+                        <MFXTextField fx:id="dlyWorkngHours" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField" />
                      </children>
                      <HBox.margin>
                         <Insets />
@@ -133,7 +139,7 @@
                            </font></Label>
                         <MFXTextField fx:id="multiplierTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
-                              <Insets bottom="20.0" />
+                              <Insets />
                            </VBox.margin></MFXTextField>
                         <Label text="Currency">
                            <font>
@@ -160,7 +166,7 @@
                   <VBox prefHeight="39.0" prefWidth="55.0" styleClass="clear">
                      <children>
 <!--                         on action  "#clearInfo" was defined here but not in the controller-->
-                        <Button mnemonicParsing="false" styleClass="clear"  prefHeight="39.0" prefWidth="56.0">
+                        <Button mnemonicParsing="false" prefHeight="39.0" prefWidth="56.0" styleClass="clear">
                            <graphic>
                               <SVGPath content="M9.1709 4C9.58273 2.83481 10.694 2 12.0002 2C13.3064 2 14.4177 2.83481 14.8295 4 M20.5001 6H3.5 M18.8332 8.5L18.3732 15.3991C18.1962 18.054 18.1077 19.3815 17.2427 20.1907C16.3777 21 15.0473 21 12.3865 21H11.6132C8.95235 21 7.62195 21 6.75694 20.1907C5.89194 19.3815 5.80344 18.054 5.62644 15.3991L5.1665 8.5 M9.5 11L10 16 M14.5 11L14 16" fill="WHITE" scaleX="1.7" scaleY="1.7" scaleZ="0.0" stroke="#2ba746" strokeWidth="1.5" styleClass="svgFill" />
                            </graphic>
@@ -168,7 +174,7 @@
                      </children>
                   </VBox>
                   <Region prefHeight="40.0" prefWidth="30.0" />
-                  <Button fx:id="saveBTN" mnemonicParsing="false" styleClass="button-save" onAction="#saveEmployee" prefHeight="36.0" prefWidth="134.0"  text="Save" textFill="WHITE">
+                  <Button fx:id="saveBTN" mnemonicParsing="false" onAction="#saveEmployee" prefHeight="36.0" prefWidth="134.0" styleClass="button-save" text="Save" textFill="WHITE">
                      <font>
                         <Font name="Open Sans Regular" size="14.0" />
                      </font></Button>

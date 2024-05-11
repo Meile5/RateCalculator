@@ -2,6 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -11,6 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.SearchableComboBox?>
 
 <StackPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" stylesheets="@../../styling/EditPage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -57,7 +59,7 @@
                                           <Insets />
                                        </VBox.margin>
                                     </MFXTextField>
-                                    <Label text="Country">
+                                    <Label text="Region">
                                        <font>
                                           <Font name="Open Sans Regular" size="14.0" />
                                        </font>
@@ -67,21 +69,22 @@
                                           <Insets />
                                        </VBox.margin>
                                     </MFXComboBox>
-                                    <Label text="Team">
+                                    <Label text="Country">
                                        <font>
                                           <Font name="Open Sans Regular" size="14.0" />
                                        </font>
                                     </Label>
                                     <MFXComboBox fx:id="teamCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
-                                    <Label text="GM %">
+                                    <Label text="Team">
                                        <font>
                                           <Font name="Open Sans Regular" size="14.0" />
                                        </font>
                                     </Label>
                                     <MFXTextField fx:id="grossMargin" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="percentage" />
+                                    <MFXScrollPane hbarPolicy="NEVER" maxWidth="-Infinity" prefHeight="98.0" prefViewportWidth="50.0" prefWidth="200.0" styleClass="chosenTeams" />
                                  </children>
                                  <padding>
-                                    <Insets left="30.0" top="10.0" />
+                                    <Insets bottom="10.0" left="30.0" right="10.0" top="10.0" />
                                  </padding>
                               </VBox>
                               <VBox prefHeight="500.0" prefWidth="269.0" spacing="10.0">
@@ -116,12 +119,13 @@
                                           <Insets />
                                        </VBox.margin>
                                     </MFXTextField>
-                                    <Label text="Markup %">
+                                    <Label text="Working hours">
                                        <font>
                                           <Font name="Open Sans Regular" size="14.0" />
                                        </font>
                                     </Label>
                                     <MFXTextField fx:id="markup" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="percentage" />
+                                    <SearchableComboBox maxWidth="-Infinity" prefHeight="40.0" prefWidth="200.0" />
                                  </children>
                                  <HBox.margin>
                                     <Insets />
