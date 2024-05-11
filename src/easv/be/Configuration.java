@@ -16,9 +16,21 @@ public class Configuration {
     private double markupMultiplier;
     private double grossMargin;
     private boolean active;
+    private BigDecimal dayRate;
+    private BigDecimal hourlyRate;
 
 
 
+    /**
+     * Constructor used to create Configuration objects with the configuration formula and rates.
+
+     */
+    public Configuration(int configurationId, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime createdDate, boolean active, BigDecimal dayRate, BigDecimal hourlyRate) {
+        this(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, active);
+        this.dayRate = dayRate;
+        this.hourlyRate = hourlyRate;
+        this.savedDate = createdDate;
+    }
     public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours) {
         this.annualSalary = annualSalary;
         this.fixedAnnualAmount = fixedAnnualAmount;
@@ -241,5 +253,21 @@ public String printConfiguration(){
 
     public void setGrossMargin(double grossMargin) {
         this.grossMargin = grossMargin;
+    }
+
+    public BigDecimal getDayRate() {
+        return dayRate;
+    }
+
+    public void setDayRate(BigDecimal dayRate) {
+        this.dayRate = dayRate;
+    }
+
+    public BigDecimal getHourlyRate() {
+        return hourlyRate;
+    }
+
+    public void setHourlyRate(BigDecimal hourlyRate) {
+        this.hourlyRate = hourlyRate;
     }
 }

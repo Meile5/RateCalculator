@@ -46,13 +46,6 @@ public class Employee {
         this.configurations = configurations;
     }
 
-    public Employee(String name, Country country, Team team, EmployeeType employeeType, Currency currency) {
-        this.name = name;
-        this.country = country;
-        this.team = team;
-        this.employeeType = employeeType;
-        this.currency = currency;
-    }
 
     public Employee(String name, EmployeeType employeeType, Currency currency) {
         this.name = name;
