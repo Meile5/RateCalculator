@@ -175,7 +175,7 @@ public class Model implements IModel {
      * @param editedEmployee the employee after editing  */
     @Override
     public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
-        Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
+       /* Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
         if (editedEmployeeSaved != null) {
             editedEmployeeSaved.addConfiguration(editedEmployeeSaved.getActiveConfiguration());
             editedEmployeeSaved.setHourlyRate(employeeManager.getHourlyRate(editedEmployeeSaved,0));
@@ -189,8 +189,9 @@ public class Model implements IModel {
                 }
             }
             return true;
-        }
+        }*/
         return false;
+
     }
 
     /**

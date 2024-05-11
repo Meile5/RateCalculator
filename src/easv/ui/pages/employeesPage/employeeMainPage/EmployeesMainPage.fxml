@@ -112,7 +112,7 @@
                   <Insets bottom="10.0" />
                </padding>
             </GridPane>
-            <VBox maxHeight="650.0" maxWidth="800.0" prefHeight="460.0" prefWidth="800.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;">
+            <VBox maxHeight="650.0" maxWidth="900.0" prefHeight="460.0" prefWidth="900.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;">
                <children>
                   <VBox alignment="TOP_CENTER" prefHeight="462.0" prefWidth="787.0" spacing="25.0">
                      <padding>
@@ -121,6 +121,7 @@
                      <children>
                         <HBox prefHeight="45.0" prefWidth="722.0" spacing="48.0">
                            <children>
+                              <Label text="Region" />
                               <Label styleClass="tableLabels" text="Name" />
                               <Label styleClass="tableLabels" text="Type" />
                               <Label styleClass="tableLabels" text="Country" />
@@ -133,7 +134,7 @@
                               <Insets left="96.0" top="20.0" />
                            </padding>
                         </HBox>
-                        <MFXScrollPane hbarPolicy="NEVER" maxHeight="650.0" maxWidth="800.0" prefHeight="386.0" prefWidth="780.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;" vbarPolicy="ALWAYS">
+                        <MFXScrollPane hbarPolicy="NEVER" maxHeight="650.0" maxWidth="960.0" prefHeight="386.0" prefWidth="780.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;" vbarPolicy="ALWAYS">
                            <content>
                               <VBox fx:id="employeesContainer" alignment="TOP_CENTER" prefHeight="0.0" prefWidth="0.0" spacing="26.0">
                                  <padding>

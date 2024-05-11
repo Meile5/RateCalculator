@@ -1,8 +1,7 @@
 package easv.ui.pages.employeesPage.employeeInfo;
 
 import easv.Utility.WindowsManagement;
-import easv.be.Employee;
-import easv.be.EmployeeType;
+import easv.be.*;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.components.editPage.EditController;
@@ -51,6 +50,8 @@ public class EmployeeInfoController implements Initializable {
     private Label dayCurrency;
     @FXML
     private VBox editButton;
+    @FXML
+    private Label region;
     private Employee employee;
     private StackPane firstLayout;
     private DeleteEmployeeController deleteEmployeeController;
@@ -58,20 +59,53 @@ public class EmployeeInfoController implements Initializable {
 
     private IModel model;
 
-    public EmployeeInfoController(Employee employee, DeleteEmployeeController deleteEmployeeController, IModel model, StackPane firstLayout,EmployeeMainPageController employeeController) {
+    public EmployeeInfoController(Employee employee, DeleteEmployeeController deleteEmployeeController, IModel model, StackPane firstLayout, EmployeeMainPageController employeeController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeComponent.fxml"));
         loader.setController(this);
         this.employee = employee;
         this.deleteEmployeeController = deleteEmployeeController;
         this.firstLayout = firstLayout;
         this.model = model;
-        this.employeeController=employeeController;
+        this.employeeController = employeeController;
         try {
             employeeComponent = loader.load();
         } catch (IOException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
+    }
+
+    public void setLabels() {
+        if (employee != null) {
+            employeeName.setText(employee.getName());
+            employeeType.setText(employee.getType().toString());
+
+            // Displaying countries
+            StringBuilder countryNames = new StringBuilder();
+            for (Country country : employee.getCountries()) {
+                countryNames.append(country.getCountryName()).append(", ");
+            }
+            country.setText(countryNames.toString());
+
+            // Displaying teams
+            StringBuilder teamNames = new StringBuilder();
+            for (Team team : employee.getTeams()) {
+                teamNames.append(team.getTeamName()).append(", ");
+            }
+
+            team.setText(teamNames.toString());
+            // Displaying regions
+            StringBuilder regionNames = new StringBuilder();
+            for (Region region : employee.getRegions()) {
+                regionNames.append(region.getRegionName()).append(", ");
+            }
+            region.setText(regionNames.toString());
+
+            dayRate.setText(employee.getActiveConfiguration().getDayRate().toString());
+            hourlyRate.setText(employee.getActiveConfiguration().getHourlyRate().toString());
+            hourlyCurrency.setText(employee.getCurrency().toString());
+            dayCurrency.setText(employee.getCurrency().toString());
+        }
     }
 
     public HBox getRoot() {
@@ -84,10 +118,11 @@ public class EmployeeInfoController implements Initializable {
         this.deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
         //displayDelete();
         setLabels();
-        addEditAction();
+        //addEditAction();
 
 
     }
+
 
     /*public void displayDelete(){
         DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController( firstLayout,  deleteContainer);
@@ -95,20 +130,10 @@ public class EmployeeInfoController implements Initializable {
         deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
 
     }*/
-    public void setLabels() {
-        if (employee != null) {
-            employeeName.setText(employee.getName());
-            employeeType.setText(employee.getType().toString());
-            country.setText(employee.getCountry().getCountryName());
-            team.setText(employee.getTeam().getTeamName());
-            dayRate.setText(employee.getDailyRate().toString());
-            hourlyRate.setText(employee.getHourlyRate().toString());
-            hourlyCurrency.setText(employee.getCurrency().toString());
-            dayCurrency.setText(employee.getCurrency().toString());
-        }
-    }
 
-    private void addEditAction() {
+
+
+    /*private void addEditAction() {
         this.editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             EditController editController = new EditController(model, firstLayout, employee, this);
             this.firstLayout.getChildren().add(editController.getRoot());
@@ -151,5 +176,6 @@ public class EmployeeInfoController implements Initializable {
 
     public void callService(){
         employeeController.callService();
+    }*/
     }
-}
+

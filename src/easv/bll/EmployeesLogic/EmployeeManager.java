@@ -53,14 +53,13 @@ public class EmployeeManager implements IEmployeeManager {
 
     @Override
     public Map<Integer, Employee> returnEmployees() throws RateException {
-        LinkedHashMap<Integer, Employee> employees = employeeDAO.returnEmployees();
-        employees.values().forEach(( employee) -> {
+        /*employees.values().forEach(( employee) -> {
             BigDecimal dayRate = rateCalculator.calculateDayRate(employee);
                 BigDecimal hourRate = rateCalculator.calculateHourlyRate(employee);
                 employee.setDailyRate(dayRate);
                 employee.setHourlyRate(hourRate);
-        });
-        return employees;
+        })*/
+        return employeeDAO.returnEmployees();
     }
 
 
@@ -99,24 +98,26 @@ public class EmployeeManager implements IEmployeeManager {
 
     @Override
     public BigDecimal calculateGroupDayRate(Collection<Employee> employees) {
-        if (!employees.isEmpty()) {
+        /*if (!employees.isEmpty()) {
             return employees.stream()
                     .map(Employee::getDailyRate)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         } else {
             return BigDecimal.ZERO;
-        }
+        }*/
+        return null;
     }
 
     @Override
     public BigDecimal calculateGroupHourlyRate(Collection<Employee> employees) {
-        if(!employees.isEmpty()){
+       /* if(!employees.isEmpty()){
             return employees.stream()
                     .map(Employee::getHourlyRate)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         } else {
             return BigDecimal.ZERO;
-        }
+        }*/
+        return null;
     }
 
     @Override
