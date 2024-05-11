@@ -158,12 +158,14 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         loadEmployeesFromDB.setOnSucceeded((event) -> {
             // Update the UI with loaded employees
             displayEmployees();
+
             // Hide the progress bar
             progressBar.setVisible(false);
         });
         loadEmployeesFromDB.setOnFailed((event)->{
 
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
+
 
         });
         loadEmployeesFromDB.restart();

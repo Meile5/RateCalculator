@@ -53,13 +53,14 @@ public class EmployeeManager implements IEmployeeManager {
 
     @Override
     public Map<Integer, Employee> returnEmployees() throws RateException {
+        LinkedHashMap<Integer, Employee> employees = employeeDAO.returnEmployees();
         /*employees.values().forEach(( employee) -> {
             BigDecimal dayRate = rateCalculator.calculateDayRate(employee);
                 BigDecimal hourRate = rateCalculator.calculateHourlyRate(employee);
                 employee.setDailyRate(dayRate);
                 employee.setHourlyRate(hourRate);
         })*/
-        return employeeDAO.returnEmployees();
+        return employees;
     }
 
 

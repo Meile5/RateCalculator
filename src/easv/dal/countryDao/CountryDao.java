@@ -31,7 +31,7 @@ public class CountryDao implements ICountryDao {
                 ResultSet rs = psmt.executeQuery();
                 while (rs.next()) {
                     int id = rs.getInt("CountryId");
-                    String name = rs.getString("Name");
+                    String name = rs.getString("CountryName");
                     Country country = new Country(name, id);
                     countries.put(country.getCountryName(), country);
                 }
@@ -41,4 +41,6 @@ public class CountryDao implements ICountryDao {
         }
         return countries;
     }
-}
+
+    }
+

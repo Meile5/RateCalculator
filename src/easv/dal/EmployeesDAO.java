@@ -66,8 +66,8 @@ public class EmployeesDAO implements IEmployeeDAO {
                 ResultSet res = psmt.executeQuery();
                 while (res.next()) {
                     int employeeID = res.getInt("EmployeeID");
-                    String name = res.getString("EmployeeName");
-                    String employeeType = res.getString("employeeType");
+                    String name = res.getString("Name");
+                    String employeeType = res.getString("EmployeeType");
                     String currency1 = res.getString("Currency");
 
 
@@ -93,6 +93,13 @@ public class EmployeesDAO implements IEmployeeDAO {
                     countries.addAll(retrieveCountriesForEmployee(team.getId(), conn));
                 }
                 employee.setCountries(countries);
+            }
+            for (Employee employee : employees.values()) {
+                List<Region> regions = new ArrayList<>();
+                for(Country country : employee.getCountries()){
+                    regions.addAll(retrieveRegionsForEmployee(country.getId(), conn));
+                }
+                employee.setRegions(regions);
             }
 
 
@@ -125,12 +132,12 @@ public class EmployeesDAO implements IEmployeeDAO {
                     conn.close();
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
                 throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
 
             }
         }
         return employees;
+
 
     }
 
@@ -139,7 +146,7 @@ public class EmployeesDAO implements IEmployeeDAO {
      */
     private List<Team> retrieveTeamsForEmployee(int employeeId, Connection conn)throws SQLException{
         List<Team> teams = new ArrayList<>();
-        String sql = "SELECT t.TeamID, t.Name " +
+        String sql = "SELECT t.TeamID, t.TeamName " +
                 "FROM TeamEmployee te " +
                 "JOIN Teams t ON te.TeamID = t.TeamID " +
                 "WHERE te.EmployeeID = ?";
@@ -161,7 +168,7 @@ public class EmployeesDAO implements IEmployeeDAO {
      */
     private List<Country> retrieveCountriesForEmployee(int teamId, Connection conn)throws SQLException{
         List<Country> countries = new ArrayList<>();
-        String sql = "SELECT c.CountryID, c.Name " +
+        String sql = "SELECT c.CountryID, c.CountryName " +
                 "FROM CountryTeam ct " +
                 "JOIN Countries c ON ct.CountryID = c.CountryID " +
                 "WHERE ct.TeamID = ?";
@@ -177,6 +184,26 @@ public class EmployeesDAO implements IEmployeeDAO {
             }
         }
         return countries;
+
+    }
+    private List<Region> retrieveRegionsForEmployee(int countryId, Connection conn)throws SQLException{
+        List<Region> regions = new ArrayList<>();
+        String sql = "SELECT r.RegionID, r.RegionName " +
+                "FROM RegionCountry rc " +
+                "JOIN Region r ON rc.RegionID = r.RegionID " +
+                "WHERE rc.CountryID = ?";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, countryId);
+            ResultSet res = psmt.executeQuery();
+            while (res.next()) {
+                int regionID = res.getInt("RegionID");
+                String regionName = res.getString("RegionName");
+
+                Region region = new Region(regionName, regionID);
+                regions.add(region);
+            }
+        }
+        return regions;
 
     }
 
