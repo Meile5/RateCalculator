@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<HBox id="popup-element" fx:id="employeeComponent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="70.0" prefWidth="780.0" spacing="7.0" style="-fx-background-radius: 20; -fx-background-color: F8F8F8;" styleClass="employeeComponent" stylesheets="/easv/ui/styling/EmployeeComponent.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox id="popup-element" fx:id="employeeComponent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="70.0" prefWidth="750.0" spacing="7.0" style="-fx-background-radius: 20; -fx-background-color: F8F8F8;" styleClass="employeeComponent" stylesheets="/easv/ui/styling/EmployeeComponent.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="CENTER" prefHeight="70.0" prefWidth="125.0">
          <children>
