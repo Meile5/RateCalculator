@@ -125,10 +125,13 @@ public class EmployeesDAO implements IEmployeeDAO {
                     conn.close();
                 }
             } catch (SQLException e) {
+                e.printStackTrace();
                 throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+
             }
         }
         return employees;
+
     }
 
     /**
@@ -174,6 +177,7 @@ public class EmployeesDAO implements IEmployeeDAO {
             }
         }
         return countries;
+
     }
 
     /**

@@ -115,14 +115,15 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             searchFieldListener();
             addSelectionListener();
             populateFilterComboBox();
-            filterByCountryListener();
-            filterByTeamListener();
+           // filterByCountryListener();
+            //filterByTeamListener();
             addFocusListener(countriesFilterCB,countryRevertButton);
             addFocusListener(teamsFilterCB,teamRevertButton);
             revertCountryFilter(countryRevertButton,countryRevertSvg);
             revertTeamFilter(teamRevertButton,teamRevertSvg);
-            setTotalRatesDefault();
+            //setTotalRatesDefault();
         } catch (RateException e) {
+            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
@@ -147,6 +148,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     @Override
                     protected Void call() throws Exception {
                         model.returnEmployees();
+                        System.out.println("kkk");
                         return null;
                     };
                 };
@@ -162,6 +164,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         loadEmployeesFromDB.setOnFailed((event)->{
 
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
+
         });
         loadEmployeesFromDB.restart();
     }
