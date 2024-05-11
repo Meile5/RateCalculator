@@ -106,7 +106,7 @@ public class EditController implements Initializable {
         //populate inputs with the values of the selected configuration from history(dropdown menu)
         populateSelectedConfiguration();
         //save the edit configuration
-        saveEdit();
+        //saveEdit();
     }
 
     /**
@@ -151,7 +151,7 @@ public class EditController implements Initializable {
     /**
      * save the edited employee
      */
-    private void saveEdit() {
+    /*private void saveEdit() {
         this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (EmployeeValidation.areNamesValid(nameInput, countryCB, teamCB) &&
                     EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
@@ -175,7 +175,7 @@ public class EditController implements Initializable {
     /**
      * create the employee object with the edited values
      */
-    private Employee getEmployee(Configuration editedConfiguration) {
+    /*private Employee getEmployee(Configuration editedConfiguration) {
         Country country = countryCB.getSelectedItem();
         Currency currency = Currency.valueOf(this.currencyCB.getSelectedItem());
         Team team = getSelectedTeam();
@@ -186,7 +186,7 @@ public class EditController implements Initializable {
         editedEmployee.setActiveConfiguration(editedConfiguration);
         editedEmployee.setId(employee.getId());
         return editedEmployee;
-    }
+    }*/
 
 
     /**
@@ -244,7 +244,7 @@ public class EditController implements Initializable {
      * call the EmployeeInfoController to update the edited userValues
      */
     private void updateUserValues(Employee employee) {
-        this.employeeDisplayer.setEmployeeName(employee.getName());
+       /* this.employeeDisplayer.setEmployeeName(employee.getName());
         this.employeeDisplayer.setCountry(employee.getCountry().getCountryName());
         this.employeeDisplayer.setEmployeeType(employee.getEmployeeType());
         this.employeeDisplayer.setTeam(employee.getTeam().getTeamName());
@@ -253,7 +253,7 @@ public class EditController implements Initializable {
         this.employeeDisplayer.setHourlyRate(model.getComputedHourlyRate(employee,0).toString());
        // this.employeeDisplayer.refreshRates();
         this.employeeDisplayer.callService();
-        WindowsManagement.closeStackPane(this.firstLayout);
+        WindowsManagement.closeStackPane(this.firstLayout);*/
     }
 
     private boolean isTextFieldEmpty(MFXTextField textField) {

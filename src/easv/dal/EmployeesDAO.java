@@ -51,17 +51,13 @@ public class EmployeesDAO implements IEmployeeDAO {
 
     /**
      * Retrieves all employees and puts them in a map
+     * Retrieves all the employee info like employee teams, configurations and countries and sets them in the lists in employee
+     * Finds active configuration and set it in employee
      */
     @Override
     public LinkedHashMap<Integer, Employee> returnEmployees() throws RateException {
         LinkedHashMap<Integer, Employee> employees = new LinkedHashMap<>();
-        String sql = "SELECT " +
-                "e.EmployeeID, e.Name AS EmployeeName, e.employeeType, " +
-                "c.Name AS Country, t.Name AS Team, e.Currency " +
-                "FROM " +
-                "Employees e " +
-                "INNER JOIN Countries c ON e.CountryID = c.CountryID " +
-                "INNER JOIN Teams t ON e.TeamID = t.TeamID";
+        String sql = "SELECT * FROM Employees";
         Connection conn = null;
         try {
             conn = connectionManager.getConnection();
@@ -70,28 +66,43 @@ public class EmployeesDAO implements IEmployeeDAO {
                 ResultSet res = psmt.executeQuery();
                 while (res.next()) {
                     int employeeID = res.getInt("EmployeeID");
-                    String name = res.getString("EmployeeName");
-                    String employeeType = res.getString("employeeType");
-                    String countryName = res.getString("Country");
-                    String teamName = res.getString("Team");
+                    String name = res.getString("Name");
+                    String employeeType = res.getString("EmployeeType");
                     String currency1 = res.getString("Currency");
 
-                    // Create Country object
-                    Country country = new Country(countryName);
-                    // Create Team object
-                    Team team = new Team(teamName);
+
                     // Retrieve employee type as string
                     EmployeeType type = EmployeeType.valueOf(employeeType);
                     // Retrieve employee type as string
                     Currency currency = Currency.valueOf(currency1);
 
-                    Employee employee = new Employee(name, country, team, type, currency);
+                    Employee employee = new Employee(name, type, currency);
                     employee.setId(employeeID);
 
                     // Add Employee to LinkedHashMap
                     employees.put(employeeID, employee);
                 }
             }
+            for (Employee employee : employees.values()) {
+                List<Team> teams = retrieveTeamsForEmployee(employee.getId(), conn);
+                employee.setTeams(teams);
+            }
+            for (Employee employee : employees.values()) {
+                List<Country> countries = new ArrayList<>();
+                for(Team team : employee.getTeams()){
+                    countries.addAll(retrieveCountriesForEmployee(team.getId(), conn));
+                }
+                employee.setCountries(countries);
+            }
+            for (Employee employee : employees.values()) {
+                List<Region> regions = new ArrayList<>();
+                for(Country country : employee.getCountries()){
+                    regions.addAll(retrieveRegionsForEmployee(country.getId(), conn));
+                }
+                employee.setRegions(regions);
+            }
+
+
             // Retrieve configurations for employees
             for (Employee employee : employees.values()) {
                 List<Configuration> configurations = retrieveConfigurationsForEmployee(employee.getId(), conn);
@@ -122,18 +133,89 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
             } catch (SQLException e) {
                 throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+
             }
         }
         return employees;
+
+
     }
 
+    /**
+     * Retrieves the teams for employee
+     */
+    private List<Team> retrieveTeamsForEmployee(int employeeId, Connection conn)throws SQLException{
+        List<Team> teams = new ArrayList<>();
+        String sql = "SELECT t.TeamID, t.TeamName " +
+                "FROM TeamEmployee te " +
+                "JOIN Teams t ON te.TeamID = t.TeamID " +
+                "WHERE te.EmployeeID = ?";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, employeeId);
+            ResultSet res = psmt.executeQuery();
+            while (res.next()) {
+                int teamID = res.getInt("TeamID");
+                String teamName = res.getString("TeamName");
 
+                Team team = new Team(teamName, teamID);
+                teams.add(team);
+            }
+        }
+        return teams;
+    }
+    /**
+     * Retrieves the countries for employee by using team id
+     */
+    private List<Country> retrieveCountriesForEmployee(int teamId, Connection conn)throws SQLException{
+        List<Country> countries = new ArrayList<>();
+        String sql = "SELECT c.CountryID, c.CountryName " +
+                "FROM CountryTeam ct " +
+                "JOIN Countries c ON ct.CountryID = c.CountryID " +
+                "WHERE ct.TeamID = ?";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, teamId);
+            ResultSet res = psmt.executeQuery();
+            while (res.next()) {
+                int countryID = res.getInt("CountryID");
+                String countryName = res.getString("CountryName");
+
+                Country country = new Country(countryName, countryID);
+                countries.add(country);
+            }
+        }
+        return countries;
+
+    }
+    private List<Region> retrieveRegionsForEmployee(int countryId, Connection conn)throws SQLException{
+        List<Region> regions = new ArrayList<>();
+        String sql = "SELECT r.RegionID, r.RegionName " +
+                "FROM RegionCountry rc " +
+                "JOIN Region r ON rc.RegionID = r.RegionID " +
+                "WHERE rc.CountryID = ?";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, countryId);
+            ResultSet res = psmt.executeQuery();
+            while (res.next()) {
+                int regionID = res.getInt("RegionID");
+                String regionName = res.getString("RegionName");
+
+                Region region = new Region(regionName, regionID);
+                regions.add(region);
+            }
+        }
+        return regions;
+
+    }
+
+    /**
+     * Retrieves the configurations for employee
+     */
     private List<Configuration> retrieveConfigurationsForEmployee(int employeeId, Connection conn) throws SQLException {
         List<Configuration> configurations = new ArrayList<>();
         String sql = "SELECT " +
                 "conf.ConfigurationID, conf.AnnualSalary, conf.FixedAnnualAmount, " +
                 "conf.OverheadMultiplier, conf.UtilizationPercentage, conf.WorkingHours, " +
-                "conf.Date AS ConfigurationDate, conf.Active, conf.Markup,conf.GrossMargin " +
+                "conf.Date AS ConfigurationDate, conf.Active, conf.DayRate,conf.HourlyRate " +
                 "FROM " +
                 "EmployeeConfigurations ec " +
                 "INNER JOIN Configurations conf ON ec.ConfigurationID = conf.ConfigurationID " +
@@ -151,9 +233,9 @@ public class EmployeesDAO implements IEmployeeDAO {
                 BigDecimal workingHours = res.getBigDecimal("WorkingHours");
                 LocalDateTime configurationDate = res.getTimestamp("ConfigurationDate").toLocalDateTime();
                 boolean active = Boolean.parseBoolean(res.getString("Active"));
-                double markupMultiplier = res.getDouble("Markup");
-                double grossMargin = res.getDouble("GrossMargin");
-                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active,markupMultiplier,grossMargin);
+                BigDecimal dayRate = res.getBigDecimal("DayRate");
+                BigDecimal hourlyRate = res.getBigDecimal("HourlyRate");
+                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active, dayRate, hourlyRate);
                 configurations.add(configuration);
             }
         }

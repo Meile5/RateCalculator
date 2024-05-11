@@ -90,7 +90,7 @@ public class CreateController implements Initializable {
 
     @FXML
     private void saveEmployee() throws RateException {
-        parseCountriesAndTeamsToValidator();
+      /*  parseCountriesAndTeamsToValidator();
         if(EmployeeValidation.areNamesValid(nameTF, countryCB,teamCB) &&
            EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
            EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
@@ -117,7 +117,7 @@ public class CreateController implements Initializable {
             Employee employee = new Employee(name, country, team, employeeType, currency);
             Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
             saveEmployeeOperation(employee, configuration);
-        }
+        }*/
     }
 
     private void saveEmployeeOperation(Employee employee, Configuration configuration) {

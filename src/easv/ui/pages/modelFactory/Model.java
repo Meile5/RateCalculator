@@ -175,7 +175,7 @@ public class Model implements IModel {
      * @param editedEmployee the employee after editing  */
     @Override
     public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
-        Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
+       /* Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
         if (editedEmployeeSaved != null) {
             editedEmployeeSaved.addConfiguration(editedEmployeeSaved.getActiveConfiguration());
             editedEmployeeSaved.setHourlyRate(employeeManager.getHourlyRate(editedEmployeeSaved,0));
@@ -184,15 +184,14 @@ public class Model implements IModel {
             // update the filter list with the new updated values
             for (int i = 0; i < filteredEmployeesList.size(); i++) {
                 if (displayedEmployees.get(i).getId()==editedEmployeeSaved.getId()) {
-                    System.out.println(editedEmployee.getActiveConfiguration().printConfiguration() + " from edit");
                     displayedEmployees.set(i, editedEmployeeSaved);
                     break;
                 }
             }
-
             return true;
-        }
+        }*/
         return false;
+
     }
 
     /**

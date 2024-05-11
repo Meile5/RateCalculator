@@ -115,14 +115,15 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             searchFieldListener();
             addSelectionListener();
             populateFilterComboBox();
-            filterByCountryListener();
-            filterByTeamListener();
+           // filterByCountryListener();
+            //filterByTeamListener();
             addFocusListener(countriesFilterCB,countryRevertButton);
             addFocusListener(teamsFilterCB,teamRevertButton);
             revertCountryFilter(countryRevertButton,countryRevertSvg);
             revertTeamFilter(teamRevertButton,teamRevertSvg);
-            setTotalRatesDefault();
+            //setTotalRatesDefault();
         } catch (RateException e) {
+            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
@@ -147,6 +148,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                     @Override
                     protected Void call() throws Exception {
                         model.returnEmployees();
+                        System.out.println("kkk");
                         return null;
                     };
                 };
@@ -156,12 +158,15 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         loadEmployeesFromDB.setOnSucceeded((event) -> {
             // Update the UI with loaded employees
             displayEmployees();
+
             // Hide the progress bar
             progressBar.setVisible(false);
         });
         loadEmployeesFromDB.setOnFailed((event)->{
 
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
+
+
         });
         loadEmployeesFromDB.restart();
     }
@@ -182,19 +187,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         svgPath.setContent(alternativeSVGPath);
     }
 
-//    private void loadRevertSVGCountries() {
-//        String alternativeSVGPath = "M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z ";
-//        countriesSvgPath.getStyleClass().clear();
-//        countriesSvgPath.getStyleClass().add("svg-revert");
-//        countriesSvgPath.setContent(alternativeSVGPath);
-//    }
 
-//    private void loadRevertSVGTeams() {
-//        String alternativeSVGPath = "M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z ";
-//        teamsSvgPath.getStyleClass().clear();
-//        teamsSvgPath.getStyleClass().add("svg-revert");
-//        teamsSvgPath.setContent(alternativeSVGPath);
-//    }
 
     @FXML
     private void goBack() throws RateException {

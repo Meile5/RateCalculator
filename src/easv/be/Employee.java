@@ -12,9 +12,12 @@ public class Employee {
     private Team team;
     private int id;
     private Currency currency;
-    private BigDecimal dailyRate;
-    private BigDecimal hourlyRate;
+    /*private BigDecimal dailyRate;
+    private BigDecimal hourlyRate;*/
     private List<Configuration> configurations;
+    private List<Region> regions;
+    private List<Country> countries;
+    private List<Team> teams;
     private BigDecimal overhead;
     private Configuration  activeConfiguration;
 
@@ -43,13 +46,6 @@ public class Employee {
         this.configurations = configurations;
     }
 
-    public Employee(String name, Country country, Team team, EmployeeType employeeType, Currency currency) {
-        this.name = name;
-        this.country = country;
-        this.team = team;
-        this.employeeType = employeeType;
-        this.currency = currency;
-    }
 
     public Employee(String name, EmployeeType employeeType, Currency currency) {
         this.name = name;
@@ -144,7 +140,7 @@ public class Employee {
         this.currency = currency;
     }
 
-    public BigDecimal getDailyRate() {
+    /*public BigDecimal getDailyRate() {
         return dailyRate;
     }
 
@@ -158,7 +154,7 @@ public class Employee {
 
     public void setHourlyRate(BigDecimal hourlyRate) {
         this.hourlyRate = hourlyRate;
-    }
+    }*/
 
     @Override
     public String toString() {
@@ -188,5 +184,29 @@ public class Employee {
 
     public BigDecimal getOverhead() {
         return overhead;
+    }
+
+    public List<Region> getRegions() {
+        return regions;
+    }
+
+    public void setRegions(List<Region> regions) {
+        this.regions = regions;
+    }
+
+    public List<Country> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(List<Country> countries) {
+        this.countries = countries;
+    }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
+        this.teams = teams;
     }
 }

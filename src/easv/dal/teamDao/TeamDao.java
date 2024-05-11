@@ -119,7 +119,7 @@ public class TeamDao implements ITeamDao {
                 ResultSet rs = psmt.executeQuery();
                 while (rs.next()) {
                     int id = rs.getInt("TeamId");
-                    String name = rs.getString("Name");
+                    String name = rs.getString("TeamName");
                     Team team = new Team(name, id);
                     teams.put(team.getId(), team);
                 }
