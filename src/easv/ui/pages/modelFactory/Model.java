@@ -80,6 +80,7 @@ public class Model implements IModel {
 
 
     public Model() throws RateException {
+
         this.employees = FXCollections.observableMap(new LinkedHashMap<>());
         this.filteredEmployeesList = FXCollections.observableArrayList();
         this.listEmployeeByCountryTemp = FXCollections.observableArrayList();
@@ -116,6 +117,10 @@ public class Model implements IModel {
         sortDisplayedEmployee();
         this.displayedEmployees = sortedEmployeesByName;
         System.out.println(employees + "all employees");
+    }
+
+    public Employee getEmployeeById(int id){
+        return employees.get(id);
     }
     private void sortDisplayedEmployee() {
         sortedEmployeesByName.setAll(employeeManager.sortedEmployeesByName(employees.values()));
@@ -248,8 +253,7 @@ public class Model implements IModel {
         filteredEmployeesList.setAll(displayedEmployees);
         displayedEmployees.setAll(employee);
         displayEmployees.displayEmployees();
-        System.out.println("Selected user" + displayedEmployees);
-        System.out.println("Selected user" + filteredEmployeesList);
+
     }
 
     public void performEmployeeSearchUndoOperation() throws RateException {

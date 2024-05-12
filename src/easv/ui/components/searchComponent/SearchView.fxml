@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<HBox fx:id="searchWindowContainer" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="180.0" style="-fx-background-radius: 10;" stylesheets="/easv/ui/styling/Search.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox fx:id="button" prefHeight="100.0" prefWidth="200.0" styleClass="search">
+         <children>
+            <SVGPath fx:id="searchSVG" styleClass="revertIcon" />
+         </children>
+      </HBox>
+      <TextField fx:id="searchField" minHeight="30.0" prefHeight="35.0" prefWidth="317.0" promptText="Search" HBox.hgrow="ALWAYS" />
+   </children>
+</HBox>
