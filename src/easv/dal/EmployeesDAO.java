@@ -100,52 +100,8 @@ public class EmployeesDAO implements IEmployeeDAO {
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }
 
-//
-//
-//    //**retrieve the team Configurations*/
-//    private Set<Configuration> configurations(int teamId, Connection conn) {
-//        String sql = "SELECT tc.* FROM TeamConfigurationsHistory tch " +
-//                "JOIN Teams t ON t.TeamID=tch.TeamID " +
-//                "JOIN TeamConfiguration tc ON tc.TeamConfigurationID = tch.TeamConfigurationID " +
-//                "WHERE t.TeamId=?";
-//
-//        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-//            psmt.setInt(1, teamId);
-//            ResultSet rs = psmt.executeQuery();
-//            int configId = rs.getInt("TeamConfigurationID");
-//            BigDecimal teamDailyRate = BigDecimal.valueOf( rs.getDouble("TeamDailyRate"));
-//            double teamHourlyRate = rs.getDouble("TeamHourlyRate");
-//            double grossMargin = rs.getDouble("GrossMargin");
-//            double markupMultiplier = rs.getDouble("MarkupMultiplier");
-//            LocalDateTime savedDate = rs.getTimestamp("ConfigurationDate").toLocalDateTime();
-//            boolean active = Boolean.parseBoolean(rs.getString("Active"));
-//            List<TeamConfigurationEmployee> teamConfigurationEmployees = getEmployeesForTeamConfiguration(configId,conn);
-//            Configuration config = new Configuration(configId,teamDailyRate,teamHourlyRate,grossMargin,markupMultiplier,savedDate,active,teamConfigurationEmployees);
-//
-//
-//
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
 
-    private List<TeamConfigurationEmployee> getEmployeesForTeamConfiguration(int teamConfigurationId, Connection conn) throws SQLException {
-        String sql = "SELECT teh.EmployeeName,teh.EmployeeDailyRate,teh.EmployeeHourlyRate from TeamEmployeesHistory teh WHERE  teh.TeamConfigurationId=?";
-        List<TeamConfigurationEmployee> configurationTeamMembers = new ArrayList<>();
-        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-            psmt.setInt(1, teamConfigurationId);
-            ResultSet rs = psmt.executeQuery();
-            while (rs.next()) {
-                String employeeName = rs.getString("EmployeeName");
-                double employeeDailyRate = rs.getDouble("EmployeeDailyRate");
-                double employeeHourlyRate = rs.getDouble("EmployeeHourlyRate");
-                TeamConfigurationEmployee employee = new TeamConfigurationEmployee(employeeName, employeeDailyRate, employeeHourlyRate);
-                configurationTeamMembers.add(employee);
-            }
-        }
-        return configurationTeamMembers;
-    }
+
 
 
     /**
@@ -530,7 +486,6 @@ public class EmployeesDAO implements IEmployeeDAO {
                 psmt.setInt(6, editedEmployee.getId());
                 psmt.executeUpdate();
             }
-
             editedEmployee.getActiveConfiguration().setConfigurationId(addConfigurationWithAdditionalMultipliers(conn, editedEmployee.getActiveConfiguration()));
             setOldConfigurationToInactive(oldConfigurationId, conn);
             addEmployeeConfiguration(editedEmployee.getId(), editedEmployee.getActiveConfiguration().getConfigurationId(), conn);
@@ -577,6 +532,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                     Team currentTeam = retrievedTeams.get(teamId);
                     if (currentTeam == null) {
                         currentTeam = new Team(rs.getString("TeamName"), teamId, new ArrayList<>(), new ArrayList<>());
+                        currentTeam.setTeamConfigurationsHistory(retrieveTeamConfigurations(currentTeam,conn));
                         retrievedTeams.put(currentTeam.getId(), currentTeam);
                     }
                     int employeeId = rs.getInt("EmployeeID");
@@ -700,6 +656,57 @@ public class EmployeesDAO implements IEmployeeDAO {
             }
         }
         return configurationID;
+    }
+
+
+    /**retrieve the team configurations and set the active configuration */
+    private List<TeamConfiguration> retrieveTeamConfigurations(Team team, Connection conn) {
+        String sql = "SELECT tc.* FROM TeamConfigurationsHistory tch " +
+                "JOIN Teams t ON t.TeamID=tch.TeamID " +
+                "JOIN TeamConfiguration tc ON tc.TeamConfigurationID = tch.TeamConfigurationID " +
+                "WHERE t.TeamId=?";
+        List<TeamConfiguration> teamConfigurations = new ArrayList<>();
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, team.getId());
+            ResultSet rs = psmt.executeQuery();
+            if(rs.next()){
+            int configId = rs.getInt("TeamConfigurationID");
+            BigDecimal teamDailyRate = BigDecimal.valueOf(rs.getDouble("TeamDailyRate"));
+            BigDecimal teamHourlyRate = BigDecimal.valueOf(rs.getDouble("TeamHourlyRate"));
+            double grossMargin = rs.getDouble("GrossMargin");
+            double markupMultiplier = rs.getDouble("MarkupMultiplier");
+            LocalDateTime savedDate = rs.getTimestamp("ConfigurationDate").toLocalDateTime();
+            boolean active = Boolean.parseBoolean(rs.getString("Active"));
+            List<TeamConfigurationEmployee> teamConfigurationEmployees = getEmployeesForTeamConfiguration(configId, conn);
+            TeamConfiguration teamConfiguration = new TeamConfiguration(teamDailyRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, teamConfigurationEmployees, active);
+            teamConfiguration.setId(configId);
+            if (active) {
+                team.setActiveConfiguration(teamConfiguration);
+            }
+            teamConfigurations.add(teamConfiguration);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return teamConfigurations;
+    }
+
+    private List<TeamConfigurationEmployee> getEmployeesForTeamConfiguration(int teamConfigurationId, Connection conn) throws SQLException {
+        String sql = "SELECT teh.EmployeeName,teh.EmployeeDailyRate,teh.EmployeeHourlyRate from TeamEmployeesHistory teh WHERE  teh.TeamConfigurationId=?";
+        List<TeamConfigurationEmployee> configurationTeamMembers = new ArrayList<>();
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, teamConfigurationId);
+            ResultSet rs = psmt.executeQuery();
+            while (rs.next()) {
+                String employeeName = rs.getString("EmployeeName");
+                double employeeDailyRate = rs.getDouble("EmployeeDailyRate");
+                double employeeHourlyRate = rs.getDouble("EmployeeHourlyRate");
+                TeamConfigurationEmployee employee = new TeamConfigurationEmployee(employeeName, employeeDailyRate, employeeHourlyRate);
+                configurationTeamMembers.add(employee);
+            }
+        }
+        return configurationTeamMembers;
     }
 
 }

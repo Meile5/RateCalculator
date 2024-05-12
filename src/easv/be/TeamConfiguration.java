@@ -11,7 +11,10 @@ public class TeamConfiguration {
     private double markupMultiplier;
     private LocalDateTime savedDate;
     private List<TeamConfigurationEmployee> teamMembers;
+
     private boolean active;
+
+
 
     public TeamConfiguration(BigDecimal teamDayRate, BigDecimal teamHourlyRate, double grossMargin, double markupMultiplier, LocalDateTime savedDate, List<TeamConfigurationEmployee> teamMembers, boolean active) {
         this.teamDayRate = teamDayRate;

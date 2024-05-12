@@ -45,6 +45,14 @@ public class Team {
         return Objects.hash(team);
     }
 
+    public List<TeamConfiguration> getTeamConfigurationsHistory() {
+        return teamConfigurationsHistory;
+    }
+
+    public void setTeamConfigurationsHistory(List<TeamConfiguration> teamConfigurationsHistory) {
+        this.teamConfigurationsHistory = teamConfigurationsHistory;
+    }
+
     public TeamConfiguration getActiveConfiguration() {
         return activeConfiguration;
     }

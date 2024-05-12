@@ -115,6 +115,8 @@ public class Model implements IModel {
         populateTeamsWithEmployees();
         populateCountriesWithTeams();
         populateRegionsWithCountries();
+
+        //TODO this to method calls needs to be moved in the create controller
         EmployeeValidation.getCountries(validMapViewCountryNameValues);
         EmployeeValidation.getTeams(teams);
     }
@@ -123,7 +125,6 @@ public class Model implements IModel {
     public void setDisplayer(DisplayEmployees displayEmployees) {
         this.displayEmployees = displayEmployees;
     }
-
 
     private void populateCountries() throws RateException {
         this.countries.putAll(countryLogic.getCountries());
@@ -144,6 +145,34 @@ public class Model implements IModel {
     private void populateRegionsWithCountries() throws RateException {
        this.regionsWithCountries.putAll(employeeManager.getRegionsWithCountries(countriesWithTeams));
     }
+
+
+    /**get the operational countries  observable list */
+    public ObservableList<Country> getOperationalCountries(){
+        ObservableList<Country> observableCountryList= FXCollections.observableArrayList();
+        observableCountryList.setAll(countriesWithTeams.values());
+        return observableCountryList;
+    }
+
+
+    /**get the operational regions observable list*/
+
+    public ObservableList<Region> getOperationalRegions(){
+        ObservableList<Region> observableRegionList = FXCollections.observableArrayList();
+        observableRegionList.setAll(regionsWithCountries.values());
+        return getOperationalRegions();
+    }
+
+
+    /**get the  operational teams */
+    public ObservableList<Team> getOperationalTeams(){
+        ObservableList<Team> observableTeamList = FXCollections.observableArrayList();
+        observableTeamList.setAll(teamsWithEmployees.values());
+        return observableTeamList;
+    }
+
+
+
 
 
     @Override
