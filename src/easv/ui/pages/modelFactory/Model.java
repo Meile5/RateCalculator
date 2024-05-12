@@ -71,8 +71,6 @@ public class Model implements IModel {
      */
 
     private List<String> validMapViewCountryNameValues;
-
-
     private final ObservableMap<Integer, Team> teams;
 
     private ObservableList<Employee> displayedEmployees;

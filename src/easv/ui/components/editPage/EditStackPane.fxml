@@ -81,7 +81,7 @@
                                        </font>
                                     </Label>
                                     <MFXTextField fx:id="grossMargin" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="percentage" />
-                                    <MFXScrollPane hbarPolicy="NEVER" maxWidth="-Infinity" prefHeight="98.0" prefViewportWidth="50.0" prefWidth="200.0" styleClass="chosenTeams" />
+                                    <MFXScrollPane fx:id="teamsAndCountries" hbarPolicy="NEVER" maxWidth="-Infinity" prefHeight="98.0" prefViewportWidth="50.0" prefWidth="200.0" styleClass="chosenTeams" />
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" left="30.0" right="10.0" top="10.0" />
