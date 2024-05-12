@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class EditController implements Initializable {
@@ -114,14 +115,19 @@ public class EditController implements Initializable {
      */
     private void populateInputs() {
         //set country info
+
+        //TODO this will be used in the Country creation
+//        ObservableList<Country>  countries =  FXCollections.observableArrayList();
+//        countries.addAll(model.getCountiesValues());
+//        countries.addAll(model.getValidCountries());
         this.countryCB.setItems(model.getCountiesValues());
         String employeeCountryName = employee.getCountry().getCountryName();
+
         Country countryToSelect = countryCB.getItems().stream()
                 .filter(c -> c.getCountryName().equals(employeeCountryName))
                 .findFirst()
                 .orElse(null);
         countryCB.selectItem(countryToSelect);
-
         this.nameInput.setText(employee.getName());
 
         //set team info

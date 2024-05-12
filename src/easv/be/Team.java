@@ -7,6 +7,18 @@ public class Team {
     private String team;
     private int id;
     private List<Employee> employees;
+    private List<TeamConfiguration> teamConfigurationsHistory;
+    private TeamConfiguration activeConfiguration;
+
+
+    public Team(String team) {
+        this.team = team;
+    }
+
+    public Team(String team, int id) {
+        this.team = team;
+        this.id = id;
+    }
 
 
     /** to not be used in equal comparison , it is used for the view only*/
@@ -23,14 +35,23 @@ public class Team {
         return Objects.hash(team);
     }
 
-    public Team(String team) {
-        this.team = team;
+    public List<TeamConfiguration> getTeamConfigurationsHistory() {
+        return teamConfigurationsHistory;
     }
 
-    public Team(String team, int id) {
-        this.team = team;
-        this.id = id;
+    public void setTeamConfigurationsHistory(List<TeamConfiguration> teamConfigurationsHistory) {
+        this.teamConfigurationsHistory = teamConfigurationsHistory;
     }
+
+    public TeamConfiguration getActiveConfiguration() {
+        return activeConfiguration;
+    }
+
+    public void setActiveConfiguration(TeamConfiguration activeConfiguration) {
+        this.activeConfiguration = activeConfiguration;
+    }
+
+
 
     public String getTeamName() {
         return team;

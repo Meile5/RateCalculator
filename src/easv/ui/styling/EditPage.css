@@ -88,6 +88,15 @@
 }
 
 
+.chosenBox{
+-fx-background-radius: 25 ;
+}
+
+.chosenTeams .scroll-bar{
+ -fx-opacity: 0;
+}
+
+
 
 
 
