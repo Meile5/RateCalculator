@@ -22,8 +22,7 @@ public class Employee {
     private BigDecimal overhead;
     private Configuration  activeConfiguration;
 
-    //static because it will be available for all objects
-    private static final int  workingHours = 8;
+
 
 
     public void setOverhead(BigDecimal overhead) {

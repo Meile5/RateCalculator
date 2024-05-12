@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
-<?import org.controlsfx.control.SearchableComboBox?>
 
 <StackPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" stylesheets="@../../styling/EditPage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -64,7 +63,7 @@
                                           <Font name="Open Sans Regular" size="14.0" />
                                        </font>
                                     </Label>
-                                    <MFXComboBox fx:id="countryCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="letters">
+                                    <MFXComboBox fx:id="regionComboBox" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="letters">
                                        <VBox.margin>
                                           <Insets />
                                        </VBox.margin>
@@ -74,13 +73,13 @@
                                           <Font name="Open Sans Regular" size="14.0" />
                                        </font>
                                     </Label>
-                                    <MFXComboBox fx:id="teamCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
+                                    <MFXComboBox fx:id="countryCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" />
                                     <Label text="Team">
                                        <font>
                                           <Font name="Open Sans Regular" size="14.0" />
                                        </font>
                                     </Label>
-                                    <MFXTextField fx:id="grossMargin" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="percentage" />
+                                    <MFXComboBox fx:id="teamComboBox" floatMode="DISABLED" layoutX="40.0" layoutY="212.0" prefHeight="40.0" prefWidth="200.0" />
                                     <MFXScrollPane fx:id="teamsAndCountries" hbarPolicy="NEVER" maxWidth="-Infinity" prefHeight="98.0" prefViewportWidth="50.0" prefWidth="200.0" styleClass="chosenTeams" />
                                  </children>
                                  <padding>
@@ -124,8 +123,7 @@
                                           <Font name="Open Sans Regular" size="14.0" />
                                        </font>
                                     </Label>
-                                    <MFXTextField fx:id="markup" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="percentage" />
-                                    <SearchableComboBox maxWidth="-Infinity" prefHeight="40.0" prefWidth="200.0" />
+                                    <MFXTextField fx:id="workingHoursInput" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="percentage" />
                                  </children>
                                  <HBox.margin>
                                     <Insets />

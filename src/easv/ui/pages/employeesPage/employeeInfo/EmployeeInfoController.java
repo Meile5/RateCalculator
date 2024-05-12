@@ -141,14 +141,14 @@ public class EmployeeInfoController implements Initializable {
         this.deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
         //displayDelete();
         setLabels();
-        //addEditAction();
+        addEditAction();
 
 
 
     }
 
 
-}
+
 
 
     /*public void displayDelete(){
@@ -160,7 +160,7 @@ public class EmployeeInfoController implements Initializable {
 
 
 
-    /*private void addEditAction() {
+    private void addEditAction() {
         this.editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             EditController editController = new EditController(model, firstLayout, employee, this);
             this.firstLayout.getChildren().add(editController.getRoot());
@@ -203,6 +203,7 @@ public class EmployeeInfoController implements Initializable {
 
     public void callService(){
         employeeController.callService();
-    }*/
+    }
+}
 
 

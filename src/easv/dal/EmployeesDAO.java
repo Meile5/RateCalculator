@@ -40,61 +40,6 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
 
-//    public boolean retrieveRegionsCountriesTeams(Map<Integer, Region> regions, Map<Integer, Country> countries, Map<Integer, Team> teams) {
-//        String sql = "SELECT t.TeamId,t.TeamName, e.EmployeeId,e.Name,e.EmployeeType,e.Currency, c.CountryId,c.CountryName,r.RegionId,r.RegionName FROM TeamEmployee te" +
-//                " JOIN Employees e  ON te.EmployeeID=e.EmployeeID" +
-//                " JOIN Teams t ON t.TeamID=te.TeamID" +
-//                " JOIN CountryTeam ct ON ct.TeamID= t.TeamId" +
-//                " JOIN Countries c ON c.CountryID = ct.CountryID" +
-//                " JOIN RegionCountry rc ON rc.CountryID = c.CountryID" +
-//                " JOIN Region r ON r.RegionID = rc.RegionID" +
-//                " Order by t.TeamID";
-//        Connection conn = null;
-//        Map<Integer, Team> retrievedTeams = new HashMap<>();
-//        Map<Integer, Country> retrievedCountries = new HashMap<>();
-//        Map<Integer, Region> retrievedRegions = new HashMap<>();
-//
-//        try {
-//            conn = connectionManager.getConnection();
-//            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-//                ResultSet rs = psmt.executeQuery();
-//
-//                while (rs.next()) {
-//                    int teamId = rs.getInt("TeamID");
-//                    Team currentTeam = retrievedTeams.get(teamId);
-//                    if (currentTeam == null) {
-//                        currentTeam = new Team(rs.getString("TeamName"), teamId, new HashSet<>());
-//                        retrievedTeams.put(teamId, currentTeam);
-//                    }
-//                    int employeeId = rs.getInt("EmployeeId");
-//                    List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employeeId, conn);
-//                    Employee employee = new Employee(rs.getString("Name"), EmployeeType.valueOf(rs.getString("EmployeeType")), Currency.valueOf(rs.getString("Currency")), employeeConfigurations);
-//                    currentTeam.getUniqueEmployees().add(employee);
-//                    //get also the team configurationsHistory
-//
-//
-//                    int countryId = rs.getInt("CountryId");
-//                    Country currentCountry = retrievedCountries.get(countryId);
-//                    if (currentCountry == null) {
-//                        currentCountry = new Country(rs.getString("CountryName"), countryId, new HashSet<>());
-//                        retrievedCountries.put(currentCountry.getId(), currentCountry);
-//                    }
-//                    currentCountry.addTeamToCountry(currentTeam);
-//                    int regionId = rs.getInt("regionId");
-//                    Region currentRegion = retrievedRegions.get(regionId);
-//                    if (currentRegion == null) {
-//                        currentRegion = new Region(rs.getString("RegionName"), regionId);
-//                        retrievedRegions.put(currentRegion.getId(), currentRegion);
-//                    }
-//                    currentRegion.addCountryToRegion(currentCountry);
-//                }
-//            }
-//        } catch (RateException | SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return true;
-//    }
-
 
     public EmployeesDAO() throws RateException {
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
@@ -271,7 +216,7 @@ public class EmployeesDAO implements IEmployeeDAO {
         String sql = "SELECT " +
                 "conf.ConfigurationID, conf.AnnualSalary, conf.FixedAnnualAmount, " +
                 "conf.OverheadMultiplier, conf.UtilizationPercentage, conf.WorkingHours, " +
-                "conf.Date AS ConfigurationDate, conf.Active, conf.DayRate,conf.HourlyRate " +
+                "conf.Date AS ConfigurationDate, conf.Active, conf.DayRate,conf.HourlyRate,conf.DayWorkingHours " +
                 "FROM " +
                 "EmployeeConfigurations ec " +
                 "INNER JOIN Configurations conf ON ec.ConfigurationID = conf.ConfigurationID " +
@@ -291,7 +236,8 @@ public class EmployeesDAO implements IEmployeeDAO {
                 boolean active = Boolean.parseBoolean(res.getString("Active"));
                 BigDecimal dayRate = res.getBigDecimal("DayRate");
                 BigDecimal hourlyRate = res.getBigDecimal("HourlyRate");
-                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active, dayRate, hourlyRate);
+                int dayWorkingHours = res.getInt("DayWorkingHours");
+                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active, dayRate, hourlyRate,dayWorkingHours);
                 configurations.add(configuration);
             }
         }
@@ -644,8 +590,6 @@ public class EmployeesDAO implements IEmployeeDAO {
             psmt.setBigDecimal(5, configuration.getWorkingHours());
             psmt.setTimestamp(6, Timestamp.valueOf(configuration.getSavedDate()));
             psmt.setString(7, String.valueOf(configuration.isActive()));
-            psmt.setDouble(8, configuration.getMarkupMultiplier());
-            psmt.setDouble(9, configuration.getGrossMargin());
             psmt.executeUpdate();
             try (ResultSet res = psmt.getGeneratedKeys()) {
                 if (res.next()) {
