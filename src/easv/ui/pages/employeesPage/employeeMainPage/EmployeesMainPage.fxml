@@ -132,9 +132,9 @@
                      <children>
                         <HBox prefHeight="45.0" prefWidth="722.0" spacing="45.0">
                            <children>
-                              <Label styleClass="tableLabels" text="Region" />
                               <Label styleClass="tableLabels" text="Name" />
                               <Label styleClass="tableLabels" text="Type" />
+                              <Label styleClass="tableLabels" text="Region" />
                               <Label styleClass="tableLabels" text="Country" />
                               <Label styleClass="tableLabels" text="Team" />
                               <Label styleClass="tableLabels" text="Day rate" />
