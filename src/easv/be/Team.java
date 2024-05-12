@@ -1,13 +1,16 @@
 package easv.be;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class Team {
     private String team;
     private int id;
-    private List<Employee> employees;
-    private List<TeamConfiguration> teamConfigurationsHistory;
+//    private List<Employee> employees;
+    private Set<Employee> uniqueEmployees;
+    private Set<TeamConfiguration> teamConfigurationsHistory;
     private TeamConfiguration activeConfiguration;
 
 
@@ -19,6 +22,13 @@ public class Team {
         this.team = team;
         this.id = id;
     }
+
+    public Team (String team, int id, Set<Employee> teamMembers){
+        this(team,id);
+        this.uniqueEmployees=teamMembers;
+    }
+
+
 
 
     /** to not be used in equal comparison , it is used for the view only*/
@@ -35,11 +45,38 @@ public class Team {
         return Objects.hash(team);
     }
 
-    public List<TeamConfiguration> getTeamConfigurationsHistory() {
+    public Set<Employee> getUniqueEmployees() {
+        return uniqueEmployees;
+    }
+
+
+    public void addTeamConfiguration(TeamConfiguration  teamConfiguration){
+        this.teamConfigurationsHistory.add(teamConfiguration);
+    }
+
+    public void removeTeamConfiguration(TeamConfiguration teamConfiguration){
+        this.teamConfigurationsHistory.remove(teamConfiguration);
+    }
+
+
+
+    public void setUniqueEmployees(Set<Employee> uniqueEmployees) {
+        this.uniqueEmployees = uniqueEmployees;
+    }
+
+    public void addUniqueEmployee(Employee employee){
+        this.uniqueEmployees.add(employee);
+    }
+
+    public void removeUniqueEmployee(Employee employee){
+        this.uniqueEmployees.remove(employee);
+    }
+
+    public Set<TeamConfiguration> getTeamConfigurationsHistory() {
         return teamConfigurationsHistory;
     }
 
-    public void setTeamConfigurationsHistory(List<TeamConfiguration> teamConfigurationsHistory) {
+    public void setTeamConfigurationsHistory(Set<TeamConfiguration> teamConfigurationsHistory) {
         this.teamConfigurationsHistory = teamConfigurationsHistory;
     }
 
@@ -82,11 +119,11 @@ public class Team {
         this.team = team;
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
+//    public List<Employee> getEmployees() {
+//        return employees;
+//    }
+//
+//    public void setEmployees(List<Employee> employees) {
+//        this.employees = employees;
+//    }
 }

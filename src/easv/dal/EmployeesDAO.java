@@ -10,6 +10,7 @@ import easv.dal.connectionManagement.DatabaseConnectionFactory;
 import easv.dal.connectionManagement.IConnection;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
+
 import java.math.BigDecimal;
 import java.sql.*;
 import java.sql.Date;
@@ -24,30 +25,127 @@ import java.io.IOException;
 
 public class EmployeesDAO implements IEmployeeDAO {
     private final IConnection connectionManager;
+    private static final Logger LOGGER = Logger.getLogger(EmployeesDAO.class.getName());
 
-
-
-
-        private static final Logger LOGGER = Logger.getLogger(EmployeesDAO.class.getName());
-
-        static {
-            try {
-                FileHandler fileHandler = new FileHandler("application.log", true);
-                SimpleFormatter formatter = new SimpleFormatter();
-                fileHandler.setFormatter(formatter);
-                LOGGER.addHandler(fileHandler);
-            } catch (IOException e) {
-                System.out.println("Logger could not be created");
-            }
+    static {
+        try {
+            FileHandler fileHandler = new FileHandler("application.log", true);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fileHandler.setFormatter(formatter);
+            LOGGER.addHandler(fileHandler);
+        } catch (IOException e) {
+            System.out.println("Logger could not be created");
         }
+    }
 
 
+    public boolean retrieveRegionsCountriesTeams(Map<Integer, Region> regions, Map<Integer, Country> countries, Map<Integer, Team> teams) {
+        String sql = "SELECT t.TeamId,t.TeamName, e.EmployeeId,e.Name,e.EmployeeType,e.Currency, c.CountryId,c.CountryName,r.RegionId,r.RegionName FROM TeamEmployee te" +
+                " JOIN Employees e  ON te.EmployeeID=e.EmployeeID" +
+                " JOIN Teams t ON t.TeamID=te.TeamID" +
+                " JOIN CountryTeam ct ON ct.TeamID= t.TeamId" +
+                " JOIN Countries c ON c.CountryID = ct.CountryID" +
+                " JOIN RegionCountry rc ON rc.CountryID = c.CountryID" +
+                " JOIN Region r ON r.RegionID = rc.RegionID" +
+                " Order by t.TeamID";
+        Connection conn = null;
+        Map<Integer, Team> retrievedTeams = new HashMap<>();
+        Map<Integer, Country> retrievedCountries = new HashMap<>();
+        Map<Integer, Region> retrievedRegions = new HashMap<>();
 
+        try {
+            conn = connectionManager.getConnection();
+            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+                ResultSet rs = psmt.executeQuery();
+
+                while (rs.next()) {
+                    int teamId = rs.getInt("TeamID");
+                    Team currentTeam = retrievedTeams.get(teamId);
+                    if (currentTeam == null) {
+                        currentTeam = new Team(rs.getString("TeamName"), teamId, new HashSet<>());
+                        retrievedTeams.put(teamId, currentTeam);
+                    }
+                    int employeeId = rs.getInt("EmployeeId");
+                    List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employeeId, conn);
+                    Employee employee = new Employee(rs.getString("Name"), EmployeeType.valueOf(rs.getString("EmployeeType")), Currency.valueOf(rs.getString("Currency")), employeeConfigurations);
+                    currentTeam.getUniqueEmployees().add(employee);
+                    //get also the team configurationsHistory
+
+
+                    int countryId = rs.getInt("CountryId");
+                    Country currentCountry = retrievedCountries.get(countryId);
+                    if (currentCountry == null) {
+                        currentCountry = new Country(rs.getString("CountryName"), countryId, new HashSet<>());
+                        retrievedCountries.put(currentCountry.getId(), currentCountry);
+                    }
+                    currentCountry.addTeamToCountry(currentTeam);
+                    int regionId = rs.getInt("regionId");
+                    Region currentRegion = retrievedRegions.get(regionId);
+                    if (currentRegion == null) {
+                        currentRegion = new Region(rs.getString("RegionName"), regionId);
+                        retrievedRegions.put(currentRegion.getId(), currentRegion);
+                    }
+                    currentRegion.addCountryToRegion(currentCountry);
+
+
+                }
+            }
+        } catch (RateException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
 
 
     public EmployeesDAO() throws RateException {
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }
+
+    private Set<Configuration> configurations(int teamId, Connection conn) {
+        String sql = "SELECT tc.* FROM TeamConfigurationsHistory tch " +
+                "JOIN Teams t ON t.TeamID=tch.TeamID " +
+                "JOIN TeamConfiguration tc ON tc.TeamConfigurationID = tch.TeamConfigurationID " +
+                "WHERE t.TeamId=?";
+
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+
+            psmt.setInt(1, teamId);
+            ResultSet rs = psmt.executeQuery();
+            int configId = rs.getInt("TeamConfigurationID");
+            BigDecimal teamDailyRate = BigDecimal.valueOf( rs.getDouble("TeamDailyRate"));
+            double teamHourlyRate = rs.getDouble("TeamHourlyRate");
+            double grossMargin = rs.getDouble("GrossMargin");
+            double markupMultiplier = rs.getDouble("MarkupMultiplier");
+            LocalDateTime savedDate = rs.getTimestamp("ConfigurationDate").toLocalDateTime();
+            boolean active = Boolean.parseBoolean(rs.getString("Active"));
+            List<TeamConfigurationEmployee> teamConfigurationEmployees = getEmployeesForTeamConfiguration(configId,conn);
+            Configuration config = new Configuration(configId,teamDailyRate,teamHourlyRate,grossMargin,markupMultiplier,savedDate,active,teamConfigurationEmployees);
+
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private List<TeamConfigurationEmployee> getEmployeesForTeamConfiguration(int teamConfigurationId, Connection conn) throws SQLException {
+        String sql = "SELECT teh.EmployeeName,teh.EmployeeDailyRate,teh.EmployeeHourlyRate from TeamEmployeesHistory teh WHERE  teh.TeamConfigurationId=?";
+        List<TeamConfigurationEmployee> configurationTeamMembers = new ArrayList<>();
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, teamConfigurationId);
+            ResultSet rs = psmt.executeQuery();
+            while (rs.next()) {
+                String employeeName = rs.getString("EmployeeName");
+                double employeeDailyRate = rs.getDouble("EmployeeDailyRate");
+                double employeeHourlyRate = rs.getDouble("EmployeeHourlyRate");
+                TeamConfigurationEmployee employee = new TeamConfigurationEmployee(employeeName, employeeDailyRate, employeeHourlyRate);
+                configurationTeamMembers.add(employee);
+            }
+        }
+        return configurationTeamMembers;
+    }
+
 
     /**
      * Retrieves all employees and puts them in a map
@@ -89,14 +187,14 @@ public class EmployeesDAO implements IEmployeeDAO {
             }
             for (Employee employee : employees.values()) {
                 List<Country> countries = new ArrayList<>();
-                for(Team team : employee.getTeams()){
+                for (Team team : employee.getTeams()) {
                     countries.addAll(retrieveCountriesForEmployee(team.getId(), conn));
                 }
                 employee.setCountries(countries);
             }
             for (Employee employee : employees.values()) {
                 List<Region> regions = new ArrayList<>();
-                for(Country country : employee.getCountries()){
+                for (Country country : employee.getCountries()) {
                     regions.addAll(retrieveRegionsForEmployee(country.getId(), conn));
                 }
                 employee.setRegions(regions);
@@ -112,7 +210,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                         employee.setActiveConfiguration(configuration);
 
                     }
-                    }
+                }
 
             }
             conn.commit(); // Commit transaction
@@ -144,7 +242,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     /**
      * Retrieves the teams for employee
      */
-    private List<Team> retrieveTeamsForEmployee(int employeeId, Connection conn)throws SQLException{
+    private List<Team> retrieveTeamsForEmployee(int employeeId, Connection conn) throws SQLException {
         List<Team> teams = new ArrayList<>();
         String sql = "SELECT t.TeamID, t.TeamName " +
                 "FROM TeamEmployee te " +
@@ -163,10 +261,11 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
         return teams;
     }
+
     /**
      * Retrieves the countries for employee by using team id
      */
-    private List<Country> retrieveCountriesForEmployee(int teamId, Connection conn)throws SQLException{
+    private List<Country> retrieveCountriesForEmployee(int teamId, Connection conn) throws SQLException {
         List<Country> countries = new ArrayList<>();
         String sql = "SELECT c.CountryID, c.CountryName " +
                 "FROM CountryTeam ct " +
@@ -178,7 +277,6 @@ public class EmployeesDAO implements IEmployeeDAO {
             while (res.next()) {
                 int countryID = res.getInt("CountryID");
                 String countryName = res.getString("CountryName");
-
                 Country country = new Country(countryName, countryID);
                 countries.add(country);
             }
@@ -186,7 +284,8 @@ public class EmployeesDAO implements IEmployeeDAO {
         return countries;
 
     }
-    private List<Region> retrieveRegionsForEmployee(int countryId, Connection conn)throws SQLException{
+
+    private List<Region> retrieveRegionsForEmployee(int countryId, Connection conn) throws SQLException {
         List<Region> regions = new ArrayList<>();
         String sql = "SELECT r.RegionID, r.RegionName " +
                 "FROM RegionCountry rc " +
@@ -359,8 +458,8 @@ public class EmployeesDAO implements IEmployeeDAO {
             psmt.setBigDecimal(5, configuration.getWorkingHours());
             psmt.setTimestamp(6, Timestamp.valueOf(configuration.getSavedDate()));
             psmt.setString(7, String.valueOf(configuration.isActive()));
-            psmt.setDouble(8,0);
-            psmt.setDouble(9,0);
+            psmt.setDouble(8, 0);
+            psmt.setDouble(9, 0);
             psmt.executeUpdate();
             try (ResultSet res = psmt.getGeneratedKeys()) {
                 if (res.next()) {
@@ -409,8 +508,10 @@ public class EmployeesDAO implements IEmployeeDAO {
 
     /**
      * save the edit operation , change the active configuration of the user
-     *@param editedEmployee  the employee object that was edited
-     * @param oldConfigurationId  the old configuration that needs to be set to inactive*/
+     *
+     * @param editedEmployee     the employee object that was edited
+     * @param oldConfigurationId the old configuration that needs to be set to inactive
+     */
     @Override
     public Employee saveEditOperation(Employee editedEmployee, int oldConfigurationId) throws RateException {
         String sql = "UPDATE Employees SET Name=? , employeeType=? , CountryId=? , TeamId=? , Currency=? WHERE EmployeeId=?";
@@ -429,7 +530,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 psmt.executeUpdate();
             }
 
-            editedEmployee.getActiveConfiguration().setConfigurationId(addConfigurationWithAdditionalMultipliers(conn,editedEmployee.getActiveConfiguration()));
+            editedEmployee.getActiveConfiguration().setConfigurationId(addConfigurationWithAdditionalMultipliers(conn, editedEmployee.getActiveConfiguration()));
             setOldConfigurationToInactive(oldConfigurationId, conn);
             addEmployeeConfiguration(editedEmployee.getId(), editedEmployee.getActiveConfiguration().getConfigurationId(), conn);
             conn.commit();
@@ -440,7 +541,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE,"error in save edit employee opeartion",e);
+                    LOGGER.log(Level.SEVERE, "error in save edit employee opeartion", e);
                     throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
                 }
             }
@@ -450,7 +551,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                     conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException e) {
-                   LOGGER.log(Level.SEVERE,"Failed to close the database connection",e);
+                    LOGGER.log(Level.SEVERE, "Failed to close the database connection", e);
                 }
             }
         }
@@ -458,7 +559,9 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
 
-    /**set the old configuration active status to false*/
+    /**
+     * set the old configuration active status to false
+     */
     private void setOldConfigurationToInactive(int configurationId, Connection conn) throws RateException {
         String sql = "UPDATE  Configurations  Set Active =? where Configurations.ConfigurationId=?";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
@@ -470,9 +573,11 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
     }
 
-    /**add configuration with grossMargin and markup */
+    /**
+     * add configuration with grossMargin and markup
+     */
     private Integer addConfigurationWithAdditionalMultipliers(Connection conn, Configuration configuration) throws SQLException, RateException {
-       Integer configurationID =null;
+        Integer configurationID = null;
         String sql = "INSERT INTO Configurations (AnnualSalary, FixedAnnualAmount, OverheadMultiplier, UtilizationPercentage, WorkingHours, Date,Active,Markup,GrossMargin) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             psmt.setBigDecimal(1, configuration.getAnnualSalary());
@@ -493,7 +598,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
             }
         }
-       return configurationID;
+        return configurationID;
     }
 
 }
