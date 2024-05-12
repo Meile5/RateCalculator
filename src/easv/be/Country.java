@@ -2,14 +2,11 @@ package easv.be;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class Country {
     private String countryName;
     private int id;
-//    private List<Team> teams;
-
-    private Set<Team> uniqueTeams;
+    private List<Team> teams;
 
 
     public Country(String country) {
@@ -21,27 +18,9 @@ public class Country {
         this.id = id;
     }
 
-    public Country(String countryName, int id, Set<Team> teams) {
+    public Country(String countryName, int id, List<Team> teams) {
         this(countryName, id);
-        this.uniqueTeams = teams;
-    }
-
-
-
-    public Set<Team> getUniqueTeams() {
-        return uniqueTeams;
-    }
-
-    public void setUniqueTeams(Set<Team> uniqueTeams) {
-        this.uniqueTeams = uniqueTeams;
-    }
-
-    public void addTeamToCountry(Team team) {
-        this.uniqueTeams.add(team);
-    }
-
-    public void removeTeamFromCountry(Team team) {
-        this.uniqueTeams.remove(team);
+        this.teams = teams;
     }
 
 
@@ -84,11 +63,21 @@ public class Country {
         return Objects.hash(countryName, id);
     }
 
-//    public List<Team> getTeams() {
-//        return teams;
-//    }
-//
-//    public void setTeams(List<Team> teams) {
-//        this.teams = teams;
-//    }
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
+        this.teams = teams;
+    }
+
+    public boolean addNewTeam(Team team) {
+        return this.teams.add(team);
+    }
+
+    public boolean removeTeam(Team team) {
+        return this.teams.remove(team);
+    }
+
+
 }

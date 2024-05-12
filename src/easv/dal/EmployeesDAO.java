@@ -10,6 +10,7 @@ import easv.dal.connectionManagement.DatabaseConnectionFactory;
 import easv.dal.connectionManagement.IConnection;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
+import javafx.collections.ObservableMap;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -39,95 +40,95 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
 
-    public boolean retrieveRegionsCountriesTeams(Map<Integer, Region> regions, Map<Integer, Country> countries, Map<Integer, Team> teams) {
-        String sql = "SELECT t.TeamId,t.TeamName, e.EmployeeId,e.Name,e.EmployeeType,e.Currency, c.CountryId,c.CountryName,r.RegionId,r.RegionName FROM TeamEmployee te" +
-                " JOIN Employees e  ON te.EmployeeID=e.EmployeeID" +
-                " JOIN Teams t ON t.TeamID=te.TeamID" +
-                " JOIN CountryTeam ct ON ct.TeamID= t.TeamId" +
-                " JOIN Countries c ON c.CountryID = ct.CountryID" +
-                " JOIN RegionCountry rc ON rc.CountryID = c.CountryID" +
-                " JOIN Region r ON r.RegionID = rc.RegionID" +
-                " Order by t.TeamID";
-        Connection conn = null;
-        Map<Integer, Team> retrievedTeams = new HashMap<>();
-        Map<Integer, Country> retrievedCountries = new HashMap<>();
-        Map<Integer, Region> retrievedRegions = new HashMap<>();
-
-        try {
-            conn = connectionManager.getConnection();
-            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-                ResultSet rs = psmt.executeQuery();
-
-                while (rs.next()) {
-                    int teamId = rs.getInt("TeamID");
-                    Team currentTeam = retrievedTeams.get(teamId);
-                    if (currentTeam == null) {
-                        currentTeam = new Team(rs.getString("TeamName"), teamId, new HashSet<>());
-                        retrievedTeams.put(teamId, currentTeam);
-                    }
-                    int employeeId = rs.getInt("EmployeeId");
-                    List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employeeId, conn);
-                    Employee employee = new Employee(rs.getString("Name"), EmployeeType.valueOf(rs.getString("EmployeeType")), Currency.valueOf(rs.getString("Currency")), employeeConfigurations);
-                    currentTeam.getUniqueEmployees().add(employee);
-                    //get also the team configurationsHistory
-
-
-                    int countryId = rs.getInt("CountryId");
-                    Country currentCountry = retrievedCountries.get(countryId);
-                    if (currentCountry == null) {
-                        currentCountry = new Country(rs.getString("CountryName"), countryId, new HashSet<>());
-                        retrievedCountries.put(currentCountry.getId(), currentCountry);
-                    }
-                    currentCountry.addTeamToCountry(currentTeam);
-                    int regionId = rs.getInt("regionId");
-                    Region currentRegion = retrievedRegions.get(regionId);
-                    if (currentRegion == null) {
-                        currentRegion = new Region(rs.getString("RegionName"), regionId);
-                        retrievedRegions.put(currentRegion.getId(), currentRegion);
-                    }
-                    currentRegion.addCountryToRegion(currentCountry);
-
-
-                }
-            }
-        } catch (RateException | SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return true;
-    }
+//    public boolean retrieveRegionsCountriesTeams(Map<Integer, Region> regions, Map<Integer, Country> countries, Map<Integer, Team> teams) {
+//        String sql = "SELECT t.TeamId,t.TeamName, e.EmployeeId,e.Name,e.EmployeeType,e.Currency, c.CountryId,c.CountryName,r.RegionId,r.RegionName FROM TeamEmployee te" +
+//                " JOIN Employees e  ON te.EmployeeID=e.EmployeeID" +
+//                " JOIN Teams t ON t.TeamID=te.TeamID" +
+//                " JOIN CountryTeam ct ON ct.TeamID= t.TeamId" +
+//                " JOIN Countries c ON c.CountryID = ct.CountryID" +
+//                " JOIN RegionCountry rc ON rc.CountryID = c.CountryID" +
+//                " JOIN Region r ON r.RegionID = rc.RegionID" +
+//                " Order by t.TeamID";
+//        Connection conn = null;
+//        Map<Integer, Team> retrievedTeams = new HashMap<>();
+//        Map<Integer, Country> retrievedCountries = new HashMap<>();
+//        Map<Integer, Region> retrievedRegions = new HashMap<>();
+//
+//        try {
+//            conn = connectionManager.getConnection();
+//            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+//                ResultSet rs = psmt.executeQuery();
+//
+//                while (rs.next()) {
+//                    int teamId = rs.getInt("TeamID");
+//                    Team currentTeam = retrievedTeams.get(teamId);
+//                    if (currentTeam == null) {
+//                        currentTeam = new Team(rs.getString("TeamName"), teamId, new HashSet<>());
+//                        retrievedTeams.put(teamId, currentTeam);
+//                    }
+//                    int employeeId = rs.getInt("EmployeeId");
+//                    List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employeeId, conn);
+//                    Employee employee = new Employee(rs.getString("Name"), EmployeeType.valueOf(rs.getString("EmployeeType")), Currency.valueOf(rs.getString("Currency")), employeeConfigurations);
+//                    currentTeam.getUniqueEmployees().add(employee);
+//                    //get also the team configurationsHistory
+//
+//
+//                    int countryId = rs.getInt("CountryId");
+//                    Country currentCountry = retrievedCountries.get(countryId);
+//                    if (currentCountry == null) {
+//                        currentCountry = new Country(rs.getString("CountryName"), countryId, new HashSet<>());
+//                        retrievedCountries.put(currentCountry.getId(), currentCountry);
+//                    }
+//                    currentCountry.addTeamToCountry(currentTeam);
+//                    int regionId = rs.getInt("regionId");
+//                    Region currentRegion = retrievedRegions.get(regionId);
+//                    if (currentRegion == null) {
+//                        currentRegion = new Region(rs.getString("RegionName"), regionId);
+//                        retrievedRegions.put(currentRegion.getId(), currentRegion);
+//                    }
+//                    currentRegion.addCountryToRegion(currentCountry);
+//                }
+//            }
+//        } catch (RateException | SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return true;
+//    }
 
 
     public EmployeesDAO() throws RateException {
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }
 
-    private Set<Configuration> configurations(int teamId, Connection conn) {
-        String sql = "SELECT tc.* FROM TeamConfigurationsHistory tch " +
-                "JOIN Teams t ON t.TeamID=tch.TeamID " +
-                "JOIN TeamConfiguration tc ON tc.TeamConfigurationID = tch.TeamConfigurationID " +
-                "WHERE t.TeamId=?";
-
-        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-
-            psmt.setInt(1, teamId);
-            ResultSet rs = psmt.executeQuery();
-            int configId = rs.getInt("TeamConfigurationID");
-            BigDecimal teamDailyRate = BigDecimal.valueOf( rs.getDouble("TeamDailyRate"));
-            double teamHourlyRate = rs.getDouble("TeamHourlyRate");
-            double grossMargin = rs.getDouble("GrossMargin");
-            double markupMultiplier = rs.getDouble("MarkupMultiplier");
-            LocalDateTime savedDate = rs.getTimestamp("ConfigurationDate").toLocalDateTime();
-            boolean active = Boolean.parseBoolean(rs.getString("Active"));
-            List<TeamConfigurationEmployee> teamConfigurationEmployees = getEmployeesForTeamConfiguration(configId,conn);
-            Configuration config = new Configuration(configId,teamDailyRate,teamHourlyRate,grossMargin,markupMultiplier,savedDate,active,teamConfigurationEmployees);
-
-
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
+//
+//
+//    //**retrieve the team Configurations*/
+//    private Set<Configuration> configurations(int teamId, Connection conn) {
+//        String sql = "SELECT tc.* FROM TeamConfigurationsHistory tch " +
+//                "JOIN Teams t ON t.TeamID=tch.TeamID " +
+//                "JOIN TeamConfiguration tc ON tc.TeamConfigurationID = tch.TeamConfigurationID " +
+//                "WHERE t.TeamId=?";
+//
+//        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+//            psmt.setInt(1, teamId);
+//            ResultSet rs = psmt.executeQuery();
+//            int configId = rs.getInt("TeamConfigurationID");
+//            BigDecimal teamDailyRate = BigDecimal.valueOf( rs.getDouble("TeamDailyRate"));
+//            double teamHourlyRate = rs.getDouble("TeamHourlyRate");
+//            double grossMargin = rs.getDouble("GrossMargin");
+//            double markupMultiplier = rs.getDouble("MarkupMultiplier");
+//            LocalDateTime savedDate = rs.getTimestamp("ConfigurationDate").toLocalDateTime();
+//            boolean active = Boolean.parseBoolean(rs.getString("Active"));
+//            List<TeamConfigurationEmployee> teamConfigurationEmployees = getEmployeesForTeamConfiguration(configId,conn);
+//            Configuration config = new Configuration(configId,teamDailyRate,teamHourlyRate,grossMargin,markupMultiplier,savedDate,active,teamConfigurationEmployees);
+//
+//
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
 
     private List<TeamConfigurationEmployee> getEmployeesForTeamConfiguration(int teamConfigurationId, Connection conn) throws SQLException {
         String sql = "SELECT teh.EmployeeName,teh.EmployeeDailyRate,teh.EmployeeHourlyRate from TeamEmployeesHistory teh WHERE  teh.TeamConfigurationId=?";
@@ -556,6 +557,106 @@ public class EmployeesDAO implements IEmployeeDAO {
             }
         }
         return null;
+    }
+
+    /**
+     * get all the teams with employees in the system
+     */
+    @Override
+    public Map<Integer, Team> getTeamsWithEmployees() throws RateException {
+        String sql = "SELECT t.TeamID,t.TeamName,e.EmployeeID,e.Name,e.EmployeeType,e.Currency FROM TeamEmployee  te " +
+                "JOIN Employees e ON e.EmployeeID=te.EmployeeID " +
+                "JOIN Teams t ON t.TeamId = te.TeamId " +
+                "Order By TeamID; ";
+        Map<Integer, Team> retrievedTeams = new HashMap<>();
+        try (Connection conn = connectionManager.getConnection()) {
+            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+                ResultSet rs = psmt.executeQuery();
+                while (rs.next()) {
+                    int teamId = rs.getInt("TeamID");
+                    Team currentTeam = retrievedTeams.get(teamId);
+                    if (currentTeam == null) {
+                        currentTeam = new Team(rs.getString("TeamName"), teamId, new ArrayList<>(), new ArrayList<>());
+                        retrievedTeams.put(currentTeam.getId(), currentTeam);
+                    }
+                    int employeeId = rs.getInt("EmployeeID");
+                    String employeeName = rs.getString("Name");
+                    EmployeeType employeeType = EmployeeType.valueOf(rs.getString("EmployeeType"));
+                    Currency currency = Currency.valueOf(rs.getString("Currency"));
+                    List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employeeId, conn);
+                    Employee employee = new Employee(employeeName, employeeType, currency, employeeConfigurations);
+                    currentTeam.addNewTeamMember(employee);
+                }
+            }
+        } catch (SQLException | RateException e) {
+            e.printStackTrace();
+            throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
+        }
+        return retrievedTeams;
+    }
+
+
+    /**
+     * get all the  operational countries with teams
+     */
+    @Override
+    public Map<Integer, Country> getCountriesWithTeams(Map<Integer, Team> teams) throws RateException {
+        String sql = "SELECT c.* ,ct.TeamID from CountryTeam ct " +
+                "JOIN Countries c ON c.CountryID =ct.CountryID ORDER BY c.CountryID;";
+
+        Map<Integer, Country> retrievedCountries = new HashMap<>();
+
+        try (Connection conn = connectionManager.getConnection()) {
+            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+                ResultSet rs = psmt.executeQuery();
+                while (rs.next()) {
+                    int countryId = rs.getInt("CountryID");
+                    Country currentCountry = retrievedCountries.get(countryId);
+                    if (currentCountry == null) {
+                        currentCountry = new Country(rs.getString("CountryName"), countryId, new ArrayList<>());
+                        retrievedCountries.put(currentCountry.getId(), currentCountry);
+                    }
+                    currentCountry.addNewTeam(teams.get(rs.getInt("TeamID")));
+
+                }
+            }
+        } catch (SQLException | RateException e) {
+            throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
+        }
+
+        return retrievedCountries;
+    }
+
+
+    /**
+     * get all regions in the system with associated countries
+     */
+
+    @Override
+    public Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException {
+        String sql = "SELECT r.*,rc.CountryID from RegionCountry rc " +
+                "JOIN Region r ON r.RegionID = rc.RegionID " +
+                "ORDER BY r.RegionID; ";
+        Map<Integer, Region> retrievedRegions = new HashMap<>();
+
+        try (Connection conn = connectionManager.getConnection()) {
+            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+                ResultSet rs = psmt.executeQuery();
+                while (rs.next()) {
+                    int regionId = rs.getInt("RegionID");
+                    Region currentRegion = retrievedRegions.get(regionId);
+                    if (currentRegion == null) {
+                        currentRegion = new Region(rs.getString("RegionName"), regionId, new ArrayList<>());
+                        retrievedRegions.put(currentRegion.getId(), currentRegion);
+                    }
+                    currentRegion.addCountryToRegion(countriesWithTeams.get(rs.getInt("CountryID")));
+                }
+            }
+        } catch (SQLException | RateException e) {
+            throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
+        }
+
+        return retrievedRegions;
     }
 
 

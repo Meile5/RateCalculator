@@ -1,9 +1,6 @@
 package easv.dal;
 
-import easv.be.Configuration;
-import easv.be.Country;
-import easv.be.Employee;
-import easv.be.Team;
+import easv.be.*;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
@@ -24,4 +21,14 @@ public interface IEmployeeDAO {
     void addEmployeeConfiguration(int employeeID, int configurationID, Connection conn) throws RateException, SQLException;
 
     Employee saveEditOperation(Employee editedEmployee,int oldConfigurationId) throws RateException;
+
+
+    /**retrieve the teams with associated  employees  */
+    Map<Integer, Team> getTeamsWithEmployees() throws RateException;
+
+    /**retrieve all the countries with the associated teams */
+    Map<Integer, Country> getCountriesWithTeams(Map<Integer,Team> teams) throws RateException;
+
+    /**retrieve regions with the associated countries*/
+    Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException;
 }

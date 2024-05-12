@@ -8,9 +8,8 @@ import java.util.Set;
 public class Team {
     private String team;
     private int id;
-//    private List<Employee> employees;
-    private Set<Employee> uniqueEmployees;
-    private Set<TeamConfiguration> teamConfigurationsHistory;
+    private List<Employee> teamMembers;
+    private List<TeamConfiguration> teamConfigurationsHistory;
     private TeamConfiguration activeConfiguration;
 
 
@@ -23,15 +22,16 @@ public class Team {
         this.id = id;
     }
 
-    public Team (String team, int id, Set<Employee> teamMembers){
-        this(team,id);
-        this.uniqueEmployees=teamMembers;
+    public Team(String team, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory) {
+        this(team, id);
+        this.teamMembers = teamMembers;
+        this.teamConfigurationsHistory = teamConfigurationsHistory;
     }
 
 
-
-
-    /** to not be used in equal comparison , it is used for the view only*/
+    /**
+     * to not be used in equal comparison , it is used for the view only
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,41 +45,6 @@ public class Team {
         return Objects.hash(team);
     }
 
-    public Set<Employee> getUniqueEmployees() {
-        return uniqueEmployees;
-    }
-
-
-    public void addTeamConfiguration(TeamConfiguration  teamConfiguration){
-        this.teamConfigurationsHistory.add(teamConfiguration);
-    }
-
-    public void removeTeamConfiguration(TeamConfiguration teamConfiguration){
-        this.teamConfigurationsHistory.remove(teamConfiguration);
-    }
-
-
-
-    public void setUniqueEmployees(Set<Employee> uniqueEmployees) {
-        this.uniqueEmployees = uniqueEmployees;
-    }
-
-    public void addUniqueEmployee(Employee employee){
-        this.uniqueEmployees.add(employee);
-    }
-
-    public void removeUniqueEmployee(Employee employee){
-        this.uniqueEmployees.remove(employee);
-    }
-
-    public Set<TeamConfiguration> getTeamConfigurationsHistory() {
-        return teamConfigurationsHistory;
-    }
-
-    public void setTeamConfigurationsHistory(Set<TeamConfiguration> teamConfigurationsHistory) {
-        this.teamConfigurationsHistory = teamConfigurationsHistory;
-    }
-
     public TeamConfiguration getActiveConfiguration() {
         return activeConfiguration;
     }
@@ -87,8 +52,6 @@ public class Team {
     public void setActiveConfiguration(TeamConfiguration activeConfiguration) {
         this.activeConfiguration = activeConfiguration;
     }
-
-
 
     public String getTeamName() {
         return team;
@@ -119,11 +82,28 @@ public class Team {
         this.team = team;
     }
 
-//    public List<Employee> getEmployees() {
-//        return employees;
-//    }
-//
-//    public void setEmployees(List<Employee> employees) {
-//        this.employees = employees;
-//    }
+    public List<Employee> getEmployees() {
+        return teamMembers;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.teamMembers = employees;
+    }
+
+    public boolean addNewTeamMember(Employee employee) {
+        return this.teamMembers.add(employee);
+    }
+
+    public boolean removeTeamMember(Employee employee) {
+        return this.teamMembers.remove(employee);
+    }
+
+    public boolean addNewTeamConfiguration(TeamConfiguration teamConfiguration) {
+        return this.teamConfigurationsHistory.add(teamConfiguration);
+    }
+
+    public boolean removeTeamConfiguration(TeamConfiguration teamConfiguration) {
+        return this.teamConfigurationsHistory.remove(teamConfiguration);
+    }
+
 }
