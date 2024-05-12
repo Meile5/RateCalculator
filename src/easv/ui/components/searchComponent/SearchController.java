@@ -62,6 +62,11 @@ public class SearchController<T> implements Initializable {
         loadSearchSVG();
         createPopUpWindow();
         searchFieldListener();
+        try {
+            addSelectionListener();
+        } catch (RateException e) {
+            ExceptionHandler.errorAlertMessage(ErrorCode.SEARCH_FAILED.getValue());
+        }
         goBack();
 
 
@@ -146,8 +151,6 @@ public class SearchController<T> implements Initializable {
             }
         });
     }
-
-
 
 
 
