@@ -8,6 +8,7 @@ public class Country {
     private int id;
     private List<Team> teams;
 
+
     public Country(String country) {
         this.countryName = country;
     }
@@ -16,6 +17,12 @@ public class Country {
         this.countryName = country;
         this.id = id;
     }
+
+    public Country(String countryName, int id, List<Team> teams) {
+        this(countryName, id);
+        this.teams = teams;
+    }
+
 
     public String getCountryName() {
         return countryName;
@@ -35,18 +42,20 @@ public class Country {
 
     @Override
     public String toString() {
-        return  countryName;
+        return countryName;
 
     }
 
 
-    /**to not be used in equal comparison is used for the view only*/
+    /**
+     * to not be used in equal comparison is used for the view only
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Country country = (Country) o;
-        return  Objects.equals(countryName, country.countryName);
+        return Objects.equals(countryName, country.countryName);
     }
 
     @Override
@@ -61,4 +70,14 @@ public class Country {
     public void setTeams(List<Team> teams) {
         this.teams = teams;
     }
+
+    public boolean addNewTeam(Team team) {
+        return this.teams.add(team);
+    }
+
+    public boolean removeTeam(Team team) {
+        return this.teams.remove(team);
+    }
+
+
 }

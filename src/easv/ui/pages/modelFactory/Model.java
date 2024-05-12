@@ -73,6 +73,20 @@ public class Model implements IModel {
     private List<String> validMapViewCountryNameValues;
     private final ObservableMap<Integer, Team> teams;
 
+    /**
+     * holds all the data related to the teams
+     */
+    private final ObservableMap<Integer, Team> teamsWithEmployees;
+
+    /**
+     * holds all the data related to the operational  countries
+     */
+    private final ObservableMap<Integer, Country> countriesWithTeams;
+    /**
+     * holds all the date related to the  operational regions
+     */
+    private final ObservableMap<Integer, Region> regionsWithCountries;
+
     private ObservableList<Employee> displayedEmployees;
     private ObservableList<Employee> sortedEmployeesByName;
     private ObservableList<Employee> filteredEmployeesList;
@@ -93,25 +107,76 @@ public class Model implements IModel {
         this.countryTeams = new ArrayList<>();
         this.displayedEmployees = FXCollections.observableArrayList();
         this.sortedEmployeesByName = FXCollections.observableArrayList();
+        teamsWithEmployees = FXCollections.observableHashMap();
+        countriesWithTeams = FXCollections.observableHashMap();
+        regionsWithCountries = FXCollections.observableHashMap();
         populateCountries();
-        populateTeams();
+        //populateTeams();
+
+        populateTeamsWithEmployees();
+        populateCountriesWithTeams();
+        populateRegionsWithCountries();
+
+        //TODO this to method calls needs to be moved in the create controller
         EmployeeValidation.getCountries(validMapViewCountryNameValues);
         EmployeeValidation.getTeams(teams);
     }
+
 
     public void setDisplayer(DisplayEmployees displayEmployees) {
         this.displayEmployees = displayEmployees;
     }
 
-
     private void populateCountries() throws RateException {
         this.countries.putAll(countryLogic.getCountries());
-
     }
 
 
-    @Override
+    /**populate the teamWithEmployees map with data*/
+    private void populateTeamsWithEmployees() throws RateException {
+        this.teamsWithEmployees.putAll(employeeManager.getTeamWithEmployees());
+    }
 
+    /**populate the countriesWithTeams  with data  */
+    private void populateCountriesWithTeams() throws RateException {
+        this.countriesWithTeams.putAll(employeeManager.getCountriesWithTeams(teamsWithEmployees));
+    }
+
+    /**populate regionsWithCountries with data*/
+    private void populateRegionsWithCountries() throws RateException {
+       this.regionsWithCountries.putAll(employeeManager.getRegionsWithCountries(countriesWithTeams));
+    }
+
+
+    /**get the operational countries  observable list */
+    public ObservableList<Country> getOperationalCountries(){
+        ObservableList<Country> observableCountryList= FXCollections.observableArrayList();
+        observableCountryList.setAll(countriesWithTeams.values());
+        return observableCountryList;
+    }
+
+
+    /**get the operational regions observable list*/
+
+    public ObservableList<Region> getOperationalRegions(){
+        ObservableList<Region> observableRegionList = FXCollections.observableArrayList();
+        observableRegionList.setAll(regionsWithCountries.values());
+        return getOperationalRegions();
+    }
+
+
+    /**get the  operational teams */
+    public ObservableList<Team> getOperationalTeams(){
+        ObservableList<Team> observableTeamList = FXCollections.observableArrayList();
+        observableTeamList.setAll(teamsWithEmployees.values());
+        return observableTeamList;
+    }
+
+
+
+
+
+    @Override
     public void returnEmployees() throws RateException {
         this.employees.putAll(employeeManager.returnEmployees());
         sortDisplayedEmployee();
@@ -119,9 +184,11 @@ public class Model implements IModel {
         System.out.println(employees + "all employees");
     }
 
+
     public Employee getEmployeeById(int id){
         return employees.get(id);
     }
+
     private void sortDisplayedEmployee() {
         sortedEmployeesByName.setAll(employeeManager.sortedEmployeesByName(employees.values()));
     }
@@ -171,11 +238,13 @@ public class Model implements IModel {
     }
 
 
-
-    /**save the  edited employee to the database , and if the operation is performed
+    /**
+     * save the  edited employee to the database , and if the operation is performed
      * add it to the all employees map and update the filtered employees list
+     *
      * @param originalEmployee the employee before editing
-     * @param editedEmployee the employee after editing  */
+     * @param editedEmployee   the employee after editing
+     */
     @Override
     public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
        /* Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
@@ -249,7 +318,7 @@ public class Model implements IModel {
         return searchResults;
     }
 
-    public void performSelectUserSearchOperation (Employee employee) throws RateException {
+    public void performSelectUserSearchOperation(Employee employee) throws RateException {
         filteredEmployeesList.setAll(displayedEmployees);
         displayedEmployees.setAll(employee);
         displayEmployees.displayEmployees();
@@ -278,7 +347,7 @@ public class Model implements IModel {
     }
 
     @Override
-    public void filterByCountryAndTeam(Country selectedCountry ,Team selectedTeam) throws RateException {
+    public void filterByCountryAndTeam(Country selectedCountry, Team selectedTeam) throws RateException {
         displayedEmployees.setAll(employeeManager.filterByCountryAndTeam(employees.values(), selectedCountry, selectedTeam));
         displayEmployees.displayEmployees();
         if (areObservableListsEqual(filteredEmployeesList, displayedEmployees)) {
@@ -330,8 +399,8 @@ public class Model implements IModel {
     }
 
     public ObservableList<Employee> getUsersToDisplay() {
-       return displayedEmployees;
-   }
+        return displayedEmployees;
+    }
 
     /**
      * calculate the hourly rate for an employee

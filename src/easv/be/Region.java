@@ -7,11 +7,29 @@ public class Region {
     private int id;
     private List<Country> countries;
 
+    @Override
+    public String toString() {
+        return  regionName;
+    }
 
     public Region(String regionName, int id) {
         this.regionName = regionName;
         this.id = id;
     }
+    public Region(String regionName, int id,List<Country> countries) {
+   this(regionName,id);
+   this.countries=countries;
+    }
+
+
+    public void addCountryToRegion(Country country){
+        this.countries.add(country);
+    }
+
+    public void removeCountriesFromRegion(Country country){
+        this.countries.remove(country);
+    }
+
 
     public String getRegionName() {
         return regionName;

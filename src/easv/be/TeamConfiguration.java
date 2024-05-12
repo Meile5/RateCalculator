@@ -10,10 +10,13 @@ public class TeamConfiguration {
     private double grossMargin;
     private double markupMultiplier;
     private LocalDateTime savedDate;
-    private List<Employee> teamMembers;
+    private List<TeamConfigurationEmployee> teamMembers;
+
     private boolean active;
 
-    public TeamConfiguration(BigDecimal teamDayRate, BigDecimal teamHourlyRate, double grossMargin, double markupMultiplier, LocalDateTime savedDate, List<Employee> teamMembers, boolean active) {
+
+
+    public TeamConfiguration(BigDecimal teamDayRate, BigDecimal teamHourlyRate, double grossMargin, double markupMultiplier, LocalDateTime savedDate, List<TeamConfigurationEmployee> teamMembers, boolean active) {
         this.teamDayRate = teamDayRate;
         this.teamHourlyRate = teamHourlyRate;
         this.grossMargin = grossMargin;
@@ -29,7 +32,7 @@ public class TeamConfiguration {
      *
      * @param employee the new employee to be added to the team history
      */
-    public void addEmployeeToTeamHistory(Employee employee) {
+    public void addEmployeeToTeamHistory(TeamConfigurationEmployee employee) {
         this.teamMembers.add(employee);
     }
 
@@ -40,7 +43,7 @@ public class TeamConfiguration {
      * @param employee the employee to be removed from the team history
      */
 
-    public void removeEmployeeFromTeamHistory(Employee employee) {
+    public void removeEmployeeFromTeamHistory(TeamConfigurationEmployee employee) {
         this.teamMembers.remove(employee);
     }
 
@@ -92,11 +95,11 @@ public class TeamConfiguration {
         this.savedDate = savedDate;
     }
 
-    public List<Employee> getTeamMembers() {
+    public List<TeamConfigurationEmployee> getTeamMembers() {
         return teamMembers;
     }
 
-    public void setTeamMembers(List<Employee> teamMembers) {
+    public void setTeamMembers(List<TeamConfigurationEmployee> teamMembers) {
         this.teamMembers = teamMembers;
     }
 

@@ -1,9 +1,6 @@
 package easv.bll.EmployeesLogic;
 
-import easv.be.Configuration;
-import easv.be.Country;
-import easv.be.Employee;
-import easv.be.Team;
+import easv.be.*;
 import easv.dal.EmployeesDAO;
 import easv.dal.IEmployeeDAO;
 import easv.exception.RateException;
@@ -97,6 +94,8 @@ public class EmployeeManager implements IEmployeeManager {
                 .collect(Collectors.toList());
     }
 
+
+
     @Override
     public BigDecimal calculateGroupDayRate(Collection<Employee> employees) {
         /*if (!employees.isEmpty()) {
@@ -161,7 +160,21 @@ public class EmployeeManager implements IEmployeeManager {
         return rateCalculator.calculateHourlyRate(employee,configurableHours);
     }
 
+/**retrieve all the teams with associated employees from the database*/
+    @Override
+    public Map<Integer, Team> getTeamWithEmployees() throws RateException {
+        return employeeDAO.getTeamsWithEmployees();
+    }
 
+    @Override
+    public Map<Integer, Country> getCountriesWithTeams(Map<Integer,Team> teams) throws RateException {
+        return employeeDAO.getCountriesWithTeams(teams);
+    }
+
+    @Override
+    public Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException {
+        return employeeDAO.getRegionsWithCountries(countriesWithTeams);
+    }
 
 
 }

@@ -12,6 +12,7 @@ public class Employee {
     private Team team;
     private int id;
     private Currency currency;
+
     /*private BigDecimal dailyRate;
     private BigDecimal hourlyRate;*/
     private List<Configuration> configurations;
@@ -140,21 +141,21 @@ public class Employee {
         this.currency = currency;
     }
 
-    /*public BigDecimal getDailyRate() {
-        return dailyRate;
-    }
+//    public BigDecimal getDailyRate() {
+//        return dailyRate;
+//    }
+//
+//    public void setDailyRate(BigDecimal dailyRate) {
+//        this.dailyRate = dailyRate;
+//    }
+//
+//    public BigDecimal getHourlyRate() {
+//        return hourlyRate;
+//    }
 
-    public void setDailyRate(BigDecimal dailyRate) {
-        this.dailyRate = dailyRate;
-    }
-
-    public BigDecimal getHourlyRate() {
-        return hourlyRate;
-    }
-
-    public void setHourlyRate(BigDecimal hourlyRate) {
-        this.hourlyRate = hourlyRate;
-    }*/
+//    public void setHourlyRate(BigDecimal hourlyRate) {
+//        this.hourlyRate = hourlyRate;
+//    }
 
     @Override
     public String toString() {

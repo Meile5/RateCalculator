@@ -1,9 +1,6 @@
 package easv.bll.EmployeesLogic;
 
-import easv.be.Configuration;
-import easv.be.Country;
-import easv.be.Employee;
-import easv.be.Team;
+import easv.be.*;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
@@ -42,4 +39,13 @@ public interface IEmployeeManager {
     List<Employee> filterByTeam(Collection<Employee> employees, Team team);
 
     List<Employee> filterByCountryAndTeam(Collection<Employee> employees, Country country, Team team);
+
+    /**retrieve the teams in the system*/
+    Map<Integer,Team> getTeamWithEmployees() throws RateException;
+
+    /**retrieve countries with the associated teams */
+    Map<Integer,Country> getCountriesWithTeams(Map<Integer,Team> teams) throws RateException;
+
+    /**retrieve all regions with countries*/
+    Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException;
 }

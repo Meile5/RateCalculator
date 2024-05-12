@@ -1,12 +1,14 @@
 package easv.be;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class Team {
     private String team;
     private int id;
-    private List<Employee> employees;
+    private List<Employee> teamMembers;
     private List<TeamConfiguration> teamConfigurationsHistory;
     private TeamConfiguration activeConfiguration;
 
@@ -20,8 +22,16 @@ public class Team {
         this.id = id;
     }
 
+    public Team(String team, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory) {
+        this(team, id);
+        this.teamMembers = teamMembers;
+        this.teamConfigurationsHistory = teamConfigurationsHistory;
+    }
 
-    /** to not be used in equal comparison , it is used for the view only*/
+
+    /**
+     * to not be used in equal comparison , it is used for the view only
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -50,8 +60,6 @@ public class Team {
     public void setActiveConfiguration(TeamConfiguration activeConfiguration) {
         this.activeConfiguration = activeConfiguration;
     }
-
-
 
     public String getTeamName() {
         return team;
@@ -83,10 +91,27 @@ public class Team {
     }
 
     public List<Employee> getEmployees() {
-        return employees;
+        return teamMembers;
     }
 
     public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
+        this.teamMembers = employees;
     }
+
+    public boolean addNewTeamMember(Employee employee) {
+        return this.teamMembers.add(employee);
+    }
+
+    public boolean removeTeamMember(Employee employee) {
+        return this.teamMembers.remove(employee);
+    }
+
+    public boolean addNewTeamConfiguration(TeamConfiguration teamConfiguration) {
+        return this.teamConfigurationsHistory.add(teamConfiguration);
+    }
+
+    public boolean removeTeamConfiguration(TeamConfiguration teamConfiguration) {
+        return this.teamConfigurationsHistory.remove(teamConfiguration);
+    }
+
 }

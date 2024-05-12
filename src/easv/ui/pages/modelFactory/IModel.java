@@ -21,6 +21,22 @@ public interface IModel {
     ObservableList<Employee> getUsersToDisplay();
 
 
+    /**
+     * get the operational countries  observable list
+     */
+    ObservableList<Country> getOperationalCountries();
+
+    /**
+     * get the operational regions observable list
+     */
+
+    ObservableList<Region> getOperationalRegions();
+
+    /**
+     * get the  operational teams
+     */
+    ObservableList<Team> getOperationalTeams();
+
 
     Map<String, Country> getCountries();
 
@@ -64,20 +80,21 @@ public interface IModel {
     ObservableList<Employee> getSearchResult(String filter);
 
 
-    void performSelectUserSearchOperation (Employee employee) throws RateException ;
+    void performSelectUserSearchOperation(Employee employee) throws RateException;
 
     void filterByCountry(Country country) throws RateException;
 
 
-    /**check if edit operation was performed*/
-    boolean isEditOperationPerformed( Employee originalEmployee, Employee editedEmployee);
+    /**
+     * check if edit operation was performed
+     */
+    boolean isEditOperationPerformed(Employee originalEmployee, Employee editedEmployee);
+
     void performEmployeeSearchUndoOperation() throws RateException;
 
     ObservableList<Team> getTeamsForCountry(Country country);
-    void filterByCountryAndTeam(Country selectedCountry ,Team selectedTeam) throws RateException;
 
-
-
+    void filterByCountryAndTeam(Country selectedCountry, Team selectedTeam) throws RateException;
 
 
     /**
@@ -97,7 +114,8 @@ public interface IModel {
     BigDecimal calculateGroupDayRate();
 
     BigDecimal calculateGroupHourlyRate();
-    void teamFilterActiveRevert()throws RateException;
+
+    void teamFilterActiveRevert() throws RateException;
 
     void returnEmployeesByCountry() throws RateException;
 
