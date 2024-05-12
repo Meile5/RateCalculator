@@ -11,6 +11,7 @@ import easv.ui.pages.modelFactory.IModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -30,8 +31,6 @@ public class EmployeeInfoController implements Initializable {
     private VBox employeesContainer;
     @FXML
     protected VBox deleteContainer;
-
-
     @FXML
     private Label employeeName;
     @FXML
@@ -58,6 +57,9 @@ public class EmployeeInfoController implements Initializable {
     private EmployeeMainPageController employeeController;
 
     private IModel model;
+    @FXML
+    private Tooltip countryTooltip;
+
 
     public EmployeeInfoController(Employee employee, DeleteEmployeeController deleteEmployeeController, IModel model, StackPane firstLayout, EmployeeMainPageController employeeController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeComponent.fxml"));
@@ -78,33 +80,54 @@ public class EmployeeInfoController implements Initializable {
     public void setLabels() {
         if (employee != null) {
             employeeName.setText(employee.getName());
+            employeeName.setTooltip(new Tooltip(employeeName.getText()));
+
             employeeType.setText(employee.getType().toString());
 
             // Displaying countries
             StringBuilder countryNames = new StringBuilder();
             for (Country country : employee.getCountries()) {
-                countryNames.append(country.getCountryName()).append(", ");
+                if(employee.getCountries().size()>1) {
+                    countryNames.append(country.getCountryName()).append(", ");
+                }
+                else{
+                    countryNames.append(country.getCountryName());
+                }
             }
             country.setText(countryNames.toString());
+            country.setTooltip(new Tooltip(country.getText()));
 
             // Displaying teams
             StringBuilder teamNames = new StringBuilder();
             for (Team team : employee.getTeams()) {
-                teamNames.append(team.getTeamName()).append(", ");
+                if(employee.getTeams().size()>1) {
+                    teamNames.append(team.getTeamName()).append(", ");
+                }else {
+                    teamNames.append(team.getTeamName());
+                }
             }
-
             team.setText(teamNames.toString());
+            team.setTooltip(new Tooltip(team.getText()));
+
             // Displaying regions
             StringBuilder regionNames = new StringBuilder();
             for (Region region : employee.getRegions()) {
-                regionNames.append(region.getRegionName()).append(", ");
+                if (employee.getRegions().size()>1){
+                    regionNames.append(region.getRegionName()).append(", ");
+                }
+                else{
+                    regionNames.append(region.getRegionName());
+                }
+
             }
             region.setText(regionNames.toString());
+            region.setTooltip(new Tooltip(region.getText()));
 
             dayRate.setText(employee.getActiveConfiguration().getDayRate().toString());
             hourlyRate.setText(employee.getActiveConfiguration().getHourlyRate().toString());
             hourlyCurrency.setText(employee.getCurrency().toString());
             dayCurrency.setText(employee.getCurrency().toString());
+
         }
     }
 
@@ -121,7 +144,11 @@ public class EmployeeInfoController implements Initializable {
         //addEditAction();
 
 
+
     }
+
+
+}
 
 
     /*public void displayDelete(){
@@ -177,5 +204,5 @@ public class EmployeeInfoController implements Initializable {
     public void callService(){
         employeeController.callService();
     }*/
-    }
+
 
