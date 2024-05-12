@@ -140,7 +140,7 @@
                 </VBox>
             </children>
          <padding>
-            <Insets left="70.0" />
+            <Insets left="90.0" />
          </padding>
         </VBox>
         <VBox alignment="CENTER_LEFT" prefHeight="700.0" prefWidth="805.0" spacing="45.0" HBox.hgrow="ALWAYS">
@@ -156,9 +156,9 @@
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints maxHeight="122.00000190734863" minHeight="20.0" prefHeight="51.333319346110024" vgrow="NEVER" />
-                  <RowConstraints maxHeight="343.00001207987464" minHeight="202.99999809265137" prefHeight="284.66664632161456" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="70.66668701171875" minHeight="20.0" prefHeight="49.333333333333314" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="291.3332926432292" minHeight="218.0" prefHeight="288.6666666666667" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="343.00001207987464" minHeight="202.99999809265137" prefHeight="294.99997965494794" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="70.66668701171875" minHeight="20.0" prefHeight="37.333353678385436" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="303.33335367838544" minHeight="218.0" prefHeight="297.3333129882812" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="30.0" minHeight="0.0" prefHeight="6.66668701171875" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>

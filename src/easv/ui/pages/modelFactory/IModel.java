@@ -118,4 +118,6 @@ public interface IModel {
     void teamFilterActiveRevert() throws RateException;
 
     void returnEmployeesByCountry() throws RateException;
+
+    Employee getEmployeeById(int id);
 }

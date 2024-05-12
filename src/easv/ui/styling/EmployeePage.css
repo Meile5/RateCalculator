@@ -17,9 +17,7 @@
     -fx-border-width: 2;
 }
 
-.text-field:focused {
-    -fx-border-color: rgb(100, 208, 70); /* Border color when TextField is focused */
-}
+
 
 .text-field:empty {
     -fx-border-color: rgb(114, 112, 112); /* Revert to default border color when TextField is empty */

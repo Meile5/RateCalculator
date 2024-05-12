@@ -6,6 +6,8 @@ import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
+import easv.ui.components.searchComponent.EmployeeSearchHandler;
+import easv.ui.components.searchComponent.SearchController;
 import easv.ui.pages.employeesPage.deleteEmployee.DeleteEmployeeController;
 import easv.ui.pages.modelFactory.ModelFactory;
 import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
@@ -28,6 +30,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -86,6 +89,10 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private Service<Boolean> calculateEditOperationPerformedEdit;
     private String dayRateValue;
     private String hourlyRateValue;
+    @FXML
+    private GridPane employeeSearchContainer;
+    private SearchController<Employee> employeeSearch;
+    private EmployeeSearchHandler employeeSearchHandler;
 
     public EmployeeMainPageController(StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeesMainPage.fxml"));
@@ -109,48 +116,52 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         try {
             model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
             progressBar.setVisible(true);
-            loadSearchSVG();
+            employeeSearchHandler = new EmployeeSearchHandler(model);
+            employeeSearch= new SearchController<>(employeeSearchHandler);
+            employeeSearchContainer.add(employeeSearch.getSearchRoot(),0,0);
+            //loadSearchSVG();
             initializeEmployeeLoadingService();
-            createPopUpWindow();
-            searchFieldListener();
-            addSelectionListener();
-            populateFilterComboBox();
-           // filterByCountryListener();
+           // createPopUpWindow();
+            //searchFieldListener();
+           // addSelectionListener();
+            //populateFilterComboBox();
+            // filterByCountryListener();
             //filterByTeamListener();
-            addFocusListener(countriesFilterCB,countryRevertButton);
-            addFocusListener(teamsFilterCB,teamRevertButton);
-            revertCountryFilter(countryRevertButton,countryRevertSvg);
-            revertTeamFilter(teamRevertButton,teamRevertSvg);
+           // addFocusListener(countriesFilterCB, countryRevertButton);
+           // addFocusListener(teamsFilterCB, teamRevertButton);
+            //revertCountryFilter(countryRevertButton, countryRevertSvg);
+           // revertTeamFilter(teamRevertButton, teamRevertSvg);
             //setTotalRatesDefault();
         } catch (RateException e) {
             e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
+
     public void displayEmployees() {
         employeesContainer.getChildren().clear();
         model.getUsersToDisplay()
                 .forEach(e -> {
                     DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController(firstLayout, model, e);
-                    EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout,this);
+                    EmployeeInfoController employeeInfoController = new EmployeeInfoController(e, deleteEmployeeController, model, firstLayout, this);
                     employeesContainer.getChildren().add(employeeInfoController.getRoot());
                 });
     }
 
 
-
-    private void initializeEmployeeLoadingService(){
+    private void initializeEmployeeLoadingService() {
         progressBar.setVisible(true);
-        loadEmployeesFromDB= new Service<Void>() {
+        loadEmployeesFromDB = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
                         model.returnEmployees();
-                        System.out.println("kkk");
                         return null;
-                    };
+                    }
+
+                    ;
                 };
             }
         };
@@ -162,7 +173,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             // Hide the progress bar
             progressBar.setVisible(false);
         });
-        loadEmployeesFromDB.setOnFailed((event)->{
+        loadEmployeesFromDB.setOnFailed((event) -> {
 
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
 
@@ -171,26 +182,13 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         loadEmployeesFromDB.restart();
     }
 
-    // Method to load the first SVG path
-    private void loadSearchSVG() {
-        String defaultSVGPath = "M269.46,1163.45 C263.17,1163.45 258.071,1158.44 258.071,1152.25 C258.071,1146.06 263.17,1141.04 269.46,1141.04 C275.75,1141.04 280.85,1146.06 280.85,1152.25 C280.85,1158.44 275.75,1163.45 269.46,1163.45 L269.46,1163.45 Z M287.688,1169.25 L279.429,1161.12 C281.591,1158.77 282.92,1155.67 282.92,1152.25 C282.92,1144.93 276.894,1139 269.46,1139 C262.026,1139 256,1144.93 256,1152.25 C256,1159.56 262.026,1165.49 269.46,1165.49 C272.672,1165.49 275.618,1164.38 277.932,1162.53 L286.224,1170.69 C286.629,1171.09 287.284,1171.09 287.688,1170.69 C288.093,1170.3 288.093,1169.65 287.688,1169.25 L287.688,1169.25 Z";
-        svgPath.getStyleClass().clear();
-        svgPath.getStyleClass().add("svg-search");
-        svgPath.setContent(defaultSVGPath);
-    }
 
-    // Method to load the second SVG path
-    private void loadRevertSVG() {
-        String alternativeSVGPath = "M 15 3 L 10 7 L 15 11 L 15 8 C 18.877838 8 22 11.12216 22 15 C 22 18.87784 18.877838 22 15 22 C 11.122162 22 8 18.87784 8 15 C 8 13.485854 8.4798822 12.090114 9.2910156 10.947266 L 7.8730469 9.5292969 C 6.7042423 11.047902 6 12.942076 6 15 C 6 19.95872 10.041282 24 15 24 C 19.958718 24 24 19.95872 24 15 C 24 10.04128 19.958718 6 15 6 L 15 3 z ";
-        svgPath.getStyleClass().clear();
-        svgPath.getStyleClass().add("svg-revert");
-        svgPath.setContent(alternativeSVGPath);
-    }
+
+}
 
 
 
-    @FXML
-    private void goBack() throws RateException {
+   /* private void goBack() throws RateException {
         if (filterActive && countriesFilterCB.getSelectionModel().getSelectedItem() != null &&
                 teamsFilterCB.getSelectionModel().getSelectedItem() != null) {
             model.teamFilterActiveRevert();
@@ -465,8 +463,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
 
 
+*/
 
-}
 
 
 

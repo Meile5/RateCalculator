@@ -9,7 +9,8 @@ public enum ErrorCode {
     LOADING_EMPLOYEES_FAILED("Operation failed, problems loading employees, please try again or restart the application"),
     DELETING_EMPLOYEES_FAILED("Operation failed, please try again or restart the application"),
 
-    UNDO_FAILED("The undo filter operation failed to be executed ,please try again");
+    UNDO_FAILED("The undo filter operation failed to be executed ,please try again"),
+    SEARCH_FAILED("Operation failed, please try again or restart the application");
 
 
     private String value;
