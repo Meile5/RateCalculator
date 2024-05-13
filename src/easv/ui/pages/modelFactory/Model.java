@@ -66,7 +66,6 @@ public class Model implements IModel {
     private String selectedCountry;
 
 
-
     /**
      * used to check if the inserted country is valid
      */
@@ -113,12 +112,10 @@ public class Model implements IModel {
         regionsWithCountries = FXCollections.observableHashMap();
         populateCountries();
         populateTeams();
+
         populateTeamsWithEmployees();
         populateCountriesWithTeams();
         populateRegionsWithCountries();
-        //TODO this to method calls needs to be moved in the create controller
-        EmployeeValidation.getCountries(validMapViewCountryNameValues);
-        EmployeeValidation.getTeams(teams);
     }
 
 
@@ -145,8 +142,6 @@ public class Model implements IModel {
     private void populateRegionsWithCountries() throws RateException {
        this.regionsWithCountries.putAll(employeeManager.getRegionsWithCountries(countriesWithTeams));
     }
-
-
 
 
     /**get the operational countries  observable list */
@@ -203,11 +198,11 @@ public class Model implements IModel {
             sortDisplayedEmployee();
             displayedEmployees = sortedEmployeesByName;
             Platform.runLater(() -> {
-           //     try {
+                try {
                     displayEmployees.displayEmployees();
-              //  } catch (RateException e) {
-               //     throw new RuntimeException(e);
-             //   }
+                } catch (RateException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }
     }
@@ -221,13 +216,11 @@ public class Model implements IModel {
     }
 
 
-
-
     /**
      * return the operational countries
      */
     public Map<String, Country> getCountries() {
-        return countryLogic.getCountriesForMap(countriesWithTeams);
+        return countries;
     }
 
 
@@ -279,22 +272,22 @@ public class Model implements IModel {
         return employeeManager.isEmployeeEdited(originalEmployee, editedEmployee);
     }
 
-    public synchronized List<Team> getCountryTeams() {
+    public synchronized List<TeamWithEmployees> getCountryTeams() {
         Country selectedCountry = countries.get(this.selectedCountry);
-//        List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
-//        this.countryTeams.addAll(countryTeams);
-//        currentIndexToRetrieve += OFFSET;
-        return this.countriesWithTeams.get(selectedCountry.getId()).getTeams();
+        List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
+        this.countryTeams.addAll(countryTeams);
+        currentIndexToRetrieve += OFFSET;
+        return this.countryTeams;
     }
 
 
-//    /**
-//     * reset the currentIndexToRetrieve when retrieving for a new country
-//     */
-//    public void resetCurrentIndexToRetrieve() {
-//        this.currentIndexToRetrieve = 0;
-//        countryTeams.clear();
-//    }
+    /**
+     * reset the currentIndexToRetrieve when retrieving for a new country
+     */
+    public void resetCurrentIndexToRetrieve() {
+        this.currentIndexToRetrieve = 0;
+        countryTeams.clear();
+    }
 
     public void populateValidCountries(List<String> validCountries) {
         this.validMapViewCountryNameValues.addAll(validCountries);
@@ -340,10 +333,8 @@ public class Model implements IModel {
     }
 
     @Override
-    public void filterByCountry(Region region ,List<Country> countries) {
-        displayedEmployees.setAll(employeeManager.filterByCountry(region,countries,employees));
-        //displayedEmployees.setAll();
-        displayedEmployees.forEach(e-> System.out.println(e.getActiveConfiguration().getDayRate()));
+    public void filterByCountry(Country country) throws RateException {
+        displayedEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
         displayEmployees.displayEmployees();
         filteredEmployeesList.setAll(displayedEmployees);
         listEmployeeByCountryTemp.setAll(displayedEmployees);
@@ -351,7 +342,7 @@ public class Model implements IModel {
 
     @Override
     public void filterByTeam(Team team) throws RateException {
-        filteredEmployeesList.setAll(displayedEmployees);
+        //filteredEmployeesList.setAll(displayedEmployees);
         displayedEmployees.setAll(employeeManager.filterByTeam(employees.values(), team));
         displayEmployees.displayEmployees();
     }
