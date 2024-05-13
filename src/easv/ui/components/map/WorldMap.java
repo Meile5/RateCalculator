@@ -22,7 +22,6 @@ public class WorldMap implements Initializable {
     private IModel model;
     private CountryInfoContainer countryInfoContainer;
 
-
     public WorldMap(StackPane firstLayout, IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("WorldMap.fxml"));
         loader.setController(this);

@@ -40,13 +40,9 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
 
-
     public EmployeesDAO() throws RateException {
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }
-
-
-
 
 
     /**
@@ -105,14 +101,14 @@ public class EmployeesDAO implements IEmployeeDAO {
 
             // Retrieve configurations for employees
             for (Employee employee : employees.values()) {
-                List<Configuration> configurations = retrieveConfigurationsForEmployee(employee.getId(), conn);
+                List<Configuration> configurations = retrieveConfigurationsForEmployee(employee, conn);
                 employee.setConfigurations(configurations);
-                for (Configuration configuration : configurations) {
-                    if (configuration.isActive()) {
-                        employee.setActiveConfiguration(configuration);
-
-                    }
-                }
+//                for (Configuration configuration : configurations) {
+//                    if (configuration.isActive()) {
+//                        employee.setActiveConfiguration(configuration);
+//
+//                    }
+//                }
 
             }
             conn.commit(); // Commit transaction
@@ -211,7 +207,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     /**
      * Retrieves the configurations for employee
      */
-    private List<Configuration> retrieveConfigurationsForEmployee(int employeeId, Connection conn) throws SQLException {
+    private List<Configuration> retrieveConfigurationsForEmployee(Employee employee, Connection conn) throws SQLException {
         List<Configuration> configurations = new ArrayList<>();
         String sql = "SELECT " +
                 "conf.ConfigurationID, conf.AnnualSalary, conf.FixedAnnualAmount, " +
@@ -223,7 +219,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 "WHERE " +
                 "ec.EmployeeID = ?";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-            psmt.setInt(1, employeeId);
+            psmt.setInt(1, employee.getId());
             ResultSet res = psmt.executeQuery();
             while (res.next()) {
                 int configurationId = res.getInt("ConfigurationID");
@@ -237,7 +233,12 @@ public class EmployeesDAO implements IEmployeeDAO {
                 BigDecimal dayRate = res.getBigDecimal("DayRate");
                 BigDecimal hourlyRate = res.getBigDecimal("HourlyRate");
                 int dayWorkingHours = res.getInt("DayWorkingHours");
-                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active, dayRate, hourlyRate,dayWorkingHours);
+                Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active, dayRate, hourlyRate, dayWorkingHours);
+                if (configuration.isActive()) {
+                    employee.setActiveConfiguration(configuration);
+                    System.out.println(configuration + "fromda");
+                }
+
                 configurations.add(configuration);
             }
         }
@@ -478,15 +479,19 @@ public class EmployeesDAO implements IEmployeeDAO {
                     Team currentTeam = retrievedTeams.get(teamId);
                     if (currentTeam == null) {
                         currentTeam = new Team(rs.getString("TeamName"), teamId, new ArrayList<>(), new ArrayList<>());
-                        currentTeam.setTeamConfigurationsHistory(retrieveTeamConfigurations(currentTeam,conn));
+                        currentTeam.setTeamConfigurationsHistory(retrieveTeamConfigurations(currentTeam, conn));
                         retrievedTeams.put(currentTeam.getId(), currentTeam);
                     }
                     int employeeId = rs.getInt("EmployeeID");
                     String employeeName = rs.getString("Name");
                     EmployeeType employeeType = EmployeeType.valueOf(rs.getString("EmployeeType"));
                     Currency currency = Currency.valueOf(rs.getString("Currency"));
-                    List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employeeId, conn);
-                    Employee employee = new Employee(employeeName, employeeType, currency, employeeConfigurations);
+                    Employee employee = new Employee(employeeName, employeeType, currency);
+                    employee.setId(employeeId);
+                    List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employee, conn);
+                    System.out.println(employeeConfigurations + "configurations" );
+                    employee.setConfigurations(employeeConfigurations);
+                    System.out.println(employee.getActiveConfiguration() + " active");
                     currentTeam.addNewTeamMember(employee);
                 }
             }
@@ -603,7 +608,9 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
 
-    /**retrieve the team configurations and set the active configuration */
+    /**
+     * retrieve the team configurations and set the active configuration
+     */
     private List<TeamConfiguration> retrieveTeamConfigurations(Team team, Connection conn) {
         String sql = "SELECT tc.* FROM TeamConfigurationsHistory tch " +
                 "JOIN Teams t ON t.TeamID=tch.TeamID " +
@@ -613,21 +620,21 @@ public class EmployeesDAO implements IEmployeeDAO {
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             psmt.setInt(1, team.getId());
             ResultSet rs = psmt.executeQuery();
-            if(rs.next()){
-            int configId = rs.getInt("TeamConfigurationID");
-            BigDecimal teamDailyRate = BigDecimal.valueOf(rs.getDouble("TeamDailyRate"));
-            BigDecimal teamHourlyRate = BigDecimal.valueOf(rs.getDouble("TeamHourlyRate"));
-            double grossMargin = rs.getDouble("GrossMargin");
-            double markupMultiplier = rs.getDouble("MarkupMultiplier");
-            LocalDateTime savedDate = rs.getTimestamp("ConfigurationDate").toLocalDateTime();
-            boolean active = Boolean.parseBoolean(rs.getString("Active"));
-            List<TeamConfigurationEmployee> teamConfigurationEmployees = getEmployeesForTeamConfiguration(configId, conn);
-            TeamConfiguration teamConfiguration = new TeamConfiguration(teamDailyRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, teamConfigurationEmployees, active);
-            teamConfiguration.setId(configId);
-            if (active) {
-                team.setActiveConfiguration(teamConfiguration);
-            }
-            teamConfigurations.add(teamConfiguration);
+            if (rs.next()) {
+                int configId = rs.getInt("TeamConfigurationID");
+                BigDecimal teamDailyRate = BigDecimal.valueOf(rs.getDouble("TeamDailyRate"));
+                BigDecimal teamHourlyRate = BigDecimal.valueOf(rs.getDouble("TeamHourlyRate"));
+                double grossMargin = rs.getDouble("GrossMargin");
+                double markupMultiplier = rs.getDouble("MarkupMultiplier");
+                LocalDateTime savedDate = rs.getTimestamp("ConfigurationDate").toLocalDateTime();
+                boolean active = Boolean.parseBoolean(rs.getString("Active"));
+                List<TeamConfigurationEmployee> teamConfigurationEmployees = getEmployeesForTeamConfiguration(configId, conn);
+                TeamConfiguration teamConfiguration = new TeamConfiguration(teamDailyRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, teamConfigurationEmployees, active);
+                teamConfiguration.setId(configId);
+                if (active) {
+                    team.setActiveConfiguration(teamConfiguration);
+                }
+                teamConfigurations.add(teamConfiguration);
             }
 
         } catch (SQLException e) {

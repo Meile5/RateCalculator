@@ -1,6 +1,7 @@
 package easv.ui.components.map.popUpInfo;
 
 import easv.Utility.WindowsManagement;
+import easv.be.Team;
 import easv.be.TeamWithEmployees;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
@@ -18,7 +19,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class CountryInfoContainer implements Initializable {
     private VBox teamsContainer;
     private IModel model;
     private StackPane parent;
-    private Service<List<TeamWithEmployees>> teamsInitializer;
+    private Service<List<Team>>teamsInitializer;
     private boolean isOperational;
 
     public CountryInfoContainer(IModel model, StackPane parent, boolean isOperational) {
@@ -63,17 +63,17 @@ public class CountryInfoContainer implements Initializable {
     private void closeWindow() {
         closeButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             WindowsManagement.closeStackPane(this.parent);
-            model.resetCurrentIndexToRetrieve();
+         //   model.resetCurrentIndexToRetrieve();
             this.teamsContainer.getChildren().clear();
         });
     }
 
-    public void populatePieChart(List<TeamWithEmployees> countryTeams) {
+    public void populatePieChart(List<Team> countryTeams) {
         List<Parent> teamComponentControllers = new ArrayList<>();
         if (countryTeams.isEmpty()) {
             initializeNoDataCountryInfo();
         }
-        for (TeamWithEmployees team : countryTeams) {
+        for (Team team : countryTeams) {
             TeamComponentController teamComponentController = new TeamComponentController(team);
             teamComponentControllers.add(teamComponentController.getRoot());
         }
@@ -89,10 +89,10 @@ public class CountryInfoContainer implements Initializable {
         }
         teamsInitializer = new Service<>() {
             @Override
-            protected Task<List<TeamWithEmployees>> createTask() {
+            protected Task<List<Team>> createTask() {
                 return new Task<>() {
                     @Override
-                    protected List<TeamWithEmployees> call() throws RateException {
+                    protected List<Team> call() throws RateException {
                         return model.getCountryTeams();
                     }
                 };

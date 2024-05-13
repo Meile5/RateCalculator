@@ -66,6 +66,7 @@ public class Model implements IModel {
     private String selectedCountry;
 
 
+
     /**
      * used to check if the inserted country is valid
      */
@@ -112,11 +113,9 @@ public class Model implements IModel {
         regionsWithCountries = FXCollections.observableHashMap();
         populateCountries();
         populateTeams();
-
         populateTeamsWithEmployees();
         populateCountriesWithTeams();
         populateRegionsWithCountries();
-
         //TODO this to method calls needs to be moved in the create controller
         EmployeeValidation.getCountries(validMapViewCountryNameValues);
         EmployeeValidation.getTeams(teams);
@@ -146,6 +145,8 @@ public class Model implements IModel {
     private void populateRegionsWithCountries() throws RateException {
        this.regionsWithCountries.putAll(employeeManager.getRegionsWithCountries(countriesWithTeams));
     }
+
+
 
 
     /**get the operational countries  observable list */
@@ -220,11 +221,13 @@ public class Model implements IModel {
     }
 
 
+
+
     /**
      * return the operational countries
      */
     public Map<String, Country> getCountries() {
-        return countries;
+        return countryLogic.getCountriesForMap(countriesWithTeams);
     }
 
 
@@ -276,22 +279,22 @@ public class Model implements IModel {
         return employeeManager.isEmployeeEdited(originalEmployee, editedEmployee);
     }
 
-    public synchronized List<TeamWithEmployees> getCountryTeams() {
+    public synchronized List<Team> getCountryTeams() {
         Country selectedCountry = countries.get(this.selectedCountry);
-        List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
-        this.countryTeams.addAll(countryTeams);
-        currentIndexToRetrieve += OFFSET;
-        return this.countryTeams;
+//        List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
+//        this.countryTeams.addAll(countryTeams);
+//        currentIndexToRetrieve += OFFSET;
+        return this.countriesWithTeams.get(selectedCountry.getId()).getTeams();
     }
 
 
-    /**
-     * reset the currentIndexToRetrieve when retrieving for a new country
-     */
-    public void resetCurrentIndexToRetrieve() {
-        this.currentIndexToRetrieve = 0;
-        countryTeams.clear();
-    }
+//    /**
+//     * reset the currentIndexToRetrieve when retrieving for a new country
+//     */
+//    public void resetCurrentIndexToRetrieve() {
+//        this.currentIndexToRetrieve = 0;
+//        countryTeams.clear();
+//    }
 
     public void populateValidCountries(List<String> validCountries) {
         this.validMapViewCountryNameValues.addAll(validCountries);

@@ -367,6 +367,7 @@ public class EditController implements Initializable {
                 ObservableList<Country> regionCountries= FXCollections.observableArrayList(newValue.getCountries());
                 countries.setItems(regionCountries);
                 countries.selectItem(regionCountries.get(0));
+
             }
         });
     }
@@ -382,7 +383,7 @@ public class EditController implements Initializable {
         });
     }
 
-
+    //TODO create a separate component for the seleted team tah will be added to the scrollPane , with an remove button
 }
 
 

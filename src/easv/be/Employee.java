@@ -1,5 +1,6 @@
 
 package easv.be;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -20,9 +21,7 @@ public class Employee {
     private List<Country> countries;
     private List<Team> teams;
     private BigDecimal overhead;
-    private Configuration  activeConfiguration;
-
-
+    private Configuration activeConfiguration;
 
 
     public void setOverhead(BigDecimal overhead) {
@@ -52,15 +51,17 @@ public class Employee {
         this.employeeType = employeeType;
         this.currency = currency;
     }
-    public Employee(String name,EmployeeType employeeType,Currency currency,List<Configuration> configs){
-        this(name,employeeType,currency);
-        this.configurations=configs;
+
+    public Employee(String name, EmployeeType employeeType, Currency currency, List<Configuration> configs) {
+        this(name, employeeType, currency);
+        this.configurations = configs;
     }
 
 
-
-    /**equals method is used to compare  if the original employee is equal with the
-     * edited employee based on name,country, team, employee type ,currency and id */
+    /**
+     * equals method is used to compare  if the original employee is equal with the
+     * edited employee based on name,country, team, employee type ,currency and id
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,9 +80,13 @@ public class Employee {
     }
 
     public void setActiveConfiguration(Configuration activeConfiguration) {
-        deactivateOldConfiguration();
+
+        if (configurations != null) {
+            deactivateOldConfiguration();
+        }
         this.activeConfiguration = activeConfiguration;
     }
+
     private void deactivateOldConfiguration() {
         for (Configuration config : this.configurations) {
             if (config.isActive()) {
@@ -91,7 +96,6 @@ public class Employee {
     }
 
 
-
     public String getName() {
         return name;
     }
@@ -99,7 +103,6 @@ public class Employee {
     public void setName(String name) {
         this.name = name;
     }
-
 
 
     public Country getCountry() {
@@ -125,6 +128,7 @@ public class Employee {
     public void setId(int id) {
         this.id = id;
     }
+
     public EmployeeType getType() {
         return employeeType;
     }
@@ -133,10 +137,11 @@ public class Employee {
         this.employeeType = employeeType;
     }
 
-    public Currency getCurrency(){
+    public Currency getCurrency() {
         return currency;
     }
-    public void setCurrency(){
+
+    public void setCurrency() {
         this.currency = currency;
     }
 
@@ -162,19 +167,16 @@ public class Employee {
     }
 
 
-    public String printEmployeeData(){
+    public String printEmployeeData() {
         return this.getId() + ": " + this.getName() + " " + this.getActiveConfiguration().getConfigurationId() + " " + this.getEmployeeType() + this.activeConfiguration.printConfiguration();
     }
 
 
-
-
-
-    public void addConfiguration(Configuration config){
+    public void addConfiguration(Configuration config) {
         this.configurations.add(config);
     }
 
-    public boolean removeConfig(Configuration config){
+    public boolean removeConfig(Configuration config) {
         return this.configurations.remove(config);
     }
 

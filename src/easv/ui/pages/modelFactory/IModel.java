@@ -45,12 +45,12 @@ public interface IModel {
     /**
      * retrieve the teams with the overhead computed
      */
-    List<TeamWithEmployees> getCountryTeams();
+    List<Team> getCountryTeams();
 
-    /**
-     * used to reset the  index of the database retrieval
-     */
-    public void resetCurrentIndexToRetrieve();
+//    /**
+//     * used to reset the  index of the database retrieval
+//     */
+//    public void resetCurrentIndexToRetrieve();
 
     ObservableMap<Integer, Team> getTeams();
 

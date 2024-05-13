@@ -1,5 +1,6 @@
 package easv.ui.components.map.popUpInfo.teamComponent;
-import easv.be.TeamWithEmployees;
+import easv.be.Employee;
+import easv.be.Team;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -7,7 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -27,10 +27,10 @@ public class TeamComponentController  implements Initializable {
     private Label salaryOverhead;
     @FXML
     private PieChart teamChart;
-    private TeamWithEmployees team;
+    private Team team;
     private ObservableList<PieChart.Data> pieChartData;
 
-    public TeamComponentController(TeamWithEmployees team) {
+    public TeamComponentController(Team team) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamComponent.fxml"));
         loader.setController(this);
          this.team=team;
@@ -54,12 +54,9 @@ public class TeamComponentController  implements Initializable {
 
 /**initialize chart with the values*/
         private void initializePieChart(){
-            for(Map<String, Double> data : team.getEmployeesOverheadPercentage()){
-                for (Map.Entry<String, Double> entry : data.entrySet()) {
-                    String key = entry.getKey();
-                    Double value = entry.getValue();
-                    pieChartData.add(new PieChart.Data(key, value));
-                }
+            //TODO include percentage for the employee based on team total overhead
+            for(Employee employee :team.getEmployees()){
+                 pieChartData.add(new PieChart.Data(employee.getName(),employee.getActiveConfiguration().getDayRate().doubleValue()));
             }
             teamChart.setData(pieChartData);
             teamChart.setTitle(team.getTeamName());
@@ -68,7 +65,6 @@ public class TeamComponentController  implements Initializable {
             for (PieChart.Data data : pieChartData) {
                 data.getNode().setOnMouseClicked(event -> {
                     data.setPieValue(data.getPieValue());
-
                 });
             }
             initializeTeamOverheadData();
@@ -76,13 +72,19 @@ public class TeamComponentController  implements Initializable {
 
         /**initialize the team ovearhead values
          * */
+
+        //TODO if is more time calculate the salaries off the employees, to have the team total
         private void initializeTeamOverheadData(){
-        BigDecimal salaryOverheadValue  = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD).setScale(2, RoundingMode.HALF_UP);
-        salaryOverhead.setText(salaryOverheadValue + " " + team.getTeamMembers().getFirst().getCurrency());
-        BigDecimal expensesOverheadValue = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD).setScale(2,RoundingMode.HALF_UP);
-        expensesOverhead.setText(expensesOverheadValue + " " + team.getTeamMembers().getFirst().getCurrency());
-        BigDecimal totalOverheadValue =   team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD).setScale(2,RoundingMode.HALF_UP);
-        totalOverhead.setText(totalOverheadValue + " " + team.getTeamMembers().getFirst().getCurrency());
+//        BigDecimal salaryOverheadValue  = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD).setScale(2, RoundingMode.HALF_UP);
+//        salaryOverhead.setText(salaryOverheadValue + " " + team.getTeamMembers().getFirst().getCurrency());
+//        BigDecimal expensesOverheadValue = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD).setScale(2,RoundingMode.HALF_UP);
+//        expensesOverhead.setText(expensesOverheadValue + " " + team.getTeamMembers().getFirst().getCurrency());
+        if(team.getActiveConfiguration()!=null){
+            BigDecimal totalOverheadValue =   team.getActiveConfiguration().getTeamDayRate();
+            totalOverhead.setText(totalOverheadValue + " " + team.getEmployees().get(0).getCurrency());
+        }else{
+            totalOverhead.setText("n/a");
+        }
         }
 
 
