@@ -8,12 +8,10 @@ import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.application.Platform;
 import javafx.animation.PauseTransition;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -79,33 +77,27 @@ public class CreateController implements Initializable {
         try {
             createPage=loader.load();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
-
-
-    //TOdo Nelsson i added the stack pane that blocks the ui while saving, you can have a look , if is ok ,
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
             populateComboBoxes();
             addListenersToInputs();
-            addTeamListener();
+            addTeamButtonListener();
             removeTeamListener();
             listenerForEmptyFieldsAfterSaving();
             addTooltips();
-            disableSpinner();
             addRegionSelectionListener(regionCB, countryCB);
             addCountrySelectionListener(countryCB, teamCB);
     }
 
     @FXML
     private void saveEmployee() throws RateException {
-        if(EmployeeValidation.areNamesValid(nameTF, countryCB,teamCB) &&
-           EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
-           EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
+        if(EmployeeValidation.areNamesValid(nameTF, teamsListView) &&
+           EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF, dayWorkingHours) &&
+           EmployeeValidation.arePercentagesValid(multiplierTF, teamsUtilizationList) &&
            EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB))
         {
             enableSpinner();
@@ -114,12 +106,12 @@ public class CreateController implements Initializable {
 
             String name = nameTF.getText().trim();
             EmployeeType employeeType = (EmployeeType) overOrResourceCB.getSelectedItem();
-            List<Team> teams = getSelectedTeams();
-            Currency currency = Currency.valueOf(currencyCB.getText().trim());
+            List<Team> teamsToSave = getSelectedTeams();
+            Currency currency = getCurrency();
             BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText().trim()));
             BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText().trim()));
             BigDecimal overheadMultiplier = new BigDecimal(convertToDecimalPoint(multiplierTF.getText().trim()));
-            BigDecimal utilizationPercentage = new BigDecimal(convertToDecimalPoint(utilPercentageTF.getText().trim()));
+            BigDecimal utilizationPercentage = new BigDecimal(99);
             BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText().trim()));
             LocalDateTime savedDate = LocalDateTime.now();
             boolean isActive = true;
@@ -134,7 +126,15 @@ public class CreateController implements Initializable {
             configuration.setDayRate(dayRate);
             configuration.setHourlyRate(hourlyRate);
 
-            saveEmployeeOperation(employee, configuration, teams);
+            saveEmployeeOperation(employee, configuration, teamsToSave);
+        }
+    }
+
+    private Currency getCurrency() {
+        if (currencyCB.getSelectedItem().equals(Currency.EUR.name())) {
+            return Currency.EUR;
+        } else {
+            return Currency.USD;
         }
     }
 
@@ -150,7 +150,6 @@ public class CreateController implements Initializable {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        // Thread.sleep(200);
                         model.addEmployee(employee, configuration, teams);
                         return null;
                     }
@@ -159,15 +158,16 @@ public class CreateController implements Initializable {
         };
 
         saveEmployee.setOnSucceeded(event -> {
-            showOperationStatus("Operation Successful!", Duration.seconds(1));
-            WindowsManagement.closeStackPane(firstLayout);
+            showOperationStatus("Operation Successful!", Duration.seconds(2));
+            //WindowsManagement.closeStackPane(firstLayout);
             closeWindowSpinner(firstLayout);
 
         });
 
         saveEmployee.setOnFailed(event -> {
                 showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
-                WindowsManagement.closeStackPane(firstLayout);
+                //WindowsManagement.closeStackPane(firstLayout);
+                closeWindowSpinner(firstLayout);
         });
         saveEmployee.restart();
     }
@@ -175,7 +175,7 @@ public class CreateController implements Initializable {
     private void showOperationStatus(String message, Duration duration) {
         spinnerLB.setText(message);
         PauseTransition delay = new PauseTransition(duration);
-        delay.setOnFinished(event -> Platform.runLater(this::disableSpinner));
+        delay.setOnFinished(event -> spinnerLB.setText(""));
         delay.play();
     }
 
@@ -183,37 +183,29 @@ public class CreateController implements Initializable {
         return teamsList;
     }
 
-    private void addTeamListener(){
+    private void addTeamButtonListener(){
         addTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
-            if(teamCB.getSelectedItem() != null){
-                teamsList.add((Team) teamCB.getSelectedItem());
-                teamsUtilizationList.add(Integer.valueOf(utilPercentageTF.getText()));
-                String teamWithUtilization = ((Team) teamCB.getSelectedItem()).getTeamName() + ", " + utilPercentageTF.getText() + "%";
-                teamsListView.getItems().add(teamWithUtilization);
-            }
+            if(teamCB.getSelectedItem() != null &&
+                EmployeeValidation.isPercentageValid(utilPercentageTF)){
+                    teamsList.add((Team) teamCB.getSelectedItem());
+                    teamsUtilizationList.add(Integer.valueOf(utilPercentageTF.getText()));
+                    String teamWithUtilization = ((Team) teamCB.getSelectedItem()).getTeamName() + ", " + utilPercentageTF.getText() + "%";
+                    teamsListView.getItems().add(teamWithUtilization);
+                    regionCB.clearSelection();
+                    countryCB.clearSelection();
+                    teamCB.clearSelection();
+                    utilPercentageTF.clear();
+                }
         });
     }
 
     private void removeTeamListener(){
         removeTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
+            if(teamsListView.getSelectionModel().getSelectedItem() != null){
                 teamsList.remove(teamsListView.getSelectionModel().getSelectedIndex());
                 teamsUtilizationList.remove(teamsListView.getSelectionModel().getSelectedIndex());
                 teamsListView.getItems().remove(teamsListView.getSelectionModel().getSelectedIndex());
-                System.out.println(teamsList);
-                System.out.println(teamsUtilizationList);
-        });
-    }
-
-    private Country getSelectedCountry() {
-        Country country = null;
-        if(countryCB.getSelectedItem() == null){
-            country = new Country(countryCB.getText().trim());
-            countries.add(country);
-            countryCB.setItems(countries);
-        } else {
-            country = (Country) countryCB.getSelectedItem();
-        }
-        return country;
+        }});
     }
 
     private void clearFields(){
@@ -230,41 +222,10 @@ public class CreateController implements Initializable {
                });
            }
          });
-         teamCB.clear();
          teamCB.clearSelection();
          teamsListView.getItems().clear();
          teamsList.clear();
          teamsUtilizationList.clear();
-    }
-
-    private void disableFields(){
-        inputsParent.getChildren().forEach((child)->{
-            if(child instanceof VBox){
-                ((VBox) child).getChildren().forEach((input)->{
-                    if(input instanceof  MFXTextField){
-                        ((MFXTextField) input).setEditable(false);
-                    }
-                    if(input instanceof MFXComboBox<?>){
-                        ((MFXComboBox<?>) input).setSelectable(false);
-                    }
-                });
-            }
-        });
-    }
-
-    private void enableFields(){
-        inputsParent.getChildren().forEach((child)->{
-            if(child instanceof VBox){
-                ((VBox) child).getChildren().forEach((input)->{
-                    if(input instanceof  MFXTextField){
-                        input.setDisable(false);
-                    }
-                    if(input instanceof MFXComboBox<?>){
-                        input.setDisable(false);
-                    }
-                });
-            }
-        });
     }
 
     private void listenerForEmptyFieldsAfterSaving(){
@@ -274,9 +235,8 @@ public class CreateController implements Initializable {
         EmployeeValidation.listenerForEmptyFieldsAfterSaving(multiplierTF);
         EmployeeValidation.listenerForEmptyFieldsAfterSaving(utilPercentageTF);
         EmployeeValidation.listenerForEmptyFieldsAfterSaving(salaryTF);
-        EmployeeValidation.listenerForEmptyFieldsAfterSaving(countryCB);
+        EmployeeValidation.listenerForEmptyFieldsAfterSaving(dayWorkingHours);
         EmployeeValidation.listenerForEmptyFieldsAfterSaving(currencyCB);
-        EmployeeValidation.listenerForEmptyFieldsAfterSaving(teamCB);
         EmployeeValidation.listenerForEmptyFieldsAfterSaving(overOrResourceCB);
     }
 
@@ -295,16 +255,14 @@ public class CreateController implements Initializable {
 
     private void addListenersToInputs(){
         //Listeners for the percentages
-        EmployeeValidation.addNonEmptyPercentageListener(utilPercentageTF);
         EmployeeValidation.addNonEmptyPercentageListener(multiplierTF);
         //
         EmployeeValidation.addInputDigitsListeners(salaryTF);
         EmployeeValidation.addInputDigitsListeners(workingHoursTF);
         EmployeeValidation.addInputDigitsListeners(annualAmountTF);
+        EmployeeValidation.addInputDigitsListeners(dayWorkingHours);
         //
         EmployeeValidation.addLettersOnlyInputListener(nameTF);
-        EmployeeValidation.addLettersOnlyInputListener(countryCB);
-        EmployeeValidation.addLettersOnlyInputListener(teamCB);
         EmployeeValidation.addLettersOnlyInputListener(overOrResourceCB);
         EmployeeValidation.addLettersOnlyInputListener(currencyCB);
     }
@@ -339,18 +297,14 @@ public class CreateController implements Initializable {
         EmployeeValidation.addCurrencyToolTip(currencyCB);
         EmployeeValidation.addValueToolTip(salaryTF, workingHoursTF, annualAmountTF);
         EmployeeValidation.addPercentageToolTip(utilPercentageTF, multiplierTF);
+        EmployeeValidation.addRegionToolTip(regionCB);
+        EmployeeValidation.addDailyWorkingHoursToolTip(dayWorkingHours);
     }
 
     private void enableSpinner() {
         spinnerLB.setText("Processing...");
         operationSpinner.setVisible(true);
         operationSpinner.setDisable(false);
-    }
-
-    private void disableSpinner() {
-        operationSpinner.setVisible(false);
-        operationSpinner.setDisable(true);
-        spinnerLB.setText("");
     }
 
     //convert form comma decimal to point decimal
@@ -370,7 +324,7 @@ public class CreateController implements Initializable {
 
 
     private void closeWindowSpinner(StackPane stackPane){
-        PauseTransition pauseTransition =  new PauseTransition(Duration.millis(2000));
+        PauseTransition pauseTransition =  new PauseTransition(Duration.millis(1000));
         pauseTransition.setOnFinished((e)->{
             WindowsManagement.closeStackPane(firstLayout);
             clearFields();

@@ -7,6 +7,7 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.PauseTransition;
 import javafx.collections.ObservableMap;
 import javafx.css.PseudoClass;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
 
@@ -21,12 +22,15 @@ import java.util.Locale;
 public class EmployeeValidation {
     private static final PseudoClass ERROR_PSEUDO_CLASS = PseudoClass.getPseudoClass("error");
     private static final String VALID_NAME_FORMAT = "Please enter the name of the Employee (e.g., Nelson Mandela).";
-    private static final String VALID_COUNTRY_FORMAT = "Please select or enter the Country where the Employee works (e.g., Denmark).";
-    private static final String VALID_TEAM_FORMAT = "Please select or enter the Team of the Employee (e.g., Project Management).";
-    private static final String VALID_VALUE_FORMAT = "Please enter the value in this format: e.g., 100 or 150000.50.";
+    private static final String VALID_COUNTRY_FORMAT = "Please select a Country (e.g., Denmark).";
+    private static final String VALID_TEAM_FORMAT = "Please select the Team of the Employee (e.g., Project Management).";
+    private static final String VALID_VALUE_FORMAT = "Please enter the value in this format: e.g., 150000.50 or 100.";
+    private static final String VALID_HOURS_FORMAT = "Please enter the hours in this format: e.g., 5.5 or 8.";
     private static final String VALID_PERCENTAGE_FORMAT = "Please enter the percentage in this format: e.g., 59 or 70.50.";
     private static final String VALID_OVERHEAD_COST_FORMAT = "Please select one of the options: Overhead or Resource.";
     private static final String VALID_CURRENCY_FORMAT = "Please select one of the currencies: EUR or USD.";
+    private static final String VALID_REGION_FORMAT = "Please select a Region (e.g., Europe).";
+
     private final static String validNamePattern = "^[A-Za-z]+(\\s[A-Za-z]+)*$";
     private final static String validPercentagePattern = "^\\d{0,3}([.,]\\d{1,2})?$";
     private final static String validNumberPattern = "^\\d{1,12}([.,]\\d{1,2})?$";
@@ -34,37 +38,34 @@ public class EmployeeValidation {
     private final static String INVALID_MARKUP = "The  multiplier should be between 0 and 100";
     private final static String  INVALID_FORMAT = "Please insert a value in the following formats : '0 00 00,0 00,00 00.0 00.00'";
 
-    private static List<String> countries = new ArrayList<>();
-    private static List<Team> teams;
-
 
     /**
      * validate the user inputs for the add operation
      */
-    public static boolean arePercentagesValid(MFXTextField utilization, MFXTextField overheadMultiplier) {
+    public static boolean arePercentagesValid(MFXTextField overheadMultiplier, List<Integer> utilizationPercentages) {
         boolean isValid = true;
-
-        String utilizationText = utilization.getText();
-        if (utilizationText.isEmpty()) {
-            utilization.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            ExceptionHandler.errorAlertMessage("The Utilization % field cannot be empty.");
+        System.out.println(utilizationPercentages.stream().mapToInt(Integer::intValue).sum());
+        if(utilizationPercentages.stream().mapToInt(Integer::intValue).sum() > 100){
+            ExceptionHandler.errorAlertMessage("The sum of the Utilization % should be less than or equal to 100.");
             return false;
-        } else if (!utilizationText.matches(validPercentagePattern)) {
-            utilization.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            ExceptionHandler.errorAlertMessage("The Utilization % should be a number.");
-            return false;
-        } else {
-            BigDecimal utilizationValue = new BigDecimal(convertToDecimalPoint(utilizationText));
-            if (utilizationValue.compareTo(BigDecimal.ZERO) < 0 || utilizationValue.compareTo(new BigDecimal("100")) > 0) {
-                utilization.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-                ExceptionHandler.errorAlertMessage("The Utilization % should be between 0 and 100.");
+        }
+        for (int percentage : utilizationPercentages) {
+            String utilizationText = String.valueOf(percentage);
+            if (!utilizationText.matches(validPercentagePattern)) {
+                ExceptionHandler.errorAlertMessage("The Utilization % should be a number.");
                 return false;
+            } else {
+                if (percentage < 0 || percentage > 100) {
+                    ExceptionHandler.errorAlertMessage("The Utilization % should be between 0 and 100.");
+                    return false;
+                }
             }
         }
 
         String overheadMultiplierText = overheadMultiplier.getText();
         if (overheadMultiplierText.isEmpty()) {
             overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            System.out.println("HERE");
             ExceptionHandler.errorAlertMessage("The Overhead Multiplier % field cannot be empty.");
             return false;
         } else if (!overheadMultiplierText.matches(validPercentagePattern)) {
@@ -82,8 +83,31 @@ public class EmployeeValidation {
         return isValid;
     }
 
+    public static boolean isPercentageValid(MFXTextField percentageField) {
+        boolean isValid = true;
 
-    public static boolean areNumbersValid(MFXTextField salary, MFXTextField hours, MFXTextField fixedAmount) {
+        String percentageText = percentageField.getText();
+        if (percentageText.isEmpty()) {
+            percentageField.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Utilization % field cannot be empty.");
+            return false;
+        } else if (!percentageText.matches(validPercentagePattern)) {
+            percentageField.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Utilization % should be a number.");
+            return false;
+        } else {
+            int multiplierValue = Integer.parseInt(percentageText);
+            if (multiplierValue < 0 || multiplierValue > 100) {
+                percentageField.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                ExceptionHandler.errorAlertMessage("The Utilization % should be between 0 and 100.");
+                return false;
+            }
+            return isValid;
+        }
+    }
+
+
+    public static boolean areNumbersValid(MFXTextField salary, MFXTextField hours, MFXTextField fixedAmount, MFXTextField dailyWorkingHours) {
         boolean isValid = true;
 
         String salaryText = salary.getText();
@@ -139,10 +163,28 @@ public class EmployeeValidation {
                 return false;
             }
         }
+
+        String dailyHours = dailyWorkingHours.getText();
+        if (dailyHours.isEmpty()) {
+            dailyWorkingHours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Daily Working Hours field cannot be empty.");
+            return false;
+        } else if (!dailyHours.matches(validNumberPattern)) {
+            dailyWorkingHours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Daily Working Hours should be a number.");
+            return false;
+        } else {
+            int numberToCheck = Integer.parseInt(convertToDecimalPoint(dailyHours));
+            if (numberToCheck < 0) {
+                dailyWorkingHours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                ExceptionHandler.errorAlertMessage("The Daily Working Hours should be equal or greater than 0.");
+                return false;
+            }
+        }
         return isValid;
     }
 
-    public static boolean areNamesValid(MFXTextField name, MFXComboBox country, MFXComboBox team) {
+    public static boolean areNamesValid(MFXTextField name, ListView teamList) {
         boolean isValid = true;
 
         if (name.getText().isEmpty()) {
@@ -150,17 +192,8 @@ public class EmployeeValidation {
             ExceptionHandler.errorAlertMessage("Name field cannot be empty.");
             return false;
         }
-        if (country.getText().isEmpty()) {
-            ExceptionHandler.errorAlertMessage("Country  field cannot be empty.");
-            return false;
-        } else if (!countries.contains(country.getText())) {
-            country.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            ExceptionHandler.errorAlertMessage("Country Not Found: We couldn't find the country you entered. Please check your spelling and try again.");
-            return false;
-        }
-        if (!teams.contains((Team) team.getSelectedItem()) && team.getText().isEmpty()) {
-            team.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            ExceptionHandler.errorAlertMessage("Team field cannot be empty.");
+        if (teamList.getItems().isEmpty()) {
+            ExceptionHandler.errorAlertMessage("Team(s) list cannot be empty.");
             return false;
         }
         return isValid;
@@ -233,6 +266,11 @@ public class EmployeeValidation {
         nameTF.setTooltip(errorTooltip);
     }
 
+    public static void addRegionToolTip(MFXComboBox countryCB) {
+        Tooltip tooltip = new Tooltip(VALID_REGION_FORMAT);
+        countryCB.setTooltip(tooltip);
+    }
+
     public static void addCountryToolTip(MFXComboBox countryCB) {
         Tooltip tooltip = new Tooltip(VALID_COUNTRY_FORMAT);
         countryCB.setTooltip(tooltip);
@@ -261,17 +299,14 @@ public class EmployeeValidation {
         overOrResourceCB.setTooltip(tooltip);
     }
 
+    public static void addDailyWorkingHoursToolTip(MFXTextField hoursTF) {
+        Tooltip tooltip = new Tooltip(VALID_HOURS_FORMAT);
+        hoursTF.setTooltip(tooltip);
+    }
+
     public static void addCurrencyToolTip(MFXComboBox currencyCB) {
         Tooltip tooltip = new Tooltip(VALID_CURRENCY_FORMAT);
         currencyCB.setTooltip(tooltip);
-    }
-
-    public static void getCountries(List<String> listCountries) {
-        countries = listCountries;
-    }
-
-    public static void getTeams(ObservableMap<Integer, Team> listTeams) {
-        teams = new ArrayList<>(listTeams.values());
     }
 
     public static void listenerForEmptyFieldsAfterSaving(MFXTextField textField){
