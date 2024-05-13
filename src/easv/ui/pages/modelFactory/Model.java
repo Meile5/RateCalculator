@@ -116,10 +116,6 @@ public class Model implements IModel {
         populateTeamsWithEmployees();
         populateCountriesWithTeams();
         populateRegionsWithCountries();
-
-        //TODO this to method calls needs to be moved in the create controller
-        EmployeeValidation.getCountries(validMapViewCountryNameValues);
-        EmployeeValidation.getTeams(teams);
     }
 
 
