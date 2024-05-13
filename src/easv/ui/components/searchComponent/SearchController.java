@@ -40,6 +40,7 @@ public class SearchController<T> implements Initializable {
     @FXML
     private TextField searchField;
 
+
     public SearchController(DataHandler<T> dataHandler) {
         this.dataHandler = dataHandler;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("SearchView.fxml"));
@@ -76,6 +77,7 @@ public class SearchController<T> implements Initializable {
         popupWindow = new PopupControl();
         searchResponseHolder = new ListView<>();
         popupWindow.getScene().setRoot(searchResponseHolder);
+
     }
 
     private void configurePopUpWindow() {
