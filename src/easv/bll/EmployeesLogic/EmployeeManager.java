@@ -64,12 +64,23 @@ public class EmployeeManager implements IEmployeeManager {
         return employeeDAO.deleteEmployee(employee);
     }
 
+
+
     @Override
-    public List<Employee> filterByCountry(Collection<Employee> employees, Country country) {
-        return employees.stream().filter((employee) -> {
-            Country employeeCountry = employee.getCountry();
-            return employeeCountry != null && employeeCountry.getCountryName().equals(country.getCountryName());
-        }).toList();
+    public List<Employee> filterByCountry(Region region,List<Country> countries,Map<Integer,Employee> employees) {
+        List<Team> teams = countries.stream().flatMap(e->e.getTeams().stream()).toList();
+        Map<Integer,Employee> employeesFiltered = new HashMap<>();
+        for(Team team:teams){
+            for(Employee employee:team.getEmployees()){
+                if(!employeesFiltered.containsKey(employee.getId())){
+                    employee.setRegions(employees.get(employee.getId()).getRegions());
+                    employee.setCountries(employees.get(employee.getId()).getCountries());
+                    employee.setTeams(employees.get(employee.getId()).getTeams());
+                    employeesFiltered.put(employee.getId(),employee);
+                }
+            }
+        }
+        return employeesFiltered.values().stream().toList();
     }
 
     @Override

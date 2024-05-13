@@ -1,7 +1,9 @@
 package easv.ui.pages.employeesPage.employeeMainPage;
+
 import easv.Utility.DisplayEmployees;
 import easv.be.Country;
 import easv.be.Employee;
+import easv.be.Region;
 import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
@@ -30,15 +32,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class EmployeeMainPageController implements Initializable, DisplayEmployees {
@@ -52,7 +52,13 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     @FXML
     private MFXProgressSpinner progressBar;
     @FXML
-    private MFXComboBox countriesFilterCB, teamsFilterCB;
+    private MFXComboBox<Country> countriesFilterCB;
+
+    @FXML
+    private MFXComboBox<Team> teamsFilterCB;
+
+    @FXML
+    private MFXComboBox<Region> regionsFilter;
 
     public VBox getEmployeesContainer() {
         return employeesContainer;
@@ -81,6 +87,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private SVGPath teamRevertSvg;
     @FXML
     private SVGPath countryRevertSvg;
+    @FXML
+    private SVGPath regionRevertSvg;
     @FXML
     private SVGPath svgPath;
     private ObservableList<Team> teams;
@@ -117,20 +125,27 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
             progressBar.setVisible(true);
             employeeSearchHandler = new EmployeeSearchHandler(model);
-            employeeSearch= new SearchController<>(employeeSearchHandler);
-            employeeSearchContainer.add(employeeSearch.getSearchRoot(),0,0);
+            employeeSearch = new SearchController<>(employeeSearchHandler);
+            employeeSearchContainer.add(employeeSearch.getSearchRoot(), 0, 0);
             //loadSearchSVG();
             initializeEmployeeLoadingService();
-           // createPopUpWindow();
+            // createPopUpWindow();
             //searchFieldListener();
-           // addSelectionListener();
-            //populateFilterComboBox();
+            // addSelectionListener();
+            //
+
+            populateFilterComboBox();
+            /**add listener for the region to change the countries filter combo box  values  */
+            addRegionFilterListener();
+            /** add the listener that will change the team list based on the selected country */
+            addCountryFilterListener();
+
             // filterByCountryListener();
             //filterByTeamListener();
             addFocusListener(countriesFilterCB, countryRevertButton);
             addFocusListener(teamsFilterCB, teamRevertButton);
             //revertCountryFilter(countryRevertButton, countryRevertSvg);
-           // revertTeamFilter(teamRevertButton, teamRevertSvg);
+            // revertTeamFilter(teamRevertButton, teamRevertSvg);
             //setTotalRatesDefault();
         } catch (RateException e) {
             e.printStackTrace();
@@ -182,6 +197,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         loadEmployeesFromDB.restart();
     }
 
+
+    //rename this classes
     private void addFocusListener(MFXTextField filterInput, HBox sibling) {
         filterInput.focusWithinProperty().addListener((obs, wasFocused, isNowFocused) -> {
             if (isNowFocused) {
@@ -192,6 +209,56 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
+    /**populate filter combo boxes with values */
+    private void populateFilterComboBox() {
+        countriesFilterCB.setItems(model.getOperationalCountries().sorted());
+        teamsFilterCB.setItems(model.getOperationalTeams().sorted());
+        regionsFilter.setItems(model.getOperationalRegions().sorted());
+
+
+//        countries = model.getCountiesValues();
+//        teams = FXCollections.observableArrayList(model.getTeams().values());
+//        countriesFilterCB.setItems(countries.sorted());
+//        teamsFilterCB.setItems(teams.sorted());
+    }
+
+
+    /**
+     * add  region selection listener  that will filter the countries by regions and teams by countries in the region
+     */
+    private void addRegionFilterListener() {
+        this.regionsFilter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                ObservableList<Country> regionCountries = FXCollections.observableArrayList(newValue.getCountries());
+                this.countriesFilterCB.clearSelection();
+                this.countriesFilterCB.setItems(regionCountries);
+                //save the selected countries in the model , in order to be displayed , change the name toFilterByRegion
+                model.filterByCountry(newValue,newValue.getCountries());
+                ObservableList<Team> regionCountriesTeams = FXCollections.observableArrayList();
+                for (Country country : regionCountries) {
+                    regionCountriesTeams.addAll(country.getTeams());
+
+                }
+                this.teamsFilterCB.clearSelection();
+                this.teamsFilterCB.setItems(regionCountriesTeams);
+            }
+        });
+    }
+
+
+    /** add country selection listener */
+    private void addCountryFilterListener() {
+        this.countriesFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                ObservableList<Team> countryTeams = FXCollections.observableArrayList(newValue.getTeams());
+                this.teamsFilterCB.clearSelection();
+                this.teamsFilterCB.setItems(countryTeams);
+                //save the selected countries in the model , in order to be displayed
+                //model.filterByCountryTeams(newValue,newValue.getTeams());
+               // model.filterByCountry(newValue,newValue.getTeams());
+            }
+        });
+    }
 
 
 }
@@ -259,12 +326,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
-    private void populateFilterComboBox(){
-        countries = model.getCountiesValues();
-        teams = FXCollections.observableArrayList(model.getTeams().values());
-        countriesFilterCB.setItems(countries.sorted());
-        teamsFilterCB.setItems(teams.sorted());
-    }
+
 
     private void filterByCountryListener() {
         countriesFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {

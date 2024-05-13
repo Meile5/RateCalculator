@@ -5,5 +5,4 @@ import java.util.Map;
 
 public interface ITeamLogic  {
   Map<Integer, Team> getTeams() throws RateException;
-
 }

@@ -236,7 +236,6 @@ public class EmployeesDAO implements IEmployeeDAO {
                 Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active, dayRate, hourlyRate, dayWorkingHours);
                 if (configuration.isActive()) {
                     employee.setActiveConfiguration(configuration);
-                    System.out.println(configuration + "fromda");
                 }
 
                 configurations.add(configuration);
@@ -503,9 +502,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                     Employee employee = new Employee(employeeName, employeeType, currency);
                     employee.setId(employeeId);
                     List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employee, conn);
-                    System.out.println(employeeConfigurations + "configurations" );
                     employee.setConfigurations(employeeConfigurations);
-                    System.out.println(employee.getActiveConfiguration() + " active");
                     currentTeam.addNewTeamMember(employee);
                 }
             }

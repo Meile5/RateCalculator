@@ -203,11 +203,11 @@ public class Model implements IModel {
             sortDisplayedEmployee();
             displayedEmployees = sortedEmployeesByName;
             Platform.runLater(() -> {
-                try {
+           //     try {
                     displayEmployees.displayEmployees();
-                } catch (RateException e) {
-                    throw new RuntimeException(e);
-                }
+              //  } catch (RateException e) {
+               //     throw new RuntimeException(e);
+             //   }
             });
         }
     }
@@ -340,8 +340,10 @@ public class Model implements IModel {
     }
 
     @Override
-    public void filterByCountry(Country country) throws RateException {
-        displayedEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
+    public void filterByCountry(Region region ,List<Country> countries) {
+        displayedEmployees.setAll(employeeManager.filterByCountry(region,countries,employees));
+        //displayedEmployees.setAll();
+        displayedEmployees.forEach(e-> System.out.println(e.getActiveConfiguration().getDayRate()));
         displayEmployees.displayEmployees();
         filteredEmployeesList.setAll(displayedEmployees);
         listEmployeeByCountryTemp.setAll(displayedEmployees);
@@ -349,7 +351,7 @@ public class Model implements IModel {
 
     @Override
     public void filterByTeam(Team team) throws RateException {
-        //filteredEmployeesList.setAll(displayedEmployees);
+        filteredEmployeesList.setAll(displayedEmployees);
         displayedEmployees.setAll(employeeManager.filterByTeam(employees.values(), team));
         displayEmployees.displayEmployees();
     }

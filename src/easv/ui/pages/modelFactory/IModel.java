@@ -82,7 +82,7 @@ public interface IModel {
 
     void performSelectUserSearchOperation(Employee employee) throws RateException;
 
-    void filterByCountry(Country country) throws RateException;
+    void filterByCountry(Region region,List<Country> countries);
 
 
     /**
