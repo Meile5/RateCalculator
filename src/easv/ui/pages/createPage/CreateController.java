@@ -10,6 +10,8 @@ import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
 import javafx.animation.PauseTransition;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
@@ -32,6 +34,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
@@ -41,22 +45,27 @@ public class CreateController implements Initializable {
     @FXML
     private Parent createPage;
     @FXML
-    private MFXTextField nameTF, salaryTF, workingHoursTF, annualAmountTF, utilPercentageTF, multiplierTF;
+    private MFXTextField nameTF, salaryTF, workingHoursTF, annualAmountTF, utilPercentageTF, multiplierTF, dayWorkingHours;
     @FXML
-    private MFXComboBox countryCB, teamCB, currencyCB, overOrResourceCB;
+    private MFXComboBox countryCB, teamCB, regionCB, currencyCB, overOrResourceCB;
     @FXML
     private ImageView clearIMG, employeeIMG;
-
-
     @FXML
     private HBox inputsParent;
     @FXML
     private MFXProgressSpinner operationSpinner;
     @FXML
     private Label spinnerLB;
+    @FXML
+    private Button addTeamBT, removeTeamBT;
+    @FXML
+    private ListView teamsListView;
 
     private ObservableList<Country> countries;
     private ObservableList<Team> teams;
+    private ObservableList<Region> regions;
+    private List<Team> teamsList = new ArrayList<>();
+    private List<Integer> teamsUtilizationList = new ArrayList<>();
     private IModel model;
     private Service<Void> saveEmployee;
     private StackPane firstLayout;
@@ -83,14 +92,17 @@ public class CreateController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
             populateComboBoxes();
             addListenersToInputs();
+            addTeamListener();
+            removeTeamListener();
             listenerForEmptyFieldsAfterSaving();
             addTooltips();
             disableSpinner();
+            addRegionSelectionListener(regionCB, countryCB);
+            addCountrySelectionListener(countryCB, teamCB);
     }
 
     @FXML
     private void saveEmployee() throws RateException {
-      /*  parseCountriesAndTeamsToValidator();
         if(EmployeeValidation.areNamesValid(nameTF, countryCB,teamCB) &&
            EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
            EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
@@ -101,12 +113,8 @@ public class CreateController implements Initializable {
             WindowsManagement.showStackPane(firstLayout);
 
             String name = nameTF.getText().trim();
-            EmployeeType employeeType = EmployeeType.valueOf(overOrResourceCB.getText().trim());
-
-            Country country = getSelectedCountry();
-
-            Team team = getSelectedTeam();
-
+            EmployeeType employeeType = (EmployeeType) overOrResourceCB.getSelectedItem();
+            List<Team> teams = getSelectedTeams();
             Currency currency = Currency.valueOf(currencyCB.getText().trim());
             BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText().trim()));
             BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText().trim()));
@@ -114,22 +122,36 @@ public class CreateController implements Initializable {
             BigDecimal utilizationPercentage = new BigDecimal(convertToDecimalPoint(utilPercentageTF.getText().trim()));
             BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText().trim()));
             LocalDateTime savedDate = LocalDateTime.now();
-            Employee employee = new Employee(name, country, team, employeeType, currency);
-            Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate,true);
-            saveEmployeeOperation(employee, configuration);
-        }*/
+            boolean isActive = true;
+            int dailyWorkingHours = Integer.parseInt(dayWorkingHours.getText());
+
+            Employee employee = new Employee(name, employeeType, currency);
+            Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate, isActive);
+            employee.setActiveConfiguration(configuration);
+
+            BigDecimal dayRate = model.getComputedDayRate(employee);
+            BigDecimal hourlyRate = model.getComputedHourlyRate(employee, dailyWorkingHours);
+            configuration.setDayRate(dayRate);
+            configuration.setHourlyRate(hourlyRate);
+
+            saveEmployeeOperation(employee, configuration, teams);
+        }
     }
 
-    private void saveEmployeeOperation(Employee employee, Configuration configuration) {
-        saveEmployee = new Service<Void>(){
+    @FXML
+    private void clearInputs(){
+        clearFields();
+    }
+
+    private void saveEmployeeOperation(Employee employee, Configuration configuration, List<Team> teams) {
+        saveEmployee = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                       // Thread.sleep(200);
-                        model.addEmployee(employee, configuration);
-              //          disableFields();
+                        // Thread.sleep(200);
+                        model.addEmployee(employee, configuration, teams);
                         return null;
                     }
                 };
@@ -138,16 +160,15 @@ public class CreateController implements Initializable {
 
         saveEmployee.setOnSucceeded(event -> {
             showOperationStatus("Operation Successful!", Duration.seconds(1));
-            //enableFields();
-            //WindowsManagement.closeStackPane(firstLayout);
+            WindowsManagement.closeStackPane(firstLayout);
             closeWindowSpinner(firstLayout);
 
         });
 
-        saveEmployee.setOnFailed(event ->
-                showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5)));
-
-              //  enableFields();
+        saveEmployee.setOnFailed(event -> {
+                showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
+                WindowsManagement.closeStackPane(firstLayout);
+        });
         saveEmployee.restart();
     }
 
@@ -158,16 +179,29 @@ public class CreateController implements Initializable {
         delay.play();
     }
 
-    private Team getSelectedTeam() {
-        Team team = null;
-        if(teamCB.getSelectedItem() == null){
-            team = new Team(teamCB.getText().trim());
-            teams.add(team);
-            teamCB.setItems(teams);
-        } else {
-            team = (Team) teamCB.getSelectedItem();
-        }
-        return team;
+    private List<Team> getSelectedTeams() {
+        return teamsList;
+    }
+
+    private void addTeamListener(){
+        addTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
+            if(teamCB.getSelectedItem() != null){
+                teamsList.add((Team) teamCB.getSelectedItem());
+                teamsUtilizationList.add(Integer.valueOf(utilPercentageTF.getText()));
+                String teamWithUtilization = ((Team) teamCB.getSelectedItem()).getTeamName() + ", " + utilPercentageTF.getText() + "%";
+                teamsListView.getItems().add(teamWithUtilization);
+            }
+        });
+    }
+
+    private void removeTeamListener(){
+        removeTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
+                teamsList.remove(teamsListView.getSelectionModel().getSelectedIndex());
+                teamsUtilizationList.remove(teamsListView.getSelectionModel().getSelectedIndex());
+                teamsListView.getItems().remove(teamsListView.getSelectionModel().getSelectedIndex());
+                System.out.println(teamsList);
+                System.out.println(teamsUtilizationList);
+        });
     }
 
     private Country getSelectedCountry() {
@@ -196,6 +230,11 @@ public class CreateController implements Initializable {
                });
            }
          });
+         teamCB.clear();
+         teamCB.clearSelection();
+         teamsListView.getItems().clear();
+         teamsList.clear();
+         teamsUtilizationList.clear();
     }
 
     private void disableFields(){
@@ -242,10 +281,12 @@ public class CreateController implements Initializable {
     }
 
     private void populateComboBoxes() {
-            countries = model.getCountiesValues();
-            teams = FXCollections.observableArrayList(model.getTeams().values());
-            ObservableList<String> currencies = FXCollections.observableArrayList("USD", "EUR");
-            ObservableList<String> overOrResource = FXCollections.observableArrayList("Overhead", "Resource");
+            regions = model.getOperationalRegions();
+            countries = model.getOperationalCountries();
+            teams = model.getOperationalTeams();
+            ObservableList<String> currencies = FXCollections.observableArrayList(Currency.EUR.name(), Currency.USD.name());
+            ObservableList<EmployeeType> overOrResource = FXCollections.observableArrayList(EmployeeType.Overhead, EmployeeType.Resource);
+            regionCB.setItems(regions);
             countryCB.setItems(countries);
             teamCB.setItems(teams);
             currencyCB.setItems(currencies);
@@ -268,6 +309,28 @@ public class CreateController implements Initializable {
         EmployeeValidation.addLettersOnlyInputListener(currencyCB);
     }
 
+    private void addRegionSelectionListener(MFXComboBox<Region> region, MFXComboBox<Country> countries) {
+        region.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                countries.clearSelection();
+                ObservableList<Country> regionCountries= FXCollections.observableArrayList(newValue.getCountries());
+                countries.setItems(regionCountries);
+                countries.selectItem(regionCountries.get(0));
+            }
+        });
+    }
+
+    private void addCountrySelectionListener(MFXComboBox<Country> country, MFXComboBox<Team> teams) {
+        country.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                teams.clearSelection();
+                ObservableList<Team> countryTeams = FXCollections.observableArrayList(newValue.getTeams());
+                teams.setItems(countryTeams);
+                teams.selectItem(countryTeams.get(0));
+            }
+        });
+    }
+
     private void addTooltips(){
         EmployeeValidation.addNameToolTip(nameTF);
         EmployeeValidation.addCountryToolTip(countryCB);
@@ -276,11 +339,6 @@ public class CreateController implements Initializable {
         EmployeeValidation.addCurrencyToolTip(currencyCB);
         EmployeeValidation.addValueToolTip(salaryTF, workingHoursTF, annualAmountTF);
         EmployeeValidation.addPercentageToolTip(utilPercentageTF, multiplierTF);
-    }
-
-    private void parseCountriesAndTeamsToValidator(){
-        EmployeeValidation.getCountries(model.getValidCountries());
-        EmployeeValidation.getTeams(model.getTeams());
     }
 
     private void enableSpinner() {

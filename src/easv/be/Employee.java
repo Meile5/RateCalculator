@@ -79,7 +79,9 @@ public class Employee {
     }
 
     public void setActiveConfiguration(Configuration activeConfiguration) {
-        deactivateOldConfiguration();
+        if(getActiveConfiguration() != null){
+            deactivateOldConfiguration();
+        }
         this.activeConfiguration = activeConfiguration;
     }
     private void deactivateOldConfiguration() {

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IEmployeeManager {
-    Employee addEmployee(Employee employee, ObservableMap<String, Country> countries, ObservableMap<Integer, Team> teams, Configuration configuration) throws RateException;
+    Employee addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException;
     Map<Integer, Employee> returnEmployees() throws RateException;
     Boolean deleteEmployee(Employee employee) throws RateException;
 

@@ -246,20 +246,17 @@ public class EmployeesDAO implements IEmployeeDAO {
 
 
     @Override
-    public Integer addEmployee(Employee employee, boolean newCountry, boolean newTeam, Configuration configuration) throws RateException {
+    public Integer addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException {
         Integer employeeID = null;
         Connection conn = null;
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
-            addNewCountryOrTeam(employee, newCountry, newTeam, conn);
-            String sql = "INSERT INTO Employees (Name, employeeType, CountryID, TeamID, Currency) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO Employees (Name, employeeType, Currency) VALUES (?, ?, ?)";
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psmt.setString(1, employee.getName());
                 psmt.setString(2, employee.getEmployeeType().toString());
-                psmt.setInt(3, employee.getCountry().getId());
-                psmt.setInt(4, employee.getTeam().getId());
-                psmt.setString(5, employee.getCurrency().name());
+                psmt.setString(3, employee.getCurrency().toString());
                 psmt.executeUpdate();
                 try (ResultSet res = psmt.getGeneratedKeys()) {
                     if (res.next()) {
@@ -273,6 +270,9 @@ public class EmployeesDAO implements IEmployeeDAO {
                     if (configurationID != null) {
                         addEmployeeConfiguration(employeeID, configurationID, conn);
                     }
+                }
+                if(!teams.isEmpty()){
+                    addEmployeeToTeam(employeeID, teams, conn);
                 }
                 conn.commit();
             } catch (SQLException e) {
@@ -352,7 +352,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     @Override
     public Integer addConfiguration(Configuration configuration, Connection conn) throws RateException, SQLException {
         Integer configurationID = null;
-        String sql = "INSERT INTO Configurations (AnnualSalary, FixedAnnualAmount, OverheadMultiplier, UtilizationPercentage, WorkingHours, Date,Active,Markup,GrossMargin) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
+        String sql = "INSERT INTO Configurations (AnnualSalary, FixedAnnualAmount, OverheadMultiplier, UtilizationPercentage, WorkingHours, Date, Active, DayRate, HourlyRate, DayWorkingHours) VALUES (?, ?, ?, ?, ?, ?, ?, ? ,?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             psmt.setBigDecimal(1, configuration.getAnnualSalary());
             psmt.setBigDecimal(2, configuration.getFixedAnnualAmount());
@@ -361,8 +361,9 @@ public class EmployeesDAO implements IEmployeeDAO {
             psmt.setBigDecimal(5, configuration.getWorkingHours());
             psmt.setTimestamp(6, Timestamp.valueOf(configuration.getSavedDate()));
             psmt.setString(7, String.valueOf(configuration.isActive()));
-            psmt.setDouble(8, 0);
-            psmt.setDouble(9, 0);
+            psmt.setBigDecimal(8, configuration.getDayRate());
+            psmt.setBigDecimal(9, configuration.getHourlyRate());
+            psmt.setInt(10, configuration.getDayWorkingHours());
             psmt.executeUpdate();
             try (ResultSet res = psmt.getGeneratedKeys()) {
                 if (res.next()) {
@@ -382,6 +383,19 @@ public class EmployeesDAO implements IEmployeeDAO {
             psmt.setInt(1, employeeID);
             psmt.setInt(2, configurationID);
             psmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void addEmployeeToTeam(int employeeID, List<Team> teams, Connection conn) throws RateException, SQLException {
+        String sql = "INSERT INTO TeamEmployee (TeamID, EmployeeID) VALUES (?, ?)";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            for (Team team : teams) {
+                psmt.setInt(1, team.getId());
+                psmt.setInt(2, employeeID);
+                psmt.executeUpdate();
+            }
+            psmt.executeBatch();
         }
     }
 

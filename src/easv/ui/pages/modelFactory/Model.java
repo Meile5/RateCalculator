@@ -152,7 +152,7 @@ public class Model implements IModel {
     public ObservableList<Country> getOperationalCountries(){
         ObservableList<Country> observableCountryList= FXCollections.observableArrayList();
         observableCountryList.setAll(countriesWithTeams.values());
-        return observableCountryList;
+        return observableCountryList.sorted();
     }
 
 
@@ -161,7 +161,7 @@ public class Model implements IModel {
     public ObservableList<Region> getOperationalRegions(){
         ObservableList<Region> observableRegionList = FXCollections.observableArrayList();
         observableRegionList.setAll(regionsWithCountries.values());
-        return observableRegionList;
+        return observableRegionList.sorted();
     }
 
 
@@ -169,7 +169,7 @@ public class Model implements IModel {
     public ObservableList<Team> getOperationalTeams(){
         ObservableList<Team> observableTeamList = FXCollections.observableArrayList();
         observableTeamList.setAll(teamsWithEmployees.values());
-        return observableTeamList;
+        return observableTeamList.sorted();
     }
 
 
@@ -212,8 +212,8 @@ public class Model implements IModel {
     }
 
     @Override
-    public void addEmployee(Employee employee, Configuration configuration) throws RateException {
-        employee = employeeManager.addEmployee(employee, countries, teams, configuration);
+    public void addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException {
+        employee = employeeManager.addEmployee(employee, configuration, teams);
         if (employee != null) {
             employees.put(employee.getId(), employee);
         }
