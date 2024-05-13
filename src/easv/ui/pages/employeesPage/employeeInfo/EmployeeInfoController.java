@@ -164,7 +164,7 @@ public class EmployeeInfoController implements Initializable {
         this.editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             EditController editController = new EditController(model, firstLayout, employee, this);
             this.firstLayout.getChildren().add(editController.getRoot());
-        //    employeeController.setSelectedComponentStyleToSelected(this);
+            //employeeController.setSelectedComponentStyleToSelected(this);
             WindowsManagement.showStackPane(firstLayout);
         });
     }
@@ -197,13 +197,13 @@ public class EmployeeInfoController implements Initializable {
         this.hourlyRate.setText(value);
     }
 
-//    public void refreshRates() {
-//        employeeController.setTotalRates();
-//    }
-//
-//    public void callService(){
-//        employeeController.callService();
-//    }
+    public void refreshRates() {
+        //employeeController.setTotalRates();
+    }
+
+    public void callService(){
+        //employeeController.callService();
+    }
 }
 
 

@@ -40,7 +40,7 @@ public interface IModel {
 
     Map<String, Country> getCountries();
 
-    void addEmployee(Employee employee, Configuration configuration) throws RateException;
+    void addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException;
 
     /**
      * retrieve the teams with the overhead computed

@@ -127,8 +127,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             //populateFilterComboBox();
             // filterByCountryListener();
             //filterByTeamListener();
-           // addFocusListener(countriesFilterCB, countryRevertButton);
-           // addFocusListener(teamsFilterCB, teamRevertButton);
+            addFocusListener(countriesFilterCB, countryRevertButton);
+            addFocusListener(teamsFilterCB, teamRevertButton);
             //revertCountryFilter(countryRevertButton, countryRevertSvg);
            // revertTeamFilter(teamRevertButton, teamRevertSvg);
             //setTotalRatesDefault();
@@ -180,6 +180,16 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
         });
         loadEmployeesFromDB.restart();
+    }
+
+    private void addFocusListener(MFXTextField filterInput, HBox sibling) {
+        filterInput.focusWithinProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (isNowFocused) {
+                sibling.getStyleClass().add("countryFilterFocused");
+            } else {
+                sibling.getStyleClass().remove("countryFilterFocused");
+            }
+        });
     }
 
 
@@ -371,18 +381,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             setTotalRatesDefault();
         }
     }
-
-
-    private void addFocusListener(MFXTextField filterInput, HBox sibling) {
-        filterInput.focusWithinProperty().addListener((obs, wasFocused, isNowFocused) -> {
-            if (isNowFocused) {
-                sibling.getStyleClass().add("countryFilterFocused");
-            } else {
-                sibling.getStyleClass().remove("countryFilterFocused");
-            }
-        });
-    }
-
 
     private void showRevertButtonByFilterActive(HBox button,SVGPath revertSvg) {
         revertSvg.setVisible(true);

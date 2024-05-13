@@ -77,7 +77,7 @@ public class NavigationFactory {
     }
 
     private enum IconsText{
-        DISTRIBUTION("Distribution"),CREATE("Create"),EMPLOYEES("Employees"),MODELING("Modeling"),PROFILE("Profile");
+        DISTRIBUTION("Distribution"),CREATE("Create"),EMPLOYEES("Employees"),MODELING("Teams"),PROFILE("Profile");
         private final String value;
 
         IconsText(String value) {
