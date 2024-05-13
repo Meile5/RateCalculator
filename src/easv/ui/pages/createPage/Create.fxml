@@ -45,29 +45,90 @@
                         <Label text="Name">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
-                           </font></Label>
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></Label>
                         <MFXTextField fx:id="nameTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
-                              <Insets bottom="20.0" />
+                              <Insets bottom="5.0" left="30.0" />
                            </VBox.margin>
                         </MFXTextField>
+                        <Label layoutX="40.0" layoutY="128.0" text="Region">
+                           <font>
+                              <Font name="Open Sans Regular" size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin>
+                        </Label>
+                        <MFXComboBox fx:id="countryCB1" allowEdit="true" floatMode="DISABLED" layoutX="40.0" layoutY="156.0" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="30.0" />
+                           </VBox.margin>
+                        </MFXComboBox>
                         <Label text="Country">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
-                           </font></Label>
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></Label>
                         <MFXComboBox fx:id="countryCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox">
                            <VBox.margin>
-                              <Insets bottom="20.0" />
+                              <Insets bottom="5.0" left="30.0" />
                            </VBox.margin>
                         </MFXComboBox>
-                        <Label text="Team">
-                           <font>
-                              <Font name="Open Sans Regular" size="14.0" />
-                           </font></Label>
-                        <MFXComboBox fx:id="teamCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox" />
+                        <HBox prefHeight="79.0" prefWidth="269.0">
+                           <children>
+                              <VBox prefHeight="89.0" prefWidth="233.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Team">
+                                       <font>
+                                          <Font name="Open Sans Regular" size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="30.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <MFXComboBox fx:id="teamCB" allowEdit="true" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox">
+                                       <VBox.margin>
+                                          <Insets left="30.0" />
+                                       </VBox.margin>
+                                    </MFXComboBox>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="36.0">
+                                 <children>
+                                    <Button fx:id="addTeam" mnemonicParsing="false" text="+" />
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets left="10.0" top="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="269.0">
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                           <children>
+                              <Label fx:id="teamListLB" prefHeight="50.0" prefWidth="250.0" wrapText="true">
+                                 <font>
+                                    <Font name="Open Sans Regular" size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
                      </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
                      <padding>
-                        <Insets left="30.0" top="20.0" />
+                        <Insets top="20.0" />
                      </padding>
                   </VBox>
                   <VBox prefHeight="500.0" prefWidth="269.0" spacing="10.0">
@@ -75,42 +136,57 @@
                         <Label text="Annual Salary">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
-                           </font></Label>
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></Label>
                         <MFXTextField fx:id="salaryTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
-                              <Insets bottom="20.0" />
+                              <Insets bottom="5.0" left="30.0" />
                            </VBox.margin>
                         </MFXTextField>
                         <Label layoutX="10.0" layoutY="10.0" text="Annual Working Hours">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
-                           </font></Label>
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></Label>
                         <MFXTextField fx:id="workingHoursTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
-                              <Insets bottom="20.0" />
+                              <Insets bottom="5.0" left="30.0" />
                            </VBox.margin>
                         </MFXTextField>
                         <Label layoutX="10.0" layoutY="27.0" text="Fixed Annual Amount">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
-                           </font></Label>
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></Label>
                         <MFXTextField fx:id="annualAmountTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
-                              <Insets />
+                              <Insets bottom="5.0" left="30.0" />
                            </VBox.margin>
                         </MFXTextField>
-                        <Label text="Dailly Working Hours">
+                        <Label text="Daily Working Hours">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin>
                         </Label>
-                        <MFXTextField fx:id="dlyWorkngHours" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField" />
+                        <MFXTextField fx:id="dlyWorkngHours" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></MFXTextField>
                      </children>
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                      <padding>
-                        <Insets left="30.0" top="20.0" />
+                        <Insets top="20.0" />
                      </padding>
                   </VBox>
                   <VBox prefHeight="500.0" prefWidth="269.0" spacing="10.0">
@@ -118,37 +194,55 @@
                         <Label text="Utilization %">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
-                           </font></Label>
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></Label>
                         <MFXTextField fx:id="utilPercentageTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
-                              <Insets bottom="20.0" />
+                              <Insets bottom="5.0" left="30.0" />
                            </VBox.margin>
                         </MFXTextField>
                         <Label text="Overhead or Resource">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
-                           </font></Label>
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></Label>
                         <MFXComboBox fx:id="overOrResourceCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox">
                            <VBox.margin>
-                              <Insets bottom="20.0" />
+                              <Insets bottom="5.0" left="30.0" />
                            </VBox.margin>
                         </MFXComboBox>
                         <Label text="Overhead Multiplier %">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
-                           </font></Label>
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></Label>
                         <MFXTextField fx:id="multiplierTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="textField">
                            <VBox.margin>
-                              <Insets />
+                              <Insets bottom="5.0" left="30.0" />
                            </VBox.margin></MFXTextField>
                         <Label text="Currency">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
-                           </font></Label>
-                        <MFXComboBox fx:id="currencyCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></Label>
+                        <MFXComboBox fx:id="currencyCB" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="comboBox">
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin></MFXComboBox>
                      </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
                      <padding>
-                        <Insets left="30.0" top="20.0" />
+                        <Insets top="20.0" />
                      </padding>
                   </VBox>
                </children>
