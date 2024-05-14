@@ -85,7 +85,8 @@ public class EditController implements Initializable {
 
     private void addCloseButtonAction() {
         this.closeButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
-                WindowsManagement.closeStackPane(firstLayout));
+        { employeeDisplayer.setEmployeesVboxContainerStyleToDefault();
+                WindowsManagement.closeStackPane(firstLayout);});
     }
 
     public StackPane getRoot() {
@@ -175,6 +176,7 @@ public class EditController implements Initializable {
     /**
      * save the edited employee
      */
+    //TODO call the method that changes the style off the employee container to default
     /*private void saveEdit() {
         this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (EmployeeValidation.areNamesValid(nameInput, countryCB, teamCB) &&

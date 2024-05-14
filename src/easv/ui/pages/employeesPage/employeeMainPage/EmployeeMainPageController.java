@@ -16,6 +16,7 @@ import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
+import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
@@ -54,6 +55,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
     @FXML
     private MFXComboBox<Region> regionsFilter;
+    @FXML
+    private MFXScrollPane employeesScrollPane;
 
     public VBox getEmployeesContainer() {
         return employeesContainer;
@@ -75,6 +78,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private HBox teamRevertButton;
     @FXML
     private HBox regionRevertButton;
+    @FXML
+    private VBox employeesVboxContainer;
 
 
     //Todo remove this if not needed and also the methods that are commented
@@ -150,9 +155,9 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             addFocusListener(regionsFilter, regionRevertButton);
 
             /*undo the filter operation*/
-
-            revertCountryFilter(countryRevertButton, countryRevertSvg);
-            revertTeamFilter(teamRevertButton, teamRevertSvg);
+//
+//            revertCountryFilter(countryRevertButton, countryRevertSvg);
+//            revertTeamFilter(teamRevertButton, teamRevertSvg);
 
 
             //setTotalRatesDefault();
@@ -315,6 +320,14 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         pauseTransition.playFromStart();
     }
 
+    public void setEmployeesVboxContainerStyleToEdit() {
+        this.employeesVboxContainer.getStyleClass().add("employeesVboxContainerOnEdit");
+        this.employeesScrollPane.getStyleClass().add("employeesVboxContainerOnEdit");
+    }
+    public void setEmployeesVboxContainerStyleToDefault(){
+        this.employeesVboxContainer.getStyleClass().remove("employeesVboxContainerOnEdit");
+        this.employeesScrollPane.getStyleClass().remove("employeesVboxContainerOnEdit");
+    }
 }
 
 
