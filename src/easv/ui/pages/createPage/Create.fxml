@@ -294,7 +294,7 @@
             <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="808.0" style="-fx-background-color: #F9F9F9;">
                <children>
                   <Region prefHeight="40.0" prefWidth="25.0" />
-                  <Label fx:id="spinnerLB" prefHeight="20.0" prefWidth="243.0" wrapText="true">
+                  <Label fx:id="spinnerLB" prefHeight="42.0" prefWidth="304.0" wrapText="true">
                      <font>
                         <Font name="Open Sans Regular" size="14.0" />
                      </font>

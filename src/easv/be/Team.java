@@ -1,5 +1,6 @@
 package easv.be;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -11,6 +12,7 @@ public class Team {
     private List<Employee> teamMembers;
     private List<TeamConfiguration> teamConfigurationsHistory;
     private TeamConfiguration activeConfiguration;
+    private BigDecimal utilizationPercentage;
 
 
     public Team(String team) {
@@ -27,6 +29,8 @@ public class Team {
         this.teamMembers = teamMembers;
         this.teamConfigurationsHistory = teamConfigurationsHistory;
     }
+
+
 
 
     /**
@@ -96,6 +100,14 @@ public class Team {
 
     public void setEmployees(List<Employee> employees) {
         this.teamMembers = employees;
+    }
+
+    public BigDecimal getUtilizationPercentage() {
+        return utilizationPercentage;
+    }
+
+    public void setUtilizationPercentage(BigDecimal utilizationPercentage) {
+        this.utilizationPercentage = utilizationPercentage;
     }
 
     public boolean addNewTeamMember(Employee employee) {
