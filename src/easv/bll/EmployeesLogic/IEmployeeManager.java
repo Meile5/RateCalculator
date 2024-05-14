@@ -48,4 +48,8 @@ public interface IEmployeeManager {
 
     /**retrieve all regions with countries*/
     Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException;
+
+    List<Employee> filterTeamsByCountry(List<Team> countryTeams, ObservableMap<Integer, Employee> employees);
+
+    List<Employee> filterEmployeesByTeam(Team selectedTeam,ObservableMap<Integer,Employee> employees);
 }

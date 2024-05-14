@@ -115,4 +115,11 @@ public interface IModel {
     void returnEmployeesByCountry() throws RateException;
 
     Employee getEmployeeById(int id);
+
+
+    /**filter employees by the selected country*/
+    void filterByCountryTeams(Country newValue);
+
+    /**filter employees by the selected team */
+   void filterEmployeesByTeam(Team selectedTeam);
 }

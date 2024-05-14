@@ -1,7 +1,6 @@
 package easv.ui.pages.modelFactory;
 
 import easv.Utility.DisplayEmployees;
-import easv.Utility.EmployeeValidation;
 import easv.be.*;
 import easv.bll.EmployeesLogic.EmployeeManager;
 import easv.bll.EmployeesLogic.IEmployeeManager;
@@ -174,6 +173,8 @@ public class Model implements IModel {
         return employees.get(id);
     }
 
+
+
     private void sortDisplayedEmployee() {
         sortedEmployeesByName.setAll(employeeManager.sortedEmployeesByName(employees.values()));
     }
@@ -314,6 +315,9 @@ public class Model implements IModel {
         displayEmployees.displayEmployees();
     }
 
+
+
+    /**filter the employees that are present in the countries from the selected region*/
     @Override
     public void filterByCountry(Region region,List<Country> countries) {
         displayedEmployees.setAll(employeeManager.filterByCountry(region ,countries,employees));
@@ -321,6 +325,32 @@ public class Model implements IModel {
         filteredEmployeesList.setAll(displayedEmployees);
         listEmployeeByCountryTemp.setAll(displayedEmployees);
     }
+
+
+    /**filter the employees that are present in the teams from the selected country*/
+    @Override
+    public void filterByCountryTeams(Country selectedCountry) {
+displayedEmployees.setAll(employeeManager.filterTeamsByCountry(countriesWithTeams.get(selectedCountry.getId()).getTeams(), employees));
+        displayEmployees.displayEmployees();
+        filteredEmployeesList.setAll(displayedEmployees);
+
+      /**delete if not need annymore*/
+        listEmployeeByCountryTemp.setAll(displayedEmployees);
+
+    }
+
+    /**filter employees by selected team*/
+   public void filterEmployeesByTeam(Team selectedTeam){
+       ObservableList<Employee> teamEmployees= FXCollections.observableArrayList();
+       teamEmployees.setAll(employeeManager.filterEmployeesByTeam(selectedTeam,employees));
+       displayedEmployees.setAll(employeeManager.filterEmployeesByTeam(selectedTeam,employees));
+       displayEmployees.displayEmployees();
+       // see if the filtered list needs to be updated
+   }
+
+
+
+
 
     @Override
     public void filterByTeam(Team team) throws RateException {
