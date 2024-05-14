@@ -203,6 +203,9 @@ public class Model implements IModel {
         }
     }
 
+
+    // Loop the list of teams (List<Team> teams) and get the team by id from teamsWithEmployees
+    // and add the employee on that list
     @Override
     public void addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException {
         employee = employeeManager.addEmployee(employee, configuration, teams);

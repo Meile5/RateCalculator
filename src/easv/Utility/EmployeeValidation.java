@@ -1,11 +1,9 @@
 package easv.Utility;
 
-import easv.be.Team;
 import easv.exception.ExceptionHandler;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.PauseTransition;
-import javafx.collections.ObservableMap;
 import javafx.css.PseudoClass;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
@@ -15,7 +13,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -445,5 +442,23 @@ public class EmployeeValidation {
      */
     private static boolean isInputValid(String value) {
         return !value.isEmpty() && value.matches(validNamePattern);
+    }
+
+    public static boolean isTeamToRemoveSelected(ListView teamList) {
+        boolean isValid = true;
+        if (teamList.getSelectionModel().getSelectedItem() == null) {
+            ExceptionHandler.errorAlertMessage("Please select a team from the list to remove.");
+            return false;
+        }
+        return isValid;
+    }
+
+    public static boolean isTeamSelected(MFXComboBox teamCB) {
+        boolean isValid = true;
+        if (teamCB.getSelectedItem() == null) {
+            ExceptionHandler.errorAlertMessage("Please select a team to add.");
+            return false;
+        }
+        return isValid;
     }
 }

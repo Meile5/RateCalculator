@@ -226,13 +226,13 @@ public class EmployeesDAO implements IEmployeeDAO {
                 BigDecimal annualSalary = res.getBigDecimal("AnnualSalary");
                 BigDecimal fixedAnnualAmount = res.getBigDecimal("FixedAnnualAmount");
                 BigDecimal overheadMultiplier = res.getBigDecimal("OverheadMultiplier");
-                BigDecimal utilizationPercentage = res.getBigDecimal("UtilizationPercentage");
                 BigDecimal workingHours = res.getBigDecimal("WorkingHours");
                 LocalDateTime configurationDate = res.getTimestamp("ConfigurationDate").toLocalDateTime();
                 boolean active = Boolean.parseBoolean(res.getString("Active"));
                 BigDecimal dayRate = res.getBigDecimal("DayRate");
                 BigDecimal hourlyRate = res.getBigDecimal("HourlyRate");
                 int dayWorkingHours = res.getInt("DayWorkingHours");
+                BigDecimal utilizationPercentage = res.getBigDecimal("UtilizationPercentage");
                 Configuration configuration = new Configuration(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, configurationDate, active, dayRate, hourlyRate, dayWorkingHours);
                 if (configuration.isActive()) {
                     employee.setActiveConfiguration(configuration);

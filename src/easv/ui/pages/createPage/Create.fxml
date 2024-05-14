@@ -184,7 +184,10 @@
                                     <Button fx:id="addTeamBT" mnemonicParsing="false" text="+">
                                        <VBox.margin>
                                           <Insets top="5.0" />
-                                       </VBox.margin></Button>
+                                       </VBox.margin>
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font></Button>
                                  </children>
                                  <HBox.margin>
                                     <Insets />
@@ -214,8 +217,11 @@
                                  <GridPane.margin>
                                     <Insets left="15.0" />
                                  </GridPane.margin>
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
                               </Button>
-                              <Label text="Team(s) List:">
+                              <Label text="Added Team(s):">
                                  <font>
                                     <Font name="Open Sans Regular" size="14.0" />
                                  </font>
