@@ -496,14 +496,17 @@ public class EmployeesDAO implements IEmployeeDAO {
                         retrievedTeams.put(currentTeam.getId(), currentTeam);
                     }
                     int employeeId = rs.getInt("EmployeeID");
-                    String employeeName = rs.getString("Name");
-                    EmployeeType employeeType = EmployeeType.valueOf(rs.getString("EmployeeType"));
-                    Currency currency = Currency.valueOf(rs.getString("Currency"));
-                    Employee employee = new Employee(employeeName, employeeType, currency);
-                    employee.setId(employeeId);
-                    List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employee, conn);
-                    employee.setConfigurations(employeeConfigurations);
-                    currentTeam.addNewTeamMember(employee);
+                    // Check if employee ID is null for teams that have no employees
+                    if (!rs.wasNull()) {
+                        String employeeName = rs.getString("Name");
+                        EmployeeType employeeType = EmployeeType.valueOf(rs.getString("EmployeeType"));
+                        Currency currency = Currency.valueOf(rs.getString("Currency"));
+                        Employee employee = new Employee(employeeName, employeeType, currency);
+                        employee.setId(employeeId);
+                        List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employee, conn);
+                        employee.setConfigurations(employeeConfigurations);
+                        currentTeam.addNewTeamMember(employee);
+                    }
                 }
             }
         } catch (SQLException | RateException e) {
@@ -670,6 +673,8 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
         return configurationTeamMembers;
     }
+
+
 
 }
 
