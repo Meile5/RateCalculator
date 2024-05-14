@@ -198,11 +198,7 @@ public class Model implements IModel {
             sortDisplayedEmployee();
             displayedEmployees = sortedEmployeesByName;
             Platform.runLater(() -> {
-                try {
-                    displayEmployees.displayEmployees();
-                } catch (RateException e) {
-                    throw new RuntimeException(e);
-                }
+                displayEmployees.displayEmployees();
             });
         }
     }
@@ -213,6 +209,12 @@ public class Model implements IModel {
         if (employee != null) {
             employees.put(employee.getId(), employee);
         }
+    }
+
+    //TODO, to delete this method? (it's on the interface) - NELSON
+    @Override
+    public List<Team> getCountryTeams() {
+        return List.of();
     }
 
 
@@ -272,13 +274,15 @@ public class Model implements IModel {
         return employeeManager.isEmployeeEdited(originalEmployee, editedEmployee);
     }
 
-    public synchronized List<TeamWithEmployees> getCountryTeams() {
-        Country selectedCountry = countries.get(this.selectedCountry);
-        List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
-        this.countryTeams.addAll(countryTeams);
-        currentIndexToRetrieve += OFFSET;
-        return this.countryTeams;
-    }
+    //TODO Errors with this method, I out comment it - NELSON
+
+//    public synchronized List<TeamWithEmployees> getCountryTeams() {
+//        Country selectedCountry = countries.get(this.selectedCountry);
+//        List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
+//        this.countryTeams.addAll(countryTeams);
+//        currentIndexToRetrieve += OFFSET;
+//        return this.countryTeams;
+//    }
 
 
     /**
@@ -333,11 +337,11 @@ public class Model implements IModel {
     }
 
     @Override
-    public void filterByCountry(Country country) throws RateException {
-        displayedEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
-        displayEmployees.displayEmployees();
-        filteredEmployeesList.setAll(displayedEmployees);
-        listEmployeeByCountryTemp.setAll(displayedEmployees);
+    public void filterByCountry(Region region,List<Country> countries) {
+//        displayedEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
+//        displayEmployees.displayEmployees();
+//        filteredEmployeesList.setAll(displayedEmployees);
+//        listEmployeeByCountryTemp.setAll(displayedEmployees);
     }
 
     @Override
