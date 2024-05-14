@@ -22,19 +22,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class Model implements IModel {
-    /**
-     * the variable that decide how many elements to skip in the database, when retrieving teams
-     */
-    private int OFFSET = 3;
-    /**
-     * the variable that decide how many elements to retrieve from the database, when retrieving teams
-     */
-    private int ELEMENTS_NUMBER = 3;
-    /**
-     * computed variable that holds  the current index, from where to start to retrieve teams form the database
-     * used for pagination
-     */
-    private int currentIndexToRetrieve;
+
+
 
     private ObservableMap<Integer, Employee> employees;
 
@@ -186,6 +175,8 @@ public class Model implements IModel {
         return employees.get(id);
     }
 
+
+
     private void sortDisplayedEmployee() {
         sortedEmployeesByName.setAll(employeeManager.sortedEmployeesByName(employees.values()));
     }
@@ -320,24 +311,10 @@ public class Model implements IModel {
         return employeeManager.isEmployeeEdited(originalEmployee, editedEmployee);
     }
 
-    //TODO Errors with this method, I out comment it - NELSON
-
-//    public synchronized List<TeamWithEmployees> getCountryTeams() {
-//        Country selectedCountry = countries.get(this.selectedCountry);
-//        List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
-//        this.countryTeams.addAll(countryTeams);
-//        currentIndexToRetrieve += OFFSET;
-//        return this.countryTeams;
-//    }
 
 
-    /**
-     * reset the currentIndexToRetrieve when retrieving for a new country
-     */
-    public void resetCurrentIndexToRetrieve() {
-        this.currentIndexToRetrieve = 0;
-        countryTeams.clear();
-    }
+
+
 
     public void populateValidCountries(List<String> validCountries) {
         this.validMapViewCountryNameValues.addAll(validCountries);
@@ -382,13 +359,42 @@ public class Model implements IModel {
         displayEmployees.displayEmployees();
     }
 
+
+
+    /**filter the employees that are present in the countries from the selected region*/
     @Override
     public void filterByCountry(Region region,List<Country> countries) {
-//        displayedEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
-//        displayEmployees.displayEmployees();
-//        filteredEmployeesList.setAll(displayedEmployees);
-//        listEmployeeByCountryTemp.setAll(displayedEmployees);
+        displayedEmployees.setAll(employeeManager.filterByCountry(region ,countries,employees));
+        displayEmployees.displayEmployees();
+        filteredEmployeesList.setAll(displayedEmployees);
+        listEmployeeByCountryTemp.setAll(displayedEmployees);
     }
+
+
+    /**filter the employees that are present in the teams from the selected country*/
+    @Override
+    public void filterByCountryTeams(Country selectedCountry) {
+displayedEmployees.setAll(employeeManager.filterTeamsByCountry(countriesWithTeams.get(selectedCountry.getId()).getTeams(), employees));
+        displayEmployees.displayEmployees();
+        filteredEmployeesList.setAll(displayedEmployees);
+
+      /**delete if not need annymore*/
+        listEmployeeByCountryTemp.setAll(displayedEmployees);
+
+    }
+
+    /**filter employees by selected team*/
+   public void filterEmployeesByTeam(Team selectedTeam){
+       ObservableList<Employee> teamEmployees= FXCollections.observableArrayList();
+       teamEmployees.setAll(employeeManager.filterEmployeesByTeam(selectedTeam,employees));
+       displayedEmployees.setAll(employeeManager.filterEmployeesByTeam(selectedTeam,employees));
+       displayEmployees.displayEmployees();
+       // see if the filtered list needs to be updated
+   }
+
+
+
+
 
     @Override
     public void filterByTeam(Team team) throws RateException {

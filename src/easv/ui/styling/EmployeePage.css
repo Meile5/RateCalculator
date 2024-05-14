@@ -176,4 +176,15 @@
 }
 
 
+.employeesVboxContainer{
+    -fx-background-color: #D1D0D0;
+    -fx-background-radius: 25;
+}
+
+.employeesVboxContainerOnEdit{
+    -fx-background-color:#fff ;
+}
+
+
+
 

@@ -16,9 +16,9 @@ import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
+import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -26,10 +26,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -38,7 +35,6 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class EmployeeMainPageController implements Initializable, DisplayEmployees {
@@ -59,6 +55,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
     @FXML
     private MFXComboBox<Region> regionsFilter;
+    @FXML
+    private MFXScrollPane employeesScrollPane;
 
     public VBox getEmployeesContainer() {
         return employeesContainer;
@@ -78,6 +76,11 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private HBox countryRevertButton;
     @FXML
     private HBox teamRevertButton;
+    @FXML
+    private HBox regionRevertButton;
+    @FXML
+    private VBox employeesVboxContainer;
+
 
     //Todo remove this if not needed and also the methods that are commented
     @FXML
@@ -133,19 +136,30 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             //searchFieldListener();
             // addSelectionListener();
             //
-
+            /*populate the filter combo boxes  with the associated values*/
             populateFilterComboBox();
-            /**add listener for the region to change the countries filter combo box  values  */
+            /*add listener for the region to change the countries filter combo box  values  */
             addRegionFilterListener();
-            /** add the listener that will change the team list based on the selected country */
+            /* add the listener that will change the team list based on the selected country */
             addCountryFilterListener();
+            /*add teams filter listener that will change the displayed employees based on the selected team*/
+            addTeamFilterListener();
+
 
             // filterByCountryListener();
             //filterByTeamListener();
+
+            /*change the style for the revert button to have the same style like the filter inputs , when are on focus  */
             addFocusListener(countriesFilterCB, countryRevertButton);
             addFocusListener(teamsFilterCB, teamRevertButton);
-            //revertCountryFilter(countryRevertButton, countryRevertSvg);
-            // revertTeamFilter(teamRevertButton, teamRevertSvg);
+            addFocusListener(regionsFilter, regionRevertButton);
+
+            /*undo the filter operation*/
+//
+//            revertCountryFilter(countryRevertButton, countryRevertSvg);
+//            revertTeamFilter(teamRevertButton, teamRevertSvg);
+
+
             //setTotalRatesDefault();
         } catch (RateException e) {
             e.printStackTrace();
@@ -209,7 +223,9 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
-    /**populate filter combo boxes with values */
+    /**
+     * populate filter combo boxes with values
+     */
     private void populateFilterComboBox() {
         countriesFilterCB.setItems(model.getOperationalCountries().sorted());
         teamsFilterCB.setItems(model.getOperationalTeams().sorted());
@@ -233,7 +249,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                 this.countriesFilterCB.clearSelection();
                 this.countriesFilterCB.setItems(regionCountries);
                 //save the selected countries in the model , in order to be displayed , change the name toFilterByRegion
-                model.filterByCountry(newValue,newValue.getCountries());
+                model.filterByCountry(newValue, newValue.getCountries());
                 ObservableList<Team> regionCountriesTeams = FXCollections.observableArrayList();
                 for (Country country : regionCountries) {
                     regionCountriesTeams.addAll(country.getTeams());
@@ -241,27 +257,83 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                 }
                 this.teamsFilterCB.clearSelection();
                 this.teamsFilterCB.setItems(regionCountriesTeams);
+                showRevertButtonByFilterActive(regionRevertButton, regionRevertSvg);
             }
         });
     }
 
 
-    /** add country selection listener */
+    /**
+     * add country selection listener
+     */
     private void addCountryFilterListener() {
         this.countriesFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 ObservableList<Team> countryTeams = FXCollections.observableArrayList(newValue.getTeams());
                 this.teamsFilterCB.clearSelection();
                 this.teamsFilterCB.setItems(countryTeams);
-                //save the selected countries in the model , in order to be displayed
-                //model.filterByCountryTeams(newValue,newValue.getTeams());
-               // model.filterByCountry(newValue,newValue.getTeams());
+                // call the model to display the resulted employees from the filter operation
+                model.filterByCountryTeams(newValue);
+                showRevertButtonByFilterActive(countryRevertButton, countryRevertSvg);
             }
         });
     }
 
+    /**
+     * add teams filter selection listener
+     */
 
+    private void addTeamFilterListener() {
+        this.teamsFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.teamsFilterCB.clearSelection();
+                model.filterEmployeesByTeam(newValue);
+                showRevertButtonByFilterActive(teamRevertButton, teamRevertSvg);
+            }
+        });
+    }
+
+    public void setSelectedComponentStyleToSelected(EmployeeInfoController selectedToEdit) {
+        if (this.selectedToEdit != null) {
+            this.selectedToEdit.getRoot().getStyleClass().remove("employeeComponentClicked");
+        }
+        this.selectedToEdit = selectedToEdit;
+        this.selectedToEdit.getRoot().getStyleClass().add("employeeComponentClicked");
+    }
+
+
+    /**
+     * show revert button if the filter is applied
+     */
+    private void showRevertButtonByFilterActive(HBox button, SVGPath revertSvg) {
+        revertSvg.setVisible(true);
+        button.setDisable(false);
+    }
+
+
+    private void hideRevertButton(SVGPath svgPath, HBox button) {
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
+        pauseTransition.setOnFinished((event) -> {
+            svgPath.setVisible(false);
+            button.setDisable(true);
+        });
+        pauseTransition.playFromStart();
+    }
+
+    public void setEmployeesVboxContainerStyleToEdit() {
+        this.employeesVboxContainer.getStyleClass().add("employeesVboxContainerOnEdit");
+        this.employeesScrollPane.getStyleClass().add("employeesVboxContainerOnEdit");
+    }
+    public void setEmployeesVboxContainerStyleToDefault(){
+        this.employeesVboxContainer.getStyleClass().remove("employeesVboxContainerOnEdit");
+        this.employeesScrollPane.getStyleClass().remove("employeesVboxContainerOnEdit");
+    }
 }
+
+
+
+
+
 
 
 

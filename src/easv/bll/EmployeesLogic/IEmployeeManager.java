@@ -51,4 +51,8 @@ public interface IEmployeeManager {
     Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException;
 
     Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException;
+
+    List<Employee> filterTeamsByCountry(List<Team> countryTeams, ObservableMap<Integer, Employee> employees);
+
+    List<Employee> filterEmployeesByTeam(Team selectedTeam,ObservableMap<Integer,Employee> employees);
 }
