@@ -47,11 +47,6 @@ public interface IModel {
      */
     List<Team> getCountryTeams();
 
-//    /**
-//     * used to reset the  index of the database retrieval
-//     */
-//    public void resetCurrentIndexToRetrieve();
-
     ObservableMap<Integer, Team> getTeams();
 
     /**

@@ -21,19 +21,8 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class Model implements IModel {
-    /**
-     * the variable that decide how many elements to skip in the database, when retrieving teams
-     */
-    private int OFFSET = 3;
-    /**
-     * the variable that decide how many elements to retrieve from the database, when retrieving teams
-     */
-    private int ELEMENTS_NUMBER = 3;
-    /**
-     * computed variable that holds  the current index, from where to start to retrieve teams form the database
-     * used for pagination
-     */
-    private int currentIndexToRetrieve;
+
+
 
     private ObservableMap<Integer, Employee> employees;
 
@@ -277,24 +266,10 @@ public class Model implements IModel {
         return employeeManager.isEmployeeEdited(originalEmployee, editedEmployee);
     }
 
-    //TODO Errors with this method, I out comment it - NELSON
-
-//    public synchronized List<TeamWithEmployees> getCountryTeams() {
-//        Country selectedCountry = countries.get(this.selectedCountry);
-//        List<TeamWithEmployees> countryTeams = teamManager.getTeamsOverheadByCountry(selectedCountry, currentIndexToRetrieve, ELEMENTS_NUMBER);
-//        this.countryTeams.addAll(countryTeams);
-//        currentIndexToRetrieve += OFFSET;
-//        return this.countryTeams;
-//    }
 
 
-    /**
-     * reset the currentIndexToRetrieve when retrieving for a new country
-     */
-    public void resetCurrentIndexToRetrieve() {
-        this.currentIndexToRetrieve = 0;
-        countryTeams.clear();
-    }
+
+
 
     public void populateValidCountries(List<String> validCountries) {
         this.validMapViewCountryNameValues.addAll(validCountries);
@@ -341,10 +316,10 @@ public class Model implements IModel {
 
     @Override
     public void filterByCountry(Region region,List<Country> countries) {
-//        displayedEmployees.setAll(employeeManager.filterByCountry(employees.values(), country));
-//        displayEmployees.displayEmployees();
-//        filteredEmployeesList.setAll(displayedEmployees);
-//        listEmployeeByCountryTemp.setAll(displayedEmployees);
+        displayedEmployees.setAll(employeeManager.filterByCountry(region ,countries,employees));
+        displayEmployees.displayEmployees();
+        filteredEmployeesList.setAll(displayedEmployees);
+        listEmployeeByCountryTemp.setAll(displayedEmployees);
     }
 
     @Override
