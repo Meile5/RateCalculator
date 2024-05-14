@@ -83,14 +83,14 @@ public class CreateController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-            populateComboBoxes();
-            addListenersToInputs();
-            addTeamButtonListener();
-            removeTeamListener();
-            listenerForEmptyFieldsAfterSaving();
-            addTooltips();
-            addRegionSelectionListener(regionCB, countryCB);
-            addCountrySelectionListener(countryCB, teamCB);
+        listenerForEmptyFieldsAfterSaving();
+        populateComboBoxes();
+        addListenersToInputs();
+        addTeamButtonListener();
+        removeTeamListener();
+        addTooltips();
+        addRegionSelectionListener(regionCB, countryCB);
+        addCountrySelectionListener(countryCB, teamCB);
     }
 
     @FXML
@@ -185,8 +185,7 @@ public class CreateController implements Initializable {
 
     private void addTeamButtonListener(){
         addTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
-            if(teamCB.getSelectedItem() != null &&
-                EmployeeValidation.isPercentageValid(utilPercentageTF)){
+            if(EmployeeValidation.isTeamSelected(teamCB) && EmployeeValidation.isPercentageValid(utilPercentageTF)){
                     teamsList.add((Team) teamCB.getSelectedItem());
                     teamsUtilizationList.add(Integer.valueOf(utilPercentageTF.getText()));
                     String teamWithUtilization = ((Team) teamCB.getSelectedItem()).getTeamName() + ", " + utilPercentageTF.getText() + "%";
@@ -201,7 +200,7 @@ public class CreateController implements Initializable {
 
     private void removeTeamListener(){
         removeTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
-            if(teamsListView.getSelectionModel().getSelectedItem() != null){
+            if(EmployeeValidation.isTeamToRemoveSelected(teamsListView)){
                 teamsList.remove(teamsListView.getSelectionModel().getSelectedIndex());
                 teamsUtilizationList.remove(teamsListView.getSelectionModel().getSelectedIndex());
                 teamsListView.getItems().remove(teamsListView.getSelectionModel().getSelectedIndex());
