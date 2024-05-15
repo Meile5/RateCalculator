@@ -73,6 +73,7 @@ public class DistributionController implements Initializable,DistributionControl
     }
 
     private void populateDistributeFromTeams() {
+        distributeFromTeams.getStyleClass().clear();
         distributeToTeams.setCellFactory(listView -> new DistributeToListCell(model));
         distributeToTeams.setItems(model.getOperationalTeams());
 
