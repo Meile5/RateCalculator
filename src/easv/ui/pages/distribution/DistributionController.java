@@ -3,11 +3,13 @@ package easv.ui.pages.distribution;
 import easv.be.Team;
 import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFromController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
+import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToListCell;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.net.URL;
@@ -19,10 +21,10 @@ public class DistributionController implements Initializable,DistributionControl
     @FXML
     private Parent distributionPage;
     @FXML
-    private VBox distributeToTeams;
+    private VBox distributeFromTeams;
 
     @FXML
-    private VBox distributeFromTeams;
+    private ListView<Team> distributeToTeams;
 
 
     private IModel model;
@@ -66,17 +68,20 @@ public class DistributionController implements Initializable,DistributionControl
             DistributeToController distributeToController = new DistributeToController(model, e);
             distributeToTeamsComponents.add(distributeToController.getRoot());
         });
-        distributeToTeams.getChildren().addAll(distributeToTeamsComponents);
+        distributeFromTeams.getChildren().addAll(distributeToTeamsComponents);
 
     }
 
     private void populateDistributeFromTeams() {
-        List<Parent> distributeFromComponents = new ArrayList<>();
-        model.getOperationalTeams().forEach(e -> {
-            DistributeFromController distributeFromController = new DistributeFromController(model,e,distributionMediator);
-            distributeFromComponents.add(distributeFromController.getRoot());
-        });
-        distributeFromTeams.getChildren().addAll(distributeFromComponents);
+        distributeToTeams.setCellFactory(listView -> new DistributeToListCell(model));
+        distributeToTeams.setItems(model.getOperationalTeams());
+
+//        List<Parent> distributeFromComponents = new ArrayList<>();
+//        model.getOperationalTeams().forEach(e -> {
+//            DistributeFromController distributeFromController = new DistributeFromController(model,e,distributionMediator);
+//            distributeFromComponents.add(distributeFromController.getRoot());
+//        });
+//        distributeFromTeams.getChildren().addAll(distributeFromComponents);
     }
 
     @Override
