@@ -167,6 +167,7 @@ public class Model implements IModel {
         this.employees.putAll(employeeManager.returnEmployees());
         sortDisplayedEmployee();
         this.displayedEmployees = sortedEmployeesByName;
+        this.displayedEmployees = sortedEmployeesByName;
     }
 
 

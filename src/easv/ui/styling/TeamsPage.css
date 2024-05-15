@@ -1,3 +1,26 @@
-.parentGrow {
-    -fx-hgrow: always;
+.tooltip {
+    -fx-background-color: #63b2e1; /* Blue background color */
+    -fx-text-fill: white; /* Text color */
+    -fx-font-size: 14px; /* Font size */
+    -fx-font-weight: bold; /* Font weight */
+    -fx-padding: 5px 10px; /* Padding */
+    -fx-background-radius: 5px; /* Rounded corners */
+    -fx-border-radius: 5px; /* Rounded corners */
+}
+
+
+.teamComponent {
+    -fx-background-color:  F8F8F8;
+    -fx-background-radius: 20px;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent; /* No border initially */
+    -fx-border-radius: 17px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0), 0, 0, 0, 0);
+    -fx-transition: all 0.3s;
+}
+
+.teamComponent:hover {
+    -fx-border-color: #cccccc; /* Border color on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Shadow on hover */
 }

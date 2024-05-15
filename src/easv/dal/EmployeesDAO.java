@@ -549,7 +549,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
             }
         } catch (SQLException | RateException e) {
-            e.printStackTrace();
+
             throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
         }
         return retrievedTeams;
