@@ -480,8 +480,8 @@ public class EmployeesDAO implements IEmployeeDAO {
     @Override
     public Map<Integer, Team> getTeamsWithEmployees() throws RateException {
         String sql = "SELECT t.TeamID,t.TeamName,e.EmployeeID,e.Name,e.EmployeeType,e.Currency FROM TeamEmployee  te " +
-                "JOIN Employees e ON e.EmployeeID=te.EmployeeID " +
-                "JOIN Teams t ON t.TeamId = te.TeamId " +
+                "RIGHT JOIN Employees e ON e.EmployeeID=te.EmployeeID " +
+                "RIGHT JOIN Teams t ON t.TeamId = te.TeamId " +
                 "Order By TeamID; ";
         Map<Integer, Team> retrievedTeams = new HashMap<>();
         try (Connection conn = connectionManager.getConnection()) {
@@ -489,6 +489,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 ResultSet rs = psmt.executeQuery();
                 while (rs.next()) {
                     int teamId = rs.getInt("TeamID");
+                    System.out.println(teamId);
                     Team currentTeam = retrievedTeams.get(teamId);
                     if (currentTeam == null) {
                         currentTeam = new Team(rs.getString("TeamName"), teamId, new ArrayList<>(), new ArrayList<>());
@@ -499,6 +500,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                     String employeeName = rs.getString("Name");
                     EmployeeType employeeType = EmployeeType.valueOf(rs.getString("EmployeeType"));
                     Currency currency = Currency.valueOf(rs.getString("Currency"));
+
                     Employee employee = new Employee(employeeName, employeeType, currency);
                     employee.setId(employeeId);
                     List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employee, conn);

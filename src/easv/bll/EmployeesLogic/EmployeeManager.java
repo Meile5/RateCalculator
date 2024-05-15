@@ -64,6 +64,7 @@ public class EmployeeManager implements IEmployeeManager {
         List<Team> teams = countries.stream().flatMap(e -> e.getTeams().stream()).toList();
         Map<Integer, Employee> employeesFiltered = new HashMap<>();
         for (Team team : teams) {
+            System.out.println(team);
             for (Employee employee : team.getEmployees()) {
                 if (!employeesFiltered.containsKey(employee.getId())) {
                     setEmployeeRelatedInfo(employees, employee, employeesFiltered);
