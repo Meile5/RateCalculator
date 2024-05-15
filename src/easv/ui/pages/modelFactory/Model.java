@@ -63,7 +63,7 @@ public class Model implements IModel {
     private final ObservableMap<Integer, Team> teams;
 
     /**
-     * holds all the data related to the teams
+     * holds all the data related to the teams, like history, employees, countries, regions and active configuration
      */
     private final ObservableMap<Integer, Team> teamsWithEmployees;
 

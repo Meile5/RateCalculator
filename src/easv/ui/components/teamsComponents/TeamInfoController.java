@@ -1,18 +1,18 @@
 package easv.ui.components.teamsComponents;
-
-
-import easv.be.Employee;
+import easv.be.Country;
+import easv.be.Region;
 import easv.be.Team;
 import easv.exception.ErrorCode;
-import easv.exception.ExceptionHandler;;
-import easv.ui.pages.employeesPage.employeeMainPage.EmployeeMainPageController;
+import easv.exception.ExceptionHandler;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.teamsPage.TeamsPageController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,13 +24,13 @@ public class TeamInfoController implements Initializable {
     private IModel model;
     private Team team;
     private TeamsPageController teamsPageController;
+    @FXML
+    private Label teamName, teamRegion, teamCountry, teamDailyRate, teamHourlyRate;
 
-    public TeamInfoController(Team team /*, DeleteEmployeeController deleteEmployeeController*/, IModel model,/* StackPane firstLayout,*/ TeamsPageController teamsPageController) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeComponent.fxml"));
+    public TeamInfoController(Team team , IModel model, TeamsPageController teamsPageController) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamInfoComponent.fxml"));
         loader.setController(this);
         this.team = team;
-       // this.deleteEmployeeController = deleteEmployeeController;
-        //this.firstLayout = firstLayout;
         this.model = model;
         this.teamsPageController = teamsPageController;
         try {
@@ -47,6 +47,16 @@ public class TeamInfoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setLabels();
+    }
+    public void setLabels() {
+        if (team != null) {
+            teamName.setText(team.getTeamName());
+            teamRegion.setText(team.getRegions().toString());
+            teamCountry.setText(team.getCountries().toString());
+            teamDailyRate.setText(team.getActiveConfiguration().getTeamDayRate().toString());
+            teamHourlyRate.setText(team.getActiveConfiguration().getTeamHourlyRate().toString());
 
+        }
     }
 }

@@ -493,6 +493,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                     if (currentTeam == null) {
                         currentTeam = new Team(rs.getString("TeamName"), teamId, new ArrayList<>(), new ArrayList<>());
                         currentTeam.setTeamConfigurationsHistory(retrieveTeamConfigurations(currentTeam, conn));
+                        currentTeam.setCountries(retrieveCountriesForEmployee(currentTeam.getId(), conn));
                         retrievedTeams.put(currentTeam.getId(), currentTeam);
                     }
                     int employeeId = rs.getInt("EmployeeID");
@@ -507,6 +508,15 @@ public class EmployeesDAO implements IEmployeeDAO {
                         employee.setConfigurations(employeeConfigurations);
                         currentTeam.addNewTeamMember(employee);
                     }
+                    for (Team team : retrievedTeams.values()) {
+                        List<Region> regions = new ArrayList<>();
+                        for (Country country : team.getCountries()) {
+                            regions.addAll(retrieveRegionsForEmployee(country.getId(), conn));
+                        }
+                        team.setRegions(regions);
+                    }
+
+
                 }
             }
         } catch (SQLException | RateException e) {

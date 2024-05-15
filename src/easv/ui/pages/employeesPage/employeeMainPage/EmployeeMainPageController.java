@@ -148,7 +148,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             // revertTeamFilter(teamRevertButton, teamRevertSvg);
             //setTotalRatesDefault();
         } catch (RateException e) {
-            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
