@@ -550,10 +550,11 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
             }
         } catch (SQLException | RateException e) {
-            e.printStackTrace();
+
             throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
         }
         return retrievedTeams;
+
     }
 
 
@@ -719,7 +720,7 @@ public class EmployeesDAO implements IEmployeeDAO {
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             psmt.setInt(1, team.getId());
             ResultSet rs = psmt.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 int configId = rs.getInt("TeamConfigurationID");
                 BigDecimal teamDailyRate = BigDecimal.valueOf(rs.getDouble("TeamDailyRate"));
                 BigDecimal teamHourlyRate = BigDecimal.valueOf(rs.getDouble("TeamHourlyRate"));

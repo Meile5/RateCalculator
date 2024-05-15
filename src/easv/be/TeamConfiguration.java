@@ -1,5 +1,6 @@
 package easv.be;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -118,5 +119,8 @@ public class TeamConfiguration {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+    public LocalDate getSavedDateWithoutTime() {
+        return savedDate.toLocalDate();
     }
 }

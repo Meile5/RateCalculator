@@ -86,7 +86,7 @@ public class EmployeeInfoController implements Initializable {
 
             employeeType.setText(employee.getType().toString());
 
-            // Displaying countries
+            // Displaying multiple countries
             StringBuilder countryNames = new StringBuilder();
             for (Country country : employee.getCountries()) {
                 if(employee.getCountries().size()>1) {
@@ -99,7 +99,7 @@ public class EmployeeInfoController implements Initializable {
             country.setText(countryNames.toString());
             country.setTooltip(new Tooltip(country.getText()));
 
-            // Displaying teams
+            // Displaying multiple teams
             StringBuilder teamNames = new StringBuilder();
             for (Team team : employee.getTeams()) {
                 if(employee.getTeams().size()>1) {
@@ -111,7 +111,7 @@ public class EmployeeInfoController implements Initializable {
             team.setText(teamNames.toString());
             team.setTooltip(new Tooltip(team.getText()));
 
-            // Displaying regions
+            // Displaying multiple regions
             StringBuilder regionNames = new StringBuilder();
             for (Region region : employee.getRegions()) {
                 if (employee.getRegions().size()>1){

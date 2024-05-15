@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 
@@ -48,14 +49,50 @@ public class TeamInfoController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
+        /* Add listener to the team info component*/
+        teamInfoComponent.setOnMouseClicked(this::handleTeamInfoComponentClick);
     }
+
+    public void handleTeamInfoComponentClick(MouseEvent event) {
+        /* Notify the TeamsPageController about the click event*/
+        teamsPageController.handleTeamInfoComponentClick(team);
+    }
+
     public void setLabels() {
         if (team != null) {
             teamName.setText(team.getTeamName());
-            teamRegion.setText(team.getRegions().toString());
-            teamCountry.setText(team.getCountries().toString());
+            teamName.setTooltip(new Tooltip(teamName.getText()));
+
+
             teamDailyRate.setText(team.getActiveConfiguration().getTeamDayRate().toString());
             teamHourlyRate.setText(team.getActiveConfiguration().getTeamHourlyRate().toString());
+
+            /*Display multiple region names with tooltip to see all regions*/
+            StringBuilder countryNames = new StringBuilder();
+            for (Country country : team.getCountries()) {
+                if(team.getCountries().size()>1) {
+                    countryNames.append(country.getCountryName()).append(", ");
+                }
+                else{
+                    countryNames.append(country.getCountryName());
+                }
+            }
+            teamCountry.setText(countryNames.toString());
+            teamCountry.setTooltip(new Tooltip(teamCountry.getText()));
+
+            /*Display multiple region names with tooltip to see all regions*/
+
+            StringBuilder regionNames = new StringBuilder();
+            for (Region region : team.getRegions()) {
+                if(team.getCountries().size()>1) {
+                    countryNames.append(region.getRegionName()).append(", ");
+                }
+                else{
+                    countryNames.append(region.getRegionName());
+                }
+            }
+            teamRegion.setText(countryNames.toString());
+            teamRegion.setTooltip(new Tooltip(teamRegion.getText()));
 
         }
     }
