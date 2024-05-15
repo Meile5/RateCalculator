@@ -274,6 +274,9 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     }
 
 
+    //TODO this method  trows an error that i can not solve, but is not affeccting the application , it is related to the javafx
+
+
     /**
      * add country selection listener
      */
@@ -283,9 +286,14 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                 countryFilterActive = true;
                 ObservableList<Team> countryTeams = FXCollections.observableArrayList(newValue.getTeams());
                 this.teamsFilterCB.clearSelection();
-                System.out.println(countryTeams + "from the germany");
-                this.teamsFilterCB.setItems(countryTeams);
-                this.teamsFilterCB.selectItem(countryTeams.getFirst());
+              try {
+                  if (!countryTeams.isEmpty()) {
+                      this.teamsFilterCB.setItems(countryTeams);
+                  }
+                  this.teamsFilterCB.selectItem(countryTeams.getFirst());
+              }catch (IndexOutOfBoundsException e){
+                  System.out.println(e.getMessage());
+              }
                 // call the model to display the resulted employees from the filter operation
                 model.filterByCountryTeams(newValue);
                 showRevertButtonByFilterActive(countryRevertButton, countryRevertSvg);
@@ -325,7 +333,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
 
     private void hideRevertButton(SVGPath svgPath, HBox button) {
-        PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(100));
         pauseTransition.setOnFinished((event) -> {
             svgPath.setVisible(false);
             button.setDisable(true);
@@ -394,6 +402,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         } else {
             model.performEmployeeSearchUndoOperation();
             teamsFilterCB.clearSelection();
+            teamsFilterCB.setItems(FXCollections.observableArrayList(model.getOperationalTeams()));
             countriesFilterCB.clearSelection();
             countryFilterActive = false;
             setTotalRatesDefault();
