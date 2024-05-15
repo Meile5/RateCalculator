@@ -37,9 +37,7 @@ public interface IEmployeeManager {
 
     List<Employee> filterByCountry(Region region,List<Country> countries,Map<Integer,Employee> employees);
 
-    List<Employee> filterByTeam(Collection<Employee> employees, Team team);
 
-    List<Employee> filterByCountryAndTeam(Collection<Employee> employees, Country country, Team team);
 
     /**retrieve the teams in the system*/
     Map<Integer,Team> getTeamWithEmployees() throws RateException;

@@ -41,7 +41,7 @@ public interface IModel {
 
     Map<String, Country> getCountries();
 
-    void addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException;
+    void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException;
 
     void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException;
 
@@ -63,12 +63,6 @@ public interface IModel {
     void setSelectedCountry(String selectedCountry);
 
     /**
-     * get countries values as a Observable list
-     */
-    ObservableList<Country> getCountiesValues();
-
-
-    /**
      * save the updated employee to the database
      */
     boolean updateEditedEmployee(Employee employee, Employee editedEmployee) throws RateException;
@@ -80,7 +74,7 @@ public interface IModel {
 
     void performSelectUserSearchOperation(Employee employee) throws RateException;
 
-    void filterByCountry(Region region,List<Country> countries);
+    void filterByRegion(Region region, List<Country> countries);
 
 
     /**
@@ -88,11 +82,7 @@ public interface IModel {
      */
     boolean isEditOperationPerformed(Employee originalEmployee, Employee editedEmployee);
 
-    void performEmployeeSearchUndoOperation() throws RateException;
-
-    ObservableList<Team> getTeamsForCountry(Country country);
-
-    void filterByCountryAndTeam(Country selectedCountry, Team selectedTeam) throws RateException;
+    void performEmployeeSearchUndoOperation();
 
 
     /**
@@ -107,15 +97,13 @@ public interface IModel {
     BigDecimal getComputedDayRate(Employee employee);
 
 
-    void filterByTeam(Team team) throws RateException;
-
     BigDecimal calculateGroupDayRate();
 
     BigDecimal calculateGroupHourlyRate();
 
     void teamFilterActiveRevert() throws RateException;
 
-    void returnEmployeesByCountry() throws RateException;
+    void returnEmployeesByRegion();
 
     Employee getEmployeeById(int id);
 
@@ -125,4 +113,7 @@ public interface IModel {
 
     /**filter employees by the selected team */
    void filterEmployeesByTeam(Team selectedTeam);
+
+   /**undo the team filter operation to display the country active filter*/
+    void returnEmployeesByCountry();
 }

@@ -256,7 +256,7 @@ public class EmployeesDAO implements IEmployeeDAO {
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psmt.setString(1, employee.getName());
                 psmt.setString(2, employee.getEmployeeType().toString());
-                psmt.setString(3, "EUR");
+                psmt.setString(3, employee.getCurrency().toString());
                 psmt.executeUpdate();
                 try (ResultSet res = psmt.getGeneratedKeys()) {
                     if (res.next()) {
@@ -388,7 +388,7 @@ public class EmployeesDAO implements IEmployeeDAO {
 
     @Override
     public void addEmployeeToTeam(int employeeID, List<Team> teams, Connection conn) throws RateException, SQLException {
-        String sql = "INSERT INTO TeamEmployee (TeamID, EmployeeID, UtilizationPercentage) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO TeamEmployee (TeamID, EmployeeID) VALUES (?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             for (Team team : teams) {
                 psmt.setInt(1, team.getId());
@@ -509,8 +509,8 @@ public class EmployeesDAO implements IEmployeeDAO {
     @Override
     public Map<Integer, Team> getTeamsWithEmployees() throws RateException {
         String sql = "SELECT t.TeamID,t.TeamName,e.EmployeeID,e.Name,e.EmployeeType,e.Currency FROM TeamEmployee  te " +
-                "JOIN Employees e ON e.EmployeeID=te.EmployeeID " +
-                "JOIN Teams t ON t.TeamId = te.TeamId " +
+                "RIGHT JOIN Employees e ON e.EmployeeID=te.EmployeeID " +
+                "RIGHT JOIN Teams t ON t.TeamId = te.TeamId " +
                 "Order By TeamID; ";
         Map<Integer, Team> retrievedTeams = new HashMap<>();
         try (Connection conn = connectionManager.getConnection()) {
@@ -518,6 +518,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 ResultSet rs = psmt.executeQuery();
                 while (rs.next()) {
                     int teamId = rs.getInt("TeamID");
+                    System.out.println(teamId);
                     Team currentTeam = retrievedTeams.get(teamId);
                     if (currentTeam == null) {
                         currentTeam = new Team(rs.getString("TeamName"), teamId, new ArrayList<>(), new ArrayList<>());
