@@ -380,7 +380,7 @@ public class Model implements IModel {
         filteredEmployeesListByRegion.setAll(displayedEmployees);
         displayedEmployees.setAll(employeeManager.filterByCountry(region, countries, employees));
         displayEmployees.displayEmployees();
-        filteredEmployeesList.setAll(displayedEmployees);
+        filteredEmployeesListByRegion.setAll(displayedEmployees);
         listEmployeeByCountryTemp.setAll(displayedEmployees);
     }
 
@@ -420,14 +420,14 @@ public class Model implements IModel {
 
     /**undo the country filter selection to show all the employees in the selected region , or all the employees in the system */
     public void returnEmployeesByRegion(){
-        System.out.println(filteredEmployeesListByRegion +" from the country revert");
+
         displayedEmployees.setAll(filteredEmployeesListByRegion);
         displayEmployees.displayEmployees();
-        if (areObservableListsEqual(filteredEmployeesList, displayedEmployees)) {
-            filteredEmployeesList.setAll(displayedEmployees);
+        if (areObservableListsEqual(filteredEmployeesListByRegion, displayedEmployees)) {
+            filteredEmployeesListByRegion.setAll(displayedEmployees);
         }
         System.out.println("CT Disp" + displayedEmployees);
-        System.out.println("CT Filt" + filteredEmployeesList);
+        System.out.println("CT Filt" + filteredEmployeesListByRegion);
     }
 
 
