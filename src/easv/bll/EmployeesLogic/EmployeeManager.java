@@ -5,6 +5,7 @@ import easv.dal.IEmployeeDAO;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,7 @@ public class EmployeeManager implements IEmployeeManager {
     public Boolean deleteEmployee(Employee employee) throws RateException {
         return employeeDAO.deleteEmployee(employee);
     }
+
 
 
     @Override
@@ -198,6 +200,11 @@ public class EmployeeManager implements IEmployeeManager {
     @Override
     public Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException {
         return employeeDAO.getRegionsWithCountries(countriesWithTeams);
+    }
+
+    @Override
+    public Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException {
+        return employeeDAO.addNewTeamConfiguration(teamConfiguration, team);
     }
 
     @Override

@@ -352,18 +352,18 @@ public class EmployeesDAO implements IEmployeeDAO {
     @Override
     public Integer addConfiguration(Configuration configuration, Connection conn) throws RateException, SQLException {
         Integer configurationID = null;
-        String sql = "INSERT INTO Configurations (AnnualSalary, FixedAnnualAmount, OverheadMultiplier, UtilizationPercentage, WorkingHours, Date, Active, DayRate, HourlyRate, DayWorkingHours) VALUES (?, ?, ?, ?, ?, ?, ?, ? ,?, ?)";
+        String sql = "INSERT INTO Configurations (AnnualSalary, FixedAnnualAmount, OverheadMultiplier, WorkingHours, Date, Active, DayRate, HourlyRate, DayWorkingHours, UtilizationPercentage) VALUES (?, ?, ?, ?, ?, ?, ?, ? ,?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             psmt.setBigDecimal(1, configuration.getAnnualSalary());
             psmt.setBigDecimal(2, configuration.getFixedAnnualAmount());
             psmt.setBigDecimal(3, configuration.getOverheadMultiplier());
-            psmt.setBigDecimal(4, configuration.getUtilizationPercentage());
-            psmt.setBigDecimal(5, configuration.getWorkingHours());
-            psmt.setTimestamp(6, Timestamp.valueOf(configuration.getSavedDate()));
-            psmt.setString(7, String.valueOf(configuration.isActive()));
-            psmt.setBigDecimal(8, configuration.getDayRate());
-            psmt.setBigDecimal(9, configuration.getHourlyRate());
-            psmt.setInt(10, configuration.getDayWorkingHours());
+            psmt.setBigDecimal(4, configuration.getWorkingHours());
+            psmt.setTimestamp(5, Timestamp.valueOf(configuration.getSavedDate()));
+            psmt.setString(6, String.valueOf(configuration.isActive()));
+            psmt.setBigDecimal(7, configuration.getDayRate());
+            psmt.setBigDecimal(8, configuration.getHourlyRate());
+            psmt.setInt(9, configuration.getDayWorkingHours());
+            psmt.setBigDecimal(10, configuration.getUtilizationPercentage());
             psmt.executeUpdate();
             try (ResultSet res = psmt.getGeneratedKeys()) {
                 if (res.next()) {
@@ -393,9 +393,38 @@ public class EmployeesDAO implements IEmployeeDAO {
             for (Team team : teams) {
                 psmt.setInt(1, team.getId());
                 psmt.setInt(2, employeeID);
+                psmt.setBigDecimal(3, team.getUtilizationPercentage());
                 psmt.executeUpdate();
             }
             psmt.executeBatch();
+        }
+    }
+
+    private void addEmployeeHistory(Team team, int teamConfigurationID, Connection conn) {
+        String sql = "INSERT INTO TeamEmployeesHistory (EmployeeName, EmployeeDailyRate, EmployeeHourlyRate, TeamConfigurationId) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            for (Employee employee : team.getEmployees()) {
+                psmt.setString(1, employee.getName());
+                psmt.setBigDecimal(2, employee.getActiveConfiguration().getDayRate());
+                psmt.setBigDecimal(3, employee.getActiveConfiguration().getHourlyRate());
+                psmt.setInt(4, teamConfigurationID);
+                psmt.executeUpdate();
+            }
+            psmt.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void addTeamToConfiguration(Team team, int teamConfigurationID, Connection conn) {
+        String sql = "INSERT INTO TeamConfigurationsHistory (TeamConfigurationID, TeamID) VALUES (?, ?)";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, teamConfigurationID);
+            psmt.setInt(2, team.getId());
+            psmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -494,18 +523,30 @@ public class EmployeesDAO implements IEmployeeDAO {
                     if (currentTeam == null) {
                         currentTeam = new Team(rs.getString("TeamName"), teamId, new ArrayList<>(), new ArrayList<>());
                         currentTeam.setTeamConfigurationsHistory(retrieveTeamConfigurations(currentTeam, conn));
+                        currentTeam.setCountries(retrieveCountriesForEmployee(currentTeam.getId(), conn));
                         retrievedTeams.put(currentTeam.getId(), currentTeam);
                     }
                     int employeeId = rs.getInt("EmployeeID");
-                    String employeeName = rs.getString("Name");
-                    EmployeeType employeeType = EmployeeType.valueOf(rs.getString("EmployeeType"));
-                    Currency currency = Currency.valueOf(rs.getString("Currency"));
+                    // Check if employee ID is null for teams that have no employees
+                    if (!rs.wasNull()) {
+                        String employeeName = rs.getString("Name");
+                        EmployeeType employeeType = EmployeeType.valueOf(rs.getString("EmployeeType"));
+                        Currency currency = Currency.valueOf(rs.getString("Currency"));
+                        Employee employee = new Employee(employeeName, employeeType, currency);
+                        employee.setId(employeeId);
+                        List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employee, conn);
+                        employee.setConfigurations(employeeConfigurations);
+                        currentTeam.addNewTeamMember(employee);
+                    }
+                    for (Team team : retrievedTeams.values()) {
+                        List<Region> regions = new ArrayList<>();
+                        for (Country country : team.getCountries()) {
+                            regions.addAll(retrieveRegionsForEmployee(country.getId(), conn));
+                        }
+                        team.setRegions(regions);
+                    }
 
-                    Employee employee = new Employee(employeeName, employeeType, currency);
-                    employee.setId(employeeId);
-                    List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employee, conn);
-                    employee.setConfigurations(employeeConfigurations);
-                    currentTeam.addNewTeamMember(employee);
+
                 }
             }
         } catch (SQLException | RateException e) {
@@ -577,6 +618,51 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
 
         return retrievedRegions;
+    }
+
+    @Override
+    public Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException {
+        Integer configurationID = null;
+        Connection conn = null;
+        try {
+            conn = connectionManager.getConnection();
+            conn.setAutoCommit(false);
+        String sql = "INSERT INTO TeamConfiguration (TeamDailyRate, TeamHourlyRate, GrossMargin, MarkupMultiplier, ConfigurationDate, Active) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            psmt.setBigDecimal(1, teamConfiguration.getTeamDayRate());
+            psmt.setBigDecimal(2, teamConfiguration.getTeamHourlyRate());
+            psmt.setDouble(3, teamConfiguration.getGrossMargin());
+            psmt.setDouble(4, teamConfiguration.getMarkupMultiplier());
+            psmt.setTimestamp(5, Timestamp.valueOf(teamConfiguration.getSavedDate()));
+            psmt.setString(6, String.valueOf(teamConfiguration.isActive()));
+            psmt.executeUpdate();
+            try (ResultSet res = psmt.getGeneratedKeys()) {
+                if (res.next()) {
+                    configurationID = res.getInt(1);
+                } else {
+                    throw new RateException(ErrorCode.OPERATION_DB_FAILED);
+                }
+            }
+        }
+            addTeamToConfiguration(team, configurationID, conn);
+            addEmployeeHistory(team, configurationID, conn);
+            conn.commit();
+        } catch (SQLException e) {
+            conn.rollback();
+        }
+         catch (RateException e) {
+        throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+    } finally {
+        try {
+            if (conn != null) {
+                conn.setAutoCommit(true);
+                conn.close();
+            }
+        } catch (SQLException e) {
+            throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+        }
+    }
+        return configurationID;
     }
 
 
@@ -672,6 +758,8 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
         return configurationTeamMembers;
     }
+
+
 
 }
 

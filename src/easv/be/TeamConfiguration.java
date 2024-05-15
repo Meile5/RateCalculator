@@ -26,6 +26,15 @@ public class TeamConfiguration {
         this.active = active;
     }
 
+    public TeamConfiguration(BigDecimal teamDayRate, BigDecimal teamHourlyRate, double grossMargin, double markupMultiplier, LocalDateTime savedDate, boolean active) {
+        this.teamDayRate = teamDayRate;
+        this.teamHourlyRate = teamHourlyRate;
+        this.grossMargin = grossMargin;
+        this.markupMultiplier = markupMultiplier;
+        this.savedDate = savedDate;
+        this.active = active;
+    }
+
 
     /**
      * add  team member to team history

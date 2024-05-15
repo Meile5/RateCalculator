@@ -1,5 +1,6 @@
 package easv.be;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -11,6 +12,10 @@ public class Team {
     private List<Employee> teamMembers;
     private List<TeamConfiguration> teamConfigurationsHistory;
     private TeamConfiguration activeConfiguration;
+    private List<Country> countries;
+    private List<Region> regions;
+    private BigDecimal utilizationPercentage;
+
 
 
     public Team(String team) {
@@ -22,10 +27,11 @@ public class Team {
         this.id = id;
     }
 
-    public Team(String team, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory) {
+    public Team(String team, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory ) {
         this(team, id);
         this.teamMembers = teamMembers;
         this.teamConfigurationsHistory = teamConfigurationsHistory;
+
     }
 
 
@@ -114,4 +120,34 @@ public class Team {
         return this.teamConfigurationsHistory.remove(teamConfiguration);
     }
 
+    public List<Employee> getTeamMembers() {
+        return teamMembers;
+    }
+
+    public void setTeamMembers(List<Employee> teamMembers) {
+        this.teamMembers = teamMembers;
+    }
+
+    public List<Country> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(List<Country> countries) {
+        this.countries = countries;
+    }
+
+    public List<Region> getRegions() {
+        return regions;
+    }
+
+    public void setRegions(List<Region> regions) {
+        this.regions = regions;
+    }
+    public BigDecimal getUtilizationPercentage() {
+        return utilizationPercentage;
+    }
+
+    public void setUtilizationPercentage(BigDecimal utilizationPercentage) {
+        this.utilizationPercentage = utilizationPercentage;
+    }
 }

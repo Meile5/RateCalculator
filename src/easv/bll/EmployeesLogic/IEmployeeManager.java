@@ -6,6 +6,7 @@ import javafx.collections.ObservableMap;
 
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,6 +49,8 @@ public interface IEmployeeManager {
 
     /**retrieve all regions with countries*/
     Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException;
+
+    Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException;
 
     List<Employee> filterTeamsByCountry(List<Team> countryTeams, ObservableMap<Integer, Employee> employees);
 

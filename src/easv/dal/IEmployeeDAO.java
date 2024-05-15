@@ -33,4 +33,6 @@ public interface IEmployeeDAO {
 
     /**retrieve regions with the associated countries*/
     Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException;
+
+    Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException;
 }

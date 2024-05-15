@@ -17,6 +17,8 @@ import javafx.collections.ObservableMap;
 
 import java.math.BigDecimal;
 
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Model implements IModel {
@@ -62,7 +64,7 @@ public class Model implements IModel {
     private final ObservableMap<Integer, Team> teams;
 
     /**
-     * holds all the data related to the teams
+     * holds all the data related to the teams, like history, employees, countries, regions and active configuration
      */
     private final ObservableMap<Integer, Team> teamsWithEmployees;
 
@@ -165,7 +167,6 @@ public class Model implements IModel {
         this.employees.putAll(employeeManager.returnEmployees());
         sortDisplayedEmployee();
         this.displayedEmployees = sortedEmployeesByName;
-        System.out.println(employees + "all employees");
     }
 
 
@@ -193,15 +194,57 @@ public class Model implements IModel {
         }
     }
 
-
-    // Loop the list of teams (List<Team> teams) and get the team by id from teamsWithEmployees
-    // and add the employee on that list
     @Override
-    public void addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException {
+    public void addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException {
         employee = employeeManager.addEmployee(employee, configuration, teams);
         if (employee != null) {
             employees.put(employee.getId(), employee);
+            for (Team team : teams){
+                teamsWithEmployees.get(team.getId()).addNewTeamMember(employee);
+                teamsWithEmployees.get(team.getId()).setActiveConfiguration(getNewEmployeeTeamConfiguration(teamsWithEmployees.get(team.getId())));
+                addTeamConfiguration(teamsWithEmployees.get(team.getId()).getActiveConfiguration(), team);
+            }
         }
+    }
+
+    @Override
+    public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException {
+        int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team);
+        if(teamConfiguration != null) {
+            teamConfiguration.setId(teamConfigurationID);
+        }
+    }
+
+    private TeamConfiguration getNewEmployeeTeamConfiguration(Team team) {
+        BigDecimal teamDayRate = calculateSumDayRate(team);
+        BigDecimal teamHourlyRate = calculateSumHourlyRate(team);
+        double grossMargin = checkNullValues(team.getActiveConfiguration().getGrossMargin());
+        double markupMultiplier = checkNullValues(team.getActiveConfiguration().getMarkupMultiplier());
+        LocalDateTime savedDate = LocalDateTime.now();
+        return new TeamConfiguration(teamDayRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, true);
+    }
+
+    private double checkNullValues(double numberToCheck){
+        if(numberToCheck > 0){
+            return numberToCheck;
+        }
+        return 0;
+    }
+
+    private BigDecimal calculateSumDayRate(Team team) {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Employee employee : team.getEmployees()) {
+            sum = sum.add(employee.getActiveConfiguration().getDayRate());
+        }
+        return sum;
+    }
+
+    private BigDecimal calculateSumHourlyRate(Team team) {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Employee employee : team.getEmployees()) {
+            sum = sum.add(employee.getActiveConfiguration().getDayRate());
+        }
+        return sum;
     }
 
     //TODO, to delete this method? (it's on the interface) - NELSON
