@@ -195,14 +195,15 @@ public class Model implements IModel {
     }
 
     @Override
-    public void addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException {
+    public void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException {
         employee = employeeManager.addEmployee(employee, configuration, teams);
         if (employee != null) {
             employees.put(employee.getId(), employee);
             for (Team team : teams){
+                team.addNewTeamMember(employee);
+                TeamConfiguration teamConfiguration = getNewEmployeeTeamConfiguration(team);
+                addTeamConfiguration(teamConfiguration, team);
                 teamsWithEmployees.get(team.getId()).addNewTeamMember(employee);
-                teamsWithEmployees.get(team.getId()).setActiveConfiguration(getNewEmployeeTeamConfiguration(teamsWithEmployees.get(team.getId())));
-                addTeamConfiguration(teamsWithEmployees.get(team.getId()).getActiveConfiguration(), team);
             }
         }
     }
@@ -212,14 +213,19 @@ public class Model implements IModel {
         int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team);
         if(teamConfiguration != null) {
             teamConfiguration.setId(teamConfigurationID);
+            teamsWithEmployees.get(team.getId()).setActiveConfiguration(getNewEmployeeTeamConfiguration(teamsWithEmployees.get(team.getId())));
         }
     }
 
     private TeamConfiguration getNewEmployeeTeamConfiguration(Team team) {
         BigDecimal teamDayRate = calculateSumDayRate(team);
         BigDecimal teamHourlyRate = calculateSumHourlyRate(team);
-        double grossMargin = checkNullValues(team.getActiveConfiguration().getGrossMargin());
-        double markupMultiplier = checkNullValues(team.getActiveConfiguration().getMarkupMultiplier());
+        double grossMargin = 0;
+        double markupMultiplier = 0;
+        if(team.getActiveConfiguration() != null){
+            grossMargin = checkNullValues(team.getActiveConfiguration().getGrossMargin());
+            markupMultiplier = checkNullValues(team.getActiveConfiguration().getMarkupMultiplier());
+        }
         LocalDateTime savedDate = LocalDateTime.now();
         return new TeamConfiguration(teamDayRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, true);
     }
@@ -242,7 +248,7 @@ public class Model implements IModel {
     private BigDecimal calculateSumHourlyRate(Team team) {
         BigDecimal sum = BigDecimal.ZERO;
         for (Employee employee : team.getEmployees()) {
-            sum = sum.add(employee.getActiveConfiguration().getDayRate());
+            sum = sum.add(employee.getActiveConfiguration().getHourlyRate());
         }
         return sum;
     }

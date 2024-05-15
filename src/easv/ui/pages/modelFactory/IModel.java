@@ -41,7 +41,7 @@ public interface IModel {
 
     Map<String, Country> getCountries();
 
-    void addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException;
+    void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException;
 
     void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException;
 
