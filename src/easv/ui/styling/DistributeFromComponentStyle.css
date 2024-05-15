@@ -1,4 +1,3 @@
-
 .employeeComponent {
     -fx-background-color: #ffffff; /* Button color */
     -fx-background-radius: 5px;
@@ -21,31 +20,22 @@
     -fx-effect: dropshadow(gaussian, rgba(86,234,140,0.5), 10, 0, 0, 5);
 }
 
-.editbuttonBackground:hover{
-    -fx-background-color:#63b2e1;
-    -fx-background-radius: 5;
+
+.distributionPercentageInput:focus-within{
+    -fx-background-insets: 2;
+    -fx-border-color: #2ba746;
+    -fx-border-width: 1.5;
+    -fx-border-insets: -0.5;
+    -fx-text-fill: #2ba746;
 }
 
 
-.editbuttonBackground:hover > .svgFill{
-    -fx-fill:#63b2e1 ;
-    -fx-stroke: #fff;
+.tooltipinfo{
+    -fx-background-color: #63b2e1;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
 }
-
-.tooltip {
-    -fx-background-color: #63b2e1; /* Blue background color */
-    -fx-text-fill: white; /* Text color */
-    -fx-font-size: 14px; /* Font size */
-    -fx-font-weight: bold; /* Font weight */
-    -fx-padding: 5px 10px; /* Padding */
-    -fx-background-radius: 5px; /* Rounded corners */
-    -fx-border-radius: 5px; /* Rounded corners */
-}
-
-
-
-
-
-
-
-

@@ -61,6 +61,8 @@ public class EmployeeInfoController implements Initializable {
     private Tooltip countryTooltip;
 
 
+
+
     public EmployeeInfoController(Employee employee, DeleteEmployeeController deleteEmployeeController, IModel model, StackPane firstLayout, EmployeeMainPageController employeeController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeComponent.fxml"));
         loader.setController(this);

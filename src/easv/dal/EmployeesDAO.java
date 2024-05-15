@@ -563,7 +563,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     @Override
     public Map<Integer, Country> getCountriesWithTeams(Map<Integer, Team> teams) throws RateException {
         String sql = "SELECT c.* ,ct.TeamID from CountryTeam ct " +
-                "JOIN Countries c ON c.CountryID =ct.CountryID ORDER BY c.CountryID;";
+                "RIGHT JOIN Countries c ON c.CountryID =ct.CountryID ORDER BY c.CountryID;";
 
         Map<Integer, Country> retrievedCountries = new HashMap<>();
 
@@ -596,7 +596,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     @Override
     public Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException {
         String sql = "SELECT r.*,rc.CountryID from RegionCountry rc " +
-                "JOIN Region r ON r.RegionID = rc.RegionID " +
+                "RIGHT JOIN Region r ON r.RegionID = rc.RegionID " +
                 "ORDER BY r.RegionID; ";
         Map<Integer, Region> retrievedRegions = new HashMap<>();
 
