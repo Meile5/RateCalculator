@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -91,6 +92,7 @@ public class TeamsPageController implements Initializable {
 
         // Populate the series with data from selectedTeamConfigurations
         List<TeamConfiguration> configurations = team.getTeamConfigurationsHistory();
+        System.out.println(Arrays.toString(team.getTeamConfigurationsHistory().toArray()));
         if (configurations != null) {
             for (TeamConfiguration config : configurations) {
                 series.getData().add(new XYChart.Data<>(config.getSavedDateWithoutTime().toString(), config.getTeamDayRate()));
