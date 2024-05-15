@@ -1,5 +1,6 @@
 package easv.be;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,6 +14,7 @@ public class Team {
     private TeamConfiguration activeConfiguration;
     private List<Country> countries;
     private List<Region> regions;
+    private BigDecimal utilizationPercentage;
 
 
 
@@ -140,5 +142,12 @@ public class Team {
 
     public void setRegions(List<Region> regions) {
         this.regions = regions;
+    }
+    public BigDecimal getUtilizationPercentage() {
+        return utilizationPercentage;
+    }
+
+    public void setUtilizationPercentage(BigDecimal utilizationPercentage) {
+        this.utilizationPercentage = utilizationPercentage;
     }
 }
