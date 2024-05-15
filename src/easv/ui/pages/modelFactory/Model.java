@@ -421,7 +421,7 @@ public class Model implements IModel {
 
     /**undo the country filter selection to show all the employees in the selected region , or all the employees in the system */
     public void returnEmployeesByRegion(){
-        System.out.println(filteredEmployeesListByRegion +" from the country revert");
+
         displayedEmployees.setAll(filteredEmployeesListByRegion);
         displayEmployees.displayEmployees();
         if (areObservableListsEqual(filteredEmployeesListByRegion, displayedEmployees)) {
