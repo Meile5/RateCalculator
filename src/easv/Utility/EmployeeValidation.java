@@ -41,7 +41,6 @@ public class EmployeeValidation {
      */
     public static boolean arePercentagesValid(MFXTextField overheadMultiplier, List<Integer> utilizationPercentages) {
         boolean isValid = true;
-        System.out.println(utilizationPercentages.stream().mapToInt(Integer::intValue).sum());
         if(utilizationPercentages.stream().mapToInt(Integer::intValue).sum() > 100){
             ExceptionHandler.errorAlertMessage("The sum of the Utilization % should be less than or equal to 100.");
             return false;

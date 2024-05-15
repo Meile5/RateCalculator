@@ -83,7 +83,6 @@ public class CreateController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        listenerForEmptyFieldsAfterSaving();
         populateComboBoxes();
         addListenersToInputs();
         addTeamButtonListener();
@@ -91,6 +90,7 @@ public class CreateController implements Initializable {
         addTooltips();
         addRegionSelectionListener(regionCB, countryCB);
         addCountrySelectionListener(countryCB, teamCB);
+        listenerForEmptyFieldsAfterSaving();
     }
 
     @FXML
@@ -150,6 +150,7 @@ public class CreateController implements Initializable {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
+                        Thread.sleep(200);
                         model.addEmployee(employee, configuration, teams);
                         return null;
                     }
@@ -159,14 +160,14 @@ public class CreateController implements Initializable {
 
         saveEmployee.setOnSucceeded(event -> {
             showOperationStatus("Operation Successful!", Duration.seconds(2));
-            //WindowsManagement.closeStackPane(firstLayout);
+            WindowsManagement.closeStackPane(firstLayout);
             closeWindowSpinner(firstLayout);
 
         });
 
         saveEmployee.setOnFailed(event -> {
                 showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
-                //WindowsManagement.closeStackPane(firstLayout);
+                WindowsManagement.closeStackPane(firstLayout);
                 closeWindowSpinner(firstLayout);
         });
         saveEmployee.restart();
@@ -186,9 +187,14 @@ public class CreateController implements Initializable {
     private void addTeamButtonListener(){
         addTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(EmployeeValidation.isTeamSelected(teamCB) && EmployeeValidation.isPercentageValid(utilPercentageTF)){
-                    teamsList.add((Team) teamCB.getSelectedItem());
+                    Team team = (Team) teamCB.getSelectedItem();
+                    BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
+                    team.setUtilizationPercentage(utilizationPercentage);
+                    System.out.println(team.getUtilizationPercentage());
+                    teamsList.add(team);
                     teamsUtilizationList.add(Integer.valueOf(utilPercentageTF.getText()));
-                    String teamWithUtilization = ((Team) teamCB.getSelectedItem()).getTeamName() + ", " + utilPercentageTF.getText() + "%";
+
+                    String teamWithUtilization = team.getTeamName() + ",  " + utilPercentageTF.getText() + "%";
                     teamsListView.getItems().add(teamWithUtilization);
                     regionCB.clearSelection();
                     countryCB.clearSelection();
@@ -323,7 +329,7 @@ public class CreateController implements Initializable {
 
 
     private void closeWindowSpinner(StackPane stackPane){
-        PauseTransition pauseTransition =  new PauseTransition(Duration.millis(1000));
+        PauseTransition pauseTransition =  new PauseTransition(Duration.millis(2000));
         pauseTransition.setOnFinished((e)->{
             WindowsManagement.closeStackPane(firstLayout);
             clearFields();
