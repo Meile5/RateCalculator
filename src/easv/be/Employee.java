@@ -2,6 +2,7 @@
 package easv.be;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -22,6 +23,9 @@ public class Employee {
     private BigDecimal overhead;
     private Configuration  activeConfiguration;
 
+
+    // the idea to store the employye percentage per each team
+    private Map<Integer,BigDecimal> utilperTeams;
 
 
 

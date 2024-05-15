@@ -1,4 +1,5 @@
 package easv.bll.EmployeesLogic;
+
 import easv.be.*;
 import easv.dal.EmployeesDAO;
 import easv.dal.IEmployeeDAO;
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 public class EmployeeManager implements IEmployeeManager {
     private IEmployeeDAO employeeDAO;
@@ -60,16 +62,19 @@ public class EmployeeManager implements IEmployeeManager {
     }
 
 
-
+    /**
+     * filter the employees by the selected country
+     */
     @Override
     public List<Employee> filterByCountry(Region region, List<Country> countries, Map<Integer, Employee> employees) {
         List<Team> teams = countries.stream().flatMap(e -> e.getTeams().stream()).toList();
         Map<Integer, Employee> employeesFiltered = new HashMap<>();
         for (Team team : teams) {
-            System.out.println(team);
-            for (Employee employee : team.getEmployees()) {
-                if (!employeesFiltered.containsKey(employee.getId())) {
-                    setEmployeeRelatedInfo(employees, employee, employeesFiltered);
+            if (team.getEmployees() != null) {
+                for (Employee employee : team.getEmployees()) {
+                    if (!employeesFiltered.containsKey(employee.getId())) {
+                        setEmployeeRelatedInfo(employees, employee, employeesFiltered);
+                    }
                 }
             }
         }
@@ -78,33 +83,13 @@ public class EmployeeManager implements IEmployeeManager {
 
 
     /**
-     * set to the filtered employee the regions, countries,teams
+     * set to the filtered employee the regions, countries,and teams value in order to be displayed
      */
     private static void setEmployeeRelatedInfo(Map<Integer, Employee> employees, Employee employee, Map<Integer, Employee> employeesFiltered) {
         employee.setRegions(employees.get(employee.getId()).getRegions());
         employee.setCountries(employees.get(employee.getId()).getCountries());
         employee.setTeams(employees.get(employee.getId()).getTeams());
         employeesFiltered.put(employee.getId(), employee);
-    }
-
-    @Override
-    public List<Employee> filterByTeam(Collection<Employee> employees, Team team) {
-        return employees.stream().filter((employee) -> {
-            Team employeeTeam = employee.getTeam();
-            return employeeTeam != null && employeeTeam.getTeamName().equals(team.getTeamName());
-        }).toList();
-    }
-
-    @Override
-    public List<Employee> filterByCountryAndTeam(Collection<Employee> employees, Country country, Team team) {
-        return employees.stream()
-                .filter(employee -> {
-                    Country employeeCountry = employee.getCountry();
-                    Team employeeTeam = employee.getTeam();
-                    return employeeCountry != null && employeeCountry.equals(country) &&
-                            employeeTeam != null && employeeTeam.equals(team);
-                })
-                .collect(Collectors.toList());
     }
 
 
@@ -207,20 +192,41 @@ public class EmployeeManager implements IEmployeeManager {
         return employeeDAO.addNewTeamConfiguration(teamConfiguration, team);
     }
 
+
+    /**
+     * filter the employees by the selected country from the filter
+     */
     @Override
     public List<Employee> filterTeamsByCountry(List<Team> countryTeams, ObservableMap<Integer, Employee> employees) {
         List<Employee> employeesFromCountryTeams = new ArrayList<>();
-        countryTeams.stream().flatMap(e -> e.getEmployees().stream()).forEach(e -> {
-            employeesFromCountryTeams.add(employees.get(e.getId()));
-        });
+        if (countryTeams == null) {
+            return employeesFromCountryTeams; // Return an empty list if countryTeams is null
+        }
+
+        countryTeams.stream()
+                .flatMap(team -> Optional.ofNullable(team.getEmployees()).stream().flatMap(Collection::stream))
+                .forEach(employee -> {
+                    if (employee != null) {
+                        employeesFromCountryTeams.add(employees.get(employee.getId()));
+                    }
+                });
+
         return employeesFromCountryTeams;
     }
 
 
+    /**filter the employees for the selected team from the teams filter*/
     @Override
     public List<Employee> filterEmployeesByTeam(Team selectedTeam, ObservableMap<Integer, Employee> employees) {
         List<Employee> teamEmployees = new ArrayList<>();
-        selectedTeam.getEmployees().forEach(e -> teamEmployees.add(employees.get(e.getId())));
+        if (selectedTeam != null && selectedTeam.getEmployees() != null) {
+            selectedTeam.getEmployees().forEach(e -> {
+                Employee emp = employees.get(e.getId());
+                if (emp != null) {
+                    teamEmployees.add(emp);
+                }
+            });
+        }
         return teamEmployees;
     }
 

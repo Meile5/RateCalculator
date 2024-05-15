@@ -24,7 +24,6 @@ import java.util.*;
 public class Model implements IModel {
 
 
-
     private ObservableMap<Integer, Employee> employees;
 
     private IEmployeeManager employeeManager;
@@ -79,14 +78,14 @@ public class Model implements IModel {
 
     private ObservableList<Employee> displayedEmployees;
     private ObservableList<Employee> sortedEmployeesByName;
-    private ObservableList<Employee> filteredEmployeesList;
+    private ObservableList<Employee> filteredEmployeesListByRegion;
     private ObservableList<Employee> listEmployeeByCountryTemp;
 
 
     public Model() throws RateException {
 
         this.employees = FXCollections.observableMap(new LinkedHashMap<>());
-        this.filteredEmployeesList = FXCollections.observableArrayList();
+        this.filteredEmployeesListByRegion = FXCollections.observableArrayList();
         this.listEmployeeByCountryTemp = FXCollections.observableArrayList();
         this.countries = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
@@ -118,48 +117,57 @@ public class Model implements IModel {
     }
 
 
-    /**populate the teamWithEmployees map with data*/
+    /**
+     * populate the teamWithEmployees map with data
+     */
     private void populateTeamsWithEmployees() throws RateException {
         this.teamsWithEmployees.putAll(employeeManager.getTeamWithEmployees());
     }
 
-    /**populate the countriesWithTeams  with data  */
+    /**
+     * populate the countriesWithTeams  with data
+     */
     private void populateCountriesWithTeams() throws RateException {
         this.countriesWithTeams.putAll(employeeManager.getCountriesWithTeams(teamsWithEmployees));
     }
 
-    /**populate regionsWithCountries with data*/
+    /**
+     * populate regionsWithCountries with data
+     */
     private void populateRegionsWithCountries() throws RateException {
-       this.regionsWithCountries.putAll(employeeManager.getRegionsWithCountries(countriesWithTeams));
+        this.regionsWithCountries.putAll(employeeManager.getRegionsWithCountries(countriesWithTeams));
     }
 
 
-    /**get the operational countries  observable list */
-    public ObservableList<Country> getOperationalCountries(){
-        ObservableList<Country> observableCountryList= FXCollections.observableArrayList();
+    /**
+     * get the operational countries  observable list
+     */
+    public ObservableList<Country> getOperationalCountries() {
+        ObservableList<Country> observableCountryList = FXCollections.observableArrayList();
         observableCountryList.setAll(countriesWithTeams.values());
         return observableCountryList.sorted();
     }
 
 
-    /**get the operational regions observable list*/
+    /**
+     * get the operational regions observable list
+     */
 
-    public ObservableList<Region> getOperationalRegions(){
+    public ObservableList<Region> getOperationalRegions() {
         ObservableList<Region> observableRegionList = FXCollections.observableArrayList();
         observableRegionList.setAll(regionsWithCountries.values());
         return observableRegionList.sorted();
     }
 
 
-    /**get the  operational teams */
-    public ObservableList<Team> getOperationalTeams(){
+    /**
+     * get the  operational teams
+     */
+    public ObservableList<Team> getOperationalTeams() {
         ObservableList<Team> observableTeamList = FXCollections.observableArrayList();
         observableTeamList.setAll(teamsWithEmployees.values());
         return observableTeamList.sorted();
     }
-
-
-
 
 
     @Override
@@ -167,13 +175,13 @@ public class Model implements IModel {
         this.employees.putAll(employeeManager.returnEmployees());
         sortDisplayedEmployee();
         this.displayedEmployees = sortedEmployeesByName;
+
     }
 
 
-    public Employee getEmployeeById(int id){
+    public Employee getEmployeeById(int id) {
         return employees.get(id);
     }
-
 
 
     private void sortDisplayedEmployee() {
@@ -199,7 +207,7 @@ public class Model implements IModel {
         employee = employeeManager.addEmployee(employee, configuration, teams);
         if (employee != null) {
             employees.put(employee.getId(), employee);
-            for (Team team : teams){
+            for (Team team : teams) {
                 teamsWithEmployees.get(team.getId()).addNewTeamMember(employee);
                 teamsWithEmployees.get(team.getId()).setActiveConfiguration(getNewEmployeeTeamConfiguration(teamsWithEmployees.get(team.getId())));
                 addTeamConfiguration(teamsWithEmployees.get(team.getId()).getActiveConfiguration(), team);
@@ -209,8 +217,9 @@ public class Model implements IModel {
 
     @Override
     public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException {
+        System.out.println(team);
         int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team);
-        if(teamConfiguration != null) {
+        if (teamConfiguration != null) {
             teamConfiguration.setId(teamConfigurationID);
         }
     }
@@ -224,8 +233,8 @@ public class Model implements IModel {
         return new TeamConfiguration(teamDayRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, true);
     }
 
-    private double checkNullValues(double numberToCheck){
-        if(numberToCheck > 0){
+    private double checkNullValues(double numberToCheck) {
+        if (numberToCheck > 0) {
             return numberToCheck;
         }
         return 0;
@@ -262,9 +271,8 @@ public class Model implements IModel {
     }
 
 
-
-
     //TODO use the new method called getOperationalCountries();
+
     /**
      * retrieve the countries as an observable list
      */
@@ -311,10 +319,6 @@ public class Model implements IModel {
     }
 
 
-
-
-
-
     public void populateValidCountries(List<String> validCountries) {
         this.validMapViewCountryNameValues.addAll(validCountries);
     }
@@ -346,90 +350,76 @@ public class Model implements IModel {
     }
 
     public void performSelectUserSearchOperation(Employee employee) throws RateException {
-        filteredEmployeesList.setAll(displayedEmployees);
+        filteredEmployeesListByRegion.setAll(displayedEmployees);
         displayedEmployees.setAll(employee);
         displayEmployees.displayEmployees();
 
     }
 
-    public void performEmployeeSearchUndoOperation() throws RateException {
+
+
+    //undo all the filters to display all the employees  in the system
+    public void performEmployeeSearchUndoOperation()  {
         sortDisplayedEmployee();
         displayedEmployees = sortedEmployeesByName;
         displayEmployees.displayEmployees();
     }
 
 
-
-    /**filter the employees that are present in the countries from the selected region*/
+    /**
+     * filter the employees that are present in the countries from the selected region
+     */
     @Override
-    public void filterByCountry(Region region,List<Country> countries) {
-        displayedEmployees.setAll(employeeManager.filterByCountry(region ,countries,employees));
+    public void filterByRegion(Region region, List<Country> countries) {
+        filteredEmployeesListByRegion.setAll(displayedEmployees);
+        displayedEmployees.setAll(employeeManager.filterByCountry(region, countries, employees));
         displayEmployees.displayEmployees();
-        filteredEmployeesList.setAll(displayedEmployees);
-        listEmployeeByCountryTemp.setAll(displayedEmployees);
     }
 
 
-    /**filter the employees that are present in the teams from the selected country*/
+    /**
+     * filter the employees that are present in the teams from the selected country
+     */
     @Override
     public void filterByCountryTeams(Country selectedCountry) {
-displayedEmployees.setAll(employeeManager.filterTeamsByCountry(countriesWithTeams.get(selectedCountry.getId()).getTeams(), employees));
+        displayedEmployees.setAll(employeeManager.filterTeamsByCountry(countriesWithTeams.get(selectedCountry.getId()).getTeams(), employees));
         displayEmployees.displayEmployees();
-        filteredEmployeesList.setAll(displayedEmployees);
+        //save the values for the selected  country
 
-      /**delete if not need annymore*/
         listEmployeeByCountryTemp.setAll(displayedEmployees);
-
     }
 
-    /**filter employees by selected team*/
-   public void filterEmployeesByTeam(Team selectedTeam){
-       ObservableList<Employee> teamEmployees= FXCollections.observableArrayList();
-       teamEmployees.setAll(employeeManager.filterEmployeesByTeam(selectedTeam,employees));
-       displayedEmployees.setAll(employeeManager.filterEmployeesByTeam(selectedTeam,employees));
-       displayEmployees.displayEmployees();
-       // see if the filtered list needs to be updated
-   }
-
-
-
-
-
-    @Override
-    public void filterByTeam(Team team) throws RateException {
-        //filteredEmployeesList.setAll(displayedEmployees);
-        displayedEmployees.setAll(employeeManager.filterByTeam(employees.values(), team));
+    /**
+     * filter employees by selected team
+     */
+    public void filterEmployeesByTeam(Team selectedTeam) {
+        ObservableList<Employee> teamEmployees = FXCollections.observableArrayList();
+        teamEmployees.setAll(employeeManager.filterEmployeesByTeam(selectedTeam, employees));
+        displayedEmployees.setAll(employeeManager.filterEmployeesByTeam(selectedTeam, employees));
         displayEmployees.displayEmployees();
+        // see if the filtered list needs to be updated
     }
 
-    @Override
-    public void filterByCountryAndTeam(Country selectedCountry, Team selectedTeam) throws RateException {
-        displayedEmployees.setAll(employeeManager.filterByCountryAndTeam(employees.values(), selectedCountry, selectedTeam));
-        displayEmployees.displayEmployees();
-        if (areObservableListsEqual(filteredEmployeesList, displayedEmployees)) {
-            filteredEmployeesList.setAll(displayedEmployees);
-        }
-        System.out.println("CT Disp" + displayedEmployees);
-        System.out.println("CT Filt" + filteredEmployeesList);
-    }
 
-    @Override
-    public ObservableList<Team> getTeamsForCountry(Country country) {
-        ObservableList<Team> teamsForCountry = FXCollections.observableArrayList();
-        for (Employee employee : employees.values()) {
-            if (employee.getCountry().equals(country) && !teamsForCountry.contains(employee.getTeam())) {
-                teamsForCountry.add(employee.getTeam());
-            }
-        }
-        return teamsForCountry;
-    }
 
     public void teamFilterActiveRevert() throws RateException {
-        displayedEmployees = filteredEmployeesList;
+        displayedEmployees = filteredEmployeesListByRegion;
         displayEmployees.displayEmployees();
     }
 
-    public void returnEmployeesByCountry() throws RateException {
+
+    /**undo the country filter selection to show all the employees in the selected region , or all the employees in the system */
+    public void returnEmployeesByRegion(){
+        System.out.println(filteredEmployeesListByRegion +" from the country revert");
+        displayedEmployees.setAll(filteredEmployeesListByRegion);
+        displayEmployees.displayEmployees();
+    }
+
+
+    /** if the country filter is active undo the teams filter to show the employees
+     *  from all the teams for the active country filter*/
+    @Override
+    public void returnEmployeesByCountry() {
         displayedEmployees.setAll(listEmployeeByCountryTemp);
         displayEmployees.displayEmployees();
     }

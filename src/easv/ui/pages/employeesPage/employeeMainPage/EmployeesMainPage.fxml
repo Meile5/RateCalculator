@@ -57,7 +57,7 @@
                               <Insets right="-1.0" />
                            </HBox.margin>
                         </HBox>
-                        <MFXComboBox fx:id="countriesFilterCB" allowEdit="true" floatMode="DISABLED" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="100.0" promptText="Countries" styleClass="countryFilterComboBox" />
+                        <MFXComboBox fx:id="countriesFilterCB" floatMode="DISABLED" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="100.0" promptText="Countries" styleClass="countryFilterComboBox" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="93.0" GridPane.columnIndex="4">
@@ -70,7 +70,7 @@
                               <Insets right="-1.0" />
                            </HBox.margin>
                         </HBox>
-                        <MFXComboBox fx:id="teamsFilterCB" allowEdit="true" floatMode="DISABLED" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="100.0" promptText="Teams" styleClass="countryFilterComboBox" />
+                        <MFXComboBox fx:id="teamsFilterCB" floatMode="DISABLED" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="100.0" promptText="Teams" styleClass="countryFilterComboBox" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
