@@ -151,7 +151,7 @@ public class CreateController implements Initializable {
                     @Override
                     protected Void call() throws Exception {
                         Thread.sleep(200);
-                        model.addEmployee(employee, configuration, teams);
+                        model.addNewEmployee(employee, configuration, teams);
                         return null;
                     }
                 };

@@ -24,6 +24,7 @@ import java.util.*;
 public class Model implements IModel {
 
 
+
     private ObservableMap<Integer, Employee> employees;
 
     private IEmployeeManager employeeManager;
@@ -117,23 +118,17 @@ public class Model implements IModel {
     }
 
 
-    /**
-     * populate the teamWithEmployees map with data
-     */
+    /**populate the teamWithEmployees map with data*/
     private void populateTeamsWithEmployees() throws RateException {
         this.teamsWithEmployees.putAll(employeeManager.getTeamWithEmployees());
     }
 
-    /**
-     * populate the countriesWithTeams  with data
-     */
+    /**populate the countriesWithTeams  with data  */
     private void populateCountriesWithTeams() throws RateException {
         this.countriesWithTeams.putAll(employeeManager.getCountriesWithTeams(teamsWithEmployees));
     }
 
-    /**
-     * populate regionsWithCountries with data
-     */
+    /**populate regionsWithCountries with data*/
     private void populateRegionsWithCountries() throws RateException {
         this.regionsWithCountries.putAll(employeeManager.getRegionsWithCountries(countriesWithTeams));
     }
@@ -203,32 +198,38 @@ public class Model implements IModel {
     }
 
     @Override
-    public void addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException {
+    public void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException {
         employee = employeeManager.addEmployee(employee, configuration, teams);
         if (employee != null) {
             employees.put(employee.getId(), employee);
-            for (Team team : teams) {
+
+            for (Team team : teams){
+                team.addNewTeamMember(employee);
+                TeamConfiguration teamConfiguration = getNewEmployeeTeamConfiguration(team);
+                addTeamConfiguration(teamConfiguration, team);
                 teamsWithEmployees.get(team.getId()).addNewTeamMember(employee);
-                teamsWithEmployees.get(team.getId()).setActiveConfiguration(getNewEmployeeTeamConfiguration(teamsWithEmployees.get(team.getId())));
-                addTeamConfiguration(teamsWithEmployees.get(team.getId()).getActiveConfiguration(), team);
             }
         }
     }
 
     @Override
     public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException {
-        System.out.println(team);
         int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team);
         if (teamConfiguration != null) {
             teamConfiguration.setId(teamConfigurationID);
+            teamsWithEmployees.get(team.getId()).setActiveConfiguration(getNewEmployeeTeamConfiguration(teamsWithEmployees.get(team.getId())));
         }
     }
 
     private TeamConfiguration getNewEmployeeTeamConfiguration(Team team) {
         BigDecimal teamDayRate = calculateSumDayRate(team);
         BigDecimal teamHourlyRate = calculateSumHourlyRate(team);
-        double grossMargin = checkNullValues(team.getActiveConfiguration().getGrossMargin());
-        double markupMultiplier = checkNullValues(team.getActiveConfiguration().getMarkupMultiplier());
+        double grossMargin = 0;
+        double markupMultiplier = 0;
+        if(team.getActiveConfiguration() != null){
+            grossMargin = checkNullValues(team.getActiveConfiguration().getGrossMargin());
+            markupMultiplier = checkNullValues(team.getActiveConfiguration().getMarkupMultiplier());
+        }
         LocalDateTime savedDate = LocalDateTime.now();
         return new TeamConfiguration(teamDayRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, true);
     }
@@ -251,7 +252,7 @@ public class Model implements IModel {
     private BigDecimal calculateSumHourlyRate(Team team) {
         BigDecimal sum = BigDecimal.ZERO;
         for (Employee employee : team.getEmployees()) {
-            sum = sum.add(employee.getActiveConfiguration().getDayRate());
+            sum = sum.add(employee.getActiveConfiguration().getHourlyRate());
         }
         return sum;
     }
@@ -271,8 +272,9 @@ public class Model implements IModel {
     }
 
 
-    //TODO use the new method called getOperationalCountries();
 
+
+    //TODO use the new method called getOperationalCountries();
     /**
      * retrieve the countries as an observable list
      */
@@ -317,6 +319,10 @@ public class Model implements IModel {
     public boolean isEditOperationPerformed(Employee originalEmployee, Employee editedEmployee) {
         return employeeManager.isEmployeeEdited(originalEmployee, editedEmployee);
     }
+
+
+
+
 
 
     public void populateValidCountries(List<String> validCountries) {
@@ -374,6 +380,8 @@ public class Model implements IModel {
         filteredEmployeesListByRegion.setAll(displayedEmployees);
         displayedEmployees.setAll(employeeManager.filterByCountry(region, countries, employees));
         displayEmployees.displayEmployees();
+        filteredEmployeesList.setAll(displayedEmployees);
+        listEmployeeByCountryTemp.setAll(displayedEmployees);
     }
 
 
@@ -386,7 +394,9 @@ public class Model implements IModel {
         displayEmployees.displayEmployees();
         //save the values for the selected  country
 
+      /**delete if not need annymore*/
         listEmployeeByCountryTemp.setAll(displayedEmployees);
+
     }
 
     /**
@@ -413,6 +423,11 @@ public class Model implements IModel {
         System.out.println(filteredEmployeesListByRegion +" from the country revert");
         displayedEmployees.setAll(filteredEmployeesListByRegion);
         displayEmployees.displayEmployees();
+        if (areObservableListsEqual(filteredEmployeesList, displayedEmployees)) {
+            filteredEmployeesList.setAll(displayedEmployees);
+        }
+        System.out.println("CT Disp" + displayedEmployees);
+        System.out.println("CT Filt" + filteredEmployeesList);
     }
 
 

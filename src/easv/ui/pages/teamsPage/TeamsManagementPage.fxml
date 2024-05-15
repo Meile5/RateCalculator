@@ -120,8 +120,11 @@
                                         <MFXProgressSpinner fx:id="progressBar" maxWidth="70.0" prefHeight="25.0" prefWidth="48.0" />
                                     </children>
                                     <padding>
-                                        <Insets top="20.0" />
+                                        <Insets left="10.0" top="20.0" />
                                     </padding>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                                 </HBox>
                                 <MFXScrollPane hbarPolicy="NEVER" maxHeight="600.0" maxWidth="600.0" prefHeight="497.0" prefWidth="508.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
                                     <content>
