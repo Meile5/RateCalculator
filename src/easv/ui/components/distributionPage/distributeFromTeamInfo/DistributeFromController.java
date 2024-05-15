@@ -48,6 +48,7 @@ public class DistributeFromController implements Initializable, DistributionComp
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateComponentWithValues();
+
         Platform.runLater(this::addClickListener);
     }
 
@@ -87,10 +88,10 @@ public class DistributeFromController implements Initializable, DistributionComp
 
     private void addClickListener(){
         this.teamComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
-         this.teamComponent.getStyleClass().add("employeeComponentClicked");
-         this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
-            this.controllerMediator.setTheSelectedComponentToDistributeFrom(this);
-         this.controllerMediator.setTheSelectedTeam(teamToDisplay);
+                this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
+                this.controllerMediator.setTheSelectedComponentToDistributeFrom(this);
+                this.teamComponent.getStyleClass().add("employeeComponentClicked");
+                this.controllerMediator.setTheSelectedTeam(teamToDisplay);
         });
     }
 

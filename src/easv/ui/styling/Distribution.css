@@ -3,29 +3,25 @@
 .teamsListView{
     -fx-background-color: #d1d0d0;
 }
-
-/* custom-styles.css */
-
-/* Customize the selected ListCell within the ListView */
-.teamsListView .list-cell:selected {
-    -fx-border-color: #cccccc;
-    -fx-background-color: #d1d0d0;
-    -fx-effect: dropshadow(gaussian, rgba(86, 234, 140, 0.5), 10, 0, 0, 5);
+.teamsListView .scroll-bar{
+    -fx-background-color: transparent;
 }
 
-/* Optionally, you can add more custom styles */
-.teamsListView {
-    -fx-background-color: lightgrey;
-    -fx-border-color: darkgrey;
-    -fx-padding: 10;
+.list-view .viewport{
+    -fx-background-color: #d1d0d0
 }
-
 .teamsListView .list-cell {
-    -fx-background-color: #d1d0d0;
+    -fx-background-color: transparent;
     -fx-pref-width: 250;
     -fx-max-width: 520;
     -fx-min-width: 250;
     -fx-background-radius: 20;
+}
+
+.teamsListView .list-cell:selected {
+    -fx-background-color: #d1d0d0 !important;
+    -fx-effect: dropshadow(gaussian, rgba(86, 234, 140, 0.5), 10, 0, 0, 5)!important;
+    -fx-text-fill: black !important;
 }
 
 .teamsListView .list-cell:focused{
@@ -34,17 +30,13 @@
     -fx-background-radius: 5;
 }
 
-.list-view .list-cell:filled:selected {
-    -fx-border-color: #cccccc;
-    -fx-effect: dropshadow(gaussian, rgba(86, 234, 140, 0.5), 10, 0, 0, 5);
-}
+/*.list-view .list-cell:filled:selected {*/
+/*    -fx-border-color: #cccccc;*/
+/*    -fx-effect: dropshadow(gaussian, rgba(86, 234, 140, 0.5), 10, 0, 0, 5);*/
+/*}*/
 
 .teamsListView .list-cell:hover {
     -fx-border-color: #cccccc; /* Border color on hover */
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);
-
 }
 
-.list-view .viewport{
-    -fx-background-color: #d1d0d0
-}

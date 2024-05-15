@@ -8,13 +8,15 @@ public class ControllerMediator {
     private DistributionComponentInterface distributionTeamController;
 
 
+
+
    public  void registerDistributionController(DistributionController distributionController){
        this.distributionController=distributionController;
    }
 
-//   public void setDistributionTeamController(DistributionComponentControllerInterface distributionControllerInterface){
-//       this.distributionTeamController= distributionControllerInterface;
-//   }
+   public void setDistributionTeamController(DistributionComponentInterface distributionControllerInterface){
+       this.distributionTeamController= distributionControllerInterface;
+   }
 
    public void setTheSelectedTeam(Team team){
        this.distributionController.setTheSelectedTeam(team);

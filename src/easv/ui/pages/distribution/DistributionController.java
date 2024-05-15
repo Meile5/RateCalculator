@@ -63,26 +63,20 @@ public class DistributionController implements Initializable,DistributionControl
      * add the teams in the  system  to the distribute to teams container
      */
     private void populateDistributeToTeams() {
-        List<Parent> distributeToTeamsComponents = new ArrayList<>();
-        model.getOperationalTeams().forEach(e -> {
-            DistributeToController distributeToController = new DistributeToController(model, e);
-            distributeToTeamsComponents.add(distributeToController.getRoot());
-        });
-        distributeFromTeams.getChildren().addAll(distributeToTeamsComponents);
+        distributeToTeams.setCellFactory(listView -> new DistributeToListCell(model));
+        distributeToTeams.setItems(model.getOperationalTeams());
+
+
 
     }
 
     private void populateDistributeFromTeams() {
-        distributeFromTeams.getStyleClass().clear();
-        distributeToTeams.setCellFactory(listView -> new DistributeToListCell(model));
-        distributeToTeams.setItems(model.getOperationalTeams());
-
-//        List<Parent> distributeFromComponents = new ArrayList<>();
-//        model.getOperationalTeams().forEach(e -> {
-//            DistributeFromController distributeFromController = new DistributeFromController(model,e,distributionMediator);
-//            distributeFromComponents.add(distributeFromController.getRoot());
-//        });
-//        distributeFromTeams.getChildren().addAll(distributeFromComponents);
+        List<Parent> distributeFromTeamsComponents = new ArrayList<>();
+        model.getOperationalTeams().forEach(e -> {
+            DistributeFromController distributeToController = new DistributeFromController(model, e,distributionMediator);
+            distributeFromTeamsComponents.add(distributeToController.getRoot());
+        });
+        distributeFromTeams.getChildren().addAll(distributeFromTeamsComponents);
     }
 
     @Override

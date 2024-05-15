@@ -45,7 +45,6 @@ public class DistributeToController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("initialized the distribute to ");
         populateComponentWithValues();
     }
 
