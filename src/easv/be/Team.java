@@ -17,6 +17,8 @@ public class Team {
     private BigDecimal utilizationPercentage;
 
 
+
+
     public Team(String team) {
         this.team = team;
     }
@@ -26,12 +28,18 @@ public class Team {
         this.id = id;
     }
 
-    public Team(String team, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory) {
+    public Team(String team, int id, BigDecimal utilizationPercentage) {
+        this.team = team;
+        this.id = id;
+        this.utilizationPercentage = utilizationPercentage;
+    }
+
+    public Team(String team, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory ) {
         this(team, id);
         this.teamMembers = teamMembers;
         this.teamConfigurationsHistory = teamConfigurationsHistory;
-    }
 
+    }
 
     /**
      * copy constructor

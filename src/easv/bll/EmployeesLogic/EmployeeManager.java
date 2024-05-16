@@ -29,7 +29,7 @@ public class EmployeeManager implements IEmployeeManager {
         return employee;
     }
 
-
+/*
     private boolean checkIfNewCountry(Country country, ObservableMap<String, Country> countries) {
         if (country == null) {
             return false;
@@ -44,12 +44,14 @@ public class EmployeeManager implements IEmployeeManager {
         return teams.values().stream().noneMatch(t -> t.getTeamName().equals(team.getTeamName()));
     }
 
+ */
+
     @Override
     public Map<Integer, Employee> returnEmployees() throws RateException {
         LinkedHashMap<Integer, Employee> employees = employeeDAO.returnEmployees();
         /*employees.values().forEach(( employee) -> {
-            BigDecimal dayRate = rateCalculator.calculateDayRate(employee);
-                BigDecimal hourRate = rateCalculator.calculateHourlyRate(employee);
+            BigDecimal dayRate = rateCalculator.calculateEmployeeTotalDayRate(employee);
+                BigDecimal hourRate = rateCalculator.calculateEmployeeTotalHourlyRate(employee);
                 employee.setDailyRate(dayRate);
                 employee.setHourlyRate(hourRate);
         })*/
@@ -92,30 +94,35 @@ public class EmployeeManager implements IEmployeeManager {
         employeesFiltered.put(employee.getId(), employee);
     }
 
-
     @Override
-    public BigDecimal calculateGroupDayRate(Collection<Employee> employees) {
-        /*if (!employees.isEmpty()) {
-            return employees.stream()
-                    .map(Employee::getDailyRate)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-        } else {
-            return BigDecimal.ZERO;
-        }*/
-        return null;
+    public BigDecimal calculateTeamDayRate(Team team) {
+        return rateCalculator.calculateTeamDailyRate(team);
     }
 
     @Override
-    public BigDecimal calculateGroupHourlyRate(Collection<Employee> employees) {
-       /* if(!employees.isEmpty()){
-            return employees.stream()
-                    .map(Employee::getHourlyRate)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-        } else {
-            return BigDecimal.ZERO;
-        }*/
-        return null;
+    public BigDecimal calculateTeamHourlyRate(Team team) {
+        return rateCalculator.calculateTeamHourlyRate(team);
     }
+
+    /*
+    private BigDecimal calculateSumTeamDayRate(Team team) {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Employee employee : team.getEmployees()) {
+            BigDecimal dayRate = rateCalculator.calculateEmployeeDayRateOnTeam(employee, team);
+            sum = sum.add(dayRate);
+        }
+        return sum;
+    }
+
+    private BigDecimal calculateSumTeamHourlyRate(Team team) {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Employee employee : team.getEmployees()) {
+            sum = sum.add(rateCalculator.calculateEmployeeHourlyRateOnTeam(employee, team));
+        }
+        return sum;
+    }
+
+     */
 
     @Override
     public List<Employee> performSearchOperation(Collection<Employee> employees, String filter) {
@@ -159,14 +166,14 @@ public class EmployeeManager implements IEmployeeManager {
      * calculate the day rate for an employee
      */
     public BigDecimal getDayRate(Employee employee) {
-        return rateCalculator.calculateDayRate(employee);
+        return rateCalculator.calculateEmployeeTotalDayRate(employee);
     }
 
     /**
      * calculate the hourly rate for an employee
      */
     public BigDecimal getHourlyRate(Employee employee, double configurableHours) {
-        return rateCalculator.calculateHourlyRate(employee, configurableHours);
+        return rateCalculator.calculateEmployeeTotalHourlyRate(employee, configurableHours);
     }
 
     /**

@@ -1,7 +1,9 @@
 package easv.ui.pages.teamsPage;
 
+import easv.be.Employee;
 import easv.be.Team;
 import easv.be.TeamConfiguration;
+import easv.be.TeamConfigurationEmployee;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
@@ -11,6 +13,8 @@ import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.modelFactory.ModelFactory;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -20,7 +24,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ComboBoxBase;
+import javafx.scene.control.ListCell;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -28,9 +36,9 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TeamsPageController implements Initializable {
     private IModel model;
@@ -40,6 +48,13 @@ public class TeamsPageController implements Initializable {
     private VBox teamsContainer;
     @FXML
     private LineChart<String, BigDecimal> lineChart;
+    @FXML
+    private ComboBox<Integer> yearComboBox;
+    @FXML
+    private ComboBox<TeamConfiguration> teamsHistory;
+    @FXML
+    private PieChart teamsPieChart;
+
 
 
     private Service<Void> loadTeamsFromDB;
@@ -63,14 +78,13 @@ public class TeamsPageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
             model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
-            System.out.println(model);
             displayTeams();
 
 
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
-        displayTeams();
+        //displayTeams();
     }
 
     public void displayTeams() {
@@ -83,26 +97,112 @@ public class TeamsPageController implements Initializable {
                 });
     }
 
-    public void handleTeamInfoComponentClick(Team team){
-        lineChart.getData().clear();
+    /* listener that listens changes in selected years of combobox and calls a method to populate pieChart*/
+    public void handleTeamInfoComponentClick(Team team) {
+        yearComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                populateChartForYear(team, newValue);
 
-        // Create a new series for the selected team
+            }
+        });
+    }
+
+    /**
+     * populates the lineChart with history from a selected year, it includes day rates and months
+     * initializes a new series for an XYChart with String as the X-axis type and BigDecimal as the Y-axis type
+     * format String into "Jan 01"
+     * @param selectedYear is the year that is selected from a combobox
+     */
+    private void populateChartForYear(Team team, int selectedYear) {
         XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
         series.setName(team.getTeamName());
 
-        // Populate the series with data from selectedTeamConfigurations
+        /* Get the configurations for the selected year*/
+        List<TeamConfiguration> configurations = team.getTeamConfigurationsHistory().stream()
+                .filter(config -> config.getSavedDateWithoutTime().getYear() == selectedYear)
+                .sorted(Comparator.comparing(TeamConfiguration::getSavedDateWithoutTime))
+                .toList();
+        /* Populate the series with sorted data from configurations*/
+        for (TeamConfiguration config : configurations) {
+            series.getData().add(new XYChart.Data<>(config.getSavedDateWithoutTime().format(DateTimeFormatter.ofPattern("MMM dd")), config.getTeamDayRate()));
+        }
+        lineChart.getData().clear();
+        lineChart.getData().add(series);
+
+
+    }
+    /**
+     * populates the ComboBox with years based on the team's configurations history
+     * if configurations exist extracts only years from the configurations, sorts them in descending order
+     * sets the latest year as the initial value of the ComboBox
+     * @param team the team whose configurations history is used to populate the ComboBox
+     */
+    public void populateComboBoxWithYears(Team team) {
         List<TeamConfiguration> configurations = team.getTeamConfigurationsHistory();
-        System.out.println(Arrays.toString(team.getTeamConfigurationsHistory().toArray()));
+        ObservableList<Integer> yearOptions = FXCollections.observableArrayList();
         if (configurations != null) {
-            for (TeamConfiguration config : configurations) {
-                series.getData().add(new XYChart.Data<>(config.getSavedDateWithoutTime().toString(), config.getTeamDayRate()));
+            /*Collect years from configurations*/
+            configurations.stream()
+                    .map(config -> config.getSavedDateWithoutTime().getYear())
+                    .distinct()
+                    .sorted(Collections.reverseOrder())
+                    .forEach(yearOptions::add);
+        }
+        yearComboBox.setItems(yearOptions);
+        /* Set the latest year as the initial value of the ComboBox*/
+        if (!yearOptions.isEmpty()) {
+            yearComboBox.setValue(yearOptions.get(0));
+        }
+    }
+
+    /** sets a list of team history dates in combobox of pieChart
+     * adds listener to in order to display pieChart info based on selected history configuration
+     * @param team is being passed from teamInfo controller to get the selected team component team
+     */
+    public void setConfigurations(Team team){
+        List<TeamConfiguration> teamConfigurations = team.getTeamConfigurationsHistory();
+        for (TeamConfiguration config : teamConfigurations) {
+            if (!teamsHistory.getItems().contains(config)) {
+                teamsHistory.getItems().add(config);
             }
         }
 
-        // Add the series to the line chart
-        lineChart.getData().add(series);
+        teamsHistory.setOnAction(event -> {
+            TeamConfiguration selectedConfig = teamsHistory.getValue();
+            if (selectedConfig != null) {
+                displayEmployeesForDate(team, selectedConfig);
+            }
+        });
+    }
+    /** displays pieChart data which is teamMembers of teamHistory configurations
+     * gets employee name and rate for each to display in pieChart slice
+     * sets team name into pieChart label
+     */
+    private void displayEmployeesForDate(Team team, TeamConfiguration selectedConfig){
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+        List<TeamConfigurationEmployee> teamMembers = selectedConfig.getTeamMembers();
+        for (TeamConfigurationEmployee employee : teamMembers) {
+            pieChartData.add(new PieChart.Data(employee.getEmployeeName(), employee.getEmployeeDailyRate()));
+        }
+        /* binds each PieChart.Data object's name property to a concatenated string
+         containing the name and day rate, ensuring that both are displayed in the pie chart.*/
+        pieChartData.forEach(data ->
+                data.nameProperty().bind(
+                        Bindings.concat(data.getName(), " day rate: ", data.pieValueProperty())
+                )
+                );
+        teamsPieChart.setData(pieChartData);
+        teamsPieChart.setTitle(team.getTeamName());
+        teamsPieChart.setLabelLineLength(10);
+        teamsPieChart.setLegendVisible(false);
+        for (PieChart.Data data : pieChartData) {
+           // data.getNode().setOnMouseClicked(event -> {
+                data.setPieValue(data.getPieValue());
+           // });
+        }
 
     }
+
 
 
 

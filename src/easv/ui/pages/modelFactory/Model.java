@@ -234,13 +234,13 @@ public class Model implements IModel {
         int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team);
         if (teamConfiguration != null) {
             teamConfiguration.setId(teamConfigurationID);
-            teamsWithEmployees.get(team.getId()).setActiveConfiguration(getNewEmployeeTeamConfiguration(teamsWithEmployees.get(team.getId())));
+            teamsWithEmployees.get(team.getId()).setActiveConfiguration(teamConfiguration);
         }
     }
 
     private TeamConfiguration getNewEmployeeTeamConfiguration(Team team) {
-        BigDecimal teamDayRate = calculateSumDayRate(team);
-        BigDecimal teamHourlyRate = calculateSumHourlyRate(team);
+        BigDecimal teamHourlyRate = employeeManager.calculateTeamHourlyRate(team);
+        BigDecimal teamDayRate = employeeManager.calculateTeamDayRate(team);
         double grossMargin = 0;
         double markupMultiplier = 0;
         if (team.getActiveConfiguration() != null) {
@@ -254,10 +254,12 @@ public class Model implements IModel {
     private double checkNullValues(double numberToCheck) {
         if (numberToCheck > 0) {
             return numberToCheck;
+        } else {
+            return 0;
         }
-        return 0;
     }
 
+    /*
     private BigDecimal calculateSumDayRate(Team team) {
         BigDecimal sum = BigDecimal.ZERO;
         for (Employee employee : team.getEmployees()) {
@@ -273,6 +275,8 @@ public class Model implements IModel {
         }
         return sum;
     }
+
+     */
 
     //TODO, to delete this method? (it's on the interface) - NELSON
     @Override
@@ -460,17 +464,6 @@ public class Model implements IModel {
             }
         }
         return true;
-    }
-
-
-    @Override
-    public BigDecimal calculateGroupDayRate() {
-        return employeeManager.calculateGroupDayRate(displayedEmployees);
-    }
-
-    @Override
-    public BigDecimal calculateGroupHourlyRate() {
-        return employeeManager.calculateGroupHourlyRate(displayedEmployees);
     }
 
     public ObservableList<Employee> getUsersToDisplay() {
