@@ -1,13 +1,11 @@
 package easv.bll.EmployeesLogic;
 
-import easv.be.Configuration;
-import easv.be.Employee;
-import easv.be.EmployeeType;
-import easv.be.TeamWithEmployees;
+import easv.be.*;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.List;
 
 
 public class RateCalculator implements IRateCalculator {
@@ -21,7 +19,7 @@ public class RateCalculator implements IRateCalculator {
      *                 if no values are present for the employee returns BigDecimal.ZERO
      */
 
-    public BigDecimal calculateDayRate(Employee employee) {
+    public BigDecimal calculateEmployeeTotalDayRate(Employee employee) {
 
 
         BigDecimal annualSalary = employee.getActiveConfiguration().getAnnualSalary();
@@ -54,7 +52,7 @@ public class RateCalculator implements IRateCalculator {
 
     public BigDecimal calculateHourlyRate(Employee employee) {
 
-        BigDecimal hourlyRate = calculateDayRate(employee)
+        BigDecimal hourlyRate = calculateEmployeeTotalDayRate(employee)
                 .divide(BigDecimal.valueOf(HoursInDay));
 
         return hourlyRate;
@@ -67,16 +65,75 @@ public class RateCalculator implements IRateCalculator {
      * @param configurableHours the configurable hours  of an working day
      *                          if no configuration is present for the employee it returns BigDecimal.ZERO
      */
-    public BigDecimal calculateHourlyRate(Employee employee, double configurableHours) {
+    public BigDecimal calculateEmployeeTotalHourlyRate(Employee employee, double configurableHours) {
         BigDecimal hourlyRate = BigDecimal.ZERO;
         if (configurableHours == 0) {
-            hourlyRate = calculateDayRate(employee)
+            hourlyRate = calculateEmployeeTotalDayRate(employee)
                     .divide(BigDecimal.valueOf(HoursInDay), RoundingMode.HALF_UP);
         } else {
-            hourlyRate = calculateDayRate(employee)
+            hourlyRate = calculateEmployeeTotalDayRate(employee)
                     .divide(BigDecimal.valueOf(configurableHours), RoundingMode.HALF_UP);
         }
         return hourlyRate.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal calculateEmployeeDayRateOnTeam(Employee employee, Team team){
+        BigDecimal hourlyRate = calculateEmployeeHourlyRateOnTeam(employee, team);
+        return hourlyRate.multiply(BigDecimal.valueOf(HoursInDay)).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal calculateEmployeeHourlyRateOnTeam(Employee employee, Team team){
+        BigDecimal hourlyRate = employee.getActiveConfiguration().getHourlyRate();
+        BigDecimal utilizationPercentage = team.getUtilizationPercentage().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
+        return (hourlyRate.multiply(utilizationPercentage)).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal calculateTeamDailyRate(Team team) {
+        BigDecimal totalDayRate = BigDecimal.ZERO;
+        double markupMultiplier = 0;
+        double grossMargin = 0;
+        if(team.getActiveConfiguration() != null) {
+            markupMultiplier = team.getActiveConfiguration().getMarkupMultiplier();
+            grossMargin = team.getActiveConfiguration().getGrossMargin();
+        }
+        for (Employee employee : team.getEmployees()) {
+            BigDecimal dayRate = calculateEmployeeDayRateOnTeam(employee, team);
+            if (markupMultiplier > 0) {
+                BigDecimal markedUpHourlyRate = dayRate.multiply(BigDecimal.valueOf(markupMultiplier/100));
+                totalDayRate = totalDayRate.add(markedUpHourlyRate);
+            } else {
+                totalDayRate = totalDayRate.add(dayRate);
+            }
+        }
+        if(grossMargin > 0){
+            BigDecimal hourlyRateWithMargin = totalDayRate.divide(BigDecimal.valueOf(grossMargin/100), 2, RoundingMode.HALF_UP);
+            return hourlyRateWithMargin;
+        }
+        return totalDayRate;
+    }
+
+    public BigDecimal calculateTeamHourlyRate(Team team) {
+        BigDecimal totalHourlyRate = BigDecimal.ZERO;
+        double markupMultiplier = 0;
+        double grossMargin = 0;
+        if(team.getActiveConfiguration() != null) {
+            markupMultiplier = team.getActiveConfiguration().getMarkupMultiplier();
+            grossMargin = team.getActiveConfiguration().getGrossMargin();
+        }
+        for (Employee employee : team.getEmployees()) {
+            BigDecimal hourlyRate = calculateEmployeeHourlyRateOnTeam(employee, team);
+            if (markupMultiplier > 0) {
+                BigDecimal markedUpHourlyRate = hourlyRate.multiply(BigDecimal.valueOf(markupMultiplier/100));
+                totalHourlyRate = totalHourlyRate.add(markedUpHourlyRate);
+            } else {
+                totalHourlyRate = totalHourlyRate.add(hourlyRate);
+            }
+        }
+        if(grossMargin > 0){
+            BigDecimal hourlyRateWithMargin = totalHourlyRate.divide(BigDecimal.valueOf(grossMargin/100), 2, RoundingMode.HALF_UP);
+            return hourlyRateWithMargin;
+        }
+        return totalHourlyRate;
     }
 
     /**

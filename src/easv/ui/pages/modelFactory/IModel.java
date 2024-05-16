@@ -96,11 +96,6 @@ public interface IModel {
 
     BigDecimal getComputedDayRate(Employee employee);
 
-
-    BigDecimal calculateGroupDayRate();
-
-    BigDecimal calculateGroupHourlyRate();
-
     void teamFilterActiveRevert() throws RateException;
 
     void returnEmployeesByRegion();

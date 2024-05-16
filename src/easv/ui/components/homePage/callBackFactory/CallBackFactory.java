@@ -62,7 +62,6 @@ public class CallBackFactory {
                 observer.addSubject(navigateToProfile);
             }
             default -> {
-                System.out.println(modalLayout + "aloo ");
                 NavigateToHome navigateToHome = new NavigateToHome(pageManager,model,modalLayout);
                 callBack = navigateToHome;
                 callBacks.put(pageTo, callBack);

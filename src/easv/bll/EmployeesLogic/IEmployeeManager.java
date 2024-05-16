@@ -8,7 +8,6 @@ import javafx.collections.ObservableMap;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,10 +16,8 @@ public interface IEmployeeManager {
     Map<Integer, Employee> returnEmployees() throws RateException;
     Boolean deleteEmployee(Employee employee) throws RateException;
 
-    BigDecimal calculateGroupDayRate(Collection<Employee> employees);
-
-    BigDecimal calculateGroupHourlyRate(Collection<Employee> employees);
-
+    BigDecimal calculateTeamDayRate(Team team);
+    BigDecimal calculateTeamHourlyRate(Team team);
     public List<Employee> performSearchOperation (Collection<Employee> employees, String filter);
 
     /**check if an edit operation was performed on the epmloyee object*/

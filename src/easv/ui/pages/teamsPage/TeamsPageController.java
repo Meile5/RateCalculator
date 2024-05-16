@@ -63,7 +63,6 @@ public class TeamsPageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
             model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
-            System.out.println(model);
             displayTeams();
 
 

@@ -24,7 +24,7 @@ public class Employee {
     private Configuration  activeConfiguration;
 
 
-    // the idea to store the employye percentage per each team
+    // the idea to store the employee percentage per each team
     private Map<Integer,BigDecimal> utilperTeams;
 
 

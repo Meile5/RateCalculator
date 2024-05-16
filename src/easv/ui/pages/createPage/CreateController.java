@@ -77,6 +77,7 @@ public class CreateController implements Initializable {
         try {
             createPage=loader.load();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -111,7 +112,7 @@ public class CreateController implements Initializable {
             BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText().trim()));
             BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText().trim()));
             BigDecimal overheadMultiplier = new BigDecimal(convertToDecimalPoint(multiplierTF.getText().trim()));
-            BigDecimal utilizationPercentage = new BigDecimal(99);
+            BigDecimal utilizationPercentage = new BigDecimal(teamsUtilizationList.stream().mapToInt(Integer::intValue).sum());
             BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText().trim()));
             LocalDateTime savedDate = LocalDateTime.now();
             boolean isActive = true;
@@ -190,7 +191,6 @@ public class CreateController implements Initializable {
                     Team team = (Team) teamCB.getSelectedItem();
                     BigDecimal utilizationPercentage = new BigDecimal(utilPercentageTF.getText());
                     team.setUtilizationPercentage(utilizationPercentage);
-                    System.out.println(team.getUtilizationPercentage());
                     teamsList.add(team);
                     teamsUtilizationList.add(Integer.valueOf(utilPercentageTF.getText()));
 
