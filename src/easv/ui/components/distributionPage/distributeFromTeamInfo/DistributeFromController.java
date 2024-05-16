@@ -90,7 +90,7 @@ public class DistributeFromController implements Initializable, DistributionComp
                 this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
                 this.controllerMediator.setTheSelectedComponentToDistributeFrom(this);
                 this.teamComponent.getStyleClass().add("teamComponentClicked");
-                this.controllerMediator.setTheSelectedTeam(teamToDisplay);
+                model.setDistributeFromTeam(teamToDisplay);
                 this.controllerMediator.showTeamToDistributeFromBarChart();
         });
     }

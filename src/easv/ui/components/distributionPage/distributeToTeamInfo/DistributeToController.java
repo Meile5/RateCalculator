@@ -1,11 +1,16 @@
 package easv.ui.components.distributionPage.distributeToTeamInfo;
+
 import easv.be.Country;
 import easv.be.Region;
 import easv.be.Team;
+import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
+import easv.ui.pages.distribution.DistributeToMediator;
 import easv.ui.pages.distribution.DistributionController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.PauseTransition;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,19 +36,21 @@ public class DistributeToController implements Initializable {
     @FXML
     private Label dayRate, dayCurrency, hourlyRate, hourlyCurrency;
     private IModel model;
-    private Team teamToDisplay ;
+    private Team teamToDisplay;
     @FXML
     private MFXTextField distributionPercentage;
-    private DistributionController mainDistributionController;
+    private DistributeToMediator distributeToMediator;
+    private final static PseudoClass INVALID_INPUT = PseudoClass.getPseudoClass("inputError");
 
-    public DistributeToController(IModel model, Team teamToDisplay, DistributionController mainDistributionController) {
+
+    public DistributeToController(IModel model, Team teamToDisplay,DistributeToMediator distributeToMediator) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DistributeToTeamInfo.fxml"));
         loader.setController(this);
-        this.model= model;
-        this.teamToDisplay= teamToDisplay;
-        this.mainDistributionController = mainDistributionController;
+        this.model = model;
+        this.teamToDisplay = teamToDisplay;
+        this.distributeToMediator = distributeToMediator;
         try {
-            teamComponentDistributeFrom =loader.load();
+            teamComponentDistributeFrom = loader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -87,29 +94,82 @@ public class DistributeToController implements Initializable {
         label.setTooltip(toolTip);
     }
 
-    public void setTeamToDisplay(Team team ){
-        this.teamToDisplay=team;
+    public void setTeamToDisplay(Team team) {
+        this.teamToDisplay = team;
     }
-    public String  getOverheadPercentage(){
+
+    public String getOverheadPercentage() {
         return this.distributionPercentage.getText();
     }
 
 
-    //TODO add validation for the input percentage to not allow to be a string
-    private void  addInputPercentageListener(){
+    //TODO add validation for the input percentage to not allow to be a string ,and allow comma separated
+    private void addInputPercentageListener() {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
         this.distributionPercentage.textProperty().addListener((observable, oldValue, newValue) -> {
-            pauseTransition.setOnFinished((interupt)->{
-                if(!newValue.isEmpty()) {
-                    mainDistributionController.addDistributionPercentageToTeam(teamToDisplay.getId(), Double.parseDouble(newValue));
-                }else if(!oldValue.isEmpty()){
-                    mainDistributionController.removeDistributionPercentageToTeam(teamToDisplay.getId());
+            pauseTransition.setOnFinished((interupt) -> {
+                if (!newValue.isEmpty()) {
+                    if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")){
+                            ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " +teamToDisplay.getTeamName() + " "+ ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
+                        teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,true);
+                        model.addDistributionPercentageTeam(teamToDisplay,newValue);
+                    }else{
+                        Double overheadInserted = validatePercentageValue(newValue);
+                        if(!(overheadInserted>=0 && overheadInserted<=100)){
+                            ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " +teamToDisplay.getTeamName() + " "+ ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
+                        }else{
+                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
+                        }
+                        model.addDistributionPercentageTeam(teamToDisplay,newValue);
+                       // distributeToMediator.updateTotalOverheadValue(overheadValue);
+                    }
+                } else {
+                    teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
+                    if (!oldValue.isEmpty()) {
+                        model.removeDistributionPercentageTeam(teamToDisplay);
+                    }
                 }
+
+//                else if (!oldValue.isEmpty()) {
+////                    Double oldOverhead = validatePercentageValue(model.getInsertedDistributionPercentageFromTeams().get(teamToDisplay));
+////                    if(oldOverhead!=null) {
+////                    distributeToMediator.removeDistributionPercentage(oldOverhead);
+////                    }
+//                    model.removeDistributionPercentageTeam(teamToDisplay);
+//                }else {
+//                    teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
+//                }
+
             });
-           pauseTransition.playFromStart();
+            pauseTransition.playFromStart();
         });
     }
 
 
+
+    private  String convertToDecimalPoint(String value) {
+        String validFormat = "";
+        if(value== null){
+            return validFormat;
+        }
+        if (value.contains(",")) {
+            validFormat = value.replace(",", ".");
+        } else {
+            validFormat = value;
+        }
+        return validFormat;
+    }
+
+    /**convert string to double , if the input is invalid than the value returned will be null;*/
+    private Double validatePercentageValue(String newValue){
+        String decimalPoint = convertToDecimalPoint(newValue);
+        Double overheadValue= null;
+        try{
+              overheadValue =  Double.parseDouble(decimalPoint);
+        }catch(NumberFormatException e){
+            return overheadValue;
+        }
+        return overheadValue;
+    }
 
 }

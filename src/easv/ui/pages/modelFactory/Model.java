@@ -83,8 +83,18 @@ public class Model implements IModel {
     private ObservableList<Employee> listEmployeeByCountryTemp;
 
 
-    public Model() throws RateException {
+    /**
+     * holds the temporary values for the teams that user inserted in the distribution page
+     */
+    private final Map<Team, String> insertedDistributionPercentageFromTeams;
 
+    /**
+     * the selected team that user chose to distribute from and the associated value
+     */
+    private Team selectedTeamToDistributeFrom;
+
+
+    public Model() throws RateException {
         this.employees = FXCollections.observableMap(new LinkedHashMap<>());
         this.filteredEmployeesListByRegion = FXCollections.observableArrayList();
         this.listEmployeeByCountryTemp = FXCollections.observableArrayList();
@@ -100,6 +110,7 @@ public class Model implements IModel {
         teamsWithEmployees = FXCollections.observableHashMap();
         countriesWithTeams = FXCollections.observableHashMap();
         regionsWithCountries = FXCollections.observableHashMap();
+        insertedDistributionPercentageFromTeams = new HashMap<>();
         populateCountries();
         populateTeams();
 
@@ -482,18 +493,62 @@ public class Model implements IModel {
     }
 
 
-/** Distribution related logic*/
+/**OVERHEAD DISTRIBUTION RELATED LOGIC*/
 
 
     /**
      * calculate the  selected team to distribute from regions overhead
      */
-    public List<OverheadComputationPair<String,BigDecimal>> teamRegionsOverhead(int teamId) {
-        List<OverheadComputationPair<String,BigDecimal>> teamRegionsOverhead = new ArrayList<>();
+    public List<OverheadComputationPair<String, BigDecimal>> teamRegionsOverhead(int teamId) {
+        List<OverheadComputationPair<String, BigDecimal>> teamRegionsOverhead = new ArrayList<>();
         for (Region region : teamsWithEmployees.get(teamId).getRegions()) {
-            OverheadComputationPair<String,BigDecimal> regionOverhead = teamManager.computeRegionOverhead(region);
+            OverheadComputationPair<String, BigDecimal> regionOverhead = teamManager.computeRegionOverhead(region);
             teamRegionsOverhead.add(regionOverhead);
         }
         return teamRegionsOverhead;
     }
+
+
+    /**
+     * add the team and the percentage that user chose to distribute
+     *
+     * @param team               the team that will receive overhead
+     * @param overheadPercentage the overhead percentage received by the team
+     */
+    public void addDistributionPercentageTeam(Team team, String overheadPercentage) {
+        this.insertedDistributionPercentageFromTeams.put(team, overheadPercentage);
+    }
+
+    public Map<Team, String> getInsertedDistributionPercentageFromTeams() {
+        return insertedDistributionPercentageFromTeams;
+    }
+
+    /**
+     * remove the team and the inserted overhead percentage from the map
+     */
+    public void removeDistributionPercentageTeam(Team team) {
+        this.insertedDistributionPercentageFromTeams.remove(team.getId());
+    }
+
+
+    /**
+     * set the selected team that user chose to distribute from and the associated  value
+     *
+     * @param selectedTeamToDistributeFrom selected team and associated percentage
+     */
+
+    public void setDistributeFromTeam(Team selectedTeamToDistributeFrom) {
+        this.selectedTeamToDistributeFrom = selectedTeamToDistributeFrom;
+    }
+
+    public Team getDistributeFromTeam() {
+        return this.selectedTeamToDistributeFrom;
+    }
+
+    @Override
+    public Map <Team,String> validateInputs() {
+        return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams);
+    }
+
+
 }

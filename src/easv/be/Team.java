@@ -17,8 +17,6 @@ public class Team {
     private BigDecimal utilizationPercentage;
 
 
-
-
     public Team(String team) {
         this.team = team;
     }
@@ -28,11 +26,20 @@ public class Team {
         this.id = id;
     }
 
-    public Team(String team, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory ) {
+    public Team(String team, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory) {
         this(team, id);
         this.teamMembers = teamMembers;
         this.teamConfigurationsHistory = teamConfigurationsHistory;
+    }
 
+
+    /**
+     * copy constructor
+     */
+    public Team(Team team) {
+        this(team.getTeamName(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);
+        this.countries = team.getCountries();
+        this.regions= team.getRegions();
     }
 
 
@@ -144,6 +151,7 @@ public class Team {
     public void setRegions(List<Region> regions) {
         this.regions = regions;
     }
+
     public BigDecimal getUtilizationPercentage() {
         return utilizationPercentage;
     }

@@ -5,7 +5,7 @@
     -fx-background-color: F8F8F8;
     -fx-border-radius: 20;
     -fx-padding: 10px  10px ;
-    -fx-text-fill: rgba(47, 46, 46, 1) !important;
+    -fx-text-fill: rgba(47, 46, 46, 1) ;
     -fx-font-family: 'Open Sans', sans-serif;
     -fx-font-weight: 600;
     -fx-font-size: 13px;
@@ -46,9 +46,16 @@
     -fx-border-radius: 5px;
 }
 
+.teamComponent:inputError{
+    -fx-background-color: #C42B1C;
+
+}
 
 
 
+.teamComponent:inputError  .label{
+    -fx-text-fill: #fff !important;
+}
 
 /*.selected-component{*/
 /*    -fx-background-color: #63b2e1 !important;*/

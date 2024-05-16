@@ -114,13 +114,18 @@
       </VBox>
       <VBox alignment="CENTER" maxWidth="204.0" minWidth="64.0" prefHeight="200.0" prefWidth="128.0" spacing="10.0" style="-fx-background-radius: 20;" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="3">
          <children>
-            <Circle fx:id="circleValue" fill="WHITE" radius="49.0" stroke="#2ba746" strokeWidth="10.0" translateY="70.0" />
+            <Circle fx:id="circleValue" fill="WHITE" radius="49.0"  strokeWidth="10.0" translateY="70.0" styleClass="circleAnimation" />
             <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="30.0" translateY="-12.0">
                <children>
-                  <MFXTextField fx:id="percentageToDistribute" floatMode="DISABLED" maxHeight="-Infinity" maxWidth="40.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="23.0" HBox.hgrow="ALWAYS" />
-                  <Label text="\%" textFill="#2ba746">
+                  <Label fx:id="totalOverheadInserted" maxWidth="40.0" minWidth="-Infinity" prefHeight="37.0" prefWidth="23.0"
+                         textFill="#2ba746" HBox.hgrow="ALWAYS">
                      <font>
-                        <Font size="24.0" />
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label text="\\%" textFill="#2ba746">
+                     <font>
+                        <Font size="14.0" />
                      </font>
                   </Label>
                </children>
