@@ -223,15 +223,23 @@ public class Model implements IModel {
             for (Team team : teams) {
                 team.addNewTeamMember(employee);
                 TeamConfiguration teamConfiguration = getNewEmployeeTeamConfiguration(team);
-                addTeamConfiguration(teamConfiguration, team);
+                Map<Integer, BigDecimal> employeesDayRates = new HashMap<>();
+                Map<Integer, BigDecimal> employeesHourlyRates = new HashMap<>();
+                for (Employee employeeToCheck : team.getEmployees()) {
+                    BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeam(employeeToCheck, team);
+                    employeesHourlyRates.put(employeeToCheck.getId(), employeeHourlyRate);
+                    BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeam(employeeToCheck, team);
+                    employeesDayRates.put(employeeToCheck.getId(), employeeDayRate);
+                }
+                addTeamConfiguration(teamConfiguration, team, employeesDayRates, employeesHourlyRates);
                 teamsWithEmployees.get(team.getId()).addNewTeamMember(employee);
             }
         }
     }
 
     @Override
-    public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException {
-        int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team);
+    public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException {
+        int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team, employeeDayRate, employeeHourlyRate);
         if (teamConfiguration != null) {
             teamConfiguration.setId(teamConfigurationID);
             teamsWithEmployees.get(team.getId()).setActiveConfiguration(teamConfiguration);

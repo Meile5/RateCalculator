@@ -43,7 +43,7 @@ public interface IModel {
 
     void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException;
 
-    void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException;
+    void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException;
 
     /**
      * retrieve the teams with the overhead computed
