@@ -3,6 +3,9 @@
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -16,7 +19,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<GridPane stylesheets="/easv/ui/styling/Distribution.css" alignment="CENTER" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane alignment="CENTER" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="900.0" stylesheets="/easv/ui/styling/Distribution.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
       <ColumnConstraints hgrow="NEVER" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="540.0" minWidth="256.0" prefWidth="256.0" />
@@ -93,134 +96,10 @@
                   <Label alignment="CENTER" layoutX="81.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Hourlly Rate" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
-            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="520.0" prefHeight="200.0" prefWidth="254.0" style="-fx-background-radius: 0 0 25 25; -fx-background-color: #D1D0D0;" vbarPolicy="ALWAYS">
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="520.0" prefHeight="200.0" prefWidth="254.0" styleClass="teamsScrollPane" vbarPolicy="ALWAYS">
                <content>
                   <VBox fx:id="distributeFromTeams" alignment="TOP_CENTER" maxWidth="520.0" minWidth="250.0" prefHeight="200.0" prefWidth="250.0" spacing="10.0" style="-fx-background-color: #D1D0D0;">
                      <children>
-<!--                        <HBox id="popup-element" fx:id="employeeComponent" alignment="CENTER" maxHeight="-Infinity" maxWidth="510.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0" style="-fx-background-radius: 20; -fx-background-color: F8F8F8;" styleClass="employeeComponent" stylesheets="/easv/ui/styling/EmployeeComponent.css">-->
-<!--                           <children>-->
-<!--                              <VBox alignment="CENTER" maxHeight="50.0" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="teamName" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="United" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <VBox alignment="CENTER" maxHeight="50.0" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="countryName" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="Europe" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="regionName" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="Service" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <HBox alignment="CENTER" layoutX="471.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="dayCurrency" alignment="CENTER" text="123" textOverrun="CLIP" />-->
-<!--                                    <Label fx:id="dayRate" text="\$" />-->
-<!--                                 </children>-->
-<!--                              </HBox>-->
-<!--                              <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="hourlyCurrency" alignment="CENTER" text="12" />-->
-<!--                                    <Label fx:id="hourlyRate" text="\$" />-->
-<!--                                 </children>-->
-<!--                              </HBox>-->
-<!--                           </children>-->
-<!--                        </HBox>-->
-<!--                        <HBox id="popup-element" fx:id="employeeComponent11" alignment="CENTER" layoutX="8.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="510.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0" style="-fx-background-radius: 20; -fx-background-color: F8F8F8;" styleClass="employeeComponent" stylesheets="/easv/ui/styling/EmployeeComponent.css">-->
-<!--                           <children>-->
-<!--                              <VBox alignment="CENTER" maxHeight="50.0" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="teamName11" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="United" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <VBox alignment="CENTER" maxHeight="50.0" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="countryName11" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="Europe" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="regionName11" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="Service" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <HBox alignment="CENTER" layoutX="471.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="dayCurrency11" alignment="CENTER" text="123" textOverrun="CLIP" />-->
-<!--                                    <Label fx:id="dayRate11" text="\$" />-->
-<!--                                 </children>-->
-<!--                              </HBox>-->
-<!--                              <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="hourlyCurrency11" alignment="CENTER" text="12" />-->
-<!--                                    <Label fx:id="hourlyRate11" text="\$" />-->
-<!--                                 </children>-->
-<!--                              </HBox>-->
-<!--                           </children>-->
-<!--                        </HBox>-->
-<!--                        <HBox id="popup-element" fx:id="employeeComponent111" alignment="CENTER" layoutX="8.0" layoutY="65.0" maxHeight="-Infinity" maxWidth="510.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0" style="-fx-background-radius: 20; -fx-background-color: F8F8F8;" styleClass="employeeComponent" stylesheets="/easv/ui/styling/EmployeeComponent.css">-->
-<!--                           <children>-->
-<!--                              <VBox alignment="CENTER" maxHeight="50.0" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="teamName111" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="United" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <VBox alignment="CENTER" maxHeight="50.0" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="countryName111" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="Europe" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="regionName111" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="Service" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <HBox alignment="CENTER" layoutX="471.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="dayCurrency111" alignment="CENTER" text="123" textOverrun="CLIP" />-->
-<!--                                    <Label fx:id="dayRate111" text="\$" />-->
-<!--                                 </children>-->
-<!--                              </HBox>-->
-<!--                              <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="hourlyCurrency111" alignment="CENTER" text="12" />-->
-<!--                                    <Label fx:id="hourlyRate111" text="\$" />-->
-<!--                                 </children>-->
-<!--                              </HBox>-->
-<!--                           </children>-->
-<!--                        </HBox>-->
-<!--                        <HBox id="popup-element" fx:id="employeeComponent1112" alignment="CENTER" layoutX="8.0" layoutY="120.0" maxHeight="-Infinity" maxWidth="510.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0" style="-fx-background-radius: 20; -fx-background-color: F8F8F8;" styleClass="employeeComponent" stylesheets="/easv/ui/styling/EmployeeComponent.css">-->
-<!--                           <children>-->
-<!--                              <VBox alignment="CENTER" maxHeight="50.0" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="teamName1112" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="United" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <VBox alignment="CENTER" maxHeight="50.0" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="countryName1112" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="Europe" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="regionName1112" alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="39.0" prefWidth="105.0" text="Service" textOverrun="CLIP" />-->
-<!--                                 </children>-->
-<!--                              </VBox>-->
-<!--                              <HBox alignment="CENTER" layoutX="471.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="dayCurrency1112" alignment="CENTER" text="123" textOverrun="CLIP" />-->
-<!--                                    <Label fx:id="dayRate1112" text="\$" />-->
-<!--                                 </children>-->
-<!--                              </HBox>-->
-<!--                              <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">-->
-<!--                                 <children>-->
-<!--                                    <Label fx:id="hourlyCurrency1112" alignment="CENTER" text="12" />-->
-<!--                                    <Label fx:id="hourlyRate1112" text="\$" />-->
-<!--                                 </children>-->
-<!--                              </HBox>-->
-<!--                           </children>-->
-<!--                        </HBox>-->
                      </children>
                      <padding>
                         <Insets bottom="10.0" />
@@ -238,7 +117,7 @@
             <Circle fx:id="circleValue" fill="WHITE" radius="49.0" stroke="#2ba746" strokeWidth="10.0" translateY="70.0" />
             <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="30.0" translateY="-12.0">
                <children>
-                  <MFXTextField floatMode="DISABLED" maxHeight="-Infinity" maxWidth="40.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="23.0" HBox.hgrow="ALWAYS" />
+                  <MFXTextField fx:id="percentageToDistribute" floatMode="DISABLED" maxHeight="-Infinity" maxWidth="40.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="23.0" HBox.hgrow="ALWAYS" />
                   <Label text="\%" textFill="#2ba746">
                      <font>
                         <Font size="24.0" />
@@ -320,13 +199,33 @@
                   <Insets left="5.0" right="5.0" />
                </padding>
             </HBox>
-            <ListView fx:id="distributeToTeams" maxWidth="520.0" minWidth="-Infinity" prefHeight="200.0" prefWidth="250.0"  styleClass="teamsListView" />
+            <ListView fx:id="distributeToTeams" maxWidth="520.0" minWidth="-Infinity" prefHeight="200.0" prefWidth="250.0" styleClass="teamsListView" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding></VBox>
-      <VBox maxWidth="536.0" prefHeight="408.0" prefWidth="256.0" style="-fx-background-color: #D1D0D0; -fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <VBox maxWidth="536.0" prefHeight="408.0" prefWidth="256.0" style="-fx-background-color: #D1D0D0; -fx-background-radius: 20;" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+      <VBox fx:id="distributeFromTeamBarChartHolder" alignment="CENTER" disable="true" maxWidth="536.0" prefHeight="408.0" prefWidth="256.0" style="-fx-background-color: #D1D0D0; -fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <children>
+            <BarChart fx:id="distributeFromTeamBarChart" visible="false">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </BarChart>
+         </children></VBox>
+      <VBox fx:id="simulationBarChartChartHolder" alignment="CENTER" disable="true" maxWidth="536.0" prefHeight="408.0" prefWidth="256.0" style="-fx-background-color: #D1D0D0; -fx-background-radius: 20;" GridPane.columnIndex="3" GridPane.rowIndex="3">
+         <children>
+            <BarChart fx:id="barchartAfterTheSimulation" visible="false">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </BarChart>
+         </children></VBox>
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox  fx:id="teamComponentDistributeFrom" alignment="CENTER" maxHeight="-Infinity" maxWidth="510.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0" style="-fx-background-radius: 20; -fx-background-color: F8F8F8;" styleClass="employeeComponent" stylesheets="/easv/ui/styling/DistributeFromComponentStyle.css" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox  fx:id="teamComponentDistributeFrom" alignment="CENTER" maxHeight="-Infinity" maxWidth="510.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0"  styleClass="teamComponent" stylesheets="/easv/ui/styling/DistributeFromComponentStyle.css" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
         <children>
             <VBox alignment="CENTER" maxHeight="50.0" maxWidth="85.0" minHeight="-Infinity" minWidth="42.0" prefHeight="50.0" prefWidth="85.0" HBox.hgrow="ALWAYS">
                 <children>

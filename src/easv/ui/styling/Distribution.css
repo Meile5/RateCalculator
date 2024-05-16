@@ -1,15 +1,16 @@
-
 /*style the list view  that display the teams  to distribute to */
-.teamsListView{
+.teamsListView {
     -fx-background-color: #d1d0d0;
 }
-.teamsListView .scroll-bar{
-    -fx-background-color: transparent;
+
+.teamsListView .scroll-bar {
+    -fx-opacity: 0;
 }
 
-.list-view .viewport{
+.list-view .viewport {
     -fx-background-color: #d1d0d0
 }
+
 .teamsListView .list-cell {
     -fx-background-color: transparent;
     -fx-pref-width: 250;
@@ -18,25 +19,17 @@
     -fx-background-radius: 20;
 }
 
-.teamsListView .list-cell:selected {
-    -fx-background-color: #d1d0d0 !important;
-    -fx-effect: dropshadow(gaussian, rgba(86, 234, 140, 0.5), 10, 0, 0, 5)!important;
-    -fx-text-fill: black !important;
+
+/*style the scrollPane that is holding the teams*/
+.teamsScrollPane {
+    -fx-background-radius: 0 0 25 25;
+    -fx-background-color: #D1D0D0;
 }
 
-.teamsListView .list-cell:focused{
-    -fx-text-fill: #102c57;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
+.teamsScrollPane .scroll-bar {
+    -fx-opacity: 0;
 }
 
-/*.list-view .list-cell:filled:selected {*/
-/*    -fx-border-color: #cccccc;*/
-/*    -fx-effect: dropshadow(gaussian, rgba(86, 234, 140, 0.5), 10, 0, 0, 5);*/
-/*}*/
 
-.teamsListView .list-cell:hover {
-    -fx-border-color: #cccccc; /* Border color on hover */
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);
-}
+
 

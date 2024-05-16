@@ -85,20 +85,19 @@ public class DistributeFromController implements Initializable, DistributionComp
         label.setTooltip(toolTip);
     }
 
-
     private void addClickListener(){
         this.teamComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
                 this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
                 this.controllerMediator.setTheSelectedComponentToDistributeFrom(this);
-                this.teamComponent.getStyleClass().add("employeeComponentClicked");
+                this.teamComponent.getStyleClass().add("teamComponentClicked");
                 this.controllerMediator.setTheSelectedTeam(teamToDisplay);
+                this.controllerMediator.showTeamToDistributeFromBarChart();
         });
     }
 
-
     @Override
     public void setTheStyleClassToDefault() {
-        this.teamComponent.getStyleClass().remove("employeeComponentClicked");
+        this.teamComponent.getStyleClass().remove("teamComponentClicked");
     }
 
 }
