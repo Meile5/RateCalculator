@@ -29,4 +29,8 @@ public class ControllerMediator {
        this.distributionTeamController=selectedTeamComponent;
    }
 
+   public void showTeamToDistributeFromBarChart(){
+       distributionController.showTheTeamFromBarchart();
+   }
+
 }

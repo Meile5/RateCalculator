@@ -1,6 +1,5 @@
 package easv.bll.EmployeesLogic;
 
-import easv.be.Configuration;
 import easv.be.Employee;
 import easv.be.TeamWithEmployees;
 
@@ -17,7 +16,7 @@ public interface IRateCalculator {
     BigDecimal calculateProductiveOverHead(TeamWithEmployees team);
 
      /**calculate the day rate for the employee*/
-    BigDecimal calculateDayRate(Employee employee);
+    BigDecimal calculateEmployeeTotalDayRate(Employee employee);
     /**calculate the hourly rate for an employee*/
-    BigDecimal calculateHourlyRate(Employee employee, double configurableHours);
+    BigDecimal calculateEmployeeTotalHourlyRate(Employee employee, double configurableHours);
 }

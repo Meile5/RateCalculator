@@ -96,11 +96,6 @@ public interface IModel {
 
     BigDecimal getComputedDayRate(Employee employee);
 
-
-    BigDecimal calculateGroupDayRate();
-
-    BigDecimal calculateGroupHourlyRate();
-
     void teamFilterActiveRevert() throws RateException;
 
     void returnEmployeesByRegion();
@@ -116,4 +111,11 @@ public interface IModel {
 
    /**undo the team filter operation to display the country active filter*/
     void returnEmployeesByCountry();
+
+
+
+    /**OVERHEAD DISTRIBUTION RELATED LOGIC*/
+
+/**calculate team  regions overhead */
+    List<OverheadComputationPair<String,BigDecimal>> teamRegionsOverhead(int teamId);
 }

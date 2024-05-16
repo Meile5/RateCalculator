@@ -1,15 +1,13 @@
 package easv.bll.TeamLogic;
 
 
-import easv.be.Country;
-import easv.be.Employee;
-import easv.be.Team;
-import easv.be.TeamWithEmployees;
+import easv.be.*;
 import easv.bll.EmployeesLogic.IRateCalculator;
 import easv.bll.EmployeesLogic.RateCalculator;
 import easv.dal.teamDao.ITeamDao;
 import easv.dal.teamDao.TeamDao;
 import easv.exception.RateException;
+
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -17,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//TODO do not delete this class   Andrei found a usage for
 public class TeamLogic implements ITeamLogic {
     private final ITeamDao teamDao;
     private final IRateCalculator rateCalculator;
@@ -25,7 +24,6 @@ public class TeamLogic implements ITeamLogic {
         this.teamDao = new TeamDao();
         this.rateCalculator = new RateCalculator();
     }
-
 
 
     /**
@@ -58,7 +56,6 @@ public class TeamLogic implements ITeamLogic {
             emplPercentage.put(employee.getName(), 0.0);
             return emplPercentage;
         }
-
         double percentage = employeeOverhead.divide(totalOverhead, MathContext.DECIMAL32).doubleValue() * 100;
         String formattedPercentage = String.format("%.2f", percentage);
         emplPercentage.put(employee.getName() + " " + formattedPercentage, percentage);
@@ -69,4 +66,24 @@ public class TeamLogic implements ITeamLogic {
         return teamDao.getTeams();
     }
 
+
+    /**calculate the overhead off a region , if is zero return an  OverHeadComputationPair object
+     * populated with the country name and the value zero
+     * @param region the region to calculate for.*/
+
+    @Override
+    public OverheadComputationPair<String, BigDecimal> computeRegionOverhead(Region region) {
+        BigDecimal regionOverhead = BigDecimal.ZERO;
+        if (region.getCountries() != null) {
+            for (Country country : region.getCountries()) {
+                for (Team team : country.getTeams()) {
+                    if (team.getActiveConfiguration() != null) {
+                        regionOverhead = regionOverhead.add(team.getActiveConfiguration().getTeamDayRate());
+                    }
+                }
+            }
+            return new OverheadComputationPair<>(region.getRegionName(), regionOverhead);
+        }
+        return new OverheadComputationPair<>(region.getRegionName(),BigDecimal.ZERO);
+    }
 }

@@ -5,4 +5,5 @@ import easv.be.Team;
 public interface DistributionControllerInterface {
     void setTheSelectedTeam(Team team );
 
+    void showTheTeamFromBarchart();
 }

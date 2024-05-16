@@ -152,7 +152,6 @@ public class EmployeesDAO implements IEmployeeDAO {
             while (res.next()) {
                 int teamID = res.getInt("TeamID");
                 String teamName = res.getString("TeamName");
-
                 Team team = new Team(teamName, teamID);
                 teams.add(team);
             }
@@ -252,15 +251,16 @@ public class EmployeesDAO implements IEmployeeDAO {
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
-            String sql = "INSERT INTO Employees (Name, employeeType, Currency) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO dbo.Employees (Name, EmployeeType, Currency) VALUES (?, ?, ?)";
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psmt.setString(1, employee.getName());
                 psmt.setString(2, employee.getEmployeeType().toString());
-                psmt.setString(3, employee.getCurrency().toString());
+                psmt.setString(3, "EUR");
                 psmt.executeUpdate();
                 try (ResultSet res = psmt.getGeneratedKeys()) {
                     if (res.next()) {
                         employeeID = res.getInt(1);
+                        System.out.println(employeeID);
                     } else {
                         throw new RateException(ErrorCode.OPERATION_DB_FAILED);
                     }
@@ -276,6 +276,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
                 conn.commit();
             } catch (SQLException e) {
+                e.printStackTrace();
                 conn.rollback();
             }
         } catch (SQLException | RateException e) {
@@ -290,6 +291,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
             }
         }
+        System.out.println(employeeID);
         return employeeID;
     }
 
@@ -388,7 +390,7 @@ public class EmployeesDAO implements IEmployeeDAO {
 
     @Override
     public void addEmployeeToTeam(int employeeID, List<Team> teams, Connection conn) throws RateException, SQLException {
-        String sql = "INSERT INTO TeamEmployee (TeamID, EmployeeID) VALUES (?, ?)";
+        String sql = "INSERT INTO TeamEmployee (TeamID, EmployeeID, UtilizationPercentage) VALUES (?, ?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             for (Team team : teams) {
                 psmt.setInt(1, team.getId());
