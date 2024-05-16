@@ -53,7 +53,6 @@ public class TeamInfoController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
-        /* Add listener to the team info component*/
         Platform.runLater(this::addClickListener);
     }
 
@@ -67,10 +66,6 @@ public class TeamInfoController implements Initializable {
 
             teamsPageController.handleTeamInfoComponentClick(team);
             teamsPageController.populateComboBoxWithYears(team);
-
-
-
-
 
         });
     }

@@ -177,7 +177,7 @@
                            <children>
                               <LineChart fx:id="lineChart">
                                 <xAxis>
-                                  <CategoryAxis side="BOTTOM" />
+                                  <CategoryAxis animated="false" side="BOTTOM" />
                                 </xAxis>
                                 <yAxis>
                                   <NumberAxis side="LEFT" />

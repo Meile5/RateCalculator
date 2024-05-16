@@ -98,7 +98,7 @@ public class TeamsPageController implements Initializable {
                 });
     }
 
-
+    /* listener that listens changes in selected years of combobox and calls a method to populate pieChart*/
     public void handleTeamInfoComponentClick(Team team) {
         yearComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -108,74 +108,57 @@ public class TeamsPageController implements Initializable {
         });
     }
 
-
+    /**
+     * populates the lineChart with history from a selected year, it includes day rates and months
+     * initializes a new series for an XYChart with String as the X-axis type and BigDecimal as the Y-axis type
+     * format String into "Jan 01"
+     * @param selectedYear is the year that is selected from a combobox
+     */
     private void populateChartForYear(Team team, int selectedYear) {
-        // Create a new series for the selected team
         XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
         series.setName(team.getTeamName());
 
-        // Get the configurations for the selected year
+        /* Get the configurations for the selected year*/
         List<TeamConfiguration> configurations = team.getTeamConfigurationsHistory().stream()
                 .filter(config -> config.getSavedDateWithoutTime().getYear() == selectedYear)
                 .sorted(Comparator.comparing(TeamConfiguration::getSavedDateWithoutTime))
                 .toList();
-
-        // Populate the series with sorted data from configurations
+        /* Populate the series with sorted data from configurations*/
         for (TeamConfiguration config : configurations) {
-            //String formattedDate = config.getSavedDateWithoutTime().format(DateTimeFormatter.ofPattern("MMM dd")); // Format: Jan 01
             series.getData().add(new XYChart.Data<>(config.getSavedDateWithoutTime().format(DateTimeFormatter.ofPattern("MMM dd")), config.getTeamDayRate()));
         }
         lineChart.getData().clear();
-        // Add the series to the line chart
         lineChart.getData().add(series);
 
 
     }
+    /**
+     * populates the ComboBox with years based on the team's configurations history
+     * if configurations exist extracts only years from the configurations, sorts them in descending order
+     * sets the latest year as the initial value of the ComboBox
+     * @param team the team whose configurations history is used to populate the ComboBox
+     */
     public void populateComboBoxWithYears(Team team) {
-        // Check if team configurations exist
         List<TeamConfiguration> configurations = team.getTeamConfigurationsHistory();
         ObservableList<Integer> yearOptions = FXCollections.observableArrayList();
-
         if (configurations != null) {
-            // Collect years from configurations
+            /*Collect years from configurations*/
             configurations.stream()
                     .map(config -> config.getSavedDateWithoutTime().getYear())
                     .distinct()
                     .sorted(Collections.reverseOrder())
                     .forEach(yearOptions::add);
         }
-
         yearComboBox.setItems(yearOptions);
-        // Set the latest year as the initial value of the ComboBox
+        /* Set the latest year as the initial value of the ComboBox*/
         if (!yearOptions.isEmpty()) {
             yearComboBox.setValue(yearOptions.get(0));
         }
     }
-    /*public void populateComboBoxWithYears(Team team) {
-        Set<Integer> years = new HashSet<>();
 
-        // Check if team configurations exist
-        List<TeamConfiguration> configurations = team.getTeamConfigurationsHistory();
-        if (configurations != null) {
-            // Collect years from configurations
-            years = configurations.stream()
-                    .map(config -> config.getSavedDateWithoutTime().getYear())
-                    .collect(Collectors.toSet());
-        }
-
-        // Sort the years in descending order
-        ObservableList<Integer> yearOptions = FXCollections.observableArrayList(years);
-        yearOptions.sort(Collections.reverseOrder());
-
-        yearComboBox.setItems(yearOptions);
-        // Set the latest year as the initial value of the ComboBox
-        if (!yearOptions.isEmpty()) {
-            yearComboBox.setValue(yearOptions.get(0));
-        }
-    }*/
     /** sets a list of team history dates in combobox of pieChart
      * adds listener to in order to display pieChart info based on selected history configuration
-     * param team is being passed from teamInfo controller to get the selected team component team
+     * @param team is being passed from teamInfo controller to get the selected team component team
      */
     public void setConfigurations(Team team){
         List<TeamConfiguration> teamConfigurations = team.getTeamConfigurationsHistory();
