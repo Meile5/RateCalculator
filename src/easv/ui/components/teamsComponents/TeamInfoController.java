@@ -2,6 +2,7 @@ package easv.ui.components.teamsComponents;
 import easv.be.Country;
 import easv.be.Region;
 import easv.be.Team;
+import easv.be.TeamConfiguration;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.pages.modelFactory.IModel;
@@ -37,7 +38,7 @@ public class TeamInfoController implements Initializable {
         try {
             teamInfoComponent = loader.load();
         } catch (IOException e) {
-            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }
@@ -63,37 +64,39 @@ public class TeamInfoController implements Initializable {
             teamName.setText(team.getTeamName());
             teamName.setTooltip(new Tooltip(teamName.getText()));
 
+            TeamConfiguration activeConfiguration = team.getActiveConfiguration();
+            if (activeConfiguration != null) {
+                teamDailyRate.setText(activeConfiguration.getTeamDayRate().toString());
+                teamHourlyRate.setText(activeConfiguration.getTeamHourlyRate().toString());
+            } else {
+                teamDailyRate.setText("N/A");
+                teamHourlyRate.setText("N/A");
+            }
 
-            teamDailyRate.setText(team.getActiveConfiguration().getTeamDayRate().toString());
-            teamHourlyRate.setText(team.getActiveConfiguration().getTeamHourlyRate().toString());
-
-            /*Display multiple region names with tooltip to see all regions*/
-            StringBuilder countryNames = new StringBuilder();
-            for (Country country : team.getCountries()) {
-                if(team.getCountries().size()>1) {
+            if (team.getCountries() != null && !team.getCountries().isEmpty()) {
+                StringBuilder countryNames = new StringBuilder();
+                for (Country country : team.getCountries()) {
                     countryNames.append(country.getCountryName()).append(", ");
                 }
-                else{
-                    countryNames.append(country.getCountryName());
-                }
+                teamCountry.setText(countryNames.toString());
+                teamCountry.setTooltip(new Tooltip(teamCountry.getText()));
+            } else {
+                teamCountry.setText("N/A");
+                teamCountry.setTooltip(new Tooltip("N/A"));
             }
-            teamCountry.setText(countryNames.toString());
-            teamCountry.setTooltip(new Tooltip(teamCountry.getText()));
 
-            /*Display multiple region names with tooltip to see all regions*/
-
-            StringBuilder regionNames = new StringBuilder();
-            for (Region region : team.getRegions()) {
-                if(team.getCountries().size()>1) {
-                    countryNames.append(region.getRegionName()).append(", ");
+            if (team.getRegions() != null && !team.getRegions().isEmpty()) {
+                StringBuilder regionNames = new StringBuilder();
+                for (Region region : team.getRegions()) {
+                    regionNames.append(region.getRegionName()).append(", ");
                 }
-                else{
-                    countryNames.append(region.getRegionName());
-                }
+                teamRegion.setText(regionNames.toString());
+                teamRegion.setTooltip(new Tooltip(teamRegion.getText()));
+            } else {
+                teamRegion.setText("N/A");
+                teamRegion.setTooltip(new Tooltip("N/A"));
             }
-            teamRegion.setText(countryNames.toString());
-            teamRegion.setTooltip(new Tooltip(teamRegion.getText()));
-
         }
     }
+
 }
