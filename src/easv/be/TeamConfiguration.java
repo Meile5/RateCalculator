@@ -2,6 +2,7 @@ package easv.be;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class TeamConfiguration {
@@ -122,5 +123,10 @@ public class TeamConfiguration {
     }
     public LocalDate getSavedDateWithoutTime() {
         return savedDate.toLocalDate();
+    }
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return savedDate.format(formatter) + " " ;
     }
 }

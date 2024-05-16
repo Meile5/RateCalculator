@@ -7,6 +7,8 @@ import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.teamsPage.TeamsPageController;
+import javafx.application.Platform;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -28,6 +30,7 @@ public class TeamInfoController implements Initializable {
     private TeamsPageController teamsPageController;
     @FXML
     private Label teamName, teamRegion, teamCountry, teamDailyRate, teamHourlyRate;
+
 
     public TeamInfoController(Team team , IModel model, TeamsPageController teamsPageController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamInfoComponent.fxml"));
@@ -51,12 +54,25 @@ public class TeamInfoController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
         /* Add listener to the team info component*/
-        teamInfoComponent.setOnMouseClicked(this::handleTeamInfoComponentClick);
+        Platform.runLater(this::addClickListener);
     }
 
-    public void handleTeamInfoComponentClick(MouseEvent event) {
-        /* Notify the TeamsPageController about the click event*/
-        teamsPageController.handleTeamInfoComponentClick(team);
+
+    private void addClickListener(){
+        teamInfoComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+            teamInfoComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
+            teamInfoComponent.getStyleClass().add("teamComponentClicked");
+
+            teamsPageController.setConfigurations(team);
+
+            teamsPageController.handleTeamInfoComponentClick(team);
+            teamsPageController.populateComboBoxWithYears(team);
+
+
+
+
+
+        });
     }
 
     public void setLabels() {
