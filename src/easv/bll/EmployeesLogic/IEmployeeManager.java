@@ -18,6 +18,11 @@ public interface IEmployeeManager {
 
     BigDecimal calculateTeamDayRate(Team team);
     BigDecimal calculateTeamHourlyRate(Team team);
+
+    BigDecimal getEmployeeDayRateOnTeam(Employee employee, Team team);
+
+    BigDecimal getEmployeeHourlyRateOnTeam(Employee employee, Team team);
+
     public List<Employee> performSearchOperation (Collection<Employee> employees, String filter);
 
     /**check if an edit operation was performed on the epmloyee object*/
@@ -45,7 +50,7 @@ public interface IEmployeeManager {
     /**retrieve all regions with countries*/
     Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException;
 
-    Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException;
+    Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException;
 
     List<Employee> filterTeamsByCountry(List<Team> countryTeams, ObservableMap<Integer, Employee> employees);
 

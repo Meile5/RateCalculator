@@ -15,6 +15,7 @@ public class Team {
     private List<Country> countries;
     private List<Region> regions;
     private BigDecimal utilizationPercentage;
+    private Currency currency;
 
 
 
@@ -34,17 +35,19 @@ public class Team {
         this.utilizationPercentage = utilizationPercentage;
     }
 
-    public Team(String team, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory ) {
+    public Team(String team, Currency currency, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory ) {
         this(team, id);
         this.teamMembers = teamMembers;
         this.teamConfigurationsHistory = teamConfigurationsHistory;
+        this.currency = currency;
+
     }
 
     /**
      * copy constructor
      */
     public Team(Team team) {
-        this(team.getTeamName(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);
+        this(team.getTeamName(),team.getCurrency(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);
         this.countries = team.getCountries();
         this.regions= team.getRegions();
         this.activeConfiguration=  team.getActiveConfiguration();
@@ -166,5 +169,13 @@ public class Team {
 
     public void setUtilizationPercentage(BigDecimal utilizationPercentage) {
         this.utilizationPercentage = utilizationPercentage;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 }

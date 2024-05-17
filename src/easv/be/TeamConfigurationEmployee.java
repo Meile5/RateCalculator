@@ -4,11 +4,21 @@ public class TeamConfigurationEmployee {
     private String employeeName ;
     private double employeeDailyRate;
     private double employeeHourlyRate;
+    private Currency currency;
 
-    public TeamConfigurationEmployee(String employeeName, double employeeDailyRate, double employeeHourlyRate) {
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public TeamConfigurationEmployee(String employeeName, double employeeDailyRate, double employeeHourlyRate, Currency currency) {
         this.employeeName = employeeName;
         this.employeeDailyRate = employeeDailyRate;
         this.employeeHourlyRate = employeeHourlyRate;
+        this.currency= currency;
     }
 
     public String getEmployeeName() {
@@ -33,5 +43,10 @@ public class TeamConfigurationEmployee {
 
     public void setEmployeeHourlyRate(double employeeHourlyRate) {
         this.employeeHourlyRate = employeeHourlyRate;
+    }
+
+    @Override
+    public String toString() {
+        return currency.toString();
     }
 }

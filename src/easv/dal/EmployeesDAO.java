@@ -103,12 +103,7 @@ public class EmployeesDAO implements IEmployeeDAO {
             for (Employee employee : employees.values()) {
                 List<Configuration> configurations = retrieveConfigurationsForEmployee(employee, conn);
                 employee.setConfigurations(configurations);
-//                for (Configuration configuration : configurations) {
-//                    if (configuration.isActive()) {
-//                        employee.setActiveConfiguration(configuration);
-//
-//                    }
-//                }
+
 
             }
             conn.commit(); // Commit transaction
@@ -255,7 +250,7 @@ public class EmployeesDAO implements IEmployeeDAO {
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psmt.setString(1, employee.getName());
                 psmt.setString(2, employee.getEmployeeType().toString());
-                psmt.setString(3, "EUR");
+                psmt.setString(3, employee.getCurrency().name());
                 psmt.executeUpdate();
                 try (ResultSet res = psmt.getGeneratedKeys()) {
                     if (res.next()) {
@@ -402,14 +397,16 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
     }
 
-    private void addEmployeeHistory(Team team, int teamConfigurationID, Connection conn) {
+    private void addEmployeeHistory(Team team, int teamConfigurationID, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, Connection conn) {
         String sql = "INSERT INTO TeamEmployeesHistory (EmployeeName, EmployeeDailyRate, EmployeeHourlyRate, TeamConfigurationId) VALUES (?, ?, ?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             for (Employee employee : team.getEmployees()) {
                 psmt.setString(1, employee.getName());
-                psmt.setBigDecimal(2, employee.getActiveConfiguration().getDayRate());
-                psmt.setBigDecimal(3, employee.getActiveConfiguration().getHourlyRate());
+                psmt.setBigDecimal(2, employeeDayRate.get(employee.getId()));
+                psmt.setBigDecimal(3, employeeHourlyRate.get(employee.getId()));
                 psmt.setInt(4, teamConfigurationID);
+                System.out.println("Currency: " + employee.getCurrency().name());
+                //psmt.setString(5, employee.getCurrency().name());
                 psmt.executeUpdate();
             }
             psmt.executeBatch();
@@ -510,7 +507,7 @@ public class EmployeesDAO implements IEmployeeDAO {
      */
     @Override
     public Map<Integer, Team> getTeamsWithEmployees() throws RateException {
-        String sql = "SELECT t.TeamID,t.TeamName,e.EmployeeID,e.Name,e.EmployeeType,e.Currency FROM TeamEmployee  te " +
+        String sql = "SELECT t.TeamID,t.TeamName,t.TeamCurrency,e.EmployeeID,e.Name,e.EmployeeType,e.Currency FROM TeamEmployee  te " +
                 "RIGHT JOIN Employees e ON e.EmployeeID=te.EmployeeID " +
                 "RIGHT JOIN Teams t ON t.TeamId = te.TeamId " +
                 "Order By TeamID; ";
@@ -523,7 +520,9 @@ public class EmployeesDAO implements IEmployeeDAO {
                     System.out.println(teamId);
                     Team currentTeam = retrievedTeams.get(teamId);
                     if (currentTeam == null) {
-                        currentTeam = new Team(rs.getString("TeamName"), teamId, new ArrayList<>(), new ArrayList<>());
+                        String currencyStr = rs.getString("TeamCurrency");
+                        Currency currency = Currency.valueOf(currencyStr);
+                        currentTeam = new Team(rs.getString("TeamName"), currency, teamId, new ArrayList<>(), new ArrayList<>());
                         currentTeam.setTeamConfigurationsHistory(retrieveTeamConfigurations(currentTeam, conn));
                         currentTeam.setCountries(retrieveCountriesForEmployee(currentTeam.getId(), conn));
                         retrievedTeams.put(currentTeam.getId(), currentTeam);
@@ -624,7 +623,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
     @Override
-    public Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException {
+    public Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException {
         Integer configurationID = null;
         Connection conn = null;
         try {
@@ -648,7 +647,7 @@ public class EmployeesDAO implements IEmployeeDAO {
             }
         }
             addTeamToConfiguration(team, configurationID, conn);
-            addEmployeeHistory(team, configurationID, conn);
+            addEmployeeHistory(team, configurationID, employeeDayRate, employeeHourlyRate, conn);
             conn.commit();
         } catch (SQLException e) {
             conn.rollback();
@@ -746,7 +745,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
     private List<TeamConfigurationEmployee> getEmployeesForTeamConfiguration(int teamConfigurationId, Connection conn) throws SQLException {
-        String sql = "SELECT teh.EmployeeName,teh.EmployeeDailyRate,teh.EmployeeHourlyRate from TeamEmployeesHistory teh WHERE  teh.TeamConfigurationId=?";
+        String sql = "SELECT teh.EmployeeName,teh.EmployeeDailyRate,teh.EmployeeHourlyRate,teh.Currency from TeamEmployeesHistory teh WHERE  teh.TeamConfigurationId=?";
         List<TeamConfigurationEmployee> configurationTeamMembers = new ArrayList<>();
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             psmt.setInt(1, teamConfigurationId);
@@ -755,7 +754,9 @@ public class EmployeesDAO implements IEmployeeDAO {
                 String employeeName = rs.getString("EmployeeName");
                 double employeeDailyRate = rs.getDouble("EmployeeDailyRate");
                 double employeeHourlyRate = rs.getDouble("EmployeeHourlyRate");
-                TeamConfigurationEmployee employee = new TeamConfigurationEmployee(employeeName, employeeDailyRate, employeeHourlyRate);
+                String currency = rs.getString("Currency");
+                Currency currencyH = Currency.valueOf(currency);
+                TeamConfigurationEmployee employee = new TeamConfigurationEmployee(employeeName, employeeDailyRate, employeeHourlyRate, currencyH);
                 configurationTeamMembers.add(employee);
             }
         }

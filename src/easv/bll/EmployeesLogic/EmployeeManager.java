@@ -104,6 +104,18 @@ public class EmployeeManager implements IEmployeeManager {
         return rateCalculator.calculateTeamHourlyRate(team);
     }
 
+    @Override
+    public BigDecimal getEmployeeDayRateOnTeam(Employee employee, Team team) {
+        return rateCalculator.calculateEmployeeDayRateOnTeam(employee, team);
+    }
+
+    @Override
+    public BigDecimal getEmployeeHourlyRateOnTeam(Employee employee, Team team) {
+        return rateCalculator.calculateEmployeeHourlyRateOnTeam(employee, team);
+    }
+
+
+
     /*
     private BigDecimal calculateSumTeamDayRate(Team team) {
         BigDecimal sum = BigDecimal.ZERO;
@@ -195,8 +207,8 @@ public class EmployeeManager implements IEmployeeManager {
     }
 
     @Override
-    public Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException {
-        return employeeDAO.addNewTeamConfiguration(teamConfiguration, team);
+    public Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException {
+        return employeeDAO.addNewTeamConfiguration(teamConfiguration, team, employeeDayRate, employeeHourlyRate);
     }
 
 
