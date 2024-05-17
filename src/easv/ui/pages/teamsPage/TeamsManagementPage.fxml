@@ -107,14 +107,14 @@
                         <Insets bottom="10.0" />
                     </padding>
                 </GridPane>
-                <VBox maxHeight="560.0" maxWidth="550.0" prefHeight="500.0" prefWidth="530.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;" VBox.vgrow="ALWAYS">
+                <VBox maxHeight="570.0" maxWidth="550.0" prefHeight="540.0" prefWidth="530.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;" VBox.vgrow="ALWAYS">
                     <children>
-                        <VBox alignment="TOP_CENTER" maxHeight="600.0" maxWidth="600.0" prefHeight="600.0" prefWidth="530.0" spacing="25.0" VBox.vgrow="ALWAYS">
+                        <VBox alignment="TOP_CENTER" maxHeight="570.0" maxWidth="550.0" prefHeight="560.0" prefWidth="530.0" spacing="25.0" VBox.vgrow="ALWAYS">
                             <padding>
                                 <Insets left="10.0" />
                             </padding>
                             <children>
-                                <HBox prefHeight="45.0" prefWidth="722.0" spacing="33.0">
+                                <HBox prefHeight="45.0" prefWidth="722.0" spacing="33.0" VBox.vgrow="ALWAYS">
                                     <children>
                                         <Label styleClass="tableLabels" text="Team" />
                                         <Label styleClass="tableLabels" text="Region" />
@@ -129,9 +129,9 @@
                               <Insets />
                            </VBox.margin>
                                 </HBox>
-                                <MFXScrollPane hbarPolicy="NEVER" maxHeight="600.0" maxWidth="600.0" prefHeight="497.0" prefWidth="508.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
+                                <MFXScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="600.0" maxWidth="600.0" prefHeight="497.0" prefWidth="508.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
                                     <content>
-                                        <VBox fx:id="teamsContainer" alignment="TOP_CENTER" maxHeight="560.0" prefHeight="486.0" prefWidth="450.0" spacing="26.0">
+                                        <VBox fx:id="teamsContainer" alignment="TOP_CENTER" maxHeight="570.0" maxWidth="540.0" prefHeight="486.0" prefWidth="450.0" spacing="26.0">
                                             <padding>
                                                 <Insets left="15.0" />
                                             </padding>

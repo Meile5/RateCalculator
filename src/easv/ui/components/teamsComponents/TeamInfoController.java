@@ -62,7 +62,6 @@ public class TeamInfoController implements Initializable {
         teamInfoComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
 
             teamInfoComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
-           // teamInfoComponent.getStyleClass().add("teamComponentClicked");
             teamsPageController.setSelectedComponentStyleToSelected(this);
             teamsPageController.yearsComboBoxListener(team);
             teamsPageController.populateComboBoxWithYears(team);

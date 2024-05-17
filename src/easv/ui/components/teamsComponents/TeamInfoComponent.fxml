@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<HBox id="popup-element" fx:id="teamInfoComponent" maxHeight="-Infinity" minHeight="-Infinity" minWidth="370.0" prefHeight="60.0" prefWidth="480.0" spacing="7.0" styleClass="teamComponent" stylesheets="/easv/ui/styling/TeamsPage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox id="popup-element" fx:id="teamInfoComponent" maxHeight="-Infinity" maxWidth="550.0" minHeight="-Infinity" minWidth="370.0" prefHeight="60.0" prefWidth="480.0" spacing="7.0" styleClass="teamComponent" stylesheets="/easv/ui/styling/TeamsPage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <VBox alignment="CENTER" prefHeight="70.0" prefWidth="125.0" HBox.hgrow="ALWAYS">
             <children>
