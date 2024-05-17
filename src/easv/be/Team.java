@@ -47,7 +47,7 @@ public class Team {
      * copy constructor
      */
     public Team(Team team) {
-        this(team.getTeamName(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);
+        this(team.getTeamName(), team.getCurrency(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);
         this.countries = team.getCountries();
         this.regions= team.getRegions();
     }
