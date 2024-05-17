@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="confirmationWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="417.0" style="-fx-background-radius: 20;" styleClass="background" stylesheets="/easv/ui/styling/Confirmation.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <HBox alignment="CENTER_LEFT" prefHeight="130.0">
+         <children>
+            <Region prefHeight="122.0" prefWidth="150.0" />
+            <VBox alignment="CENTER_LEFT" prefHeight="122.0" prefWidth="384.0" spacing="5.0">
+               <children>
+                  <Label text="Country Name" />
+                  <MFXTextField fx:id="countryNameTF" floatMode="DISABLED" prefWidth="250.0" />
+               </children>
+            </VBox>
+         </children>
+        </HBox>
+        <HBox alignment="CENTER" prefHeight="30.0" />
+        <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="57.0" prefWidth="529.0" spacing="20.0">
+            <children>
+            <MFXProgressSpinner fx:id="progressSpinner" prefHeight="50.0" prefWidth="50.0" visible="false">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </MFXProgressSpinner>
+            <Region prefHeight="57.0" prefWidth="112.0" />
+                <MFXButton buttonType="RAISED" depthLevel="LEVEL0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#cancelOperation" prefHeight="30.0" prefWidth="80.0" rippleColor="#427972" styleClass="button-cancel" text="Cancel" />
+                <MFXButton buttonType="RAISED" depthLevel="LEVEL0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#saveOperation" prefHeight="30.0" prefWidth="80.0" rippleColor="#63b2e1" styleClass="button-save" text="Save" textFill="WHITE">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </MFXButton>
+            </children>
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+    </padding>
+</VBox>
