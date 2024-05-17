@@ -1,5 +1,4 @@
 package easv.ui.pages.distribution;
-
 import easv.be.OverheadComputationPair;
 import easv.be.Team;
 import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFromController;
@@ -20,7 +19,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -34,8 +32,7 @@ public class DistributionController implements Initializable, DistributionContro
 
     @FXML
     private ListView<Team> distributeToTeams;
-    @FXML
-    private MFXTextField percentageToDistribute;
+
     @FXML
     private BarChart<String, BigDecimal> distributeFromTeamBarChart;
     private IModel model;
@@ -47,6 +44,7 @@ public class DistributionController implements Initializable, DistributionContro
     private Circle circleValue;
     @FXML
     private Label totalOverheadInserted;
+
 
     private final static PseudoClass OVER_LIMIT = PseudoClass.getPseudoClass("errorLimit");
 
@@ -168,17 +166,20 @@ public class DistributionController implements Initializable, DistributionContro
         circleValue.setStrokeDashOffset(-circumference / 4);
     }
 
-    @Override
-    public void updateTotalOverheadValue(Double overheadPercentage) {
-        Double totalOverhead = 0.0;
-        if (!totalOverheadInserted.getText().isEmpty()) {
-            totalOverhead = Double.parseDouble(this.totalOverheadInserted.getText());
-            totalOverheadInserted.setText(totalOverhead + overheadPercentage + "");
-        } else {
-            totalOverhead = overheadPercentage;
-            totalOverheadInserted.setText(totalOverhead + "");
+
+    private void  updateInsertedTotalValueStyle(double value){
+        if(value<0 || value>100){
+            totalOverheadInserted.pseudoClassStateChanged(OVER_LIMIT,true);
+        }else{
+            totalOverheadInserted.pseudoClassStateChanged(OVER_LIMIT,false);
         }
-        updateCircleColor(totalOverhead);
+    }
+
+    @Override
+    public void updateTotalOverheadValue() {
+        double totalOverhead = model.calculateTeTotalOverheadInserted();
+        this.totalOverheadInserted.setText(totalOverhead+"");
+        updateInsertedTotalValueStyle(totalOverhead);
     }
 
     @Override
@@ -188,7 +189,7 @@ public class DistributionController implements Initializable, DistributionContro
             totalOverhead = Double.parseDouble(this.totalOverheadInserted.getText());
             totalOverheadInserted.setText(totalOverhead - overheadValue + "");
         }
-        updateCircleColor(totalOverhead);
+      //  updateCircleColor(totalOverhead);
     }
 
 
@@ -208,8 +209,8 @@ public class DistributionController implements Initializable, DistributionContro
      */
     @Override
     public void addDistributeToTeam(Team teamToDisplay) {
-        DistributeToController selectedTeam = new DistributeToController(model, teamToDisplay, distributeToMediator);
-        this.selectedToDistributeTo.getChildren().add(selectedTeam.getRoot());
+            DistributeToController selectedTeam = new DistributeToController(model, teamToDisplay, distributeToMediator);
+            this.selectedToDistributeTo.getChildren().add(selectedTeam.getRoot());
     }
 
 }

@@ -38,7 +38,6 @@ public class Team {
         this(team, id);
         this.teamMembers = teamMembers;
         this.teamConfigurationsHistory = teamConfigurationsHistory;
-
     }
 
     /**
@@ -48,6 +47,7 @@ public class Team {
         this(team.getTeamName(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);
         this.countries = team.getCountries();
         this.regions= team.getRegions();
+        this.activeConfiguration=  team.getActiveConfiguration();
     }
 
 

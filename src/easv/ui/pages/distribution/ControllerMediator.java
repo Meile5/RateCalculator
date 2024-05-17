@@ -24,7 +24,6 @@ public class ControllerMediator {
 
     public void addTeamToDistributeFrom(Team team) {
        distributionController.addTeamToDistributeFrom(team);
-
     }
 
     /** add the selected team to distribute to */

@@ -30,6 +30,15 @@
     -fx-opacity: 0;
 }
 
+.totalOverhead{
+    -fx-text-fill: #2ba746 ;
+}
+.totalOverhead:errorLimit{
+    -fx-text-fill: #a6492b;
+}
+
+
+
 
 
 

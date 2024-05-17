@@ -18,8 +18,8 @@ public class DistributeToMediator {
         this.distributeToInterface= distributeToInterface;
     }
 
-    public void updateTotalOverheadValue(Double overheadPercentage){
-        distributionController.updateTotalOverheadValue(overheadPercentage);
+    public void updateTotalOverheadValue(){
+        distributionController.updateTotalOverheadValue();
     }
 
 

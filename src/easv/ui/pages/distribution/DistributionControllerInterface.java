@@ -4,7 +4,7 @@ import easv.be.Team;
 
 public interface DistributionControllerInterface {
     void showTheTeamFromBarchart();
-    void updateTotalOverheadValue(Double overheadPercentage);
+    void updateTotalOverheadValue();
 
     void removeOverheadPercentage(Double overheadValue);
 

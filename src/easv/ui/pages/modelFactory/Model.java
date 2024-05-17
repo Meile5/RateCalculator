@@ -86,7 +86,7 @@ public class Model implements IModel {
     /**
      * holds the temporary values for the teams that user inserted in the distribution page
      */
-    private final Map<Team, String> insertedDistributionPercentageFromTeams;
+    private final Map<Integer, String> insertedDistributionPercentageFromTeams;
 
     /**
      * the selected team that user chose to distribute from and the associated value
@@ -505,22 +505,27 @@ public class Model implements IModel {
     /**
      * add the team and the percentage that user chose to distribute
      *
-     * @param team               the team that will receive overhead
+     * @param teamId               the team id that will receive overhead
      * @param overheadPercentage the overhead percentage received by the team
      */
-    public void addDistributionPercentageTeam(Team team, String overheadPercentage) {
-        this.insertedDistributionPercentageFromTeams.put(team, overheadPercentage);
+    public void addDistributionPercentageTeam(Integer teamId, String overheadPercentage) {
+        this.insertedDistributionPercentageFromTeams.put(teamId, overheadPercentage);
     }
 
-    public Map<Team, String> getInsertedDistributionPercentageFromTeams() {
+    public Map<Integer, String> getInsertedDistributionPercentageFromTeams() {
         return insertedDistributionPercentageFromTeams;
     }
 
 
     /**add the  overhead value to distribute,inserted by the user*/
     @Override
-    public void setDistributionPercentageTeam(Team selectedTeam,String newValue) {
-         this.insertedDistributionPercentageFromTeams.put(selectedTeam,newValue);
+    public void setDistributionPercentageTeam(Integer selectedTeamId,String newValue) {
+         this.insertedDistributionPercentageFromTeams.put(selectedTeamId,newValue);
+    }
+
+    @Override
+    public double calculateTeTotalOverheadInserted() {
+        return teamManager.calculateTotalOverheadInsertedForValidInputs(insertedDistributionPercentageFromTeams);
     }
 
     /**
@@ -547,7 +552,8 @@ public class Model implements IModel {
 
     @Override
     public Map <Team,String> validateInputs() {
-        return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams);
+        //return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams);
+   return null;
     }
 
 

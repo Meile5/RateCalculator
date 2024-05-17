@@ -111,49 +111,126 @@ public class DistributeToController implements Initializable {
 
 
     //TODO add validation for the input percentage to not allow to be a string ,and allow comma separated
+//    private void addInputPercentageListener() {
+//        PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
+//        this.distributionPercentage.textProperty().addListener((observable, oldValue, newValue) -> {
+//            pauseTransition.setOnFinished((interupt) -> {
+//                if (!newValue.isEmpty()) {
+//                    if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")){
+//                            ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " +teamToDisplay.getTeamName() + " "+ ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
+//                        teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,true);
+//                        model.setDistributionPercentageTeam(teamToDisplay,newValue);
+//                    }else{
+//                        Double overheadInserted = validatePercentageValue(newValue);
+//                        if(!(overheadInserted>=0 && overheadInserted<=100)){
+//                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,true);
+//                            ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " +teamToDisplay.getTeamName() + " "+ ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
+//                        }else{
+//                             String previousValue = model.getInsertedDistributionPercentageFromTeams().get(teamToDisplay);
+//                             Double previousValueValid = validatePercentageValue(previousValue);
+//                            /*if the old value from the ma is an incompatible string,add the new inserted valid value to the total overhead
+//                            * else  compute the new inserted value subtracted from the old value */
+//                             if(previousValueValid!=null){
+//                                 distributeToMediator.updateTotalOverheadValue(Math.abs(overheadInserted - previousValueValid));
+//                             }else{
+//                                 distributeToMediator.updateTotalOverheadValue(overheadInserted);
+//                             }
+//                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
+//                        }
+//                        model.setDistributionPercentageTeam(teamToDisplay,newValue);
+//                       // distributeToMediator.updateTotalOverheadValue(overheadValue);
+//                    }
+//                } else {
+//                    teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
+//                    String previousValue = model.getInsertedDistributionPercentageFromTeams().get(teamToDisplay);
+//                    Double previousValueValid = validatePercentageValue(previousValue);
+//                    /*if the old value from the map is an compatible string,remove
+//                     subtract the old value from the total value*/
+//                    if(previousValueValid!=null){
+//                        distributeToMediator.removeDistributionPercentage(previousValueValid);
+//                    }
+//
+//                    //TODO move te remove  to the delete button, and update the resulted value;
+////                    if (!oldValue.isEmpty()) {
+////                        model.removeDistributionPercentageTeam(teamToDisplay);
+////                    }
+//                }
+//
+////                else if (!oldValue.isEmpty()) {
+//////                    Double oldOverhead = validatePercentageValue(model.getInsertedDistributionPercentageFromTeams().get(teamToDisplay));
+//////                    if(oldOverhead!=null) {
+//////                    distributeToMediator.removeDistributionPercentage(oldOverhead);
+//////                    }
+////                    model.removeDistributionPercentageTeam(teamToDisplay);
+////                }else {
+////                    teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
+////                }
+//
+//            });
+//            pauseTransition.playFromStart();
+//        });
+//    }
+
+
     private void addInputPercentageListener() {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
         this.distributionPercentage.textProperty().addListener((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((interupt) -> {
                 if (!newValue.isEmpty()) {
-                    if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")){
-                            ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " +teamToDisplay.getTeamName() + " "+ ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
-                        teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,true);
-                        model.setDistributionPercentageTeam(teamToDisplay,newValue);
-                    }else{
+                    // Validate the new value format
+                    if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
+                        ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " + teamToDisplay.getTeamName() + " " + ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
+                        teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, true);
+                        model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                        distributeToMediator.updateTotalOverheadValue();
+                    } else {
+                        // Convert new value to a double
                         Double overheadInserted = validatePercentageValue(newValue);
-                        if(!(overheadInserted>=0 && overheadInserted<=100)){
-                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,true);
-                            ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " +teamToDisplay.getTeamName() + " "+ ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
+                        if (!(overheadInserted >= 0 && overheadInserted <= 100)) {
+                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, true);
+                            model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                            distributeToMediator.updateTotalOverheadValue();
+                            ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " + teamToDisplay.getTeamName() + " " + ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
                         }else{
-                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
+                            model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                            distributeToMediator.updateTotalOverheadValue();
+                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, false);
                         }
-                        model.setDistributionPercentageTeam(teamToDisplay,newValue);
-                       // distributeToMediator.updateTotalOverheadValue(overheadValue);
+
+
+//                        else {
+//                            // Get the previous value from the model
+//                            String previousValue = model.getInsertedDistributionPercentageFromTeams().get(teamToDisplay.getId());
+//                            Double previousValueValid = validatePercentageValue(previousValue);
+//                            // Update the total overhead value based on the difference
+//                            if (previousValueValid != null && previousValueValid<100) {
+//                                distributeToMediator.updateTotalOverheadValue(overheadInserted - previousValueValid);
+//                            } else {
+//                                distributeToMediator.removeDistributionPercentage(previousValueValid);
+//                                distributeToMediator.updateTotalOverheadValue(overheadInserted);
+//                            }
+//
+//                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, false);
+//                        }
                     }
                 } else {
-                    teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
-
-                    //TODO move te remove  to the delete button, and update the resulted value;
-//                    if (!oldValue.isEmpty()) {
-//                        model.removeDistributionPercentageTeam(teamToDisplay);
+                    // Handle the case where the input is empty
+                    teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, false);
+//                    String previousValue = model.getInsertedDistributionPercentageFromTeams().get(teamToDisplay.getId());
+//                    Double previousValueValid = validatePercentageValue(previousValue);
+//                    System.out.println(model.getInsertedDistributionPercentageFromTeams().get(teamToDisplay.getId()) + "actual value");
+//                    if (previousValueValid != null) {
+//                        distributeToMediator.removeDistributionPercentage(previousValueValid);
 //                    }
+                    model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                    distributeToMediator.updateTotalOverheadValue();
+                   // model.removeDistributionPercentageTeam(teamToDisplay);
                 }
-
-//                else if (!oldValue.isEmpty()) {
-////                    Double oldOverhead = validatePercentageValue(model.getInsertedDistributionPercentageFromTeams().get(teamToDisplay));
-////                    if(oldOverhead!=null) {
-////                    distributeToMediator.removeDistributionPercentage(oldOverhead);
-////                    }
-//                    model.removeDistributionPercentageTeam(teamToDisplay);
-//                }else {
-//                    teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
-//                }
-
-            });
+                    });
             pauseTransition.playFromStart();
         });
     }
+
 
 
 

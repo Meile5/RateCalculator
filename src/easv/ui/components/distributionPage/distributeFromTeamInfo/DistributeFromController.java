@@ -37,7 +37,7 @@ public class DistributeFromController implements Initializable, DistributionComp
     private Team teamToDisplay;
     private ControllerMediator controllerMediator;
     private DistributionType distributionType;
-
+    private static final String EMPTY_VALUE = "0" ;
     public DistributeFromController(IModel model, Team teamToDisplay, ControllerMediator distributionControllerMediator, DistributionType distributionType) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DistributeFromTeamInfo.fxml"));
         loader.setController(this);
@@ -116,12 +116,14 @@ public class DistributeFromController implements Initializable, DistributionComp
             }
 
             if (this.distributionType.equals(DistributionType.DISTRIBUTE_TO)) {
-                model.addDistributionPercentageTeam(teamToDisplay, "");
-                controllerMediator.addDistributeToTeam(teamToDisplay);
-                return;
+                /*when the team to distribute  is selected from the list will be added
+                  in the model insertedDistributionPercentageFromTeams without overhead percentage */
+                if(!model.getInsertedDistributionPercentageFromTeams().containsKey(teamToDisplay.getId())){
+                    model.addDistributionPercentageTeam(teamToDisplay.getId(), EMPTY_VALUE);
+                    controllerMediator.addDistributeToTeam(new Team(teamToDisplay));
+                }
             }
 
-            //   this.controllerMediator.showTeamToDistributeFromBarChart();
         });
     }
 

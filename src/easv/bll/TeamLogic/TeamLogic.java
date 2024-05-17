@@ -122,6 +122,8 @@ public class TeamLogic implements ITeamLogic {
     }
 
 
+
+
     private boolean isOverheadFormatValid(String overhead){
         return overhead.matches("^\\d{0,3}([.,]\\d{1,2})?$");
     }
@@ -158,6 +160,22 @@ public class TeamLogic implements ITeamLogic {
 //        for(){
 //
 //       }
+    }
+
+
+
+
+/**calculate the total overhead for the inserted valid values*/
+    @Override
+    public double calculateTotalOverheadInsertedForValidInputs(Map<Integer, String> insertedDistributionPercentageFromTeams) {
+        double totalOverhead = 0.0;
+        for(String val : insertedDistributionPercentageFromTeams.values()){
+          Double validCalculation = validatePercentageValue(val);
+          if(validCalculation!=null) {
+              totalOverhead += validCalculation;
+          }
+        }
+        return totalOverhead;
     }
 }
 
