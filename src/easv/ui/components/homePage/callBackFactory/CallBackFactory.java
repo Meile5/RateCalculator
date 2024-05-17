@@ -55,11 +55,11 @@ public class CallBackFactory {
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToModeling);
             }
-            case PROFILE -> {
-                NavigateToProfile navigateToProfile = new NavigateToProfile(pageManager,model);
-                callBack = navigateToProfile;
+            case GEOGRAPHY -> {
+                NavigateToGeography navigateToGeography = new NavigateToGeography(pageManager,model, modalLayout);
+                callBack = navigateToGeography;
                 callBacks.put(pageTo, callBack);
-                observer.addSubject(navigateToProfile);
+                observer.addSubject(navigateToGeography);
             }
             default -> {
                 NavigateToHome navigateToHome = new NavigateToHome(pageManager,model,modalLayout);
