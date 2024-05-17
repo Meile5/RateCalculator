@@ -1,4 +1,4 @@
-package easv.ui.pages.createPage;
+package easv.ui.pages.createEmployeePage;
 import easv.Utility.EmployeeValidation;
 import easv.Utility.WindowsManagement;
 import easv.be.*;
