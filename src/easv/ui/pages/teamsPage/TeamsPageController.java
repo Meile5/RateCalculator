@@ -55,7 +55,7 @@ public class TeamsPageController implements Initializable {
     @FXML
     private PieChart teamsPieChart;
 
-    private TeamInfoController teamInfoController;
+    private TeamInfoController selectedTeam;
     public TeamsPageController(IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamsManagementPage.fxml"));
         loader.setController(this);
@@ -81,7 +81,7 @@ public class TeamsPageController implements Initializable {
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
-        //displayTeams();
+
     }
 
     public void displayTeams() {
@@ -92,6 +92,15 @@ public class TeamsPageController implements Initializable {
                     teamsContainer.getChildren().add(teamInfoController.getRoot());
 
                 });
+    }
+
+    /* adds green border to selected team and removes it after another is selected*/
+    public void setSelectedComponentStyleToSelected(TeamInfoController selectedTeam) {
+        if (this.selectedTeam != null) {
+            this.selectedTeam.getRoot().getStyleClass().remove("teamComponentClicked");
+        }
+        this.selectedTeam = selectedTeam;
+        this.selectedTeam.getRoot().getStyleClass().add("teamComponentClicked");
     }
 
     /* listener that listens changes in selected years of combobox and calls a method to populate pieChart*/
@@ -180,10 +189,11 @@ public class TeamsPageController implements Initializable {
      * sets team name into pieChart label
      */
     private void displayEmployeesForDate(Team team, TeamConfiguration selectedConfig){
+        String currency = team.getCurrency().toString();
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         List<TeamConfigurationEmployee> teamMembers = selectedConfig.getTeamMembers();
         for (TeamConfigurationEmployee employee : teamMembers) {
-            String label = employee.getEmployeeName() + " " + employee.toString() + " ";
+            String label = employee.getEmployeeName() + " " + currency+ " ";
             pieChartData.add(new PieChart.Data(label, employee.getEmployeeDailyRate()));
         }
         /* binds each PieChart.Data object's name property to a concatenated string
