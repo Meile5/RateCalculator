@@ -51,7 +51,7 @@ public class Team {
         this.countries = team.getCountries();
         this.regions= team.getRegions();
         this.activeConfiguration=  team.getActiveConfiguration();
-    }
+        this.currency= team.getCurrency();    }
 
 
     /**

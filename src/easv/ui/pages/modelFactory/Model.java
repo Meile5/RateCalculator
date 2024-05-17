@@ -566,8 +566,17 @@ public class Model implements IModel {
 
     }
 
+    /**return the name of the team , by team id*/
     public String  getTeamName(int teamId) {
         return  this.teamsWithEmployees.get(teamId).getTeamName();
+    }
+
+
+
+    /**perform simulation computation*/
+    @Override
+    public Map<OverheadHistory, List<OverheadComputationPair<String, Double>>> performSimulation() {
+        return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams,teamsWithEmployees);
     }
 
 

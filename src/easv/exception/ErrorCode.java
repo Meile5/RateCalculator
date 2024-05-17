@@ -15,7 +15,9 @@ public enum ErrorCode {
     OVER_LIMIT ("Distributed overhead value is over 100 % !"),
     DISTRIBUTE_FROM_EMPTY("No team to distribute from selected !"),
     DISTRIBUTE_TO_EMPTY("No team to distribute to selected !"),
-    EMPTY_OVERHEAD("Empty overhead percentage value");
+    EMPTY_OVERHEAD("Empty overhead percentage value"),
+    SIMULATION_FAILED("Failed to perform simulation computation, please retry!");
+    ;
 
 
 

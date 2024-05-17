@@ -3,14 +3,18 @@ package easv.ui.pages.distribution;
 import easv.Utility.WindowsManagement;
 import easv.be.DistributionValidation;
 import easv.be.OverheadComputationPair;
+import easv.be.OverheadHistory;
 import easv.be.Team;
 import easv.exception.ErrorCode;
+import easv.exception.RateException;
 import easv.ui.components.common.errorWindow.ErrorWindowController;
 import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFromController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToListCell;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -55,12 +59,12 @@ public class DistributionController implements Initializable, DistributionContro
     @FXML
     private HBox totalOverheadContainer;
     private StackPane secondLayout;
+    private Service<Map<OverheadHistory,List<OverheadComputationPair<String,Double>>>>  simulateService;
 
 
 
 
     private final static PseudoClass OVER_LIMIT = PseudoClass.getPseudoClass("errorLimit");
-
     public DistributionController(IModel model ,StackPane secondLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Distribution.fxml"));
         loader.setController(this);
@@ -209,16 +213,10 @@ public class DistributionController implements Initializable, DistributionContro
                 WindowsManagement.showStackPane(secondLayout);
                 return;
             }
-
-
-
              this.secondLayout.getChildren().add(new MFXProgressSpinner());
              WindowsManagement.showStackPane(secondLayout);
-
-
-
-
-
+            //start the service that will perform the computation
+             initializeSimulateService();
         });
     }
 
@@ -310,10 +308,38 @@ public class DistributionController implements Initializable, DistributionContro
 
     /**if the inputs are empty  return the error message and change the components style to error pseudo class*/
     private void changeEmptyComponentsStyle(List<Integer> teamIds) {
-        System.out.println(model.getInsertedDistributionPercentageFromTeams() + "from style");
         for(Integer teamId: teamIds){
             distributionMediator.changeComponentStyleToError(teamId);
         }
+    }
+
+
+    /**initialize the simulate service*/
+
+    private void initializeSimulateService(){
+        this.simulateService = new Service<>() {
+            @Override
+            protected Task<Map<OverheadHistory, List<OverheadComputationPair<String, Double>>>> createTask() {
+                return new Task<>() {
+                    @Override
+                    protected Map<OverheadHistory, List<OverheadComputationPair<String, Double>>> call() throws RateException {
+                        return model.performSimulation();
+                    }
+                };
+            }
+        };
+
+        this.simulateService.setOnSucceeded((e)->{
+            WindowsManagement.closeStackPane(secondLayout);
+            System.out.println(simulateService.getValue());
+        });
+        this.simulateService.setOnFailed((e)->{
+            secondLayout.getChildren().clear();
+            simulateService.getException().printStackTrace();
+            ErrorWindowController errorWindowController = new ErrorWindowController(secondLayout,ErrorCode.SIMULATION_FAILED.getValue());
+            secondLayout.getChildren().add(errorWindowController.getRoot());
+        });
+        simulateService.restart();
     }
 
 }
