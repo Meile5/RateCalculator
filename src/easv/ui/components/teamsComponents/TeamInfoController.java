@@ -29,7 +29,7 @@ public class TeamInfoController implements Initializable {
     private Team team;
     private TeamsPageController teamsPageController;
     @FXML
-    private Label teamName, teamRegion, teamCountry, teamDailyRate, teamHourlyRate;
+    private Label teamName, teamRegion, teamCountry, teamDailyRate, teamHourlyRate, teamDayCurrency, teamHourlyCurrency;
 
 
     public TeamInfoController(Team team , IModel model, TeamsPageController teamsPageController) {
@@ -58,22 +58,27 @@ public class TeamInfoController implements Initializable {
 
 
     private void addClickListener(){
+
         teamInfoComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+
             teamInfoComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
             teamInfoComponent.getStyleClass().add("teamComponentClicked");
 
             teamsPageController.setConfigurations(team);
-
             teamsPageController.handleTeamInfoComponentClick(team);
             teamsPageController.populateComboBoxWithYears(team);
 
         });
     }
 
+
+
     public void setLabels() {
         if (team != null) {
             teamName.setText(team.getTeamName());
             teamName.setTooltip(new Tooltip(teamName.getText()));
+            teamDayCurrency.setText(team.getCurrency().toString());
+            teamHourlyCurrency.setText(team.getCurrency().toString());
 
             TeamConfiguration activeConfiguration = team.getActiveConfiguration();
             if (activeConfiguration != null) {

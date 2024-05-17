@@ -28,12 +28,22 @@
         </VBox>
         <VBox fx:id="countryBox" alignment="CENTER" prefHeight="200.0" prefWidth="110.0" HBox.hgrow="ALWAYS">
             <children>
-                <Label fx:id="teamDailyRate" prefHeight="40.0" prefWidth="127.0" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="teamDayCurrency" />
+                      <Label fx:id="teamDailyRate" prefHeight="40.0" prefWidth="127.0" />
+               </children>
+            </HBox>
             </children>
         </VBox>
         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
             <children>
-                <Label fx:id="teamHourlyRate" prefHeight="35.0" prefWidth="97.0" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="teamHourlyCurrency" />
+                      <Label fx:id="teamHourlyRate" prefHeight="35.0" prefWidth="97.0" />
+               </children>
+            </HBox>
             </children>
         </VBox>
         <VBox fx:id="editButton" alignment="CENTER" prefHeight="200.0" prefWidth="80.0" styleClass="editbuttonBackground" HBox.hgrow="ALWAYS">

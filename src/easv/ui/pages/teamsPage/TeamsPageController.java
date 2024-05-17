@@ -55,9 +55,6 @@ public class TeamsPageController implements Initializable {
     @FXML
     private PieChart teamsPieChart;
 
-
-
-    private Service<Void> loadTeamsFromDB;
     private TeamInfoController teamInfoController;
     public TeamsPageController(IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamsManagementPage.fxml"));
@@ -116,7 +113,6 @@ public class TeamsPageController implements Initializable {
     private void populateChartForYear(Team team, int selectedYear) {
         XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
         series.setName(team.getTeamName());
-
         /* Get the configurations for the selected year*/
         List<TeamConfiguration> configurations = team.getTeamConfigurationsHistory().stream()
                 .filter(config -> config.getSavedDateWithoutTime().getYear() == selectedYear)
@@ -128,8 +124,6 @@ public class TeamsPageController implements Initializable {
         }
         lineChart.getData().clear();
         lineChart.getData().add(series);
-
-
     }
     /**
      * populates the ComboBox with years based on the team's configurations history
@@ -161,12 +155,13 @@ public class TeamsPageController implements Initializable {
      */
     public void setConfigurations(Team team){
         List<TeamConfiguration> teamConfigurations = team.getTeamConfigurationsHistory();
-        for (TeamConfiguration config : teamConfigurations) {
-            if (!teamsHistory.getItems().contains(config)) {
-                teamsHistory.getItems().add(config);
-            }
+        teamConfigurations.sort(Comparator.comparing(TeamConfiguration::getSavedDate).reversed());
+        teamsHistory.getItems().clear();
+        teamsHistory.getItems().addAll(teamConfigurations);
+        /* Set the latest configuration as the default value*/
+        if (!teamConfigurations.isEmpty()) {
+            teamsHistory.setValue(teamConfigurations.get(0));
         }
-
         teamsHistory.setOnAction(event -> {
             TeamConfiguration selectedConfig = teamsHistory.getValue();
             if (selectedConfig != null) {
@@ -182,13 +177,14 @@ public class TeamsPageController implements Initializable {
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         List<TeamConfigurationEmployee> teamMembers = selectedConfig.getTeamMembers();
         for (TeamConfigurationEmployee employee : teamMembers) {
-            pieChartData.add(new PieChart.Data(employee.getEmployeeName(), employee.getEmployeeDailyRate()));
+            String label = employee.getEmployeeName() + " " + employee.toString() + " ";
+            pieChartData.add(new PieChart.Data(label, employee.getEmployeeDailyRate()));
         }
         /* binds each PieChart.Data object's name property to a concatenated string
          containing the name and day rate, ensuring that both are displayed in the pie chart.*/
         pieChartData.forEach(data ->
                 data.nameProperty().bind(
-                        Bindings.concat(data.getName(), " day rate: ", data.pieValueProperty())
+                        Bindings.concat(data.getName(), " ", data.pieValueProperty())
                 )
                 );
         teamsPieChart.setData(pieChartData);
@@ -196,11 +192,8 @@ public class TeamsPageController implements Initializable {
         teamsPieChart.setLabelLineLength(10);
         teamsPieChart.setLegendVisible(false);
         for (PieChart.Data data : pieChartData) {
-           // data.getNode().setOnMouseClicked(event -> {
-                data.setPieValue(data.getPieValue());
-           // });
+            data.setPieValue(data.getPieValue());
         }
-
     }
 
 
