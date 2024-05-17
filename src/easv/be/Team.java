@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Team {
-    private String team;
+    private String teamName;
     private int id;
     private List<Employee> teamMembers;
     private List<TeamConfiguration> teamConfigurationsHistory;
@@ -20,23 +20,23 @@ public class Team {
 
 
 
-    public Team(String team) {
-        this.team = team;
+    public Team(String teamName) {
+        this.teamName = teamName;
     }
 
-    public Team(String team, int id) {
-        this.team = team;
+    public Team(String teamName, int id) {
+        this.teamName = teamName;
         this.id = id;
     }
 
-    public Team(String team, int id, BigDecimal utilizationPercentage) {
-        this.team = team;
+    public Team(String teamName, int id, BigDecimal utilizationPercentage) {
+        this.teamName = teamName;
         this.id = id;
         this.utilizationPercentage = utilizationPercentage;
     }
 
-    public Team(String team, Currency currency, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory ) {
-        this(team, id);
+    public Team(String teamName, Currency currency, int id, List<Employee> teamMembers, List<TeamConfiguration> teamConfigurationsHistory ) {
+        this(teamName, id);
         this.teamMembers = teamMembers;
         this.teamConfigurationsHistory = teamConfigurationsHistory;
         this.currency = currency;
@@ -62,12 +62,12 @@ public class Team {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Team team1 = (Team) o;
-        return Objects.equals(team, team1.team);
+        return Objects.equals(teamName, team1.teamName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(team);
+        return Objects.hash(teamName);
     }
 
     public List<TeamConfiguration> getTeamConfigurationsHistory() {
@@ -87,11 +87,11 @@ public class Team {
     }
 
     public String getTeamName() {
-        return team;
+        return teamName;
     }
 
     public void setTeamName(String team) {
-        this.team = team;
+        this.teamName = team;
     }
 
     public int getId() {
@@ -104,15 +104,7 @@ public class Team {
 
     @Override
     public String toString() {
-        return team;
-    }
-
-    public String getTeam() {
-        return team;
-    }
-
-    public void setTeam(String team) {
-        this.team = team;
+        return teamName;
     }
 
     public List<Employee> getEmployees() {

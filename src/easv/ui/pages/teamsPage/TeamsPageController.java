@@ -55,7 +55,7 @@ public class TeamsPageController implements Initializable {
     @FXML
     private PieChart teamsPieChart;
 
-    private TeamInfoController teamInfoController;
+    private TeamInfoController selectedTeam;
     public TeamsPageController(IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamsManagementPage.fxml"));
         loader.setController(this);
@@ -81,7 +81,7 @@ public class TeamsPageController implements Initializable {
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
-        //displayTeams();
+
     }
 
     public void displayTeams() {
@@ -94,8 +94,17 @@ public class TeamsPageController implements Initializable {
                 });
     }
 
+    /* adds green border to selected team and removes it after another is selected*/
+    public void setSelectedComponentStyleToSelected(TeamInfoController selectedTeam) {
+        if (this.selectedTeam != null) {
+            this.selectedTeam.getRoot().getStyleClass().remove("teamComponentClicked");
+        }
+        this.selectedTeam = selectedTeam;
+        this.selectedTeam.getRoot().getStyleClass().add("teamComponentClicked");
+    }
+
     /* listener that listens changes in selected years of combobox and calls a method to populate pieChart*/
-    public void handleTeamInfoComponentClick(Team team) {
+    public void yearsComboBoxListener(Team team) {
         yearComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 populateChartForYear(team, newValue);
@@ -150,10 +159,9 @@ public class TeamsPageController implements Initializable {
     }
 
     /** sets a list of team history dates in combobox of pieChart
-     * adds listener to in order to display pieChart info based on selected history configuration
      * @param team is being passed from teamInfo controller to get the selected team component team
      */
-    public void setConfigurations(Team team){
+    public void setTeamHistoryDatesInComboBox(Team team){
         List<TeamConfiguration> teamConfigurations = team.getTeamConfigurationsHistory();
         teamConfigurations.sort(Comparator.comparing(TeamConfiguration::getSavedDate).reversed());
         teamsHistory.getItems().clear();
@@ -162,6 +170,12 @@ public class TeamsPageController implements Initializable {
         if (!teamConfigurations.isEmpty()) {
             teamsHistory.setValue(teamConfigurations.get(0));
         }
+
+    }
+    /** sets a list of team history dates in combobox of pieChart
+     * adds listener in order to display pieChart info based on selected history configuration
+     */
+    public void historyComboBoxListener(Team team){
         teamsHistory.setOnAction(event -> {
             TeamConfiguration selectedConfig = teamsHistory.getValue();
             if (selectedConfig != null) {
@@ -169,15 +183,17 @@ public class TeamsPageController implements Initializable {
             }
         });
     }
+
     /** displays pieChart data which is teamMembers of teamHistory configurations
      * gets employee name and rate for each to display in pieChart slice
      * sets team name into pieChart label
      */
     private void displayEmployeesForDate(Team team, TeamConfiguration selectedConfig){
+        String currency = team.getCurrency().toString();
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         List<TeamConfigurationEmployee> teamMembers = selectedConfig.getTeamMembers();
         for (TeamConfigurationEmployee employee : teamMembers) {
-            String label = employee.getEmployeeName() + " " + employee.toString() + " ";
+            String label = employee.getEmployeeName() + " " + currency+ " ";
             pieChartData.add(new PieChart.Data(label, employee.getEmployeeDailyRate()));
         }
         /* binds each PieChart.Data object's name property to a concatenated string

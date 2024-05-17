@@ -138,7 +138,7 @@ public class DistributionController implements Initializable, DistributionContro
         // Add the team overhead to the chart as a new series
         if (model.getDistributeFromTeam().getActiveConfiguration() != null) {
             XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
-            series.getData().add(new XYChart.Data<>(model.getDistributeFromTeam().getTeam(), model.getDistributeFromTeam().getActiveConfiguration().getTeamDayRate()));
+            series.getData().add(new XYChart.Data<>(model.getDistributeFromTeam().getTeamName(), model.getDistributeFromTeam().getActiveConfiguration().getTeamDayRate()));
             this.distributeFromTeamBarChart.getData().add(series);
         }
         // Iterate over the regions overhead and add each as a new series

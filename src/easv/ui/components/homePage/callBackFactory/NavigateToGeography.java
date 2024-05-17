@@ -2,21 +2,25 @@ package easv.ui.components.homePage.callBackFactory;
 
 import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.openPageObserver.Subject;
+import easv.ui.pages.geographyManagementPage.geographyMainPage.GeographyManagementController;
 import easv.ui.pages.modelFactory.IModel;
 
 import javafx.scene.Parent;
+import javafx.scene.layout.StackPane;
 
-public class NavigateToProfile implements CallBack, Subject {
+public class NavigateToGeography implements CallBack, Subject {
     private PageManager pageManager;
     private Parent root;
     private boolean isOpened;
     private IModel model;
+    private StackPane pane;
 
 
 
-    public NavigateToProfile(PageManager pageManager,IModel model) {
+    public NavigateToGeography(PageManager pageManager, IModel model, StackPane pane) {
         this.pageManager= pageManager;
-
+        this.pane = pane;
+        this.model = model;
     }
 
     @Override
@@ -31,8 +35,8 @@ public class NavigateToProfile implements CallBack, Subject {
 
 
     private void initializePage(){
-      /*  ProfilePageController  profilePageController= new ProfilePageController(model);
-        root=profilePageController.getProfilePage();*/
+        GeographyManagementController geographyManagementController = new GeographyManagementController(model, pane);
+        root=geographyManagementController.getCreatePage();
     }
 
     public void setOpened(boolean opened) {

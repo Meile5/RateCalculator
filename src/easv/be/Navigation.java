@@ -6,5 +6,5 @@ public enum Navigation {
         CREATE,
         EMPLOYEES,
         MODELING,
-        PROFILE;
+        GEOGRAPHY;
     }
