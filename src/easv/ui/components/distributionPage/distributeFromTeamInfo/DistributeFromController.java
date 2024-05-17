@@ -37,7 +37,7 @@ public class DistributeFromController implements Initializable, DistributionComp
     private Team teamToDisplay;
     private ControllerMediator controllerMediator;
     private DistributionType distributionType;
-    private static final String EMPTY_VALUE = "0" ;
+    private static final String EMPTY_VALUE = "" ;
     public DistributeFromController(IModel model, Team teamToDisplay, ControllerMediator distributionControllerMediator, DistributionType distributionType) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DistributeFromTeamInfo.fxml"));
         loader.setController(this);
@@ -89,8 +89,6 @@ public class DistributeFromController implements Initializable, DistributionComp
             this.hourlyCurrency.setText(Currency.USD.toString());
         }
 
-
-        //dayRate, dayCurrency, hourlyRate, hourlyCurrency
     }
 
     public HBox getRoot() {

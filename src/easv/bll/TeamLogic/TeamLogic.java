@@ -6,6 +6,7 @@ import easv.bll.EmployeesLogic.IRateCalculator;
 import easv.bll.EmployeesLogic.RateCalculator;
 import easv.dal.teamDao.ITeamDao;
 import easv.dal.teamDao.TeamDao;
+import easv.exception.ErrorCode;
 import easv.exception.RateException;
 
 
@@ -90,48 +91,54 @@ public class TeamLogic implements ITeamLogic {
         return new OverheadComputationPair<>(region.getRegionName(), BigDecimal.ZERO);
     }
 
-    //TOdo change to return info error Object
-    /**validate if  inserted overhead percentages   are bigger than 100% */
+
+    /**
+     * validate if  inserted overhead percentages   are bigger than 100%
+     */
     @Override
-    public Map<Team,String> validateDistributionInputs(Map<Team, String> insertedDistributionPercentageFromTeams) {
-        Map <Team,String> teamsInvalid = new HashMap<>();
-        Double totalOverhead = 0.0;
-        for(Team team: insertedDistributionPercentageFromTeams.keySet()){
-            String overheadValue = insertedDistributionPercentageFromTeams.get(team);
-            if(!isOverheadFormatValid(overheadValue)){
-                teamsInvalid.put(team,overheadValue);
+    public DistributionValidation validateDistributionInputs(Map<Integer, String> insertedDistributionPercentageFromTeams) {
+        DistributionValidation distributionValidation = new DistributionValidation();
+        double totalOverhead = 0.0;
+        List<Integer> invalidTeamsIds = new ArrayList<>();
+        List<Integer> emptyValuesInserted = new ArrayList<>();
+
+        for (Integer teamId : insertedDistributionPercentageFromTeams.keySet()) {
+            String overheadValue = insertedDistributionPercentageFromTeams.get(teamId);
+            if (overheadValue.isEmpty()) {
+                emptyValuesInserted.add(teamId);
+            }
+
+            if (!isOverheadFormatValid(overheadValue)) {
+                invalidTeamsIds.add(teamId);
+            }
+            Double value = validatePercentageValue(overheadValue);
+            if (value != null) {
+                totalOverhead += value;
             }
         }
-        if(!teamsInvalid.isEmpty()){
-            return teamsInvalid;
+
+        if (!invalidTeamsIds.isEmpty()) {
+            distributionValidation.getErrorValues().put(ErrorCode.INVALID_OVERHEADVALUE, invalidTeamsIds);
         }
 
-        for(Team team: insertedDistributionPercentageFromTeams.keySet()){
-            String overheadValue = insertedDistributionPercentageFromTeams.get(team);
-            Double  value = validatePercentageValue(overheadValue);
-            if(value!=null){
-                totalOverhead+=value;
-            }
+        if (totalOverhead > 100) {
+            distributionValidation.getErrorValues().put(ErrorCode.OVER_LIMIT, new ArrayList<>(insertedDistributionPercentageFromTeams.keySet()));
         }
 
-        if(totalOverhead>100){
-            return insertedDistributionPercentageFromTeams;
+        if (!emptyValuesInserted.isEmpty()) {
+            distributionValidation.getErrorValues().put(ErrorCode.EMPTY_OVERHEAD, emptyValuesInserted);
         }
 
-        return Collections.emptyMap();
+        return distributionValidation;
     }
 
-
-
-
-    private boolean isOverheadFormatValid(String overhead){
+    private boolean isOverheadFormatValid(String overhead) {
         return overhead.matches("^\\d{0,3}([.,]\\d{1,2})?$");
     }
 
-
-    private  String convertToDecimalPoint(String value) {
+    private String convertToDecimalPoint(String value) {
         String validFormat;
-        if(value== null){
+        if (value == null) {
             return null;
         }
         if (value.contains(",")) {
@@ -142,20 +149,24 @@ public class TeamLogic implements ITeamLogic {
         return validFormat;
     }
 
-    /**convert string to double , if the input is invalid than the value returned will be null;*/
-    private Double validatePercentageValue(String newValue){
+    /**
+     * convert string to double , if the input is invalid than the value returned will be null;
+     */
+    private Double validatePercentageValue(String newValue) {
         String decimalPoint = convertToDecimalPoint(newValue);
-        Double overheadValue= null;
-        try{
-            overheadValue =  Double.parseDouble(decimalPoint);
-        }catch(NumberFormatException e){
+        Double overheadValue = null;
+        try {
+            overheadValue = Double.parseDouble(decimalPoint);
+        } catch (NumberFormatException e) {
             return overheadValue;
         }
         return overheadValue;
     }
 
-    /** calculate the overhead for the teams with the new overhead added */
-    public  void addOverheadPercentageForTeams(Team teamToDistributeFrom, Map<Team,String> teamsToDistributeTo){
+    /**
+     * calculate the overhead for the teams with the new overhead added
+     */
+    public void addOverheadPercentageForTeams(Team teamToDistributeFrom, Map<Team, String> teamsToDistributeTo) {
 
 //        for(){
 //
@@ -163,17 +174,17 @@ public class TeamLogic implements ITeamLogic {
     }
 
 
-
-
-/**calculate the total overhead for the inserted valid values*/
+    /**
+     * calculate the total overhead for the inserted valid values
+     */
     @Override
     public double calculateTotalOverheadInsertedForValidInputs(Map<Integer, String> insertedDistributionPercentageFromTeams) {
         double totalOverhead = 0.0;
-        for(String val : insertedDistributionPercentageFromTeams.values()){
-          Double validCalculation = validatePercentageValue(val);
-          if(validCalculation!=null) {
-              totalOverhead += validCalculation;
-          }
+        for (String val : insertedDistributionPercentageFromTeams.values()) {
+            Double validCalculation = validatePercentageValue(val);
+            if (validCalculation != null) {
+                totalOverhead += validCalculation;
+            }
         }
         return totalOverhead;
     }

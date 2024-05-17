@@ -259,4 +259,12 @@ public class DistributeToController implements Initializable {
         return overheadValue;
     }
 
+
+    public boolean isOverheadInputEmpty(){
+        return this.distributionPercentage.getText().isEmpty();
+    }
+
+    public void changeStyleToError() {
+        this.getRoot().pseudoClassStateChanged(INVALID_INPUT,true);
+    }
 }

@@ -155,7 +155,7 @@ public interface IModel {
     /**
      * validate distribution operation inputs
      */
-    Map<Team, String> validateInputs();
+    DistributionValidation validateInputs();
 
     Map<Integer, String> getInsertedDistributionPercentageFromTeams();
 
@@ -166,4 +166,8 @@ public interface IModel {
 
     /** calculate total overhead inserted in order to update the displayed value*/
     double calculateTeTotalOverheadInserted();
+
+
+    /**get the team name based on the  team id , is used in order to display the error message in distribution page */
+    String  getTeamName(int teamId);
 }

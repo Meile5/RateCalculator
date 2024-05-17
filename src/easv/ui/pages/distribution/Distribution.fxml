@@ -15,7 +15,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
@@ -112,28 +111,28 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </VBox>
-      <VBox alignment="CENTER" maxWidth="204.0" minWidth="64.0" prefHeight="200.0" prefWidth="128.0" spacing="10.0" style="-fx-background-radius: 20;" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="3">
+      <VBox  alignment="CENTER" maxWidth="204.0" minWidth="64.0" prefHeight="200.0" prefWidth="128.0" spacing="10.0" style="-fx-background-radius: 20;" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="3">
          <children>
 <!--            <Circle fx:id="circleValue" fill="WHITE" radius="49.0" strokeWidth="10.0" styleClass="circleAnimation" translateY="70.0" />-->
-            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="30.0" translateY="-12.0">
+            <HBox  fx:id="totalOverheadContainer"  alignment="CENTER" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="40.0" styleClass="totalOverheadContainer">
                <children>
-                  <Label fx:id="totalOverheadInserted" maxWidth="40.0" minWidth="-Infinity" prefHeight="37.0" prefWidth="23.0"  styleClass="totalOverhead" HBox.hgrow="ALWAYS">
+                  <Label fx:id="totalOverheadInserted" alignment="CENTER" maxWidth="40.0" minWidth="-Infinity" prefHeight="37.0" prefWidth="23.0" styleClass="totalOverhead" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Label text="\\%"  styleClass="totalOverhead">
+                  <Label prefHeight="37.0" styleClass="totalOverhead" text="\\%">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
                </children>
             </HBox>
-            <Button fx:id="simulateButton" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="37.0" prefWidth="40.0" style="-fx-background-color: #63B2E1;" text="Simulate" textFill="WHITE" translateY="20.0">
+            <Button fx:id="simulateButton" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="37.0" prefWidth="40.0" style="-fx-background-color: #63B2E1;" text="Simulate" textFill="WHITE">
                <font>
                   <Font name="SansSerif Bold" size="14.0" />
                </font></Button>
-            <Button fx:id="saveButton" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="37.0" prefWidth="40.0" style="-fx-background-color: #63B2E1;" text="Save" textFill="WHITE" translateY="20.0">
+            <Button fx:id="saveButton" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="37.0" prefWidth="40.0" style="-fx-background-color: #63B2E1;" text="Save" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Button>

@@ -1,4 +1,5 @@
 package easv.bll.TeamLogic;
+import easv.be.DistributionValidation;
 import easv.be.OverheadComputationPair;
 import easv.be.Region;
 import easv.be.Team;
@@ -16,7 +17,7 @@ public interface ITeamLogic  {
 
   OverheadComputationPair <String ,BigDecimal> computeRegionOverhead(Region region);
 
-    Map<Team,String> validateDistributionInputs(Map<Team, String> insertedDistributionPercentageFromTeams);
+    DistributionValidation  validateDistributionInputs(Map<Integer, String> insertedDistributionPercentageFromTeams);
 
     /**calculate the total overhead inserted for the valid inputs*/
     double calculateTotalOverheadInsertedForValidInputs(Map<Integer, String> insertedDistributionPercentageFromTeams);

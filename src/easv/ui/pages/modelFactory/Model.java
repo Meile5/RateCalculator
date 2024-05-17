@@ -68,6 +68,8 @@ public class Model implements IModel {
      */
     private final ObservableMap<Integer, Team> teamsWithEmployees;
 
+
+
     /**
      * holds all the data related to the operational  countries
      */
@@ -559,9 +561,13 @@ public class Model implements IModel {
     }
 
     @Override
-    public Map <Team,String> validateInputs() {
-        //return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams);
-   return null;
+    public DistributionValidation validateInputs() {
+        return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams);
+
+    }
+
+    public String  getTeamName(int teamId) {
+        return  this.teamsWithEmployees.get(teamId).getTeamName();
     }
 
 

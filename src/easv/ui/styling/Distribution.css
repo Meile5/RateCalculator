@@ -33,18 +33,20 @@
 .totalOverhead{
     -fx-text-fill: #2ba746 ;
 }
-.totalOverhead:errorLimit{
-    -fx-text-fill: #a6492b;
+
+.totalOverheadContainer {
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-background-color: #e8f5e9;
+}
+
+/*change the  total overhead label style to error*/
+.totalOverheadContainer:errorLimit .totalOverhead{
+  -fx-text-fill: #a6492b ;
 }
 
 
-
-
-
-
-
-
-
+/*TODO remove if do not use  them annymore*/
 .circleAnimation:errorLimit {
     -fx-stroke: #a6492b;
 }
