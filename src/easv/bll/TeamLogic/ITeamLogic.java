@@ -6,6 +6,7 @@ import easv.exception.RateException;
 
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 
@@ -15,4 +16,6 @@ public interface ITeamLogic  {
 
 
   OverheadComputationPair <String ,BigDecimal> computeRegionOverhead(Region region);
+
+    Map<Team,String> validateDistributionInputs(Map<Team, String> insertedDistributionPercentageFromTeams);
 }

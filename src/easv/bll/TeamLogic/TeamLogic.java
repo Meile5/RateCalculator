@@ -11,9 +11,7 @@ import easv.exception.RateException;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //TODO do not delete this class   Andrei found a usage for
 public class TeamLogic implements ITeamLogic {
@@ -67,9 +65,14 @@ public class TeamLogic implements ITeamLogic {
     }
 
 
-    /**calculate the overhead off a region , if is zero return an  OverHeadComputationPair object
+    /**DISTRIBUTION  OPERATION LOGIC */
+
+    /**
+     * calculate the overhead off a region , if is zero return an  OverHeadComputationPair object
      * populated with the country name and the value zero
-     * @param region the region to calculate for.*/
+     *
+     * @param region the region to calculate for.
+     */
 
     @Override
     public OverheadComputationPair<String, BigDecimal> computeRegionOverhead(Region region) {
@@ -84,6 +87,79 @@ public class TeamLogic implements ITeamLogic {
             }
             return new OverheadComputationPair<>(region.getRegionName(), regionOverhead);
         }
-        return new OverheadComputationPair<>(region.getRegionName(),BigDecimal.ZERO);
+        return new OverheadComputationPair<>(region.getRegionName(), BigDecimal.ZERO);
+    }
+
+    //TOdo change to return info error Object
+    /**validate if  inserted overhead percentages   are bigger than 100% */
+    @Override
+    public Map<Team,String> validateDistributionInputs(Map<Team, String> insertedDistributionPercentageFromTeams) {
+        Map <Team,String> teamsInvalid = new HashMap<>();
+        Double totalOverhead = 0.0;
+        for(Team team: insertedDistributionPercentageFromTeams.keySet()){
+            String overheadValue = insertedDistributionPercentageFromTeams.get(team);
+            if(!isOverheadFormatValid(overheadValue)){
+                teamsInvalid.put(team,overheadValue);
+            }
+        }
+        if(!teamsInvalid.isEmpty()){
+            return teamsInvalid;
+        }
+
+        for(Team team: insertedDistributionPercentageFromTeams.keySet()){
+            String overheadValue = insertedDistributionPercentageFromTeams.get(team);
+            Double  value = validatePercentageValue(overheadValue);
+            if(value!=null){
+                totalOverhead+=value;
+            }
+        }
+
+        if(totalOverhead>100){
+            return insertedDistributionPercentageFromTeams;
+        }
+
+        return Collections.emptyMap();
+    }
+
+
+    private boolean isOverheadFormatValid(String overhead){
+        return overhead.matches("^\\d{0,3}([.,]\\d{1,2})?$");
+    }
+
+
+    private  String convertToDecimalPoint(String value) {
+        String validFormat;
+        if(value== null){
+            return null;
+        }
+        if (value.contains(",")) {
+            validFormat = value.replace(",", ".");
+        } else {
+            validFormat = value;
+        }
+        return validFormat;
+    }
+
+    /**convert string to double , if the input is invalid than the value returned will be null;*/
+    private Double validatePercentageValue(String newValue){
+        String decimalPoint = convertToDecimalPoint(newValue);
+        Double overheadValue= null;
+        try{
+            overheadValue =  Double.parseDouble(decimalPoint);
+        }catch(NumberFormatException e){
+            return overheadValue;
+        }
+        return overheadValue;
+    }
+
+    /** calculate the overhead for the teams with the new overhead added */
+    public  void addOverheadPercentageForTeams(Team teamToDistributeFrom, Map<Team,String> teamsToDistributeTo){
+
+//        for(){
+//
+//       }
     }
 }
+
+
+

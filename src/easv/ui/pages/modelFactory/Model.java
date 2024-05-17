@@ -83,8 +83,18 @@ public class Model implements IModel {
     private ObservableList<Employee> listEmployeeByCountryTemp;
 
 
-    public Model() throws RateException {
+    /**
+     * holds the temporary values for the teams that user inserted in the distribution page
+     */
+    private final Map<Team, String> insertedDistributionPercentageFromTeams;
 
+    /**
+     * the selected team that user chose to distribute from and the associated value
+     */
+    private Team selectedTeamToDistributeFrom;
+
+
+    public Model() throws RateException {
         this.employees = FXCollections.observableMap(new LinkedHashMap<>());
         this.filteredEmployeesListByRegion = FXCollections.observableArrayList();
         this.listEmployeeByCountryTemp = FXCollections.observableArrayList();
@@ -100,6 +110,7 @@ public class Model implements IModel {
         teamsWithEmployees = FXCollections.observableHashMap();
         countriesWithTeams = FXCollections.observableHashMap();
         regionsWithCountries = FXCollections.observableHashMap();
+        insertedDistributionPercentageFromTeams = new HashMap<>();
         populateCountries();
         populateTeams();
 
@@ -212,15 +223,23 @@ public class Model implements IModel {
             for (Team team : teams) {
                 team.addNewTeamMember(employee);
                 TeamConfiguration teamConfiguration = getNewEmployeeTeamConfiguration(team);
-                addTeamConfiguration(teamConfiguration, team);
+                Map<Integer, BigDecimal> employeesDayRates = new HashMap<>();
+                Map<Integer, BigDecimal> employeesHourlyRates = new HashMap<>();
+                for (Employee employeeToCheck : team.getEmployees()) {
+                    BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeam(employeeToCheck, team);
+                    employeesHourlyRates.put(employeeToCheck.getId(), employeeHourlyRate);
+                    BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeam(employeeToCheck, team);
+                    employeesDayRates.put(employeeToCheck.getId(), employeeDayRate);
+                }
+                addTeamConfiguration(teamConfiguration, team, employeesDayRates, employeesHourlyRates);
                 teamsWithEmployees.get(team.getId()).addNewTeamMember(employee);
             }
         }
     }
 
     @Override
-    public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException {
-        int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team);
+    public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException {
+        int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team, employeeDayRate, employeeHourlyRate);
         if (teamConfiguration != null) {
             teamConfiguration.setId(teamConfigurationID);
             teamsWithEmployees.get(team.getId()).setActiveConfiguration(teamConfiguration);
@@ -475,18 +494,62 @@ public class Model implements IModel {
     }
 
 
-/** Distribution related logic*/
+/**OVERHEAD DISTRIBUTION RELATED LOGIC*/
 
 
     /**
      * calculate the  selected team to distribute from regions overhead
      */
-    public List<OverheadComputationPair<String,BigDecimal>> teamRegionsOverhead(int teamId) {
-        List<OverheadComputationPair<String,BigDecimal>> teamRegionsOverhead = new ArrayList<>();
+    public List<OverheadComputationPair<String, BigDecimal>> teamRegionsOverhead(int teamId) {
+        List<OverheadComputationPair<String, BigDecimal>> teamRegionsOverhead = new ArrayList<>();
         for (Region region : teamsWithEmployees.get(teamId).getRegions()) {
-            OverheadComputationPair<String,BigDecimal> regionOverhead = teamManager.computeRegionOverhead(region);
+            OverheadComputationPair<String, BigDecimal> regionOverhead = teamManager.computeRegionOverhead(region);
             teamRegionsOverhead.add(regionOverhead);
         }
         return teamRegionsOverhead;
     }
+
+
+    /**
+     * add the team and the percentage that user chose to distribute
+     *
+     * @param team               the team that will receive overhead
+     * @param overheadPercentage the overhead percentage received by the team
+     */
+    public void addDistributionPercentageTeam(Team team, String overheadPercentage) {
+        this.insertedDistributionPercentageFromTeams.put(team, overheadPercentage);
+    }
+
+    public Map<Team, String> getInsertedDistributionPercentageFromTeams() {
+        return insertedDistributionPercentageFromTeams;
+    }
+
+    /**
+     * remove the team and the inserted overhead percentage from the map
+     */
+    public void removeDistributionPercentageTeam(Team team) {
+        this.insertedDistributionPercentageFromTeams.remove(team.getId());
+    }
+
+
+    /**
+     * set the selected team that user chose to distribute from and the associated  value
+     *
+     * @param selectedTeamToDistributeFrom selected team and associated percentage
+     */
+
+    public void setDistributeFromTeam(Team selectedTeamToDistributeFrom) {
+        this.selectedTeamToDistributeFrom = selectedTeamToDistributeFrom;
+    }
+
+    public Team getDistributeFromTeam() {
+        return this.selectedTeamToDistributeFrom;
+    }
+
+    @Override
+    public Map <Team,String> validateInputs() {
+        return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams);
+    }
+
+
 }

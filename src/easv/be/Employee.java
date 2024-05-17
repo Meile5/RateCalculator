@@ -143,9 +143,6 @@ public class Employee {
     public Currency getCurrency(){
         return currency;
     }
-    public void setCurrency(){
-        this.currency = currency;
-    }
 
 //    public BigDecimal getDailyRate() {
 //        return dailyRate;

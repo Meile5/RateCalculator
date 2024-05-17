@@ -33,3 +33,17 @@
 
 
 
+
+
+
+.circleAnimation:errorLimit {
+    -fx-stroke: #a6492b;
+}
+
+.circleAnimation {
+    -fx-stroke: #2ba746;
+}
+
+
+
+

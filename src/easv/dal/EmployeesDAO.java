@@ -250,7 +250,7 @@ public class EmployeesDAO implements IEmployeeDAO {
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psmt.setString(1, employee.getName());
                 psmt.setString(2, employee.getEmployeeType().toString());
-                psmt.setString(3, "EUR");
+                psmt.setString(3, employee.getCurrency().name());
                 psmt.executeUpdate();
                 try (ResultSet res = psmt.getGeneratedKeys()) {
                     if (res.next()) {
@@ -397,14 +397,16 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
     }
 
-    private void addEmployeeHistory(Team team, int teamConfigurationID, Connection conn) {
+    private void addEmployeeHistory(Team team, int teamConfigurationID, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, Connection conn) {
         String sql = "INSERT INTO TeamEmployeesHistory (EmployeeName, EmployeeDailyRate, EmployeeHourlyRate, TeamConfigurationId) VALUES (?, ?, ?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             for (Employee employee : team.getEmployees()) {
                 psmt.setString(1, employee.getName());
-                psmt.setBigDecimal(2, employee.getActiveConfiguration().getDayRate());
-                psmt.setBigDecimal(3, employee.getActiveConfiguration().getHourlyRate());
+                psmt.setBigDecimal(2, employeeDayRate.get(employee.getId()));
+                psmt.setBigDecimal(3, employeeHourlyRate.get(employee.getId()));
                 psmt.setInt(4, teamConfigurationID);
+                System.out.println("Currency: " + employee.getCurrency().name());
+                //psmt.setString(5, employee.getCurrency().name());
                 psmt.executeUpdate();
             }
             psmt.executeBatch();
@@ -621,7 +623,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
     @Override
-    public Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException {
+    public Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException {
         Integer configurationID = null;
         Connection conn = null;
         try {
@@ -645,7 +647,7 @@ public class EmployeesDAO implements IEmployeeDAO {
             }
         }
             addTeamToConfiguration(team, configurationID, conn);
-            addEmployeeHistory(team, configurationID, conn);
+            addEmployeeHistory(team, configurationID, employeeDayRate, employeeHourlyRate, conn);
             conn.commit();
         } catch (SQLException e) {
             conn.rollback();

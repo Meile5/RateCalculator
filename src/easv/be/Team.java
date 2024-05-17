@@ -43,6 +43,15 @@ public class Team {
 
     }
 
+    /**
+     * copy constructor
+     */
+    public Team(Team team) {
+        this(team.getTeamName(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);
+        this.countries = team.getCountries();
+        this.regions= team.getRegions();
+    }
+
 
     /**
      * to not be used in equal comparison , it is used for the view only
@@ -152,6 +161,7 @@ public class Team {
     public void setRegions(List<Region> regions) {
         this.regions = regions;
     }
+
     public BigDecimal getUtilizationPercentage() {
         return utilizationPercentage;
     }

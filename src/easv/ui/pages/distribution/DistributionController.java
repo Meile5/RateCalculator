@@ -1,22 +1,23 @@
 package easv.ui.pages.distribution;
-
 import easv.be.OverheadComputationPair;
 import easv.be.Team;
 import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFromController;
-import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToListCell;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -35,16 +36,17 @@ public class DistributionController implements Initializable, DistributionContro
     private MFXTextField percentageToDistribute;
     @FXML
     private BarChart<String, BigDecimal> distributeFromTeamBarChart;
-
-
     private IModel model;
-
-
     private ControllerMediator distributionMediator;
+    private DistributeToMediator distributeToMediator;
+    @FXML
+    private Button simulateButton;
+    @FXML
+    private Circle circleValue;
+    @FXML
+    private Label totalOverheadInserted;
 
-    private Team selectedTeamToDistributeFrom;
-
-    private final Map<Integer, Double> insertedDistributionPercentageFromTeams = new HashMap<>();
+    private final static PseudoClass OVER_LIMIT = PseudoClass.getPseudoClass("errorLimit");
 
     public DistributionController(IModel model) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Distribution.fxml"));
@@ -52,6 +54,8 @@ public class DistributionController implements Initializable, DistributionContro
         this.model = model;
         this.distributionMediator = new ControllerMediator();
         this.distributionMediator.registerDistributionController(this);
+        this.distributeToMediator= new DistributeToMediator();
+        this.distributeToMediator.registerMainController(this);
         try {
             distributionPage = loader.load();
         } catch (IOException e) {
@@ -74,7 +78,7 @@ public class DistributionController implements Initializable, DistributionContro
      * add the teams in the  system  to the distribute to teams container
      */
     private void populateDistributeToTeams() {
-        distributeToTeams.setCellFactory(listView -> new DistributeToListCell(model, this));
+        distributeToTeams.setCellFactory(listView -> new DistributeToListCell(model,distributeToMediator));
         distributeToTeams.setItems(model.getOperationalTeams());
     }
 
@@ -86,18 +90,11 @@ public class DistributionController implements Initializable, DistributionContro
         });
         distributeFromTeams.getChildren().addAll(distributeFromTeamsComponents);
     }
-
-    @Override
-    public void setTheSelectedTeam(Team team) {
-        this.selectedTeamToDistributeFrom = team;
-    }
-
-
     @Override
     public void showTheTeamFromBarchart() {
         this.distributeFromTeamBarChart.setVisible(true);
         this.distributeFromTeamBarChart.setDisable(false);
-        this.distributeFromTeamBarChart.setTitle(selectedTeamToDistributeFrom.getTeamName());
+        this.distributeFromTeamBarChart.setTitle(model.getDistributeFromTeam().getTeamName());
         this.distributeFromTeamBarChart.setLegendVisible(false);
         this.distributeFromTeamBarChart.getXAxis().setLabel("Team");
         this.distributeFromTeamBarChart.getYAxis().setLabel("Overhead");
@@ -106,22 +103,22 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
 
+
+
     /**
      * populate team barchart with the initial overhead
      */
     private void populateFromTeamBarChartWithInitialOverhead() {
         this.distributeFromTeamBarChart.getData().clear();
-
         // Add the team overhead to the chart as a new series
-        if (selectedTeamToDistributeFrom.getActiveConfiguration() != null) {
+        if (model.getDistributeFromTeam().getActiveConfiguration() != null) {
             XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
-            series.getData().add(new XYChart.Data<>(selectedTeamToDistributeFrom.getTeam(), selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate()));
+            series.getData().add(new XYChart.Data<>(model.getDistributeFromTeam().getTeam(), model.getDistributeFromTeam().getActiveConfiguration().getTeamDayRate()));
             this.distributeFromTeamBarChart.getData().add(series);
         }
-        System.out.println(model.teamRegionsOverhead(selectedTeamToDistributeFrom.getId()));
         // Iterate over the regions overhead and add each as a new series
-        if (!selectedTeamToDistributeFrom.getRegions().isEmpty()) {
-            for (OverheadComputationPair<String, BigDecimal> regionOverhead : model.teamRegionsOverhead(selectedTeamToDistributeFrom.getId())) {
+        if (!model.getDistributeFromTeam().getRegions().isEmpty()) {
+            for (OverheadComputationPair<String, BigDecimal> regionOverhead : model.teamRegionsOverhead(model.getDistributeFromTeam().getId())) {
                 XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
                 series.getData().add(new XYChart.Data<>(regionOverhead.getKey(), regionOverhead.getValue()));
                 this.distributeFromTeamBarChart.getData().add(series);
@@ -130,14 +127,58 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
 
-    public void addDistributionPercentageToTeam(Integer teamId, Double percentageValue) {
-        this.insertedDistributionPercentageFromTeams.put(teamId, percentageValue);
-        System.out.println(teamId + " " + percentageValue + "add ");
+    private void addSimulateButtonListener(){
+        this.simulateButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
+          Map<Team,String> validateInputs = model.validateInputs();
+
+        });
     }
 
-    public void removeDistributionPercentageToTeam(Integer teamId) {
-        System.out.println(teamId + "remove");
-        this.insertedDistributionPercentageFromTeams.remove(teamId);
+
+
+    /** change circle stroke color based on the user input */
+    private void updateCircleColor(Double coverPercentage){
+        System.out.println(coverPercentage );
+        if(coverPercentage>100){
+           circleValue.pseudoClassStateChanged(OVER_LIMIT,true);
+           return;
+        }
+
+        if(coverPercentage<100){
+            circleValue.pseudoClassStateChanged(OVER_LIMIT,false);
+        }
+
+        // Calculate circumference
+        double circumference = 2 * Math.PI * this.circleValue.getRadius();
+        double coveredLength = circumference * (coverPercentage / 100);
+        double uncoveredLength = circumference - coveredLength;
+        // Set the stroke dash array
+        circleValue.getStrokeDashArray().addAll(coveredLength, uncoveredLength);
+        // Adjust stroke dash offset to start from the right (0 degrees)
+        circleValue.setStrokeDashOffset(-circumference / 4);
+    }
+
+    @Override
+    public void updateTotalOverheadValue(Double overheadPercentage) {
+        Double totalOverhead = 0.0;
+        if(!totalOverheadInserted.getText().isEmpty()) {
+            totalOverhead = Double.parseDouble(this.totalOverheadInserted.getText());
+            totalOverheadInserted.setText(totalOverhead+overheadPercentage+"");
+        }else{
+            totalOverhead = overheadPercentage;
+            totalOverheadInserted.setText(totalOverhead+"");
+        }
+        updateCircleColor(totalOverhead);
+    }
+
+    @Override
+    public void removeOverheadPercentage(Double overheadValue) {
+        Double totalOverhead = 0.0;
+        if(!totalOverheadInserted.getText().isEmpty()) {
+            totalOverhead = Double.parseDouble(this.totalOverheadInserted.getText());
+            totalOverheadInserted.setText(totalOverhead-overheadValue+"");
+        }
+        updateCircleColor(totalOverhead);
     }
 
 

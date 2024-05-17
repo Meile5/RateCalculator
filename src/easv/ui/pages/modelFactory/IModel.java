@@ -43,7 +43,7 @@ public interface IModel {
 
     void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException;
 
-    void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team) throws SQLException, RateException;
+    void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException;
 
     /**
      * retrieve the teams with the overhead computed
@@ -103,19 +103,61 @@ public interface IModel {
     Employee getEmployeeById(int id);
 
 
-    /**filter employees by the selected country*/
+    /**
+     * filter employees by the selected country
+     */
     void filterByCountryTeams(Country newValue);
 
-    /**filter employees by the selected team */
-   void filterEmployeesByTeam(Team selectedTeam);
+    /**
+     * filter employees by the selected team
+     */
+    void filterEmployeesByTeam(Team selectedTeam);
 
-   /**undo the team filter operation to display the country active filter*/
+    /**
+     * undo the team filter operation to display the country active filter
+     */
     void returnEmployeesByCountry();
-
 
 
     /**OVERHEAD DISTRIBUTION RELATED LOGIC*/
 
-/**calculate team  regions overhead */
-    List<OverheadComputationPair<String,BigDecimal>> teamRegionsOverhead(int teamId);
+    /**
+     * calculate team  regions overhead
+     */
+    List<OverheadComputationPair<String, BigDecimal>> teamRegionsOverhead(int teamId);
+
+    /**
+     * add the team and the percentage that user chose to distribute
+     *
+     * @param team               the team that will receive overhead
+     * @param overheadPercentage the overhead percentage received by the team
+     */
+    void addDistributionPercentageTeam(Team team, String overheadPercentage);
+
+    /**
+     * remove the team and the inserted overhead percentage from the map
+     */
+    void removeDistributionPercentageTeam(Team team);
+
+
+    /**
+     * set the selected team that user chose to distribute from and the associated  value
+     *
+     * @param selectedTeamToDistributeFrom selected team and associated percentage
+     */
+
+    void setDistributeFromTeam(Team selectedTeamToDistributeFrom);
+
+
+
+      Team getDistributeFromTeam();
+
+
+
+
+      /** validate distribution operation inputs */
+    Map<Team,String> validateInputs();
+
+    Map<Team, String> getInsertedDistributionPercentageFromTeams();
+
 }

@@ -2,6 +2,7 @@ package easv.ui.components.distributionPage.distributeToTeamInfo;
 
 
 import easv.be.Team;
+import easv.ui.pages.distribution.DistributeToMediator;
 import easv.ui.pages.distribution.DistributionController;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.scene.control.ColorPicker;
@@ -14,12 +15,12 @@ import java.awt.color.ColorSpace;
 public class DistributeToListCell extends ListCell<Team> {
     private IModel model;
     private DistributeToController controller;
-    private DistributionController mainDistributionController;
+    private DistributeToMediator distributeToMediator;
 
-    public DistributeToListCell(IModel model, DistributionController mainDistributionController) {
 
+    public DistributeToListCell(IModel model,DistributeToMediator distributeToMediator) {
         this.model = model;
-        this.mainDistributionController= mainDistributionController;
+        this.distributeToMediator= distributeToMediator;
     }
 
     @Override
@@ -34,25 +35,11 @@ public class DistributeToListCell extends ListCell<Team> {
                 setTextFill(Color.BLACK);
             }
             if (controller == null) {
-                controller = new DistributeToController(model, team,mainDistributionController);
+                controller = new DistributeToController(model, team,distributeToMediator);
             } else {
                 controller.setTeamToDisplay(team);
             }
             setGraphic(controller.getRoot());
-
-//            setOnMouseClicked(event -> {
-//                if (isSelected()) {
-//                    setTextFill(Color.BLACK);
-//                    controller.getRoot().getStyleClass().add("selected-component");
-//                    System.out.println("i am selected");
-//                }
-//                else{
-//                    controller.getRoot().getStyleClass().remove("selected-component");
-//                    System.out.println("i am not selected");
-//                }
-//
-//            });
-
         }
     }
 }
