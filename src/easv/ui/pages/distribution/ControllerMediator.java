@@ -1,4 +1,5 @@
 package easv.ui.pages.distribution;
+import easv.be.Team;
 import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributionComponentInterface;
 
 public class ControllerMediator {
@@ -17,8 +18,17 @@ public class ControllerMediator {
        this.distributionTeamController=selectedTeamComponent;
    }
 
-   public void showTeamToDistributeFromBarChart(){
-       distributionController.showTheTeamFromBarchart();
-   }
+  // public void showTeamToDistributeFromBarChart(){
+  //     distributionController.showTheTeamFromBarchart();
+ //  }
 
+    public void addTeamToDistributeFrom(Team team) {
+       distributionController.addTeamToDistributeFrom(team);
+
+    }
+
+    /** add the selected team to distribute to */
+    public void addDistributeToTeam(Team teamToDisplay) {
+        distributionController.addDistributeToTeam(teamToDisplay);
+    }
 }

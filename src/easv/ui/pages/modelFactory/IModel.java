@@ -160,4 +160,6 @@ public interface IModel {
 
     Map<Team, String> getInsertedDistributionPercentageFromTeams();
 
+    /**set the percentage of the selected team to distribute*/
+    void setDistributionPercentageTeam(Team selectedTeam,String newValue);
 }

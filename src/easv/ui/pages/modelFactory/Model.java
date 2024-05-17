@@ -516,6 +516,13 @@ public class Model implements IModel {
         return insertedDistributionPercentageFromTeams;
     }
 
+
+    /**add the  overhead value to distribute,inserted by the user*/
+    @Override
+    public void setDistributionPercentageTeam(Team selectedTeam,String newValue) {
+         this.insertedDistributionPercentageFromTeams.put(selectedTeam,newValue);
+    }
+
     /**
      * remove the team and the inserted overhead percentage from the map
      */

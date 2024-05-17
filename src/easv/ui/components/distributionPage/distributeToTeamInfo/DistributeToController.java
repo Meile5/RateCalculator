@@ -1,6 +1,7 @@
 package easv.ui.components.distributionPage.distributeToTeamInfo;
 
 import easv.be.Country;
+import easv.be.Currency;
 import easv.be.Region;
 import easv.be.Team;
 import easv.exception.ErrorCode;
@@ -80,13 +81,21 @@ public class DistributeToController implements Initializable {
         /*add tooltip for the countries to display the whole value*/
         addInfoToolTip(this.teamCountries);
         this.teamName.setText(teamToDisplay.getTeamName());
+        if (this.teamToDisplay.getActiveConfiguration() != null) {
+            this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate() + "");
+            addInfoToolTip(this.dayRate);
+            dayCurrency.setText(Currency.USD.toString());
+            this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate() + "");
+            addInfoToolTip(this.hourlyRate);
+            this.hourlyCurrency.setText(Currency.USD.toString());
+        }
     }
+
+
 
     public HBox getRoot() {
         return teamComponentDistributeFrom;
     }
-
-
     private void addInfoToolTip(Label label) {
         Tooltip toolTip = new Tooltip();
         toolTip.getStyleClass().add("tooltipinfo");
@@ -94,9 +103,7 @@ public class DistributeToController implements Initializable {
         label.setTooltip(toolTip);
     }
 
-    public void setTeamToDisplay(Team team) {
-        this.teamToDisplay = team;
-    }
+
 
     public String getOverheadPercentage() {
         return this.distributionPercentage.getText();
@@ -112,22 +119,25 @@ public class DistributeToController implements Initializable {
                     if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")){
                             ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " +teamToDisplay.getTeamName() + " "+ ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
                         teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,true);
-                        model.addDistributionPercentageTeam(teamToDisplay,newValue);
+                        model.setDistributionPercentageTeam(teamToDisplay,newValue);
                     }else{
                         Double overheadInserted = validatePercentageValue(newValue);
                         if(!(overheadInserted>=0 && overheadInserted<=100)){
+                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,true);
                             ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " +teamToDisplay.getTeamName() + " "+ ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
                         }else{
                             teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
                         }
-                        model.addDistributionPercentageTeam(teamToDisplay,newValue);
+                        model.setDistributionPercentageTeam(teamToDisplay,newValue);
                        // distributeToMediator.updateTotalOverheadValue(overheadValue);
                     }
                 } else {
                     teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
-                    if (!oldValue.isEmpty()) {
-                        model.removeDistributionPercentageTeam(teamToDisplay);
-                    }
+
+                    //TODO move te remove  to the delete button, and update the resulted value;
+//                    if (!oldValue.isEmpty()) {
+//                        model.removeDistributionPercentageTeam(teamToDisplay);
+//                    }
                 }
 
 //                else if (!oldValue.isEmpty()) {

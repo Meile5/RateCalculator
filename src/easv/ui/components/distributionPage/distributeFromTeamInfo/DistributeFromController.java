@@ -1,8 +1,11 @@
 package easv.ui.components.distributionPage.distributeFromTeamInfo;
+
 import easv.be.Country;
+import easv.be.Currency;
 import easv.be.Region;
 import easv.be.Team;
 import easv.ui.pages.distribution.ControllerMediator;
+import easv.ui.pages.distribution.DistributionType;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
@@ -13,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,18 +36,22 @@ public class DistributeFromController implements Initializable, DistributionComp
     private IModel model;
     private Team teamToDisplay;
     private ControllerMediator controllerMediator;
-    public DistributeFromController(IModel model, Team teamToDisplay, ControllerMediator distributionControllerMediator) {
+    private DistributionType distributionType;
+
+    public DistributeFromController(IModel model, Team teamToDisplay, ControllerMediator distributionControllerMediator, DistributionType distributionType) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DistributeFromTeamInfo.fxml"));
         loader.setController(this);
         this.model = model;
         this.teamToDisplay = teamToDisplay;
-        this.controllerMediator=distributionControllerMediator;
+        this.controllerMediator = distributionControllerMediator;
+        this.distributionType = distributionType;
         try {
             teamComponent = loader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -72,6 +80,17 @@ public class DistributeFromController implements Initializable, DistributionComp
         /*add tooltip for the countries to display the whole value*/
         addInfoToolTip(this.teamCountries);
         this.teamName.setText(teamToDisplay.getTeamName());
+        if (this.teamToDisplay.getActiveConfiguration() != null) {
+            this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate() + "");
+            addInfoToolTip(this.dayRate);
+            dayCurrency.setText(Currency.USD.toString());
+            this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate() + "");
+            addInfoToolTip(this.hourlyRate);
+            this.hourlyCurrency.setText(Currency.USD.toString());
+        }
+
+
+        //dayRate, dayCurrency, hourlyRate, hourlyCurrency
     }
 
     public HBox getRoot() {
@@ -85,19 +104,34 @@ public class DistributeFromController implements Initializable, DistributionComp
         label.setTooltip(toolTip);
     }
 
-    private void addClickListener(){
-        this.teamComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
-                this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
+    private void addClickListener() {
+        this.teamComponent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (this.distributionType.equals(DistributionType.DISTRIBUTE_FROM)) {
+                model.setDistributeFromTeam(teamToDisplay);
+                controllerMediator.addTeamToDistributeFrom(teamToDisplay);
+                this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"), false);
                 this.controllerMediator.setTheSelectedComponentToDistributeFrom(this);
                 this.teamComponent.getStyleClass().add("teamComponentClicked");
-                model.setDistributeFromTeam(teamToDisplay);
-                this.controllerMediator.showTeamToDistributeFromBarChart();
+                return;
+            }
+
+            if (this.distributionType.equals(DistributionType.DISTRIBUTE_TO)) {
+                model.addDistributionPercentageTeam(teamToDisplay, "");
+                controllerMediator.addDistributeToTeam(teamToDisplay);
+                return;
+            }
+
+            //   this.controllerMediator.showTeamToDistributeFromBarChart();
         });
     }
 
     @Override
     public void setTheStyleClassToDefault() {
         this.teamComponent.getStyleClass().remove("teamComponentClicked");
+    }
+
+    public void setTeamToDisplay(Team team) {
+        this.teamToDisplay = team;
     }
 
 }

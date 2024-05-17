@@ -1,7 +1,9 @@
 package easv.ui.pages.distribution;
+
 import easv.be.OverheadComputationPair;
 import easv.be.Team;
 import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFromController;
+import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToListCell;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -28,7 +30,7 @@ public class DistributionController implements Initializable, DistributionContro
     @FXML
     private Parent distributionPage;
     @FXML
-    private VBox distributeFromTeams;
+    private VBox distributeFromTeams, selectedToDistribute, selectedToDistributeTo;
 
     @FXML
     private ListView<Team> distributeToTeams;
@@ -54,7 +56,7 @@ public class DistributionController implements Initializable, DistributionContro
         this.model = model;
         this.distributionMediator = new ControllerMediator();
         this.distributionMediator.registerDistributionController(this);
-        this.distributeToMediator= new DistributeToMediator();
+        this.distributeToMediator = new DistributeToMediator();
         this.distributeToMediator.registerMainController(this);
         try {
             distributionPage = loader.load();
@@ -78,18 +80,27 @@ public class DistributionController implements Initializable, DistributionContro
      * add the teams in the  system  to the distribute to teams container
      */
     private void populateDistributeToTeams() {
-        distributeToTeams.setCellFactory(listView -> new DistributeToListCell(model,distributeToMediator));
+        distributeToTeams.setCellFactory(listView -> new DistributeToListCell(model,distributionMediator,DistributionType.DISTRIBUTE_TO));
         distributeToTeams.setItems(model.getOperationalTeams());
+        List<Parent> distributeToTeamsComponents = new ArrayList<>();
+//        model.getOperationalTeams().forEach(e -> {
+//            DistributeFromController distributeToController = new DistributeFromController(model, e, distributionMediator, DistributionType.DISTRIBUTE_TO);
+//            distributeToTeamsComponents.add(distributeToController.getRoot());
+//        });
+//        distributeFromTeams.getChildren().addAll(distributeToTeamsComponents);
+
     }
 
     private void populateDistributeFromTeams() {
         List<Parent> distributeFromTeamsComponents = new ArrayList<>();
         model.getOperationalTeams().forEach(e -> {
-            DistributeFromController distributeToController = new DistributeFromController(model, e, distributionMediator);
+            DistributeFromController distributeToController = new DistributeFromController(model, e, distributionMediator, DistributionType.DISTRIBUTE_FROM);
             distributeFromTeamsComponents.add(distributeToController.getRoot());
         });
         distributeFromTeams.getChildren().addAll(distributeFromTeamsComponents);
     }
+
+
     @Override
     public void showTheTeamFromBarchart() {
         this.distributeFromTeamBarChart.setVisible(true);
@@ -101,8 +112,6 @@ public class DistributionController implements Initializable, DistributionContro
 // set the barchart with the initial overhead
         populateFromTeamBarChartWithInitialOverhead();
     }
-
-
 
 
     /**
@@ -127,25 +136,26 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
 
-    private void addSimulateButtonListener(){
-        this.simulateButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
-          Map<Team,String> validateInputs = model.validateInputs();
+    private void addSimulateButtonListener() {
+        this.simulateButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            Map<Team, String> validateInputs = model.validateInputs();
 
         });
     }
 
 
-
-    /** change circle stroke color based on the user input */
-    private void updateCircleColor(Double coverPercentage){
-        System.out.println(coverPercentage );
-        if(coverPercentage>100){
-           circleValue.pseudoClassStateChanged(OVER_LIMIT,true);
-           return;
+    /**
+     * change circle stroke color based on the user input
+     */
+    private void updateCircleColor(Double coverPercentage) {
+        System.out.println(coverPercentage);
+        if (coverPercentage > 100) {
+            circleValue.pseudoClassStateChanged(OVER_LIMIT, true);
+            return;
         }
 
-        if(coverPercentage<100){
-            circleValue.pseudoClassStateChanged(OVER_LIMIT,false);
+        if (coverPercentage < 100) {
+            circleValue.pseudoClassStateChanged(OVER_LIMIT, false);
         }
 
         // Calculate circumference
@@ -161,12 +171,12 @@ public class DistributionController implements Initializable, DistributionContro
     @Override
     public void updateTotalOverheadValue(Double overheadPercentage) {
         Double totalOverhead = 0.0;
-        if(!totalOverheadInserted.getText().isEmpty()) {
+        if (!totalOverheadInserted.getText().isEmpty()) {
             totalOverhead = Double.parseDouble(this.totalOverheadInserted.getText());
-            totalOverheadInserted.setText(totalOverhead+overheadPercentage+"");
-        }else{
+            totalOverheadInserted.setText(totalOverhead + overheadPercentage + "");
+        } else {
             totalOverhead = overheadPercentage;
-            totalOverheadInserted.setText(totalOverhead+"");
+            totalOverheadInserted.setText(totalOverhead + "");
         }
         updateCircleColor(totalOverhead);
     }
@@ -174,12 +184,32 @@ public class DistributionController implements Initializable, DistributionContro
     @Override
     public void removeOverheadPercentage(Double overheadValue) {
         Double totalOverhead = 0.0;
-        if(!totalOverheadInserted.getText().isEmpty()) {
+        if (!totalOverheadInserted.getText().isEmpty()) {
             totalOverhead = Double.parseDouble(this.totalOverheadInserted.getText());
-            totalOverheadInserted.setText(totalOverhead-overheadValue+"");
+            totalOverheadInserted.setText(totalOverhead - overheadValue + "");
         }
         updateCircleColor(totalOverhead);
     }
 
+
+    /**
+     * add team to distribute from
+     */
+    @Override
+    public void addTeamToDistributeFrom(Team team) {
+        if (!this.selectedToDistribute.getChildren().isEmpty()) {
+            this.selectedToDistribute.getChildren().clear();
+        }
+        this.selectedToDistribute.getChildren().add(new DistributeFromController(model, team, distributionMediator, DistributionType.DISPLAY).getRoot());
+    }
+
+    /**
+     * add team to distribute to into the distribute to list
+     */
+    @Override
+    public void addDistributeToTeam(Team teamToDisplay) {
+        DistributeToController selectedTeam = new DistributeToController(model, teamToDisplay, distributeToMediator);
+        this.selectedToDistributeTo.getChildren().add(selectedTeam.getRoot());
+    }
 
 }
