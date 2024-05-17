@@ -46,11 +46,11 @@ public class Team {
     /**
      * copy constructor
      */
-    public Team(Team team) {
+  /*  public Team(Team team) {
         this(team.getTeamName(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);
         this.countries = team.getCountries();
         this.regions= team.getRegions();
-    }
+    }*/
 
 
     /**

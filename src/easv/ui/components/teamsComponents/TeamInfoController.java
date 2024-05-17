@@ -63,10 +63,12 @@ public class TeamInfoController implements Initializable {
 
             teamInfoComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
             teamInfoComponent.getStyleClass().add("teamComponentClicked");
-
-            teamsPageController.setConfigurations(team);
-            teamsPageController.handleTeamInfoComponentClick(team);
+            teamsPageController.yearsComboBoxListener(team);
             teamsPageController.populateComboBoxWithYears(team);
+            teamsPageController.historyComboBoxListener(team);
+            teamsPageController.setTeamHistoryDatesInComboBox(team);
+
+
 
         });
     }
