@@ -1,9 +1,8 @@
 package easv.ui.pages.distribution;
 
 import easv.be.Team;
-import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributionComponentInterface;
+import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributionFromComponentInterface;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
-import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToInterface;
 import javafx.scene.Parent;
 
 import java.util.ArrayList;
@@ -12,10 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 public class ControllerMediator {
+
     private DistributionControllerInterface distributionController;
 
-    // distribute from component
-    private DistributionComponentInterface distributionTeamController;
+
+    // distribute  from  team component, that was selected by the user
+    private DistributionFromComponentInterface distributionFromTeamController;
+
+    private DistributionFromComponentInterface selectedTeamToDistributeFromController;
 
 
     private Map<Integer, DistributeToController> distributeToControllers;
@@ -28,19 +31,22 @@ public class ControllerMediator {
         this.distributionController = distributionController;
     }
 
-    public void setTheSelectedComponentToDistributeFrom(DistributionComponentInterface selectedTeamComponent) {
-        if (this.distributionTeamController != null) {
-            this.distributionTeamController.setTheStyleClassToDefault();
+    public void setTheSelectedComponentToDistributeFrom(DistributionFromComponentInterface selectedTeamComponent) {
+        if (this.distributionFromTeamController != null) {
+            this.distributionFromTeamController.setTheStyleClassToDefault();
         }
-        this.distributionTeamController = selectedTeamComponent;
+        this.distributionFromTeamController = selectedTeamComponent;
     }
 
-    // public void showTeamToDistributeFromBarChart(){
-    //     distributionController.showTheTeamFromBarchart();
-    //  }
 
     public void addTeamToDistributeFrom(Team team) {
         distributionController.addTeamToDistributeFrom(team);
+    }
+
+
+    public void addSelectedTeamToDistributeFromController(DistributionFromComponentInterface selectedTeamToDistributeFromController){
+        this.selectedTeamToDistributeFromController=selectedTeamToDistributeFromController;
+
     }
 
     /**
@@ -96,6 +102,16 @@ public class ControllerMediator {
         }
     }
 
+    /**
+     * update the distribute from component with the distribution computation
+     */
+
+    public void updateDistributeFromComponent(double dayOverhead, double hourOverhead) {
+        this.selectedTeamToDistributeFromController.setDayRate(dayOverhead + "");
+        this.selectedTeamToDistributeFromController.setHourlyRate(hourOverhead + "");
+    }
+
+
     //update the value of the total overhead, based on the inserted percerntage values;
     public void updateTotalOverheadValue() {
         distributionController.updateTotalOverheadValue();
@@ -116,6 +132,7 @@ public class ControllerMediator {
 
         if (removedFromView) {
             this.distributeToControllers.remove(id);
+
             return true;
         } else {
             return false;

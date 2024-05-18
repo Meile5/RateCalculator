@@ -5,6 +5,8 @@ import easv.Utility.DisplayEmployees;
 import easv.be.*;
 import easv.bll.EmployeesLogic.EmployeeManager;
 import easv.bll.EmployeesLogic.IEmployeeManager;
+import easv.bll.RegionLogic.IRegionManager;
+import easv.bll.RegionLogic.RegionManager;
 import easv.bll.TeamLogic.ITeamLogic;
 import easv.bll.TeamLogic.TeamLogic;
 import easv.bll.countryLogic.CountryLogic;
@@ -32,6 +34,10 @@ public class Model implements IModel {
 
     // the bussines logic object responsible of team logic
     private ITeamLogic teamManager;
+    /**
+     * the logic layer responsible for region management
+     */
+    private IRegionManager regionManager;
     /**
      * the logic layer responsible  of countries management
      */
@@ -91,7 +97,7 @@ public class Model implements IModel {
     /**
      * holds the temporary values for the teams that user inserted in the distribution page
      */
-    private final Map<Integer, String> insertedDistributionPercentageFromTeams;
+    private final Map<Team, String> insertedDistributionPercentageFromTeams;
 
     /**
      * the selected team that user chose to distribute from and the associated value
@@ -106,6 +112,7 @@ public class Model implements IModel {
         this.countries = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
         this.countryLogic = new CountryLogic();
+        this.regionManager = new RegionManager();
         this.teamManager = new TeamLogic();
         this.validMapViewCountryNameValues = new ArrayList<>();
         this.teams = FXCollections.observableHashMap();
@@ -314,9 +321,9 @@ public class Model implements IModel {
      * retrieve the countries as an observable list
      */
     public ObservableList<Country> getCountiesValues() {
-        ObservableList<Country> coutriesList = FXCollections.observableArrayList();
-        coutriesList.setAll(countries.values());
-        return coutriesList;
+        ObservableList<Country> countriesList = FXCollections.observableArrayList();
+        countriesList.setAll(countries.values());
+        return countriesList;
     }
 
 
@@ -520,22 +527,22 @@ public class Model implements IModel {
     /**
      * add the team and the percentage that user chose to distribute
      *
-     * @param teamId               the team id that will receive overhead
+     * @param team               the team that will receive overhead
      * @param overheadPercentage the overhead percentage received by the team
      */
-    public void addDistributionPercentageTeam(Integer teamId, String overheadPercentage) {
-        this.insertedDistributionPercentageFromTeams.put(teamId, overheadPercentage);
+    public void addDistributionPercentageTeam(Team team , String overheadPercentage) {
+        this.insertedDistributionPercentageFromTeams.put(team, overheadPercentage);
     }
 
-    public Map<Integer, String> getInsertedDistributionPercentageFromTeams() {
+    public Map<Team, String> getInsertedDistributionPercentageFromTeams() {
         return insertedDistributionPercentageFromTeams;
     }
 
 
     /**add the  overhead value to distribute,inserted by the user*/
     @Override
-    public void setDistributionPercentageTeam(Integer selectedTeamId,String newValue) {
-         this.insertedDistributionPercentageFromTeams.put(selectedTeamId,newValue);
+    public void setDistributionPercentageTeam(Team selectedTeam,String newValue) {
+         this.insertedDistributionPercentageFromTeams.put(selectedTeam,newValue);
     }
 
     @Override
@@ -543,11 +550,29 @@ public class Model implements IModel {
         return teamManager.calculateTotalOverheadInsertedForValidInputs(insertedDistributionPercentageFromTeams);
     }
 
+    public Team getSelectedTeamToDistributeFrom() {
+        return selectedTeamToDistributeFrom;
+    }
+
+    @Override
+    public void addNewRegion(Region region, List<Country> countries) throws RateException {
+        int regionID = regionManager.addRegion(region, countries);
+        if (regionID > 0) {
+            region.setId(regionID);
+            regionsWithCountries.put(regionID, region);
+        }
+    }
+
+    @Override
+    public void updateRegion(Region region, List<Country> countries) throws RateException {
+        regionManager.updateRegion(region, countries);
+    }
+
     /**
      * remove the team and the inserted overhead percentage from the map
      */
-    public void removeDistributionPercentageTeam(Integer teamId) {
-        this.insertedDistributionPercentageFromTeams.remove(teamId);
+    public void removeDistributionPercentageTeam(Team team) {
+        this.insertedDistributionPercentageFromTeams.remove(team);
     }
 
 
@@ -567,7 +592,7 @@ public class Model implements IModel {
 
     @Override
     public DistributionValidation validateInputs() {
-        return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams);
+        return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams ,selectedTeamToDistributeFrom);
 
     }
 
@@ -581,7 +606,13 @@ public class Model implements IModel {
     /**perform simulation computation*/
     @Override
     public Map<OverheadHistory, List<Team>> performSimulation() {
-        return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams,teamsWithEmployees);
+        return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams);
+    }
+
+
+    public boolean isTeamSelectedToDistribute(Integer teamId){
+       Team team =  insertedDistributionPercentageFromTeams.keySet().stream().filter(e->e.getId()==teamId).findFirst().orElse(null);
+       return team!=null;
     }
     /**return all employees for team manage*/
     public List<Employee> getAllEmployees() {

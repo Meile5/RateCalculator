@@ -26,7 +26,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class DistributeFromController implements Initializable, DistributionComponentInterface {
+public class DistributeFromController implements Initializable, DistributionFromComponentInterface {
     @FXML
     private final HBox teamComponent;
     @FXML
@@ -112,12 +112,15 @@ public class DistributeFromController implements Initializable, DistributionComp
         this.teamComponent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (this.distributionType.equals(DistributionType.DISTRIBUTE_FROM)) {
                 if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty()){
-                    ErrorWindowController errorWindowController = new ErrorWindowController(modalLayout, ErrorCode.NO_EMPLOYEES.getValue());
-                    modalLayout.getChildren().add(errorWindowController.getRoot());
-                    WindowsManagement.showStackPane(modalLayout);
+                    showInfoError(ErrorCode.NO_EMPLOYEES.getValue());
                     return;
                 }
-                model.setDistributeFromTeam(teamToDisplay);
+                if(model.isTeamSelectedToDistribute(teamToDisplay.getId())){
+                    showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
+                    return;
+                }
+                //save a copy of the team into the model, in order to perform simulations without affecting the teams original values
+                model.setDistributeFromTeam( new Team(teamToDisplay));
                 controllerMediator.addTeamToDistributeFrom(teamToDisplay);
                 this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"), false);
                 this.controllerMediator.setTheSelectedComponentToDistributeFrom(this);
@@ -126,16 +129,22 @@ public class DistributeFromController implements Initializable, DistributionComp
             }
 
             if (this.distributionType.equals(DistributionType.DISTRIBUTE_TO)) {
-                if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty()){
-                    ErrorWindowController errorWindowController = new ErrorWindowController(modalLayout, ErrorCode.NO_EMPLOYEES.getValue());
-                    modalLayout.getChildren().add(errorWindowController.getRoot());
-                    WindowsManagement.showStackPane(modalLayout);
+                if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty() ){
+                    showInfoError(ErrorCode.NO_EMPLOYEES.getValue());
                     return;
                 }
+
+                if(model.getSelectedTeamToDistributeFrom()!=null){
+                    if(model.getSelectedTeamToDistributeFrom().getId()==teamToDisplay.getId()){
+                        showInfoError(ErrorCode.DISTRIBUTE_FROM.getValue());
+                        return;
+                    }
+                }
+
                 /*when the team to distribute  is selected from the list will be added
                   in the model insertedDistributionPercentageFromTeams without overhead percentage */
-                if(!model.getInsertedDistributionPercentageFromTeams().containsKey(teamToDisplay.getId())){
-                    model.addDistributionPercentageTeam(teamToDisplay.getId(), EMPTY_VALUE);
+                if(!model.isTeamSelectedToDistribute(teamToDisplay.getId())){
+                    model.addDistributionPercentageTeam(new Team(teamToDisplay), EMPTY_VALUE);
                     controllerMediator.addDistributeToTeam(new Team(teamToDisplay));
                 }
             }
@@ -151,5 +160,24 @@ public class DistributeFromController implements Initializable, DistributionComp
     public void setTeamToDisplay(Team team) {
         this.teamToDisplay = team;
     }
+
+
+    /**display an information  message for the user when the input is invalid*/
+    private void showInfoError(String errorValue){
+        ErrorWindowController errorWindowController = new ErrorWindowController(modalLayout,errorValue);
+        modalLayout.getChildren().add(errorWindowController.getRoot());
+        WindowsManagement.showStackPane(modalLayout);
+    }
+
+    @Override
+    public void setDayRate(String value) {
+            this.dayRate.setText(value);
+            this.dayRate.getTooltip().setText(value);
+    }
+@Override
+    public void setHourlyRate(String value) {
+        this.dayRate.setText(value);
+        this.dayRate.getTooltip().setText(value);
+}
 
 }

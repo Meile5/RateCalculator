@@ -10,18 +10,18 @@ import java.util.Map;
  * representing specific teams input with invalid  values.*/
 
 public class DistributionValidation {
-     private Map<ErrorCode, List<Integer>> errorValues;
+     private Map<ErrorCode, List<Team>> errorValues;
 
 
     public DistributionValidation() {
         this.errorValues =  new HashMap<>();
     }
 
-    public Map<ErrorCode, List<Integer>> getErrorValues() {
+    public Map<ErrorCode, List<Team>> getErrorValues() {
         return errorValues;
     }
 
-    public void setErrorValues(Map<ErrorCode, List<Integer>> errorValues) {
+    public void setErrorValues(Map<ErrorCode, List<Team>> errorValues) {
         this.errorValues = errorValues;
     }
 

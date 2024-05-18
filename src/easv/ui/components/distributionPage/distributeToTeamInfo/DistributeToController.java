@@ -129,19 +129,19 @@ public class DistributeToController implements Initializable {
                     if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
                         showInfoError(ErrorCode.INVALID_OVERHEADVALUE.getValue() + "\n" + teamToDisplay.getTeamName() + "\n" + ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
                         teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, true);
-                        model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                        model.setDistributionPercentageTeam(teamToDisplay, newValue);
                         distributionMediator.updateTotalOverheadValue();
                     } else {
                         // Convert new value to a double
                         Double overheadInserted = validatePercentageValue(newValue);
                         if (!(overheadInserted >= 0 && overheadInserted <= 100)) {
                             teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, true);
-                            model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                            model.setDistributionPercentageTeam(teamToDisplay, newValue);
                             distributionMediator.updateTotalOverheadValue();
                             showInfoError(ErrorCode.INVALID_OVERHEADVALUE.getValue() + "\n" + teamToDisplay.getTeamName() + "\n" + ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
 
                         }else{
-                            model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                            model.setDistributionPercentageTeam(teamToDisplay, newValue);
                             distributionMediator.updateTotalOverheadValue();
                             teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, false);
                         }
@@ -150,7 +150,7 @@ public class DistributeToController implements Initializable {
                 } else {
                     // Handle the case where the input is empty
                     teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, false);
-                    model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                    model.setDistributionPercentageTeam(teamToDisplay, newValue);
                     distributionMediator.updateTotalOverheadValue();
                 }
                     });
@@ -195,10 +195,12 @@ public class DistributeToController implements Initializable {
 
     public void setDayRate(String value) {
         this.dayRate.setText(value);
+        this.dayRate.getTooltip().setText(value);
     }
 
     public void setHourlyRate(String value) {
         this.hourlyRate.setText(value);
+        this.hourlyRate.getTooltip().setText(value);
     }
 
     /**add remove team from distribution simulation table listener */
@@ -206,10 +208,9 @@ public class DistributeToController implements Initializable {
         this.removeTeam.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
                  boolean teamRemoved = distributionMediator.removeTeamFromDistributionView(teamToDisplay.getId());
                  if(teamRemoved){
-                     model.removeDistributionPercentageTeam(teamToDisplay.getId());
-                     System.out.println(model.getInsertedDistributionPercentageFromTeams() + " " + "after deletion");
+                     model.removeDistributionPercentageTeam(teamToDisplay);
+                    distributionMediator.updateTotalOverheadValue();
                  }
-            System.out.println(model.getInsertedDistributionPercentageFromTeams() + " aloo");
         });}
 
 
@@ -219,6 +220,10 @@ public class DistributeToController implements Initializable {
         modalLayout.getChildren().add(errorWindowController.getRoot());
         WindowsManagement.showStackPane(modalLayout);
     }
+
+
+
+
 
 
 
