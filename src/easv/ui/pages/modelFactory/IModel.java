@@ -160,4 +160,7 @@ public interface IModel {
 
     Map<Team, String> getInsertedDistributionPercentageFromTeams();
 
+    void addNewRegion(Region region, List<Country> countries) throws RateException;
+
+    void updateRegion(Region region, List<Country> countries) throws RateException;
 }
