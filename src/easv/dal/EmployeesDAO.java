@@ -97,8 +97,6 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
                 employee.setRegions(regions);
             }
-
-
             // Retrieve configurations for employees
             for (Employee employee : employees.values()) {
                 List<Configuration> configurations = retrieveConfigurationsForEmployee(employee, conn);
@@ -543,6 +541,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                         if (employee.getUtilPerTeams() == null) {
                             employee.setUtilPerTeams(new HashMap<>());
                         }
+
                         employee.getUtilPerTeams().put(teamId, utilization);
                     }
                     for (Team team : retrievedTeams.values()) {

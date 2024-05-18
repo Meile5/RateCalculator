@@ -33,11 +33,16 @@
                     <children>
                         <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Name" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
                         <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Utilization" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Reomove" textOverrun="CLIP" />
                     </children>
                 </HBox>
             <MFXScrollPane prefHeight="322.0" prefWidth="328.0" styleClass="scrollPane">
                <content>
-                  <VBox fx:id="teamMembersContainer" prefHeight="0.0" prefWidth="0.0" />
+                  <VBox fx:id="teamMembersContainer" prefHeight="0.0" prefWidth="0.0" spacing="15.0">
+                     <padding>
+                        <Insets left="14.0" />
+                     </padding>
+                  </VBox>
                </content></MFXScrollPane>
             </children>
             <padding>
@@ -46,14 +51,20 @@
         </VBox>
         <VBox fx:id="container2" prefHeight="200.0" prefWidth="100.0" styleClass="containers" GridPane.columnIndex="3" GridPane.rowIndex="1">
             <children>
-                <HBox minWidth="-Infinity" prefHeight="50.0" prefWidth="200.0" spacing="5.0">
-                    <padding>
-                        <Insets left="5.0" right="5.0" />
-                    </padding>
-                </HBox>
-            <MFXScrollPane prefHeight="271.0" prefWidth="338.0" styleClass="scrollPane">
+            <HBox maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="36.0" prefWidth="328.0">
+               <children>
+                  <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Name" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Utilization" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Reomove" textOverrun="CLIP" />
+               </children>
+            </HBox>
+            <MFXScrollPane prefHeight="322.0" prefWidth="338.0" styleClass="scrollPane">
                <content>
-                  <VBox prefHeight="0.0" prefWidth="0.0" />
+                  <VBox fx:id="allEmployeesContainer" prefHeight="0.0" prefWidth="0.0" spacing="15.0">
+                     <padding>
+                        <Insets left="14.0" />
+                     </padding>
+                  </VBox>
                </content></MFXScrollPane>
             </children>
             <GridPane.margin>

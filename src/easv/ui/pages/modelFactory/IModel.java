@@ -182,4 +182,5 @@ public interface IModel {
 
     /**save the  distribution operation*/
     Boolean saveDistribution();
+    List<Employee> getAllEmployees();
 }
