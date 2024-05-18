@@ -541,8 +541,8 @@ public class Model implements IModel {
     /**
      * remove the team and the inserted overhead percentage from the map
      */
-    public void removeDistributionPercentageTeam(Team team) {
-        this.insertedDistributionPercentageFromTeams.remove(team.getId());
+    public void removeDistributionPercentageTeam(Integer teamId) {
+        this.insertedDistributionPercentageFromTeams.remove(teamId);
     }
 
 

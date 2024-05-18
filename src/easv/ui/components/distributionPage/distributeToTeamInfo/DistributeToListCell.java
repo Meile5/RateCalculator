@@ -6,6 +6,7 @@ import easv.ui.pages.distribution.ControllerMediator;
 import easv.ui.pages.distribution.DistributionType;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.scene.control.ListCell;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 
@@ -14,12 +15,14 @@ public class DistributeToListCell extends ListCell<Team> {
     private DistributeFromController controller;
     private ControllerMediator distributeToMediator;
     private DistributionType distributionType;
+    private StackPane  modalLayout;
 
 
-    public DistributeToListCell(IModel model, ControllerMediator distributeToMediator,DistributionType distributionType) {
+    public DistributeToListCell(IModel model, ControllerMediator distributeToMediator,DistributionType distributionType,StackPane modalLayout) {
         this.model = model;
         this.distributeToMediator= distributeToMediator;
         this.distributionType = distributionType;
+        this.modalLayout = modalLayout;
     }
 
     @Override
@@ -34,7 +37,7 @@ public class DistributeToListCell extends ListCell<Team> {
                 setTextFill(Color.BLACK);
             }
             if (controller == null) {
-                controller = new DistributeFromController(model, team,distributeToMediator, distributionType);
+                controller = new DistributeFromController(model, team,distributeToMediator, distributionType,modalLayout);
             } else {
                 controller.setTeamToDisplay(team);
             }

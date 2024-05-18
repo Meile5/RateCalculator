@@ -1,9 +1,12 @@
 package easv.ui.components.distributionPage.distributeFromTeamInfo;
 
+import easv.Utility.WindowsManagement;
 import easv.be.Country;
 import easv.be.Currency;
 import easv.be.Region;
 import easv.be.Team;
+import easv.exception.ErrorCode;
+import easv.ui.components.common.errorWindow.ErrorWindowController;
 import easv.ui.pages.distribution.ControllerMediator;
 import easv.ui.pages.distribution.DistributionType;
 import easv.ui.pages.modelFactory.IModel;
@@ -16,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,13 +42,15 @@ public class DistributeFromController implements Initializable, DistributionComp
     private ControllerMediator controllerMediator;
     private DistributionType distributionType;
     private static final String EMPTY_VALUE = "" ;
-    public DistributeFromController(IModel model, Team teamToDisplay, ControllerMediator distributionControllerMediator, DistributionType distributionType) {
+    private StackPane  modalLayout;
+    public DistributeFromController(IModel model, Team teamToDisplay, ControllerMediator distributionControllerMediator, DistributionType distributionType, StackPane modalLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DistributeFromTeamInfo.fxml"));
         loader.setController(this);
         this.model = model;
         this.teamToDisplay = new Team(teamToDisplay);
         this.controllerMediator = distributionControllerMediator;
         this.distributionType = distributionType;
+        this.modalLayout = modalLayout;
         try {
             teamComponent = loader.load();
         } catch (IOException e) {
@@ -105,6 +111,12 @@ public class DistributeFromController implements Initializable, DistributionComp
     private void addClickListener() {
         this.teamComponent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (this.distributionType.equals(DistributionType.DISTRIBUTE_FROM)) {
+                if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty()){
+                    ErrorWindowController errorWindowController = new ErrorWindowController(modalLayout, ErrorCode.NO_EMPLOYEES.getValue());
+                    modalLayout.getChildren().add(errorWindowController.getRoot());
+                    WindowsManagement.showStackPane(modalLayout);
+                    return;
+                }
                 model.setDistributeFromTeam(teamToDisplay);
                 controllerMediator.addTeamToDistributeFrom(teamToDisplay);
                 this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"), false);
@@ -114,6 +126,12 @@ public class DistributeFromController implements Initializable, DistributionComp
             }
 
             if (this.distributionType.equals(DistributionType.DISTRIBUTE_TO)) {
+                if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty()){
+                    ErrorWindowController errorWindowController = new ErrorWindowController(modalLayout, ErrorCode.NO_EMPLOYEES.getValue());
+                    modalLayout.getChildren().add(errorWindowController.getRoot());
+                    WindowsManagement.showStackPane(modalLayout);
+                    return;
+                }
                 /*when the team to distribute  is selected from the list will be added
                   in the model insertedDistributionPercentageFromTeams without overhead percentage */
                 if(!model.getInsertedDistributionPercentageFromTeams().containsKey(teamToDisplay.getId())){

@@ -29,7 +29,9 @@ public class TeamConfiguration {
             this.markupMultiplier = teamConfiguration.getMarkupMultiplier();
             this.savedDate = teamConfiguration.savedDate;
             this.teamMembers =  new ArrayList<>();
-            teamMembers.addAll(teamConfiguration.getTeamMembers());
+            if(teamConfiguration.getTeamMembers()!=null){
+                teamMembers.addAll(teamConfiguration.getTeamMembers());
+            }
             this.active = teamConfiguration.isActive();
         }else{
             this.teamDayRate=BigDecimal.ZERO;

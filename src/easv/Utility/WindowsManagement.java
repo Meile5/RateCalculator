@@ -3,8 +3,6 @@ import javafx.scene.layout.StackPane;
 
 public class WindowsManagement {
 
-
-
     public static void closeStackPane(StackPane stackPane){
         stackPane.getChildren().clear();
         stackPane.setVisible(false);

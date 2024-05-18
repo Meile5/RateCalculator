@@ -137,7 +137,7 @@ public interface IModel {
     /**
      * remove the team and the inserted overhead percentage from the map
      */
-    void removeDistributionPercentageTeam(Team team);
+    void removeDistributionPercentageTeam(Integer teamId);
 
 
     /**
