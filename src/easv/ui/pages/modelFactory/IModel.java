@@ -172,4 +172,7 @@ public interface IModel {
     String  getTeamName(int teamId);
 
     Map<OverheadHistory, List<Team>> performSimulation();
+    void addNewRegion(Region region, List<Country> countries) throws RateException;
+
+    void updateRegion(Region region, List<Country> countries) throws RateException;
 }

@@ -11,6 +11,7 @@ import easv.ui.pages.geographyManagementPage.regionComponents.DeleteRegionContro
 import easv.ui.pages.geographyManagementPage.regionComponents.RegionComponent;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
+import javafx.animation.PauseTransition;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -19,8 +20,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,6 +34,8 @@ public class GeographyManagementController implements Initializable {
     private Parent createPage;
     @FXML
     private VBox regionsVBox, countriesVBox;
+    @FXML
+    private Label operationStatusLB;
     @FXML
     private MFXProgressSpinner progressBar;
 
@@ -107,7 +112,7 @@ public class GeographyManagementController implements Initializable {
         regionsVBox.getChildren().clear();
         regions.forEach(r -> {
             DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, r);
-            RegionComponent regionComponent = new RegionComponent(model, pane, r, deleteRegionController);
+            RegionComponent regionComponent = new RegionComponent(model, pane, r, deleteRegionController, this);
             regionsVBox.getChildren().add(regionComponent.getRoot());
         });
     }
@@ -139,5 +144,12 @@ public class GeographyManagementController implements Initializable {
 
     public Parent getCreatePage() {
         return createPage;
+    }
+
+    public void showOperationStatus(String value, Duration duration) {
+        operationStatusLB.setText(value);
+        PauseTransition delay = new PauseTransition(duration);
+        delay.setOnFinished(event -> operationStatusLB.setText(""));
+        delay.play();
     }
 }

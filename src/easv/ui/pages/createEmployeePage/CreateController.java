@@ -62,8 +62,8 @@ public class CreateController implements Initializable {
     private ObservableList<Country> countries;
     private ObservableList<Team> teams;
     private ObservableList<Region> regions;
-    private List<Team> teamsList = new ArrayList<>();
-    private List<Integer> teamsUtilizationList = new ArrayList<>();
+    private List<Team> teamsList;
+    private List<Integer> teamsUtilizationList;
     private IModel model;
     private Service<Void> saveEmployee;
     private StackPane firstLayout;
@@ -84,6 +84,9 @@ public class CreateController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        teamsList = new ArrayList<>();
+        teamsUtilizationList = new ArrayList<>();
+
         populateComboBoxes();
         addListenersToInputs();
         addTeamButtonListener();
