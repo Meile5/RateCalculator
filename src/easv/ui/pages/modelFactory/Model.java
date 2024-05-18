@@ -64,7 +64,7 @@ public class Model implements IModel {
     private final ObservableMap<Integer, Team> teams;
 
     /**
-     * holds all the data related to the teams, like history, employees, countries, regions and active configuration
+     * holds all the data related to the teams, like history, employees, countries,util, regions and active configuration
      */
     private final ObservableMap<Integer, Team> teamsWithEmployees;
 
@@ -78,7 +78,10 @@ public class Model implements IModel {
      * holds all the date related to the  operational regions
      */
     private final ObservableMap<Integer, Region> regionsWithCountries;
-
+    /**
+     * holds all employees with rates and util % for each team
+     */
+    private ObservableList<Employee> employeesForTeamsPage;
     private ObservableList<Employee> displayedEmployees;
     private ObservableList<Employee> sortedEmployeesByName;
     private ObservableList<Employee> filteredEmployeesListByRegion;
@@ -108,11 +111,13 @@ public class Model implements IModel {
         this.teams = FXCollections.observableHashMap();
         this.countryTeams = new ArrayList<>();
         this.displayedEmployees = FXCollections.observableArrayList();
+        this.employeesForTeamsPage = FXCollections.observableArrayList();
         this.sortedEmployeesByName = FXCollections.observableArrayList();
         teamsWithEmployees = FXCollections.observableHashMap();
         countriesWithTeams = FXCollections.observableHashMap();
         regionsWithCountries = FXCollections.observableHashMap();
         insertedDistributionPercentageFromTeams = new HashMap<>();
+
         populateCountries();
         populateTeams();
 
@@ -577,6 +582,17 @@ public class Model implements IModel {
     @Override
     public Map<OverheadHistory, List<Team>> performSimulation() {
         return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams,teamsWithEmployees);
+    }
+    /**return all employees for team manage*/
+    public List<Employee> getAllEmployees() {
+        for (Map.Entry<Integer, Team> entry : teamsWithEmployees.entrySet()) {
+            Team team = entry.getValue();
+            if (team != null && team.getTeamMembers() != null) {
+                employeesForTeamsPage.addAll(team.getTeamMembers());
+            }
+        }
+
+        return employeesForTeamsPage;
     }
 
 

@@ -172,4 +172,5 @@ public interface IModel {
     String  getTeamName(int teamId);
 
     Map<OverheadHistory, List<Team>> performSimulation();
+    List<Employee> getAllEmployees();
 }
