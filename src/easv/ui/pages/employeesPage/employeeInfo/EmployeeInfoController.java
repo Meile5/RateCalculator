@@ -154,7 +154,7 @@ public class EmployeeInfoController implements Initializable {
 
 
     /*public void displayDelete(){
-        DeleteEmployeeController deleteEmployeeController = new DeleteEmployeeController( firstLayout,  deleteContainer);
+        DeleteRegionController deleteEmployeeController = new DeleteRegionController( firstLayout,  deleteContainer);
         deleteContainer.getChildren().clear();
         deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
 

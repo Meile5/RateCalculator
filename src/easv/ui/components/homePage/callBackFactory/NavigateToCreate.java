@@ -34,7 +34,6 @@ public class NavigateToCreate implements CallBack, Subject {
 
 
     private void initializePage() {
-        System.out.println("HERE?: " + model);
         CreateController createController = new CreateController(model,firstLayout);
         root = createController.getCreatePage();
     }
