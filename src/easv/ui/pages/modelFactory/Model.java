@@ -68,6 +68,8 @@ public class Model implements IModel {
      */
     private final ObservableMap<Integer, Team> teamsWithEmployees;
 
+
+
     /**
      * holds all the data related to the operational  countries
      */
@@ -86,7 +88,7 @@ public class Model implements IModel {
     /**
      * holds the temporary values for the teams that user inserted in the distribution page
      */
-    private final Map<Team, String> insertedDistributionPercentageFromTeams;
+    private final Map<Integer, String> insertedDistributionPercentageFromTeams;
 
     /**
      * the selected team that user chose to distribute from and the associated value
@@ -513,22 +515,34 @@ public class Model implements IModel {
     /**
      * add the team and the percentage that user chose to distribute
      *
-     * @param team               the team that will receive overhead
+     * @param teamId               the team id that will receive overhead
      * @param overheadPercentage the overhead percentage received by the team
      */
-    public void addDistributionPercentageTeam(Team team, String overheadPercentage) {
-        this.insertedDistributionPercentageFromTeams.put(team, overheadPercentage);
+    public void addDistributionPercentageTeam(Integer teamId, String overheadPercentage) {
+        this.insertedDistributionPercentageFromTeams.put(teamId, overheadPercentage);
     }
 
-    public Map<Team, String> getInsertedDistributionPercentageFromTeams() {
+    public Map<Integer, String> getInsertedDistributionPercentageFromTeams() {
         return insertedDistributionPercentageFromTeams;
+    }
+
+
+    /**add the  overhead value to distribute,inserted by the user*/
+    @Override
+    public void setDistributionPercentageTeam(Integer selectedTeamId,String newValue) {
+         this.insertedDistributionPercentageFromTeams.put(selectedTeamId,newValue);
+    }
+
+    @Override
+    public double calculateTeTotalOverheadInserted() {
+        return teamManager.calculateTotalOverheadInsertedForValidInputs(insertedDistributionPercentageFromTeams);
     }
 
     /**
      * remove the team and the inserted overhead percentage from the map
      */
-    public void removeDistributionPercentageTeam(Team team) {
-        this.insertedDistributionPercentageFromTeams.remove(team.getId());
+    public void removeDistributionPercentageTeam(Integer teamId) {
+        this.insertedDistributionPercentageFromTeams.remove(teamId);
     }
 
 
@@ -547,8 +561,22 @@ public class Model implements IModel {
     }
 
     @Override
-    public Map <Team,String> validateInputs() {
+    public DistributionValidation validateInputs() {
         return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams);
+
+    }
+
+    /**return the name of the team , by team id*/
+    public String  getTeamName(int teamId) {
+        return  this.teamsWithEmployees.get(teamId).getTeamName();
+    }
+
+
+
+    /**perform simulation computation*/
+    @Override
+    public Map<OverheadHistory, List<Team>> performSimulation() {
+        return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams,teamsWithEmployees);
     }
 
 

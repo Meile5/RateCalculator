@@ -398,15 +398,14 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
     private void addEmployeeHistory(Team team, int teamConfigurationID, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, Connection conn) {
-        String sql = "INSERT INTO TeamEmployeesHistory (EmployeeName, EmployeeDailyRate, EmployeeHourlyRate, TeamConfigurationId) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO TeamEmployeesHistory (EmployeeName, EmployeeDailyRate, EmployeeHourlyRate, TeamConfigurationId, Currency) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             for (Employee employee : team.getEmployees()) {
                 psmt.setString(1, employee.getName());
                 psmt.setBigDecimal(2, employeeDayRate.get(employee.getId()));
                 psmt.setBigDecimal(3, employeeHourlyRate.get(employee.getId()));
                 psmt.setInt(4, teamConfigurationID);
-                System.out.println("Currency: " + employee.getCurrency().name());
-                //psmt.setString(5, employee.getCurrency().name());
+                psmt.setString(5, employee.getCurrency().name());
                 psmt.executeUpdate();
             }
             psmt.executeBatch();

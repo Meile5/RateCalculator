@@ -57,12 +57,12 @@ public class SideNavigationController implements Initializable {
         HBox create = NavigationFactory.getNavigationComponent(Navigation.CREATE, CallBackFactory.createCallBack(Navigation.CREATE));
         HBox employees = NavigationFactory.getNavigationComponent(Navigation.EMPLOYEES, CallBackFactory.createCallBack(Navigation.EMPLOYEES));
         HBox modeling = NavigationFactory.getNavigationComponent(Navigation.MODELING, CallBackFactory.createCallBack(Navigation.MODELING));
-        HBox profile = NavigationFactory.getNavigationComponent(Navigation.PROFILE, CallBackFactory.createCallBack(Navigation.PROFILE));
+        HBox geography = NavigationFactory.getNavigationComponent(Navigation.GEOGRAPHY, CallBackFactory.createCallBack(Navigation.GEOGRAPHY));
         vBox.getChildren().add(1, distribution);
         vBox.getChildren().add(2, create);
         vBox.getChildren().add(3, employees);
         vBox.getChildren().add(4, modeling);
-        vBox.getChildren().add(8, profile);
+        vBox.getChildren().add(8, geography);
         addOnEnterListener();
         addOnExitListener();
     }

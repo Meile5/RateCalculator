@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TeamConfiguration {
@@ -16,6 +17,27 @@ public class TeamConfiguration {
 
     private boolean active;
 
+
+    //TeamConfiguration copy constructor
+
+    public TeamConfiguration (TeamConfiguration teamConfiguration){
+        if(teamConfiguration!=null){
+            this.id= teamConfiguration.getId();
+            this.teamDayRate = teamConfiguration.getTeamDayRate();
+            this.teamHourlyRate = teamConfiguration.getTeamHourlyRate();
+            this.grossMargin = teamConfiguration.getGrossMargin();
+            this.markupMultiplier = teamConfiguration.getMarkupMultiplier();
+            this.savedDate = teamConfiguration.savedDate;
+            this.teamMembers =  new ArrayList<>();
+            if(teamConfiguration.getTeamMembers()!=null){
+                teamMembers.addAll(teamConfiguration.getTeamMembers());
+            }
+            this.active = teamConfiguration.isActive();
+        }else{
+            this.teamDayRate=BigDecimal.ZERO;
+            this.teamHourlyRate=BigDecimal.ZERO;
+        }
+    }
 
 
     public TeamConfiguration(BigDecimal teamDayRate, BigDecimal teamHourlyRate, double grossMargin, double markupMultiplier, LocalDateTime savedDate, List<TeamConfigurationEmployee> teamMembers, boolean active) {

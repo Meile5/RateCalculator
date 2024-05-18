@@ -5,7 +5,6 @@ import easv.ui.components.homePage.openPageObserver.Observable;
 import easv.ui.components.homePage.openPageObserver.Observer;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.scene.layout.StackPane;
-
 import java.util.HashMap;
 
 public class CallBackFactory {
@@ -32,7 +31,7 @@ public class CallBackFactory {
         CallBack callBack = null;
         switch (pageTo) {
             case DISTRIBUTION -> {
-                NavigateToDistribution navigateToDistribution = new NavigateToDistribution(pageManager,model);
+                NavigateToDistribution navigateToDistribution = new NavigateToDistribution(pageManager,model,modalLayout);
                 callBack = navigateToDistribution;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToDistribution);
@@ -55,11 +54,11 @@ public class CallBackFactory {
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToModeling);
             }
-            case PROFILE -> {
-                NavigateToProfile navigateToProfile = new NavigateToProfile(pageManager,model);
-                callBack = navigateToProfile;
+            case GEOGRAPHY -> {
+                NavigateToGeography navigateToGeography = new NavigateToGeography(pageManager,model, modalLayout);
+                callBack = navigateToGeography;
                 callBacks.put(pageTo, callBack);
-                observer.addSubject(navigateToProfile);
+                observer.addSubject(navigateToGeography);
             }
             default -> {
                 NavigateToHome navigateToHome = new NavigateToHome(pageManager,model,modalLayout);

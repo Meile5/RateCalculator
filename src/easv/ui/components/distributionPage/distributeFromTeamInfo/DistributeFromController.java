@@ -1,8 +1,14 @@
 package easv.ui.components.distributionPage.distributeFromTeamInfo;
+
+import easv.Utility.WindowsManagement;
 import easv.be.Country;
+import easv.be.Currency;
 import easv.be.Region;
 import easv.be.Team;
+import easv.exception.ErrorCode;
+import easv.ui.components.common.errorWindow.ErrorWindowController;
 import easv.ui.pages.distribution.ControllerMediator;
+import easv.ui.pages.distribution.DistributionType;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
@@ -13,6 +19,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,18 +40,24 @@ public class DistributeFromController implements Initializable, DistributionComp
     private IModel model;
     private Team teamToDisplay;
     private ControllerMediator controllerMediator;
-    public DistributeFromController(IModel model, Team teamToDisplay, ControllerMediator distributionControllerMediator) {
+    private DistributionType distributionType;
+    private static final String EMPTY_VALUE = "" ;
+    private StackPane  modalLayout;
+    public DistributeFromController(IModel model, Team teamToDisplay, ControllerMediator distributionControllerMediator, DistributionType distributionType, StackPane modalLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DistributeFromTeamInfo.fxml"));
         loader.setController(this);
         this.model = model;
-        this.teamToDisplay = teamToDisplay;
-        this.controllerMediator=distributionControllerMediator;
+        this.teamToDisplay = new Team(teamToDisplay);
+        this.controllerMediator = distributionControllerMediator;
+        this.distributionType = distributionType;
+        this.modalLayout = modalLayout;
         try {
             teamComponent = loader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -72,6 +86,15 @@ public class DistributeFromController implements Initializable, DistributionComp
         /*add tooltip for the countries to display the whole value*/
         addInfoToolTip(this.teamCountries);
         this.teamName.setText(teamToDisplay.getTeamName());
+        if (this.teamToDisplay.getActiveConfiguration() != null) {
+            this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate() + "");
+            addInfoToolTip(this.dayRate);
+            dayCurrency.setText(Currency.USD.toString());
+            this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate() + "");
+            addInfoToolTip(this.hourlyRate);
+            this.hourlyCurrency.setText(Currency.USD.toString());
+        }
+
     }
 
     public HBox getRoot() {
@@ -85,19 +108,48 @@ public class DistributeFromController implements Initializable, DistributionComp
         label.setTooltip(toolTip);
     }
 
-    private void addClickListener(){
-        this.teamComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
-                this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
+    private void addClickListener() {
+        this.teamComponent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (this.distributionType.equals(DistributionType.DISTRIBUTE_FROM)) {
+                if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty()){
+                    ErrorWindowController errorWindowController = new ErrorWindowController(modalLayout, ErrorCode.NO_EMPLOYEES.getValue());
+                    modalLayout.getChildren().add(errorWindowController.getRoot());
+                    WindowsManagement.showStackPane(modalLayout);
+                    return;
+                }
+                model.setDistributeFromTeam(teamToDisplay);
+                controllerMediator.addTeamToDistributeFrom(teamToDisplay);
+                this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"), false);
                 this.controllerMediator.setTheSelectedComponentToDistributeFrom(this);
                 this.teamComponent.getStyleClass().add("teamComponentClicked");
-                model.setDistributeFromTeam(teamToDisplay);
-                this.controllerMediator.showTeamToDistributeFromBarChart();
+                return;
+            }
+
+            if (this.distributionType.equals(DistributionType.DISTRIBUTE_TO)) {
+                if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty()){
+                    ErrorWindowController errorWindowController = new ErrorWindowController(modalLayout, ErrorCode.NO_EMPLOYEES.getValue());
+                    modalLayout.getChildren().add(errorWindowController.getRoot());
+                    WindowsManagement.showStackPane(modalLayout);
+                    return;
+                }
+                /*when the team to distribute  is selected from the list will be added
+                  in the model insertedDistributionPercentageFromTeams without overhead percentage */
+                if(!model.getInsertedDistributionPercentageFromTeams().containsKey(teamToDisplay.getId())){
+                    model.addDistributionPercentageTeam(teamToDisplay.getId(), EMPTY_VALUE);
+                    controllerMediator.addDistributeToTeam(new Team(teamToDisplay));
+                }
+            }
+
         });
     }
 
     @Override
     public void setTheStyleClassToDefault() {
         this.teamComponent.getStyleClass().remove("teamComponentClicked");
+    }
+
+    public void setTeamToDisplay(Team team) {
+        this.teamToDisplay = team;
     }
 
 }

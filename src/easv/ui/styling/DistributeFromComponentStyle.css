@@ -56,6 +56,28 @@
 .teamComponent:inputError  .label{
     -fx-text-fill: #fff !important;
 }
+.teamComponent:inputError .removeButton{
+    -fx-stroke:#fff;
+    -fx-fill:#C42B1C ;
+}
+
+.removeButton{
+    -fx-stroke:#2ba746;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-width: 1.5;
+}
+
+.removeButtonContainer:hover{
+    -fx-background-color:  #63b2e1 ;
+    -fx-background-radius: 5;
+}
+
+.removeButtonContainer:hover .removeButton{
+    -fx-stroke: #fff;
+    -fx-fill:#63b2e1 ;
+}
+
+
 
 /*.selected-component{*/
 /*    -fx-background-color: #63b2e1 !important;*/

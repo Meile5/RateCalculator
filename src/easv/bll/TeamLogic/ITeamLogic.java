@@ -1,8 +1,7 @@
 package easv.bll.TeamLogic;
-import easv.be.OverheadComputationPair;
-import easv.be.Region;
-import easv.be.Team;
+import easv.be.*;
 import easv.exception.RateException;
+import javafx.collections.ObservableMap;
 
 
 import java.math.BigDecimal;
@@ -17,5 +16,12 @@ public interface ITeamLogic  {
 
   OverheadComputationPair <String ,BigDecimal> computeRegionOverhead(Region region);
 
-    Map<Team,String> validateDistributionInputs(Map<Team, String> insertedDistributionPercentageFromTeams);
+    DistributionValidation  validateDistributionInputs(Map<Integer, String> insertedDistributionPercentageFromTeams);
+
+    /**calculate the total overhead inserted for the valid inputs*/
+    double calculateTotalOverheadInsertedForValidInputs(Map<Integer, String> insertedDistributionPercentageFromTeams);
+
+
+    /**perform the simulation computation*/
+    Map<OverheadHistory, List<Team>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Integer, String> insertedDistributionPercentageFromTeams, ObservableMap<Integer, Team> teamsWithEmployees);
 }

@@ -1,12 +1,14 @@
 package easv.ui.components.distributionPage.distributeToTeamInfo;
 
+import easv.Utility.WindowsManagement;
 import easv.be.Country;
+import easv.be.Currency;
 import easv.be.Region;
 import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
-import easv.ui.pages.distribution.DistributeToMediator;
-import easv.ui.pages.distribution.DistributionController;
+import easv.ui.components.common.errorWindow.ErrorWindowController;
+import easv.ui.pages.distribution.ControllerMediator;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.PauseTransition;
@@ -16,7 +18,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -35,20 +40,24 @@ public class DistributeToController implements Initializable {
     private Label teamName;
     @FXML
     private Label dayRate, dayCurrency, hourlyRate, hourlyCurrency;
-    private IModel model;
-    private Team teamToDisplay;
     @FXML
     private MFXTextField distributionPercentage;
-    private DistributeToMediator distributeToMediator;
+
+    @FXML
+    private VBox removeTeam;
+    private IModel model;
+    private Team teamToDisplay;
+    private ControllerMediator distributionMediator;
+    private StackPane modalLayout;
     private final static PseudoClass INVALID_INPUT = PseudoClass.getPseudoClass("inputError");
 
-
-    public DistributeToController(IModel model, Team teamToDisplay,DistributeToMediator distributeToMediator) {
+    public DistributeToController(IModel model, Team teamToDisplay, ControllerMediator distributionMediator,StackPane modalLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DistributeToTeamInfo.fxml"));
         loader.setController(this);
         this.model = model;
         this.teamToDisplay = teamToDisplay;
-        this.distributeToMediator = distributeToMediator;
+        this.distributionMediator = distributionMediator;
+        this.modalLayout = modalLayout;
         try {
             teamComponentDistributeFrom = loader.load();
         } catch (IOException e) {
@@ -60,7 +69,10 @@ public class DistributeToController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         populateComponentWithValues();
+        //retrieve the value off the overhead input
         addInputPercentageListener();
+        //add  remove team from overhead listener
+        removeTeamFromDistribution();
     }
 
     /**
@@ -80,13 +92,20 @@ public class DistributeToController implements Initializable {
         /*add tooltip for the countries to display the whole value*/
         addInfoToolTip(this.teamCountries);
         this.teamName.setText(teamToDisplay.getTeamName());
+        if (this.teamToDisplay.getActiveConfiguration() != null) {
+            this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate() + "");
+            addInfoToolTip(this.dayRate);
+            dayCurrency.setText(Currency.USD.toString());
+            this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate() + "");
+            addInfoToolTip(this.hourlyRate);
+            this.hourlyCurrency.setText(Currency.USD.toString());
+        }
     }
+
 
     public HBox getRoot() {
         return teamComponentDistributeFrom;
     }
-
-
     private void addInfoToolTip(Label label) {
         Tooltip toolTip = new Tooltip();
         toolTip.getStyleClass().add("tooltipinfo");
@@ -94,56 +113,51 @@ public class DistributeToController implements Initializable {
         label.setTooltip(toolTip);
     }
 
-    public void setTeamToDisplay(Team team) {
-        this.teamToDisplay = team;
-    }
+
 
     public String getOverheadPercentage() {
         return this.distributionPercentage.getText();
     }
 
 
-    //TODO add validation for the input percentage to not allow to be a string ,and allow comma separated
     private void addInputPercentageListener() {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
         this.distributionPercentage.textProperty().addListener((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((interupt) -> {
                 if (!newValue.isEmpty()) {
-                    if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")){
-                            ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " +teamToDisplay.getTeamName() + " "+ ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
-                        teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,true);
-                        model.addDistributionPercentageTeam(teamToDisplay,newValue);
-                    }else{
+                    // Validate the new value format
+                    if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
+                        showInfoError(ErrorCode.INVALID_OVERHEADVALUE.getValue() + "\n" + teamToDisplay.getTeamName() + "\n" + ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
+                        teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, true);
+                        model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                        distributionMediator.updateTotalOverheadValue();
+                    } else {
+                        // Convert new value to a double
                         Double overheadInserted = validatePercentageValue(newValue);
-                        if(!(overheadInserted>=0 && overheadInserted<=100)){
-                            ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_OVERHEADVALUE.getValue() + " " +teamToDisplay.getTeamName() + " "+ ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
+                        if (!(overheadInserted >= 0 && overheadInserted <= 100)) {
+                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, true);
+                            model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                            distributionMediator.updateTotalOverheadValue();
+                            showInfoError(ErrorCode.INVALID_OVERHEADVALUE.getValue() + "\n" + teamToDisplay.getTeamName() + "\n" + ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
+
                         }else{
-                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
+                            model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                            distributionMediator.updateTotalOverheadValue();
+                            teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, false);
                         }
-                        model.addDistributionPercentageTeam(teamToDisplay,newValue);
-                       // distributeToMediator.updateTotalOverheadValue(overheadValue);
+
                     }
                 } else {
-                    teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
-                    if (!oldValue.isEmpty()) {
-                        model.removeDistributionPercentageTeam(teamToDisplay);
-                    }
+                    // Handle the case where the input is empty
+                    teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, false);
+                    model.setDistributionPercentageTeam(teamToDisplay.getId(), newValue);
+                    distributionMediator.updateTotalOverheadValue();
                 }
-
-//                else if (!oldValue.isEmpty()) {
-////                    Double oldOverhead = validatePercentageValue(model.getInsertedDistributionPercentageFromTeams().get(teamToDisplay));
-////                    if(oldOverhead!=null) {
-////                    distributeToMediator.removeDistributionPercentage(oldOverhead);
-////                    }
-//                    model.removeDistributionPercentageTeam(teamToDisplay);
-//                }else {
-//                    teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT,false);
-//                }
-
-            });
+                    });
             pauseTransition.playFromStart();
         });
     }
+
 
 
 
@@ -171,5 +185,42 @@ public class DistributeToController implements Initializable {
         }
         return overheadValue;
     }
+
+
+
+
+    public void changeStyleToError() {
+        this.getRoot().pseudoClassStateChanged(INVALID_INPUT,true);
+    }
+
+    public void setDayRate(String value) {
+        this.dayRate.setText(value);
+    }
+
+    public void setHourlyRate(String value) {
+        this.hourlyRate.setText(value);
+    }
+
+    /**add remove team from distribution simulation table listener */
+    private void removeTeamFromDistribution(){
+        this.removeTeam.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+                 boolean teamRemoved = distributionMediator.removeTeamFromDistributionView(teamToDisplay.getId());
+                 if(teamRemoved){
+                     model.removeDistributionPercentageTeam(teamToDisplay.getId());
+                     System.out.println(model.getInsertedDistributionPercentageFromTeams() + " " + "after deletion");
+                 }
+            System.out.println(model.getInsertedDistributionPercentageFromTeams() + " aloo");
+        });}
+
+
+    /**display an information  message for the user when the input is invalid*/
+    private void showInfoError(String errorValue){
+        ErrorWindowController errorWindowController = new ErrorWindowController(modalLayout,errorValue);
+        modalLayout.getChildren().add(errorWindowController.getRoot());
+        WindowsManagement.showStackPane(modalLayout);
+    }
+
+
+
 
 }

@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox  fx:id="teamComponent" alignment="CENTER" maxHeight="-Infinity" maxWidth="510.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0"  styleClass="teamComponent" stylesheets="/easv/ui/styling/DistributeFromComponentStyle.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox fx:id="teamComponent" alignment="CENTER" maxHeight="-Infinity" maxWidth="510.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0" styleClass="teamComponent" stylesheets="/easv/ui/styling/DistributeFromComponentStyle.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <VBox alignment="CENTER" maxHeight="50.0" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">
             <children>
@@ -23,13 +23,13 @@
         </VBox>
         <HBox alignment="CENTER" layoutX="471.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">
             <children>
-                <Label fx:id="dayRate" alignment="CENTER" text="123" textOverrun="CLIP" />
+                <Label fx:id="dayRate" alignment="CENTER" text="0" textOverrun="CLIP" />
                 <Label fx:id="dayCurrency" text="\$" />
             </children>
         </HBox>
         <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS">
             <children>
-                <Label fx:id="hourlyRate" alignment="CENTER" text="12" />
+                <Label fx:id="hourlyRate" alignment="CENTER" text="0" />
                 <Label fx:id="hourlyCurrency" text="\$" />
             </children>
         </HBox>

@@ -55,8 +55,9 @@ public class TeamComponentController  implements Initializable {
 /**initialize chart with the values*/
         private void initializePieChart(){
             //TODO include percentage for the employee based on team total overhead
+
             for(Employee employee :team.getEmployees()){
-                 pieChartData.add(new PieChart.Data(employee.getName(),employee.getActiveConfiguration().getDayRate().doubleValue()));
+                pieChartData.add(new PieChart.Data(employee.getName(),employee.getActiveConfiguration().getDayRate().doubleValue()));
             }
             teamChart.setData(pieChartData);
             teamChart.setTitle(team.getTeamName());
