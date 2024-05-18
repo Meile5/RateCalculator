@@ -1,10 +1,13 @@
-package easv.ui.components.teamsComponents;
+package easv.ui.components.teamsInfoComponent;
+import easv.Utility.WindowsManagement;
 import easv.be.Country;
 import easv.be.Region;
 import easv.be.Team;
 import easv.be.TeamConfiguration;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
+import easv.ui.components.editPage.EditController;
+import easv.ui.components.teamManagement.TeamManagementController;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.teamsPage.TeamsPageController;
 import javafx.application.Platform;
@@ -16,6 +19,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 
 import java.io.IOException;
@@ -28,19 +33,24 @@ public class TeamInfoController implements Initializable {
     private IModel model;
     private Team team;
     private TeamsPageController teamsPageController;
+    private StackPane firstLayout;
+    @FXML
+    private VBox editButton;
     @FXML
     private Label teamName, teamRegion, teamCountry, teamDailyRate, teamHourlyRate, teamDayCurrency, teamHourlyCurrency;
 
 
-    public TeamInfoController(Team team , IModel model, TeamsPageController teamsPageController) {
+    public TeamInfoController(Team team , IModel model, TeamsPageController teamsPageController, StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamInfoComponent.fxml"));
         loader.setController(this);
         this.team = team;
         this.model = model;
         this.teamsPageController = teamsPageController;
+        this.firstLayout=firstLayout;
         try {
             teamInfoComponent = loader.load();
         } catch (IOException e) {
+            e.printStackTrace();
              ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -54,26 +64,27 @@ public class TeamInfoController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
         Platform.runLater(this::addClickListener);
+        addEditAction();
     }
 
-
+    /* listener that tells what happens when team component is clicked*/
     private void addClickListener(){
-
         teamInfoComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
-
             teamInfoComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
             teamsPageController.setSelectedComponentStyleToSelected(this);
             teamsPageController.yearsComboBoxListener(team);
             teamsPageController.populateComboBoxWithYears(team);
             teamsPageController.historyComboBoxListener(team);
             teamsPageController.setTeamHistoryDatesInComboBox(team);
-
-
-
         });
     }
-
-
+    private void addEditAction() {
+        editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this);
+            firstLayout.getChildren().add(teamManagementController.getRoot());
+            WindowsManagement.showStackPane(firstLayout);
+        });
+    }
 
     public void setLabels() {
         if (team != null) {
@@ -116,5 +127,7 @@ public class TeamInfoController implements Initializable {
             }
         }
     }
+
+
 
 }

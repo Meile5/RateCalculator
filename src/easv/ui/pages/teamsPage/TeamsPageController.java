@@ -1,24 +1,17 @@
 package easv.ui.pages.teamsPage;
 
-import easv.be.Employee;
 import easv.be.Team;
 import easv.be.TeamConfiguration;
 import easv.be.TeamConfigurationEmployee;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
-import easv.ui.components.teamsComponents.TeamInfoController;
-import easv.ui.pages.employeesPage.deleteEmployee.DeleteEmployeeController;
-import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
+import easv.ui.components.teamsInfoComponent.TeamInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.modelFactory.ModelFactory;
-import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,18 +20,14 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ComboBoxBase;
-import javafx.scene.control.ListCell;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TeamsPageController implements Initializable {
     private IModel model;
@@ -54,12 +43,14 @@ public class TeamsPageController implements Initializable {
     private ComboBox<TeamConfiguration> teamsHistory;
     @FXML
     private PieChart teamsPieChart;
+    private StackPane firstLayout;
 
     private TeamInfoController selectedTeam;
-    public TeamsPageController(IModel model) {
+    public TeamsPageController(IModel model, StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamsManagementPage.fxml"));
         loader.setController(this);
         this.model=model;
+        this.firstLayout = firstLayout;
         try {
             teamPage = loader.load();
         } catch (IOException e) {
@@ -88,7 +79,7 @@ public class TeamsPageController implements Initializable {
         teamsContainer.getChildren().clear();
         model.getOperationalTeams()
                 .forEach(t -> {
-                    TeamInfoController teamInfoController = new TeamInfoController( t, model, this);
+                    TeamInfoController teamInfoController = new TeamInfoController( t, model, this, firstLayout);
                     teamsContainer.getChildren().add(teamInfoController.getRoot());
 
                 });

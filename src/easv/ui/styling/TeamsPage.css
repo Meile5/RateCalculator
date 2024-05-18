@@ -29,3 +29,10 @@
     -fx-border-color: #cecdcd; /* Border color on hover */
     -fx-effect: dropshadow(gaussian, rgb(64, 227, 91), 10, 0, 0, 5); /* Shadow on hover */
 }
+.parent{
+    -fx-background-color: F9F9F9;
+}
+
+.scroll-bar {
+    -fx-opacity: 0;
+}
