@@ -86,7 +86,7 @@ public class DeleteRegionController implements Initializable, OperationHandler {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        Thread.sleep(2000);
+                        //Thread.sleep(2000);
                         //model.deleteEmployee(region);
                         return null;
                     }

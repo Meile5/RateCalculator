@@ -13,7 +13,7 @@ public interface IRegionDAO {
 
     void addCountryToRegion(Integer regionID, List<Country> countries, Connection conn) throws SQLException;
 
-    void updateRegion(Region region, List<Country> countries) throws RateException;
+    void updateRegion(Region region, List<Country> addedCountries, List<Country> removedCountries) throws RateException;
 
     void deleteRegion(Region region) throws RateException;
 }

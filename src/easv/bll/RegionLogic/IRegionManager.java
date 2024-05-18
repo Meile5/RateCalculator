@@ -7,7 +7,7 @@ import easv.exception.RateException;
 import java.util.List;
 
 public interface IRegionManager {
-    int addRegion(Region region, List<Country> countries) throws RateException;
+    Region addRegion(Region region, List<Country> countries) throws RateException;
 
-    void updateRegion(Region region, List<Country> countries) throws RateException;
+    Region updateRegion(Region region, List<Country> countries) throws RateException;
 }

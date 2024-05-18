@@ -74,7 +74,7 @@
                   <Insets />
                </HBox.margin>
             </MFXProgressSpinner>
-            <Region prefHeight="57.0" prefWidth="98.0" />
+            <Region prefHeight="57.0" prefWidth="190.0" />
                 <MFXButton fx:id="cancelBTN" buttonType="RAISED" depthLevel="LEVEL0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="80.0" rippleColor="#427972" styleClass="button-cancel" text="Cancel" />
                 <MFXButton fx:id="saveBTN" buttonType="RAISED" depthLevel="LEVEL0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="80.0" rippleColor="#63b2e1" styleClass="button-save" text="Save" textFill="WHITE">
                     <HBox.margin>
