@@ -538,6 +538,10 @@ public class Model implements IModel {
         return teamManager.calculateTotalOverheadInsertedForValidInputs(insertedDistributionPercentageFromTeams);
     }
 
+    public Team getSelectedTeamToDistributeFrom() {
+        return selectedTeamToDistributeFrom;
+    }
+
     /**
      * remove the team and the inserted overhead percentage from the map
      */

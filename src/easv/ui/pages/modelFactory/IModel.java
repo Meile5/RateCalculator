@@ -147,6 +147,7 @@ public interface IModel {
      */
 
     void setDistributeFromTeam(Team selectedTeamToDistributeFrom);
+    Team getSelectedTeamToDistributeFrom();
 
 
     Team getDistributeFromTeam();

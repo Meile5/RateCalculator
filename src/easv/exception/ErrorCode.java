@@ -17,9 +17,11 @@ public enum ErrorCode {
     DISTRIBUTE_TO_EMPTY("No team to distribute to selected !"),
     EMPTY_OVERHEAD("Empty overhead percentage value"),
     SIMULATION_FAILED("Failed to perform simulation computation, please retry!"),
-    NO_EMPLOYEES("The team that you are trying to select has no employees, can not perform overhead  distribution.  ")
+    NO_EMPLOYEES("The team that you are trying to select has no employees, can not perform overhead  distribution.  "),
+    DISTRIBUTE_FROM("This team was selected to distribute from  !")
+
     ;
-    ;
+
 
 
 
