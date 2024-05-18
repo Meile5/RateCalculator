@@ -611,8 +611,10 @@ public class Model implements IModel {
     }
 
     @Override
-    public Boolean saveDistribution() {
-        return true;
+    public boolean saveDistribution() throws RateException {
+      insertedDistributionPercentageFromTeams.keySet().forEach((e)-> System.out.println(e.getActiveConfiguration().getTeamDayRate() + " " +  e.getActiveConfiguration().getTeamHourlyRate() + " oon saved" ));
+        System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "day rate" + selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate() + "team day rate");
+        return teamManager.saveDistributionOperation(insertedDistributionPercentageFromTeams,selectedTeamToDistributeFrom);
     }
 
     /**return all employees for team manage*/

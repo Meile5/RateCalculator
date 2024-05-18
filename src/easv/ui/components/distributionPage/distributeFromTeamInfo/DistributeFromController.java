@@ -176,8 +176,8 @@ public class DistributeFromController implements Initializable, DistributionFrom
     }
 @Override
     public void setHourlyRate(String value) {
-        this.dayRate.setText(value);
-        this.dayRate.getTooltip().setText(value);
+        this.hourlyRate.setText(value);
+        this.hourlyRate.getTooltip().setText(value);
 }
 
 }

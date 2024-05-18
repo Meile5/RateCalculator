@@ -181,6 +181,6 @@ public interface IModel {
     boolean isTeamSelectedToDistribute(Integer teamId);
 
     /**save the  distribution operation*/
-    Boolean saveDistribution();
+    boolean saveDistribution() throws RateException;
     List<Employee> getAllEmployees();
 }

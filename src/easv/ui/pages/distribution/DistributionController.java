@@ -1,4 +1,5 @@
 package easv.ui.pages.distribution;
+
 import easv.Utility.WindowsManagement;
 import easv.be.DistributionValidation;
 import easv.be.OverheadHistory;
@@ -32,8 +33,8 @@ import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.*;
 
@@ -90,6 +91,8 @@ public class DistributionController implements Initializable, DistributionContro
         populateDistributeFromTeams();
         // add simulate button listener
         addSimulateButtonListener();
+        // save the performed distribution operation
+        saveDistributionOperation();
     }
 
     /**
@@ -154,7 +157,9 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
 
-    /**perform distribution simulation*/
+    /**
+     * perform distribution simulation
+     */
     private void addSimulateButtonListener() {
         this.simulateButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (distributionIsInvalid()) return;
@@ -167,7 +172,9 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
 
-  /**validate the  distribution  inputs*/
+    /**
+     * validate the  distribution  inputs
+     */
     private boolean distributionIsInvalid() {
         String validateSelectedTeams = validateTeamsDistributionSelection();
         if (!validateSelectedTeams.isEmpty()) {
@@ -331,48 +338,56 @@ public class DistributionController implements Initializable, DistributionContro
         WindowsManagement.showStackPane(secondLayout);
     }
 
+    /**save  the  performed distribution operation */
+    private void saveDistributionOperation(){
+        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+            initializeSaveService();
+        });
+    }
+
+
+
     /**
      * update components values with the new calculation values
      */
     private void updateComponentsOverheadValues() {
         if (model.getSelectedTeamToDistributeFrom().getActiveConfiguration() != null) {
-            double dayRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamDayRate().doubleValue();
-            double hourlyRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamHourlyRate().doubleValue();
+            double dayRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
+            double hourlyRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamHourlyRate().setScale(2,RoundingMode.HALF_UP).doubleValue();
             distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
         }
         for (Team team : model.getInsertedDistributionPercentageFromTeams().keySet()) {
             System.out.println(team.getActiveConfiguration().getTeamDayRate());
-            distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().doubleValue());
+            distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue());
         }
     }
 
 
-
-
-    /**save the distribution overhead operation resulted values*/
-    private void saveDistribution(){
-        this.saveDistribution= new Service<Boolean>() {
+    /**initialize the save service */
+    private void initializeSaveService() {
+        this.saveDistribution = new Service<Boolean>() {
             @Override
             protected Task<Boolean> createTask() {
-                return  new Task<Boolean>() {
+                return new Task<Boolean>() {
                     @Override
                     protected Boolean call() throws Exception {
-                        return  model.saveDistribution();
+                        return model.saveDistribution();
                     }
                 };
             }
         };
-        this.saveDistribution.setOnSucceeded((e)->{
-
+        this.saveDistribution.setOnSucceeded((e) -> {
+            // showInfoError(ErrorCode.OPERATION_EXECUTED.getValue());
+            // display that the operation was performed
+            WindowsManagement.closeStackPane(secondLayout);
+        });
+        this.saveDistribution.setOnCancelled((e) -> {
+            WindowsManagement.closeStackPane(secondLayout);
         });
 
-
+        saveDistribution.restart();
 
     }
-
-
-
-
 
 
 }

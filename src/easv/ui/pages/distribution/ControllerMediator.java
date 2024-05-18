@@ -21,7 +21,7 @@ public class ControllerMediator {
     private DistributionFromComponentInterface selectedTeamToDistributeFromController;
 
 
-    private Map<Integer, DistributeToController> distributeToControllers;
+    private final Map<Integer, DistributeToController> distributeToControllers;
 
     public ControllerMediator() {
         distributeToControllers = new HashMap<>();
@@ -62,14 +62,6 @@ public class ControllerMediator {
     public void addDistributeToController(DistributeToController selectedTeamToDistributeTo, int teamId) {
         distributeToControllers.put(teamId, selectedTeamToDistributeTo);
     }
-
-    /**
-     * remove the controller when the user is  removing the team from the, selected list to distribute to
-     */
-    public void removeDistributeToController(int teamId) {
-        distributeToControllers.remove(teamId);
-    }
-
 
     /**
      * clear the stored controllers when the operation is saved
@@ -129,10 +121,8 @@ public class ControllerMediator {
             }
         }
         boolean removedFromView = distributionController.removeTeamFromDistributionView(removedTeamControllers);
-
         if (removedFromView) {
             this.distributeToControllers.remove(id);
-
             return true;
         } else {
             return false;
