@@ -23,5 +23,5 @@ public interface ITeamLogic  {
 
 
     /**perform the simulation computation*/
-    Map<OverheadHistory, List<OverheadComputationPair<String, Double>>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Integer, String> insertedDistributionPercentageFromTeams, ObservableMap<Integer, Team> teamsWithEmployees);
+    Map<OverheadHistory, List<Team>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Integer, String> insertedDistributionPercentageFromTeams, ObservableMap<Integer, Team> teamsWithEmployees);
 }

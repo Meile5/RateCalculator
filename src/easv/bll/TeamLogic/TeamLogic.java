@@ -181,76 +181,81 @@ public class TeamLogic implements ITeamLogic {
     }
 
 
-    /**perform the simulation computation*/
+    /**
+     * perform the simulation computation
+     */
     @Override
-    public Map<OverheadHistory, List<OverheadComputationPair<String, Double>>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Integer, String> insertedDistributionPercentageFromTeams, ObservableMap<Integer, Team> teamsWithEmployees) {
-        Map<OverheadHistory,List<OverheadComputationPair<String, Double>>>  simulationValues =  new HashMap<>();
-        List<OverheadComputationPair<String,Double>> previousOverheadValues  =  new ArrayList<>();
-        List<OverheadComputationPair<String,Double>> currentComputedOverheadValues=   new ArrayList<>();
+    public Map<OverheadHistory, List<Team>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Integer, String> insertedDistributionPercentageFromTeams, ObservableMap<Integer, Team> teamsWithEmployees) {
+        Map<OverheadHistory, List<Team>> simulationValues = new HashMap<>();
+        List<Team> previousOverheadValues = new ArrayList<>();
+        List<Team> currentComputedOverheadValues = new ArrayList<>();
 
         // add previous values
-        if(selectedTeamToDistributeFrom.getActiveConfiguration()!=null){
-            OverheadComputationPair<String,Double>  previousOverhead = new OverheadComputationPair<>(selectedTeamToDistributeFrom.getTeamName(),selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate().doubleValue());
-            previousOverheadValues.add(previousOverhead);
+        if (selectedTeamToDistributeFrom.getActiveConfiguration() != null) {
+            Team teamCopySelectedFrom = new Team(selectedTeamToDistributeFrom);
+            previousOverheadValues.add(teamCopySelectedFrom);
         }
-        for(Integer teamId:insertedDistributionPercentageFromTeams.keySet()){
-         OverheadComputationPair<String,Double> previousOverhead = new OverheadComputationPair<>();
-         Team team = teamsWithEmployees.get(teamId);
-         previousOverhead.setKey(team.getTeamName());
-         if(team.getActiveConfiguration()!=null){
-             previousOverhead.setValue(team.getActiveConfiguration().getTeamDayRate().doubleValue());
-         }
-         previousOverheadValues.add(previousOverhead);
+
+        for (Integer teamId : insertedDistributionPercentageFromTeams.keySet()) {
+            Team teamDistributeToPrevious = new Team(teamsWithEmployees.get(teamId));
+            previousOverheadValues.add(teamDistributeToPrevious);
         }
 
         //compute new  overhead for the selected team to distribute from
         double totalPercentage = calculateTotalOverheadInsertedForValidInputs(insertedDistributionPercentageFromTeams);
-        Double  teamToDistributeFromNewOverhead = selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate().doubleValue()*(totalPercentage/100);
-        OverheadComputationPair<String,Double>  currentOverheadTeamFrom =  new OverheadComputationPair<>();
-        currentOverheadTeamFrom.setKey(selectedTeamToDistributeFrom.getTeamName());
-        currentOverheadTeamFrom.setValue(teamToDistributeFromNewOverhead);
-        currentComputedOverheadValues.add(currentOverheadTeamFrom);
+        double teamToDistributeFromNewDayRate = selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate().doubleValue() * (totalPercentage / 100);
+        double teamToDistributeFromNewHourlyRate = selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate().doubleValue()*(totalPercentage/100);
+
+        Team distributeFromNewComputation =  new Team(selectedTeamToDistributeFrom);
+        distributeFromNewComputation.getActiveConfiguration().setTeamDayRate(BigDecimal.valueOf(teamToDistributeFromNewDayRate));
+        distributeFromNewComputation.getActiveConfiguration().setTeamHourlyRate(BigDecimal.valueOf(teamToDistributeFromNewHourlyRate));
+        currentComputedOverheadValues.add(distributeFromNewComputation);
 
 
-
-         double selectedTeamFromPreviousOverhead = 0.0;
-         if(selectedTeamToDistributeFrom.getActiveConfiguration()!=null){
-             selectedTeamFromPreviousOverhead= selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate().doubleValue();
-         }
-
-
-
-
-        //compute new overhead values for the team to distribute to
-        for(Integer temId:insertedDistributionPercentageFromTeams.keySet()){
-            OverheadComputationPair<String,Double>  currentOverheadTeamTo =  new OverheadComputationPair<>();
-            Team team  = teamsWithEmployees.get(temId);
-
-            double teamPreviousOverhead =  teamsWithEmployees.get(temId).getActiveConfiguration().getTeamDayRate().doubleValue();
-
-            if(team.getActiveConfiguration()!=null){
-               teamPreviousOverhead = team.getActiveConfiguration().getTeamDayRate().doubleValue();
-            }
-            Double teamNewInsertedValue =  validatePercentageValue(insertedDistributionPercentageFromTeams.get(temId));
-            //TODO  continue from here
-            if(selectedTeamFromPreviousOverhead==0){
-
-            }
-
-
-            Double computedNewOverhed = teamPreviousOverhead+(selectedTeamToDistributeFrom.getActiveConfiguration().(teamNewInsertedValue/100));
-            currentOverheadTeamTo.setKey(team.getTeamName());
-            currentOverheadTeamTo.setValue(computedNewOverhed);
-            currentComputedOverheadValues.add(currentOverheadTeamTo);
+        //calculate team previous overhead value
+        double selectedTeamFromPreviousOverhead = 0.0;
+        if (selectedTeamToDistributeFrom.getActiveConfiguration() != null) {
+            selectedTeamFromPreviousOverhead = selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate().doubleValue();
         }
 
-        //add the previous overhead to the map
-        simulationValues.put(OverheadHistory.PREVIOUS_OVERHEAD,previousOverheadValues);
+        //compute new overhead values for the team to distribute to
+        for (Integer temId : insertedDistributionPercentageFromTeams.keySet()) {
+             Team distributeToTeam  = new Team(teamsWithEmployees.get(temId));
+            double teamPreviousOverheadDayRate = 0;
+            double teamPreviousOverheadHourRate = 0;
 
+            if (distributeToTeam.getActiveConfiguration() != null) {
+                teamPreviousOverheadDayRate = distributeToTeam.getActiveConfiguration().getTeamDayRate().doubleValue();
+                teamPreviousOverheadHourRate= distributeToTeam.getActiveConfiguration().getTeamDayRate().doubleValue();
+            }
+            Double teamNewInsertedValue = validatePercentageValue(insertedDistributionPercentageFromTeams.get(temId));
+
+            if (selectedTeamFromPreviousOverhead == 0 && teamPreviousOverheadDayRate == 0) {
+                distributeToTeam.getActiveConfiguration().setTeamHourlyRate(BigDecimal.ZERO);
+                distributeToTeam.getActiveConfiguration().setTeamHourlyRate(BigDecimal.ZERO);
+                currentComputedOverheadValues.add(distributeToTeam);
+            }else{
+                double computedNewOverheadDayRate = teamPreviousOverheadDayRate + (selectedTeamFromPreviousOverhead*(teamNewInsertedValue / 100));
+                double computeNewOverheadHourRate =  teamPreviousOverheadHourRate + (selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate().doubleValue()*(teamNewInsertedValue / 100));
+                if(distributeToTeam.getActiveConfiguration()!=null){
+                    distributeToTeam.getActiveConfiguration().setTeamDayRate(BigDecimal.valueOf(computedNewOverheadDayRate));
+                    distributeToTeam.getActiveConfiguration().setTeamHourlyRate(BigDecimal.valueOf(computeNewOverheadHourRate));
+                }
+                currentComputedOverheadValues.add(distributeToTeam);
+            }
+        }
+        //add the previous overhead to the map
+        simulationValues.put(OverheadHistory.PREVIOUS_OVERHEAD, previousOverheadValues);
         // add current overhead to the map
-        simulationValues.put(OverheadHistory.CURRENT_OVERHEAD,currentComputedOverheadValues);
+        simulationValues.put(OverheadHistory.CURRENT_OVERHEAD, currentComputedOverheadValues);
         return simulationValues;
     }
+
+
+
+
+
+
 }
 
 

@@ -26,15 +26,6 @@ public class Configuration {
 
 
 
-    /**
-     * Constructor used to create Configuration objects with the configuration formula and rates.
-     */
-//    public Configuration(int configurationId, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime createdDate, boolean active, BigDecimal dayRate, BigDecimal hourlyRate,int dayWorkingHours) {
-//        this(configurationId, annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, active);
-//        this.dayRate = dayRate;
-//        this.hourlyRate = hourlyRate;
-//        this.savedDate = createdDate;
-//    }
     public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours) {
         this.annualSalary = annualSalary;
         this.fixedAnnualAmount = fixedAnnualAmount;

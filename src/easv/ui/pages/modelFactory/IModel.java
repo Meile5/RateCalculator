@@ -171,5 +171,5 @@ public interface IModel {
     /**get the team name based on the  team id , is used in order to display the error message in distribution page */
     String  getTeamName(int teamId);
 
-    Map<OverheadHistory, List<OverheadComputationPair<String, Double>>> performSimulation();
+    Map<OverheadHistory, List<Team>> performSimulation();
 }

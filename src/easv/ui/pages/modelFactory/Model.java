@@ -575,7 +575,7 @@ public class Model implements IModel {
 
     /**perform simulation computation*/
     @Override
-    public Map<OverheadHistory, List<OverheadComputationPair<String, Double>>> performSimulation() {
+    public Map<OverheadHistory, List<Team>> performSimulation() {
         return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams,teamsWithEmployees);
     }
 

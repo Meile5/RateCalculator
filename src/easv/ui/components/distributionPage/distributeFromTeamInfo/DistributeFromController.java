@@ -42,7 +42,7 @@ public class DistributeFromController implements Initializable, DistributionComp
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DistributeFromTeamInfo.fxml"));
         loader.setController(this);
         this.model = model;
-        this.teamToDisplay = teamToDisplay;
+        this.teamToDisplay = new Team(teamToDisplay);
         this.controllerMediator = distributionControllerMediator;
         this.distributionType = distributionType;
         try {

@@ -49,16 +49,31 @@ public class ControllerMediator {
         distributeToControllers.remove(teamId);
     }
 
+
     /**clear the stored controllers when the operation is saved*/
     public void clearSavedControllers  (){
         this.distributeToControllers.clear();
     }
 
 
+    /**change the component style when the user entered invalid values*/
     public void changeComponentStyleToError(Integer teamId) {
         DistributeToController distributeToController = distributeToControllers.get(teamId);
         if(distributeToController!=null){
             distributeToController.changeStyleToError();
         }
     }
+
+
+    /** update the  selected components to distribute overhead */
+
+    public void updateComponentOverheadValues(int teamId, double dayOverhead, double hourOverhead ){
+        DistributeToController distributeToController = distributeToControllers.get(teamId);
+        if(distributeToController!=null){
+         //   distributeToController.changeStyleToError();
+        distributeToController.setDayRate(dayOverhead+"");
+        distributeToController.setHourlyRate(hourOverhead +"");
+        }
+    }
+
 }

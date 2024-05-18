@@ -1,10 +1,7 @@
 package easv.be;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Team {
     private String teamName;
@@ -48,10 +45,19 @@ public class Team {
      */
     public Team(Team team) {
         this(team.getTeamName(),team.getCurrency(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);
+        this.teamName = team.getTeamName();
+        this.currency = team.getCurrency();
+        this.id= team.getId();
+        this.teamMembers = new ArrayList<>();
+        teamMembers.addAll(team.getTeamMembers());
+        this.teamConfigurationsHistory = new ArrayList<>();
+        teamConfigurationsHistory.addAll(team.teamConfigurationsHistory);
+        this.utilizationPercentage = team.getUtilizationPercentage();
         this.countries = team.getCountries();
         this.regions= team.getRegions();
-        this.activeConfiguration=  team.getActiveConfiguration();
-        this.currency= team.getCurrency();    }
+        this.activeConfiguration=  new TeamConfiguration(team.getActiveConfiguration());
+        this.currency= team.getCurrency();
+    }
 
 
     /**
