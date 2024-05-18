@@ -6,18 +6,21 @@ import easv.ui.pages.modelFactory.IModel;
 
 import easv.ui.pages.teamsPage.TeamsPageController;
 import javafx.scene.Parent;
+import javafx.scene.layout.StackPane;
 
 public class NavigateToModeling  implements CallBack, Subject {
     private PageManager pageManager;
     private Parent root;
     private boolean isOpened;
     private IModel model;
+    private StackPane modalLayout;
 
 
 
-    public NavigateToModeling(PageManager pageManager,IModel model) {
+    public NavigateToModeling(PageManager pageManager,IModel model, StackPane modalLayout) {
         this.pageManager= pageManager;
         this.model= model;
+        this.modalLayout= modalLayout;
 
     }
 
@@ -33,7 +36,8 @@ public class NavigateToModeling  implements CallBack, Subject {
 
 
     private void initializePage(){
-        TeamsPageController teamsPageController= new TeamsPageController(model);
+        TeamsPageController teamsPageController= new TeamsPageController(model, modalLayout);
+
         root= teamsPageController.getRoot();
         System.out.println(root);
 

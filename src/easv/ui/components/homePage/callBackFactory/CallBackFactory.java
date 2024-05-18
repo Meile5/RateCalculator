@@ -49,7 +49,7 @@ public class CallBackFactory {
                 observer.addSubject(navigateToEmployees);
             }
             case MODELING -> {
-                NavigateToModeling navigateToModeling = new NavigateToModeling(pageManager,model);
+                NavigateToModeling navigateToModeling = new NavigateToModeling(pageManager,model, modalLayout);
                 callBack = navigateToModeling;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToModeling);

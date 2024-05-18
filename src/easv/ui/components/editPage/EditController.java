@@ -78,7 +78,6 @@ public class EditController implements Initializable {
         try {
             componentParent = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
         }
     }

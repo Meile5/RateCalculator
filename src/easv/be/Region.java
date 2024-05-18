@@ -13,13 +13,18 @@ public class Region {
         return  regionName;
     }
 
+    public Region(String regionName) {
+        this.regionName = regionName;
+    }
+
     public Region(String regionName, int id) {
         this.regionName = regionName;
         this.id = id;
     }
+
     public Region(String regionName, int id,List<Country> countries) {
-   this(regionName,id);
-   this.countries=countries;
+       this(regionName,id);
+       this.countries=countries;
     }
 
 

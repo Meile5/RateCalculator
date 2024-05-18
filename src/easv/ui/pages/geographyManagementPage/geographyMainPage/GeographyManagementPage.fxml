@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -12,6 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
 
 <GridPane alignment="CENTER" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="900.0" stylesheets="/easv/ui/styling/Distribution.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
@@ -47,14 +49,14 @@
                         <MFXTextField floatMode="DISABLED" prefHeight="37.0" prefWidth="128.0" style="-fx-background-radius: 0 5 5 0; -fx-border-width: 1 1 1 0; -fx-border-radius: 0 5 5 0; -fx-background-color: #fff;" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <Region prefHeight="37.0" prefWidth="82.0" />
+                  <Region prefHeight="37.0" prefWidth="82.0" HBox.hgrow="ALWAYS" />
                   <Button mnemonicParsing="false" text="Add Region" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="38.0" prefWidth="254.0">
+            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="38.0" prefWidth="254.0">
                <children>
                   <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Region" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
                   <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Countries" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
@@ -66,11 +68,9 @@
             </HBox>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="350.0" styleClass="teamsScrollPane" vbarPolicy="NEVER">
                <content>
-                  <VBox fx:id="distributeFromTeams" alignment="TOP_CENTER" maxWidth="520.0" minWidth="250.0" prefHeight="350.0" prefWidth="350.0" spacing="10.0" style="-fx-background-color: #D1D0D0;">
-                     <children>
-                     </children>
+                  <VBox fx:id="regionsVBox" alignment="TOP_CENTER" maxWidth="520.0" minWidth="250.0" prefHeight="350.0" prefWidth="350.0" spacing="10.0" style="-fx-background-color: #D1D0D0;">
                      <padding>
-                        <Insets bottom="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" />
                      </padding>
                   </VBox>
                </content>
@@ -82,7 +82,7 @@
       </VBox>
       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="370.0" style="-fx-background-radius: 20; -fx-background-color: #D1D0D0;" GridPane.columnIndex="3" GridPane.rowIndex="1">
          <children>
-            <HBox alignment="CENTER" minWidth="-Infinity" prefHeight="50.0" prefWidth="200.0" spacing="5.0">
+            <HBox alignment="CENTER" maxWidth="520.0" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0" spacing="5.0">
                <padding>
                   <Insets left="5.0" right="5.0" />
                </padding>
@@ -100,14 +100,14 @@
                         <MFXTextField floatMode="DISABLED" prefHeight="37.0" prefWidth="128.0" style="-fx-background-radius: 0 5 5 0; -fx-border-width: 1 1 1 0; -fx-border-radius: 0 5 5 0; -fx-background-color: #fff;" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <Region prefHeight="50.0" prefWidth="67.0" />
+                  <Region prefHeight="50.0" prefWidth="67.0" HBox.hgrow="ALWAYS" />
                   <Button mnemonicParsing="false" text="Add Country" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <HBox prefHeight="50.0" prefWidth="358.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="358.0">
                <children>
                   <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Country" textOverrun="CLIP" />
                   <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Teams" textOverrun="CLIP" />
@@ -116,12 +116,13 @@
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin></HBox>
-            <ScrollPane hbarPolicy="NEVER" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="350.0" styleClass="teamsScrollPane" vbarPolicy="NEVER">
+            <ScrollPane fx:id="countri" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="350.0" styleClass="teamsScrollPane" vbarPolicy="NEVER">
                <content>
-                  <VBox alignment="TOP_CENTER" maxWidth="520.0" minWidth="250.0" prefHeight="350.0" prefWidth="350.0" spacing="10.0" style="-fx-background-color: #D1D0D0;">
+                  <VBox fx:id="countriesVBox" alignment="TOP_CENTER" maxWidth="520.0" minWidth="250.0" prefHeight="350.0" prefWidth="350.0" spacing="10.0" style="-fx-background-color: #D1D0D0;">
                      <padding>
-                        <Insets bottom="10.0" />
-                     </padding></VBox>
+                        <Insets bottom="10.0" left="10.0" right="10.0" />
+                     </padding>
+                  </VBox>
                </content>
             </ScrollPane>
          </children>
@@ -132,6 +133,16 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </VBox>
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <children>
+            <Label fx:id="operationStatusLB" contentDisplay="CENTER" prefHeight="63.0" prefWidth="300.0" wrapText="true">
+               <font>
+                  <Font name="Open Sans Regular" size="14.0" />
+               </font>
+            </Label>
+            <MFXProgressSpinner fx:id="progressBar" disable="true" visible="false" />
+         </children>
+      </HBox>
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

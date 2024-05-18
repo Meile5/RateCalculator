@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<HBox fx:id="teamPage" maxHeight="700.0" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: F9F9F9;" stylesheets="/easv/ui/styling/EmployeePage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox fx:id="teamPage" maxHeight="700.0" prefHeight="700.0" prefWidth="1200.0" styleClass="parent" stylesheets="/easv/ui/styling/TeamsPage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Region minWidth="80.0" prefHeight="700.0" prefWidth="92.0" />
         <VBox alignment="CENTER" prefHeight="700.0" prefWidth="842.0" spacing="10.0" HBox.hgrow="ALWAYS">

@@ -5,6 +5,8 @@ import easv.Utility.DisplayEmployees;
 import easv.be.*;
 import easv.bll.EmployeesLogic.EmployeeManager;
 import easv.bll.EmployeesLogic.IEmployeeManager;
+import easv.bll.RegionLogic.IRegionManager;
+import easv.bll.RegionLogic.RegionManager;
 import easv.bll.TeamLogic.ITeamLogic;
 import easv.bll.TeamLogic.TeamLogic;
 import easv.bll.countryLogic.CountryLogic;
@@ -32,6 +34,10 @@ public class Model implements IModel {
 
     // the bussines logic object responsible of team logic
     private ITeamLogic teamManager;
+    /**
+     * the logic layer responsible for region management
+     */
+    private IRegionManager regionManager;
     /**
      * the logic layer responsible  of countries management
      */
@@ -103,6 +109,7 @@ public class Model implements IModel {
         this.countries = FXCollections.observableHashMap();
         this.employeeManager = new EmployeeManager();
         this.countryLogic = new CountryLogic();
+        this.regionManager = new RegionManager();
         this.teamManager = new TeamLogic();
         this.validMapViewCountryNameValues = new ArrayList<>();
         this.teams = FXCollections.observableHashMap();
@@ -309,9 +316,9 @@ public class Model implements IModel {
      * retrieve the countries as an observable list
      */
     public ObservableList<Country> getCountiesValues() {
-        ObservableList<Country> coutriesList = FXCollections.observableArrayList();
-        coutriesList.setAll(countries.values());
-        return coutriesList;
+        ObservableList<Country> countriesList = FXCollections.observableArrayList();
+        countriesList.setAll(countries.values());
+        return countriesList;
     }
 
 
@@ -540,6 +547,20 @@ public class Model implements IModel {
 
     public Team getSelectedTeamToDistributeFrom() {
         return selectedTeamToDistributeFrom;
+    }
+
+    @Override
+    public void addNewRegion(Region region, List<Country> countries) throws RateException {
+        int regionID = regionManager.addRegion(region, countries);
+        if (regionID > 0) {
+            region.setId(regionID);
+            regionsWithCountries.put(regionID, region);
+        }
+    }
+
+    @Override
+    public void updateRegion(Region region, List<Country> countries) throws RateException {
+        regionManager.updateRegion(region, countries);
     }
 
     /**
