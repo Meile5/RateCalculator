@@ -24,4 +24,7 @@ public interface ITeamLogic  {
 
     /**perform the simulation computation*/
     Map<OverheadHistory, List<Team>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Team, String> insertedDistributionPercentageFromTeams);
+
+    /**save the distribution operation performed*/
+  boolean saveDistributionOperation(Map<Team, String> insertedDistributionPercentageFromTeams ,Team selectedTeamToDistributeFrom) throws RateException;
 }
