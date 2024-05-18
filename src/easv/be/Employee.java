@@ -25,9 +25,15 @@ public class Employee {
 
 
     // the idea to store the employee percentage per each team
-    private Map<Integer,BigDecimal> utilperTeams;
+    private Map<Integer,BigDecimal> utilPerTeams;
 
+    public Map<Integer, BigDecimal> getUtilPerTeams() {
+        return utilPerTeams;
+    }
 
+    public void setUtilPerTeams(Map<Integer, BigDecimal> utilPerTeams) {
+        this.utilPerTeams = utilPerTeams;
+    }
 
     public void setOverhead(BigDecimal overhead) {
         this.overhead = overhead;

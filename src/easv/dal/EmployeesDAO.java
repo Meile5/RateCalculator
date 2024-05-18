@@ -506,7 +506,7 @@ public class EmployeesDAO implements IEmployeeDAO {
      */
     @Override
     public Map<Integer, Team> getTeamsWithEmployees() throws RateException {
-        String sql = "SELECT t.TeamID,t.TeamName,t.TeamCurrency,e.EmployeeID,e.Name,e.EmployeeType,e.Currency FROM TeamEmployee  te " +
+        String sql = "SELECT t.TeamID,t.TeamName,t.TeamCurrency,e.EmployeeID,e.Name,e.EmployeeType,e.Currency,te.UtilizationPercentage FROM TeamEmployee  te " +
                 "RIGHT JOIN Employees e ON e.EmployeeID=te.EmployeeID " +
                 "RIGHT JOIN Teams t ON t.TeamId = te.TeamId " +
                 "Order By TeamID; ";
@@ -537,6 +537,13 @@ public class EmployeesDAO implements IEmployeeDAO {
                         List<Configuration> employeeConfigurations = retrieveConfigurationsForEmployee(employee, conn);
                         employee.setConfigurations(employeeConfigurations);
                         currentTeam.addNewTeamMember(employee);
+
+                        /* retrieves utilization percentage and stores it in the employee's map*/
+                        BigDecimal utilization = rs.getBigDecimal("UtilizationPercentage");
+                        if (employee.getUtilPerTeams() == null) {
+                            employee.setUtilPerTeams(new HashMap<>());
+                        }
+                        employee.getUtilPerTeams().put(teamId, utilization);
                     }
                     for (Team team : retrievedTeams.values()) {
                         List<Region> regions = new ArrayList<>();
