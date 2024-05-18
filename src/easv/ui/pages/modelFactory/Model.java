@@ -614,6 +614,12 @@ public class Model implements IModel {
        Team team =  insertedDistributionPercentageFromTeams.keySet().stream().filter(e->e.getId()==teamId).findFirst().orElse(null);
        return team!=null;
     }
+
+    @Override
+    public Boolean saveDistribution() {
+        return true;
+    }
+
     /**return all employees for team manage*/
     public List<Employee> getAllEmployees() {
         for (Map.Entry<Integer, Team> entry : teamsWithEmployees.entrySet()) {
