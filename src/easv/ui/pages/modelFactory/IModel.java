@@ -129,15 +129,15 @@ public interface IModel {
     /**
      * add the team and the percentage that user chose to distribute
      *
-     * @param teamId             the  id of team that will receive overhead
+     * @param team            the   team that will receive overhead
      * @param overheadPercentage the overhead percentage received by the team
      */
-    void addDistributionPercentageTeam(Integer teamId, String overheadPercentage);
+    void addDistributionPercentageTeam(Team team , String overheadPercentage);
 
     /**
      * remove the team and the inserted overhead percentage from the map
      */
-    void removeDistributionPercentageTeam(Integer teamId);
+    void removeDistributionPercentageTeam(Team team);
 
 
     /**
@@ -158,12 +158,12 @@ public interface IModel {
      */
     DistributionValidation validateInputs();
 
-    Map<Integer, String> getInsertedDistributionPercentageFromTeams();
+    Map<Team, String> getInsertedDistributionPercentageFromTeams();
 
     /**
      * set the percentage of the selected team to distribute
      */
-    void setDistributionPercentageTeam(Integer selectedTeamId, String newValue);
+    void setDistributionPercentageTeam(Team selectedTeam, String newValue);
 
     /** calculate total overhead inserted in order to update the displayed value*/
     double calculateTeTotalOverheadInserted();
@@ -173,4 +173,7 @@ public interface IModel {
     String  getTeamName(int teamId);
 
     Map<OverheadHistory, List<Team>> performSimulation();
+
+    /**check if the team is already selected to distribute*/
+    boolean isTeamSelectedToDistribute(Integer teamId);
 }

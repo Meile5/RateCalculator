@@ -88,7 +88,7 @@ public class Model implements IModel {
     /**
      * holds the temporary values for the teams that user inserted in the distribution page
      */
-    private final Map<Integer, String> insertedDistributionPercentageFromTeams;
+    private final Map<Team, String> insertedDistributionPercentageFromTeams;
 
     /**
      * the selected team that user chose to distribute from and the associated value
@@ -515,22 +515,22 @@ public class Model implements IModel {
     /**
      * add the team and the percentage that user chose to distribute
      *
-     * @param teamId               the team id that will receive overhead
+     * @param team               the team that will receive overhead
      * @param overheadPercentage the overhead percentage received by the team
      */
-    public void addDistributionPercentageTeam(Integer teamId, String overheadPercentage) {
-        this.insertedDistributionPercentageFromTeams.put(teamId, overheadPercentage);
+    public void addDistributionPercentageTeam(Team team , String overheadPercentage) {
+        this.insertedDistributionPercentageFromTeams.put(team, overheadPercentage);
     }
 
-    public Map<Integer, String> getInsertedDistributionPercentageFromTeams() {
+    public Map<Team, String> getInsertedDistributionPercentageFromTeams() {
         return insertedDistributionPercentageFromTeams;
     }
 
 
     /**add the  overhead value to distribute,inserted by the user*/
     @Override
-    public void setDistributionPercentageTeam(Integer selectedTeamId,String newValue) {
-         this.insertedDistributionPercentageFromTeams.put(selectedTeamId,newValue);
+    public void setDistributionPercentageTeam(Team selectedTeam,String newValue) {
+         this.insertedDistributionPercentageFromTeams.put(selectedTeam,newValue);
     }
 
     @Override
@@ -545,8 +545,8 @@ public class Model implements IModel {
     /**
      * remove the team and the inserted overhead percentage from the map
      */
-    public void removeDistributionPercentageTeam(Integer teamId) {
-        this.insertedDistributionPercentageFromTeams.remove(teamId);
+    public void removeDistributionPercentageTeam(Team team) {
+        this.insertedDistributionPercentageFromTeams.remove(team);
     }
 
 
@@ -566,7 +566,7 @@ public class Model implements IModel {
 
     @Override
     public DistributionValidation validateInputs() {
-        return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams);
+        return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams ,selectedTeamToDistributeFrom);
 
     }
 
@@ -580,7 +580,13 @@ public class Model implements IModel {
     /**perform simulation computation*/
     @Override
     public Map<OverheadHistory, List<Team>> performSimulation() {
-        return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams,teamsWithEmployees);
+        return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams);
+    }
+
+
+    public boolean isTeamSelectedToDistribute(Integer teamId){
+       Team team =  insertedDistributionPercentageFromTeams.keySet().stream().filter(e->e.getId()==teamId).findFirst().orElse(null);
+       return team!=null;
     }
 
 

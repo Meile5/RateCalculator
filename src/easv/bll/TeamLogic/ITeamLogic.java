@@ -16,12 +16,12 @@ public interface ITeamLogic  {
 
   OverheadComputationPair <String ,BigDecimal> computeRegionOverhead(Region region);
 
-    DistributionValidation  validateDistributionInputs(Map<Integer, String> insertedDistributionPercentageFromTeams);
+    DistributionValidation  validateDistributionInputs(Map<Team, String> insertedDistributionPercentageFromTeams,Team selectedTeamToDistributeFrom);
 
     /**calculate the total overhead inserted for the valid inputs*/
-    double calculateTotalOverheadInsertedForValidInputs(Map<Integer, String> insertedDistributionPercentageFromTeams);
+    double calculateTotalOverheadInsertedForValidInputs(Map<Team, String> insertedDistributionPercentageFromTeams);
 
 
     /**perform the simulation computation*/
-    Map<OverheadHistory, List<Team>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Integer, String> insertedDistributionPercentageFromTeams, ObservableMap<Integer, Team> teamsWithEmployees);
+    Map<OverheadHistory, List<Team>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Team, String> insertedDistributionPercentageFromTeams);
 }

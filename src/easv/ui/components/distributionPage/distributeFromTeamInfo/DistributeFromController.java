@@ -26,7 +26,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class DistributeFromController implements Initializable, DistributionComponentInterface {
+public class DistributeFromController implements Initializable, DistributionFromComponentInterface {
     @FXML
     private final HBox teamComponent;
     @FXML
@@ -115,7 +115,12 @@ public class DistributeFromController implements Initializable, DistributionComp
                     showInfoError(ErrorCode.NO_EMPLOYEES.getValue());
                     return;
                 }
-                model.setDistributeFromTeam(teamToDisplay);
+                if(model.isTeamSelectedToDistribute(teamToDisplay.getId())){
+                    showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
+                    return;
+                }
+                //save a copy of the team into the model, in order to perform simulations without affecting the teams original values
+                model.setDistributeFromTeam( new Team(teamToDisplay));
                 controllerMediator.addTeamToDistributeFrom(teamToDisplay);
                 this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"), false);
                 this.controllerMediator.setTheSelectedComponentToDistributeFrom(this);
@@ -128,15 +133,18 @@ public class DistributeFromController implements Initializable, DistributionComp
                     showInfoError(ErrorCode.NO_EMPLOYEES.getValue());
                     return;
                 }
-                if(model.getSelectedTeamToDistributeFrom().getId()==teamToDisplay.getId()){
-                    showInfoError(ErrorCode.DISTRIBUTE_FROM.getValue());
-                    return;
+
+                if(model.getSelectedTeamToDistributeFrom()!=null){
+                    if(model.getSelectedTeamToDistributeFrom().getId()==teamToDisplay.getId()){
+                        showInfoError(ErrorCode.DISTRIBUTE_FROM.getValue());
+                        return;
+                    }
                 }
 
                 /*when the team to distribute  is selected from the list will be added
                   in the model insertedDistributionPercentageFromTeams without overhead percentage */
-                if(!model.getInsertedDistributionPercentageFromTeams().containsKey(teamToDisplay.getId())){
-                    model.addDistributionPercentageTeam(teamToDisplay.getId(), EMPTY_VALUE);
+                if(!model.isTeamSelectedToDistribute(teamToDisplay.getId())){
+                    model.addDistributionPercentageTeam(new Team(teamToDisplay), EMPTY_VALUE);
                     controllerMediator.addDistributeToTeam(new Team(teamToDisplay));
                 }
             }
@@ -161,6 +169,15 @@ public class DistributeFromController implements Initializable, DistributionComp
         WindowsManagement.showStackPane(modalLayout);
     }
 
-
+    @Override
+    public void setDayRate(String value) {
+            this.dayRate.setText(value);
+            this.dayRate.getTooltip().setText(value);
+    }
+@Override
+    public void setHourlyRate(String value) {
+        this.dayRate.setText(value);
+        this.dayRate.getTooltip().setText(value);
+}
 
 }
