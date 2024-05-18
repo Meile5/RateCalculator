@@ -1,5 +1,4 @@
 package easv.ui.pages.distribution;
-
 import easv.Utility.WindowsManagement;
 import easv.be.DistributionValidation;
 import easv.be.OverheadHistory;
@@ -33,6 +32,7 @@ import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
@@ -50,7 +50,6 @@ public class DistributionController implements Initializable, DistributionContro
     private BarChart<String, BigDecimal> barchartAfterTheSimulation;
     private IModel model;
     private ControllerMediator distributionMediator;
-    //   private DistributeToMediator distributeToMediator;
     @FXML
     private Button simulateButton, saveButton;
     @FXML
@@ -61,6 +60,7 @@ public class DistributionController implements Initializable, DistributionContro
     private HBox totalOverheadContainer;
     private StackPane secondLayout;
     private Service<Map<OverheadHistory, List<Team>>> simulateService;
+    private Service<Boolean> saveDistribution;
 
 
     private final static PseudoClass OVER_LIMIT = PseudoClass.getPseudoClass("errorLimit");
@@ -72,8 +72,6 @@ public class DistributionController implements Initializable, DistributionContro
         this.secondLayout = secondLayout;
         this.distributionMediator = new ControllerMediator();
         this.distributionMediator.registerDistributionController(this);
-        //    this.distributeToMediator = new DistributeToMediator();
-        //    this.distributeToMediator.registerMainController(this);
         try {
             distributionPage = loader.load();
         } catch (IOException e) {
@@ -156,60 +154,68 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
 
+    /**perform distribution simulation*/
     private void addSimulateButtonListener() {
         this.simulateButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            String validateSelectedTeams = validateTeamsDistributionSelection();
-            if (!validateSelectedTeams.isEmpty()) {
-                showInfoError(validateSelectedTeams);
-                return;
-            }
-
-            // validate the user entered inputs for overhead distribution
-            DistributionValidation inputValidation = model.validateInputs();
-
-            if (inputValidation.getErrorValues().containsKey(ErrorCode.OVERHEAD_ZERO)) {
-                showInfoError(ErrorCode.OVERHEAD_ZERO.getValue());
-                return;
-            }
-
-
-            if (inputValidation.getErrorValues().containsKey(ErrorCode.EMPTY_OVERHEAD)) {
-                StringBuilder emptyValues = new StringBuilder();
-                emptyValues.append(ErrorCode.EMPTY_OVERHEAD).append("\n");
-                inputValidation.getErrorValues().get(ErrorCode.EMPTY_OVERHEAD).forEach(
-                        e -> emptyValues.append(e.getTeamName()).append("\n"));
-                showInfoError(emptyValues.toString());
-                changeEmptyComponentsStyle(inputValidation.getErrorValues().get(ErrorCode.EMPTY_OVERHEAD));
-                return;
-            }
-
-
-            if (!inputValidation.getErrorValues().isEmpty()) {
-                StringBuilder invalidInput = new StringBuilder();
-
-                if (inputValidation.getErrorValues().containsKey(ErrorCode.INVALID_OVERHEADVALUE)) {
-                    //apend the invalid  error message
-                    invalidInput.append(ErrorCode.INVALID_OVERHEADVALUE.getValue())
-                            .append(ErrorCode.INVALID_OVERHEAD_MESSAGE).append("\n");
-                    //append the invalid teams names
-                    inputValidation.getErrorValues().get(ErrorCode.INVALID_OVERHEADVALUE).forEach(
-                            e -> invalidInput.append(e.getTeamName()).append("\n"));
-                }
-                if (inputValidation.getErrorValues().containsKey(ErrorCode.OVER_LIMIT)) {
-                    //append the invalid error message
-                    invalidInput.append(ErrorCode.OVER_LIMIT.getValue()).append("\n");
-                }
-
-                //show the error window for the user
-                showInfoError(invalidInput.toString());
-                return;
-            }
+            if (distributionIsInvalid()) return;
 
             this.secondLayout.getChildren().add(new MFXProgressSpinner());
             WindowsManagement.showStackPane(secondLayout);
             //start the service that will perform the computation
             initializeSimulateService();
         });
+    }
+
+
+  /**validate the  distribution  inputs*/
+    private boolean distributionIsInvalid() {
+        String validateSelectedTeams = validateTeamsDistributionSelection();
+        if (!validateSelectedTeams.isEmpty()) {
+            showInfoError(validateSelectedTeams);
+            return true;
+        }
+
+        // validate the user entered inputs for overhead distribution
+        DistributionValidation inputValidation = model.validateInputs();
+
+        if (inputValidation.getErrorValues().containsKey(ErrorCode.OVERHEAD_ZERO)) {
+            showInfoError(ErrorCode.OVERHEAD_ZERO.getValue());
+            return true;
+        }
+
+
+        if (inputValidation.getErrorValues().containsKey(ErrorCode.EMPTY_OVERHEAD)) {
+            StringBuilder emptyValues = new StringBuilder();
+            emptyValues.append(ErrorCode.EMPTY_OVERHEAD).append("\n");
+            inputValidation.getErrorValues().get(ErrorCode.EMPTY_OVERHEAD).forEach(
+                    e -> emptyValues.append(e.getTeamName()).append("\n"));
+            showInfoError(emptyValues.toString());
+            changeEmptyComponentsStyle(inputValidation.getErrorValues().get(ErrorCode.EMPTY_OVERHEAD));
+            return true;
+        }
+
+
+        if (!inputValidation.getErrorValues().isEmpty()) {
+            StringBuilder invalidInput = new StringBuilder();
+
+            if (inputValidation.getErrorValues().containsKey(ErrorCode.INVALID_OVERHEADVALUE)) {
+                //apend the invalid  error message
+                invalidInput.append(ErrorCode.INVALID_OVERHEADVALUE.getValue())
+                        .append(ErrorCode.INVALID_OVERHEAD_MESSAGE).append("\n");
+                //append the invalid teams names
+                inputValidation.getErrorValues().get(ErrorCode.INVALID_OVERHEADVALUE).forEach(
+                        e -> invalidInput.append(e.getTeamName()).append("\n"));
+            }
+            if (inputValidation.getErrorValues().containsKey(ErrorCode.OVER_LIMIT)) {
+                //append the invalid error message
+                invalidInput.append(ErrorCode.OVER_LIMIT.getValue()).append("\n");
+            }
+
+            //show the error window for the user
+            showInfoError(invalidInput.toString());
+            return true;
+        }
+        return false;
     }
 
     private void updateInsertedTotalValueStyle(double value) {
@@ -329,8 +335,6 @@ public class DistributionController implements Initializable, DistributionContro
      * update components values with the new calculation values
      */
     private void updateComponentsOverheadValues() {
-        System.out.println(model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamDayRate() + " selected team ");
-        System.out.println(model.getInsertedDistributionPercentageFromTeams());
         if (model.getSelectedTeamToDistributeFrom().getActiveConfiguration() != null) {
             double dayRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamDayRate().doubleValue();
             double hourlyRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamHourlyRate().doubleValue();
@@ -341,6 +345,34 @@ public class DistributionController implements Initializable, DistributionContro
             distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().doubleValue());
         }
     }
+
+
+
+
+    /**save the distribution overhead operation resulted values*/
+    private void saveDistribution(){
+        this.saveDistribution= new Service<Boolean>() {
+            @Override
+            protected Task<Boolean> createTask() {
+                return  new Task<Boolean>() {
+                    @Override
+                    protected Boolean call() throws Exception {
+                        return  model.saveDistribution();
+                    }
+                };
+            }
+        };
+        this.saveDistribution.setOnSucceeded((e)->{
+
+        });
+
+
+
+    }
+
+
+
+
 
 
 }

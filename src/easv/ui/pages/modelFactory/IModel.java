@@ -179,4 +179,7 @@ public interface IModel {
 
     /**check if the team is already selected to distribute*/
     boolean isTeamSelectedToDistribute(Integer teamId);
+
+    /**save the  distribution operation*/
+    Boolean saveDistribution();
 }
