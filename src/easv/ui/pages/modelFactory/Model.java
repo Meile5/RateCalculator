@@ -368,7 +368,6 @@ public class Model implements IModel {
     }
 
     public List<String> getValidCountries() {
-        System.out.println(validMapViewCountryNameValues);
         return validMapViewCountryNameValues;
     }
 
@@ -464,8 +463,6 @@ public class Model implements IModel {
         if (areObservableListsEqual(filteredEmployeesListByRegion, displayedEmployees)) {
             filteredEmployeesListByRegion.setAll(displayedEmployees);
         }
-        System.out.println("CT Disp" + displayedEmployees);
-        System.out.println("CT Filt" + filteredEmployeesListByRegion);
     }
 
 
@@ -556,16 +553,14 @@ public class Model implements IModel {
 
     @Override
     public void addNewRegion(Region region, List<Country> countries) throws RateException {
-        int regionID = regionManager.addRegion(region, countries);
-        if (regionID > 0) {
-            region.setId(regionID);
-            regionsWithCountries.put(regionID, region);
-        }
+        region = regionManager.addRegion(region, countries);
+        regionsWithCountries.put(region.getId(), region);
     }
 
     @Override
     public void updateRegion(Region region, List<Country> countries) throws RateException {
-        regionManager.updateRegion(region, countries);
+        region = regionManager.updateRegion(region, countries);
+        regionsWithCountries.get(region.getId()).setCountries(countries);
     }
 
     /**
@@ -616,8 +611,10 @@ public class Model implements IModel {
     }
 
     @Override
-    public Boolean saveDistribution() {
-        return true;
+    public boolean saveDistribution() throws RateException {
+      insertedDistributionPercentageFromTeams.keySet().forEach((e)-> System.out.println(e.getActiveConfiguration().getTeamDayRate() + " " +  e.getActiveConfiguration().getTeamHourlyRate() + " oon saved" ));
+        System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "day rate" + selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate() + "team day rate");
+        return teamManager.saveDistributionOperation(insertedDistributionPercentageFromTeams,selectedTeamToDistributeFrom);
     }
 
     /**return all employees for team manage*/

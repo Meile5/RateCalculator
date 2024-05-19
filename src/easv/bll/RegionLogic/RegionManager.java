@@ -6,8 +6,9 @@ import easv.dal.regionDAO.IRegionDAO;
 import easv.dal.regionDAO.RegionDAO;
 import easv.exception.RateException;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class RegionManager implements IRegionManager{
 
@@ -18,12 +19,28 @@ public class RegionManager implements IRegionManager{
     }
 
     @Override
-    public int addRegion(Region region, List<Country> countries) throws RateException {
-        return regionDAO.addRegion(region, countries);
+    public Region addRegion(Region region, List<Country> countries) throws RateException {
+        int regionID = regionDAO.addRegion(region, countries);
+        if (regionID > 0) {
+            region.setId(regionID);
+            region.setCountries(countries);
+        }
+        return region;
     }
 
     @Override
-    public void updateRegion(Region region, List<Country> countries) throws RateException {
-        regionDAO.updateRegion(region, countries);
+    public Region updateRegion(Region region, List<Country> countries) throws RateException {
+        List<Country> existingCountries = region.getCountries();
+
+        Set<Country> existingSet = new HashSet<>(existingCountries);
+        Set<Country> newSet = new HashSet<>(countries);
+        Set<Country> addedCountries = new HashSet<>(newSet);
+        addedCountries.removeAll(existingSet);
+        Set<Country> removedCountries = new HashSet<>(existingSet);
+        removedCountries.removeAll(newSet);
+
+        regionDAO.updateRegion(region, addedCountries.stream().toList(), removedCountries.stream().toList());
+        region.setCountries(countries);
+        return region;
     }
 }

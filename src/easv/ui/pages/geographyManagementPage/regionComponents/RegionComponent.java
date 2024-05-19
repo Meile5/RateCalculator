@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class RegionComponent implements Initializable {
+public class RegionComponent extends HBox implements Initializable {
 
     @FXML
     private HBox regionInfoComponent;
@@ -58,7 +58,8 @@ public class RegionComponent implements Initializable {
     }
 
     private void displayDelete() {
-
+        deleteContainer.getChildren().clear();
+        this.deleteContainer.getChildren().add(deleteRegionController.getRoot());
     }
 
     private void setLabels() {
@@ -86,5 +87,9 @@ public class RegionComponent implements Initializable {
 
     public HBox getRoot() {
         return regionInfoComponent;
+    }
+
+    public Region getRegion() {
+        return region;
     }
 }

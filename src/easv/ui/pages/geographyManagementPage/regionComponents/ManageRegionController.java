@@ -17,6 +17,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -51,7 +52,7 @@ public class ManageRegionController implements Initializable {
     private StackPane pane;
     private StackPane secondPane;
     private Region region;
-    private List<Country> countries;
+    private List<Country> countriesList;
     private Service<Void> saveRegion;
     private GeographyManagementController controller;
     private boolean isEditOperation = false;
@@ -73,7 +74,7 @@ public class ManageRegionController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        countries = new ArrayList<>();
+        countriesList = new ArrayList<>();
 
         setFields();
         addCountryListener();
@@ -87,7 +88,7 @@ public class ManageRegionController implements Initializable {
         addCountryBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(RegionValidation.isCountrySelected(countriesCB)){
                 Country country = countriesCB.getSelectedItem();
-                countries.add(country);
+                countriesList.add(country);
                 countriesListView.getItems().add(country);
 
                 countriesCB.clearSelection();
@@ -98,7 +99,7 @@ public class ManageRegionController implements Initializable {
     private void removeCountryListener() {
         removeCountryBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(RegionValidation.isCountryToRemoveSelected(countriesListView)){
-                countries.remove(countriesListView.getSelectionModel().getSelectedIndex());
+                countriesList.remove(countriesListView.getSelectionModel().getSelectedIndex());
                 countriesListView.getItems().remove(countriesListView.getSelectionModel().getSelectedIndex());
             }});
     }
@@ -107,31 +108,30 @@ public class ManageRegionController implements Initializable {
         if(region != null){
             regionNameTF.setText(region.getRegionName());
             countriesListView.getItems().addAll(region.getCountries());
-            countriesCB.getItems().addAll(model.getOperationalCountries());
 
-            countries.addAll(region.getCountries());
+            countriesList.addAll(region.getCountries());
             isEditOperation = true;
         }
+        countriesCB.getItems().addAll(model.getOperationalCountries());
     }
 
     private void saveRegionListener() {
         saveBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(RegionValidation.isRegionNameValid(regionNameTF) && RegionValidation.isCountryListValid(countriesListView)){
+                enableProgressBar();
                 if(isEditOperation) {
-                    enableProgressBar();
                     region.setRegionName(regionNameTF.getText());
-                    secondPane.getChildren().add(progressSpinner);
-                    WindowsManagement.showStackPane(secondPane);
+//                    secondPane.getChildren().add(progressSpinner);
+//                    WindowsManagement.showStackPane(secondPane);
 
-                    saveRegionOperation(region, countries);
+                    saveRegionOperation(region, countriesList);
                 } else {
-                    enableProgressBar();
-                    secondPane.getChildren().add(progressSpinner);
-                    WindowsManagement.showStackPane(secondPane);
+//                    secondPane.getChildren().add(progressSpinner);
+//                    WindowsManagement.showStackPane(secondPane);
 
                     String name = regionNameTF.getText();
                     region = new Region(name);
-                    saveRegionOperation(region, countries);
+                    saveRegionOperation(region, countriesList);
                 }
             }
         });
@@ -168,7 +168,8 @@ public class ManageRegionController implements Initializable {
 
         saveRegion.setOnSucceeded(event -> {
             controller.showOperationStatus("Operation Successful!", Duration.seconds(2));
-            WindowsManagement.closeStackPane(secondPane);
+                controller.addRegionComponent(region);
+            //WindowsManagement.closeStackPane(secondPane);
             WindowsManagement.closeStackPane(pane);
             disableProgressBar();
 
@@ -176,7 +177,7 @@ public class ManageRegionController implements Initializable {
 
         saveRegion.setOnFailed(event -> {
             controller.showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
-            WindowsManagement.closeStackPane(secondPane);
+            //WindowsManagement.closeStackPane(secondPane);
             WindowsManagement.closeStackPane(pane);
             disableProgressBar();
         });

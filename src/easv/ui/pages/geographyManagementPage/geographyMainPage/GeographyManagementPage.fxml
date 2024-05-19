@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
@@ -50,7 +51,7 @@
                      </children>
                   </HBox>
                   <Region prefHeight="37.0" prefWidth="82.0" HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" text="Add Region" />
+                  <Button fx:id="addRegionBTN" mnemonicParsing="false" text="Add Region" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
@@ -101,7 +102,7 @@
                      </children>
                   </HBox>
                   <Region prefHeight="50.0" prefWidth="67.0" HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" text="Add Country" />
+                  <Button fx:id="addCountryBTN" mnemonicParsing="false" text="Add Country" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
@@ -143,6 +144,7 @@
             <MFXProgressSpinner fx:id="progressBar" disable="true" visible="false" />
          </children>
       </HBox>
+      <StackPane fx:id="secondPane" disable="true" prefHeight="150.0" prefWidth="200.0" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="2" />
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
