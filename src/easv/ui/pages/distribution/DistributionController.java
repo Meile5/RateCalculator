@@ -9,6 +9,7 @@ import easv.exception.RateException;
 import easv.ui.components.common.errorWindow.ErrorWindowController;
 import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFromController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
+import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToInterface;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToListCell;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
@@ -267,7 +268,7 @@ public class DistributionController implements Initializable, DistributionContro
      */
     @Override
     public void addDistributeToTeam(Team teamToDisplay) {
-        DistributeToController selectedTeam = new DistributeToController(model, teamToDisplay, distributionMediator, secondLayout);
+        DistributeToInterface selectedTeam = new DistributeToController(model, teamToDisplay, distributionMediator, secondLayout);
         distributionMediator.addDistributeToController(selectedTeam, teamToDisplay.getId());
         this.selectedToDistributeTo.getChildren().add(selectedTeam.getRoot());
     }

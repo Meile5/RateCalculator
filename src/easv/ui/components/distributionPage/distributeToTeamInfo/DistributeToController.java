@@ -30,7 +30,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class DistributeToController implements Initializable {
+public class DistributeToController implements Initializable,DistributeToInterface {
     @FXML
     private final HBox teamComponentDistributeFrom;
     @FXML
@@ -225,14 +225,10 @@ public class DistributeToController implements Initializable {
         modalLayout.getChildren().add(errorWindowController.getRoot());
         WindowsManagement.showStackPane(modalLayout);
     }
+
+
     public boolean isTheSameEntityDisplayed(int teamId){
         return this.teamToDisplay.getId()== teamId;
     }
-
-
-
-
-
-
 
 }

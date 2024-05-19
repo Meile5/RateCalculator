@@ -40,21 +40,12 @@ public class TeamDao implements ITeamDao {
     }
 
 
+
+    //TODO uncoment the code that saves to the database
     @Override
     public boolean savePerformedDistribution(Map<Team, Map<RateType, BigDecimal>> receivedTeams, Team selectedTeamToDistributeFrom) throws RateException {
 
         Connection conn = null;
-
-        System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "from database");
-        System.out.println(receivedTeams);
-        BigDecimal sharefdDayRate = receivedTeams.get(selectedTeamToDistributeFrom).get(RateType.DAY_RATE);
-        BigDecimal sharefdHourRate = receivedTeams.get(selectedTeamToDistributeFrom).get(RateType.HOUR_RATE);
-
-
-        System.out.println(sharefdDayRate + "sharedDayRate + from dao");
-
-        System.out.println(sharefdHourRate + "sharedDayRate + from dao");
-
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
@@ -110,7 +101,6 @@ public class TeamDao implements ITeamDao {
      * save the  distribution resulted configuration , returns a map with the teamId and asociated resulted configuration id
      */
     private Map<Integer, Integer> insertTeamNewConfiguration(Connection conn, Team selectedTeam, Set<Team> receivedTeams) {
-        System.out.println(selectedTeam.getActiveConfiguration());
         Map<Integer, Integer> teamConfigMap = new HashMap<>();
         String sql = "INSERT INTO TeamConfiguration (TeamDailyRate, TeamHourlyRate, GrossMargin, MarkupMultiplier, ConfigurationDate, Active) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -166,7 +156,7 @@ public class TeamDao implements ITeamDao {
             }
         } catch (SQLException | RateException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
         return teamConfigMap;
     }
