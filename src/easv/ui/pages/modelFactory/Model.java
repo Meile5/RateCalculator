@@ -620,22 +620,29 @@ public class Model implements IModel {
     }
 
     @Override
-    public boolean saveDistribution() throws RateException {
+    public  Map<OverheadHistory, List<Team>> saveDistribution() throws RateException {
       insertedDistributionPercentageFromTeams.keySet().forEach((e)-> System.out.println(e.getActiveConfiguration().getTeamDayRate() + " " +  e.getActiveConfiguration().getTeamHourlyRate() + " oon saved" ));
         System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "day rate" + selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate() + "team day rate");
         System.out.println("------=-  before");
         Map<OverheadHistory, List<Team>> performedValues = teamManager.saveDistributionOperation(insertedDistributionPercentageFromTeams,selectedTeamToDistributeFrom,simulationPerformed,teamsWithEmployees);
+      //   update the  local teams with the new values;
+      if(!performedValues.isEmpty()){
+          // add the previous overhead values to the map to be displayed in the barchart
+         List<Team> previousValues = new ArrayList<>();
+          for(Team team: performedValues.get(OverheadHistory.CURRENT_OVERHEAD)){
+              previousValues.add(teamsWithEmployees.get(team.getId()));
+          }
+          performedValues.put(OverheadHistory.PREVIOUS_OVERHEAD,previousValues);
+          // add the selected team distribution performed,
 
-        // update the  local teams with the new values;
-//      if(savedPerformed){
-//          System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "team day rate after the saved data ");
-//          this.teamsWithEmployees.put(selectedTeamToDistributeFrom.getId(),selectedTeamToDistributeFrom);
-//          for(Team team : insertedDistributionPercentageFromTeams.keySet()){
-//              teamsWithEmployees.put(team.getId(),team);
-//          }
-//      }
 
-        return true;
+          // update the teams map in order to have the updated overhead rates values
+          for(Team team : performedValues.get(OverheadHistory.CURRENT_OVERHEAD)){
+              teamsWithEmployees.put(team.getId(),team);
+          }
+      }
+
+     return performedValues;
     }
 
     public boolean isSimulationPerformed() {

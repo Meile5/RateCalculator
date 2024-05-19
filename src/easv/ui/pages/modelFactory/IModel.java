@@ -181,7 +181,7 @@ public interface IModel {
     boolean isTeamSelectedToDistribute(Integer teamId);
 
     /**save the  distribution operation*/
-    boolean saveDistribution() throws RateException;
+    Map<OverheadHistory, List<Team>> saveDistribution() throws RateException;
     /**initialize the distribution entities , when user enter on the page*/
     void initializeDistributionEntities();
     /**set  that the simulation was performed*/

@@ -60,7 +60,7 @@ public class DistributionController implements Initializable, DistributionContro
     private HBox totalOverheadContainer;
     private StackPane secondLayout;
     private Service<Map<OverheadHistory, List<Team>>> simulateService;
-    private Service<Boolean> saveDistribution;
+    private Service< Map<OverheadHistory, List<Team>>> saveDistribution;
 
 
     private final static PseudoClass OVER_LIMIT = PseudoClass.getPseudoClass("errorLimit");
@@ -353,7 +353,6 @@ public class DistributionController implements Initializable, DistributionContro
      * update components values with the new calculation values
      */
     private void updateComponentsOverheadValues(Map<OverheadHistory, List<Team>> performedSimulation) {
-
           List<Team> performedComputation =  performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD_FROM);
           Team teamToDistributeFromNewOverhead= performedComputation.getFirst();
           if(teamToDistributeFromNewOverhead!=null){
@@ -362,39 +361,21 @@ public class DistributionController implements Initializable, DistributionContro
               distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
           }
 
-
-//
-//        if (model.getSelectedTeamToDistributeFrom().getActiveConfiguration() != null) {
-//            double dayRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
-//            double hourlyRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamHourlyRate().setScale(2,RoundingMode.HALF_UP).doubleValue();
-//            distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
-//        }
-
         for(Team team : performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD)){
             System.out.println( team.getActiveConfiguration().getTeamDayRate());
             distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue());
         }
-
-//
-//        for (Team team : model.getInsertedDistributionPercentageFromTeams().keySet()) {
-//            System.out.println(team.getActiveConfiguration().getTeamDayRate());
-//
-//
-//            distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue());
-//        }
-
-
     }
 
 
     /**initialize the save service */
     private void initializeSaveService() {
-        this.saveDistribution = new Service<Boolean>() {
+        this.saveDistribution = new Service< Map<OverheadHistory, List<Team>>>() {
             @Override
-            protected Task<Boolean> createTask() {
-                return new Task<Boolean>() {
+            protected Task< Map<OverheadHistory, List<Team>>> createTask() {
+                return new Task< Map<OverheadHistory, List<Team>>>() {
                     @Override
-                    protected Boolean call() throws Exception {
+                    protected  Map<OverheadHistory, List<Team>> call() throws Exception {
                         return model.saveDistribution();
                     }
                 };
@@ -403,17 +384,16 @@ public class DistributionController implements Initializable, DistributionContro
         this.saveDistribution.setOnSucceeded((e) -> {
             // showInfoError(ErrorCode.OPERATION_EXECUTED.getValue());
             // display that the operation was performed
-      //  "do logic for graph"    //populateTeamBarChartWithSimulatedOverhead();
-           // this.populateDistributeFromTeams();
-          //  this.populateDistributeToTeams();
+            showThesimulationBarChart(saveDistribution.getValue());
+            updateComponentsOverheadValues(saveDistribution.getValue());
+            this.populateDistributeFromTeams();
+           this.populateDistributeToTeams();
             WindowsManagement.closeStackPane(secondLayout);
         });
         this.saveDistribution.setOnCancelled((e) -> {
             WindowsManagement.closeStackPane(secondLayout);
         });
-
         saveDistribution.restart();
-
     }
 
 
