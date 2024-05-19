@@ -354,7 +354,7 @@ public class DistributionController implements Initializable, DistributionContro
      */
     private void updateComponentsOverheadValues(Map<OverheadHistory, List<Team>> performedSimulation) {
 
-          List<Team> performedComputation =  performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD);
+          List<Team> performedComputation =  performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD_FROM);
           Team teamToDistributeFromNewOverhead= performedComputation.getFirst();
           if(teamToDistributeFromNewOverhead!=null){
               double dayRate = teamToDistributeFromNewOverhead.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
@@ -370,8 +370,7 @@ public class DistributionController implements Initializable, DistributionContro
 //            distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
 //        }
 
-        for(int i=1; i<performedComputation.size();i++){
-            Team team =  performedComputation.get(i);
+        for(Team team : performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD)){
             System.out.println( team.getActiveConfiguration().getTeamDayRate());
             distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue());
         }
