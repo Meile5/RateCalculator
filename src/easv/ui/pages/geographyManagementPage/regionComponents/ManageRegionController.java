@@ -168,7 +168,13 @@ public class ManageRegionController implements Initializable {
 
         saveRegion.setOnSucceeded(event -> {
             controller.showOperationStatus("Operation Successful!", Duration.seconds(2));
+            if (isEditOperation) {
+                System.out.println("Region to Edit: " + region);
                 controller.addRegionComponent(region);
+                controller.removeRegionComponent(region);
+            } else {
+                controller.addRegionComponent(region);
+            }
             //WindowsManagement.closeStackPane(secondPane);
             WindowsManagement.closeStackPane(pane);
             disableProgressBar();
