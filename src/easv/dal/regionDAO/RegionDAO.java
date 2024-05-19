@@ -144,12 +144,12 @@ public class RegionDAO implements IRegionDAO{
     }
 
     @Override
-    public void deleteRegion(Region region) throws RateException {
+    public boolean deleteRegion(Region region) throws RateException {
         Connection conn = null;
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
-            String sql = "DELETE FROM Region WHERE ID = ?";
+            String sql = "DELETE FROM Region WHERE RegionID = ?";
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 psmt.setInt(1, region.getId());
                 psmt.executeUpdate();
@@ -169,6 +169,7 @@ public class RegionDAO implements IRegionDAO{
                 throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
             }
         }
+        return false;
     }
 
 }

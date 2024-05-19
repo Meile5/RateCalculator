@@ -235,4 +235,6 @@ public interface IModel {
 
     /**return the selected team from the search operation results*/
     Team getTeamById(int entityId);
+
+    void deleteRegion(Region region) throws RateException;
 }

@@ -43,7 +43,8 @@ public class RegionComponent extends HBox implements Initializable {
         this.pane = pane;
         this.controller = controller;
         try {
-            regionInfoComponent = loader.load();
+            loader.load();
+            this.getChildren().add(regionInfoComponent);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

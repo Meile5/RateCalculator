@@ -25,6 +25,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -131,7 +132,7 @@ public class GeographyManagementController implements Initializable {
     }
 
     public void addRegionComponent(Region region){
-        DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region);
+        DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region, this);
         RegionComponent regionComponent = new RegionComponent(model, pane, region, deleteRegionController, this);
         regionsVBox.getChildren().add(regionComponent.getRoot());
         if(!regions.contains(region))
@@ -140,10 +141,22 @@ public class GeographyManagementController implements Initializable {
 
     //TODO: ON UPDATE, ADD AND REMOVE COMPONENT ! - NELSON
 
-    private void removeRegionComponent(Region region){
-//        DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region);
-//        RegionComponent regionComponent = new RegionComponent(model, pane, region, deleteRegionController, this);
-//        regionsVBox.getChildren().add(regionComponent.getRoot());
+    public void removeRegionComponent(Region region){
+        for (Node node : regionsVBox.getChildren()) {
+            System.out.println("Region: " + region);
+            System.out.println(node.getClass());
+            System.out.println(node instanceof RegionComponent); // FALSE
+            System.out.println(node instanceof HBox); //TRUE
+            System.out.println(node.getParent());
+
+            if (node instanceof RegionComponent) {
+                RegionComponent regionComponent = (RegionComponent) node;
+                if (regionComponent.getRegion().equals(region)) {
+                    regionsVBox.getChildren().remove(regionComponent);
+                    break;
+                }
+            }
+        }
     }
 
     private void enableProgressBar(){

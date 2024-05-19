@@ -841,5 +841,13 @@ public class Model implements IModel {
 
 
 
+    @Override
+    public void deleteRegion(Region region) throws RateException {
+        boolean succeeded = regionManager.deleteRegion(region);
+        if(succeeded){
+            regionsWithCountries.remove(region.getId());
+        }
+    }
+
 
 }
