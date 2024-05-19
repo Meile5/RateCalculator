@@ -41,54 +41,64 @@ public class TeamDao implements ITeamDao {
 
 
     @Override
-    public boolean savePerformedDistribution(Map<Team, Map<RateType, Double>> receivedTeams, Team selectedTeamToDistributeFrom, Double sharedOverheadDay, Double sharedOverheadHour) throws RateException {
-       return true;
-//        Connection conn = null;
-//
-//        System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "from database");
-//        System.out.println(receivedTeams);
-//
-//        try {
-//            conn = connectionManager.getConnection();
-//            conn.setAutoCommit(false);
-//            conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
-//
-//            //set previous configurations to inactive
-//            setPreviousConfigurationsToInactive(conn,selectedTeamToDistributeFrom,receivedTeams.keySet());
-//            //insert new configuration
-//            Map<Integer,Integer> insertedTeamConfigurationId = insertTeamNewConfiguration(conn, selectedTeamToDistributeFrom, receivedTeams.keySet());
-//
-//            System.out.println(insertedTeamConfigurationId + "inserted id");
-//            // map team with configuration
-//            mapTeamWithConfiguration(conn,insertedTeamConfigurationId);
-//            //insert team employees in teamConfigurationHistory
-//            insertTeamConfigurationEmployees(conn,insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), selectedTeamToDistributeFrom.getEmployees());
-//            //insert team  shared distribution
-//            insertTeamSharedDistribution(conn, insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), receivedTeams);
-//            //insert teams into received overhead
-//            insertReceivedOverhead(conn, insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), receivedTeams);
-//
-//            conn.commit();
-//            return true;
-//        } catch (RateException | SQLException e) {
-//            if (conn != null) {
-//                try {
-//                    conn.rollback();
-//                } catch (SQLException ex) {
-//                    throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
-//                }
-//            }
-//        } finally {
-//
-//            if (conn != null) {
-//                try {
-//                    conn.close();
-//                } catch (SQLException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }
-//        return false;
+    public boolean savePerformedDistribution(Map<Team, Map<RateType, BigDecimal>> receivedTeams, Team selectedTeamToDistributeFrom) throws RateException {
+
+        Connection conn = null;
+
+        System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "from database");
+        System.out.println(receivedTeams);
+        BigDecimal sharefdDayRate = receivedTeams.get(selectedTeamToDistributeFrom).get(RateType.DAY_RATE);
+        BigDecimal sharefdHourRate = receivedTeams.get(selectedTeamToDistributeFrom).get(RateType.HOUR_RATE);
+
+
+        System.out.println(sharefdDayRate + "sharedDayRate + from dao");
+
+        System.out.println(sharefdHourRate + "sharedDayRate + from dao");
+        try {
+            conn = connectionManager.getConnection();
+            conn.setAutoCommit(false);
+            conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+
+            //set previous configurations to inactive
+            setPreviousConfigurationsToInactive(conn,selectedTeamToDistributeFrom,receivedTeams.keySet());
+            //insert new configuration
+            Map<Integer,Integer> insertedTeamConfigurationId = insertTeamNewConfiguration(conn, selectedTeamToDistributeFrom, receivedTeams.keySet());
+
+            System.out.println(insertedTeamConfigurationId + "inserted id");
+            // map team with configuration
+            mapTeamWithConfiguration(conn,insertedTeamConfigurationId);
+            //insert team employees in teamConfigurationHistory
+            insertTeamConfigurationEmployees(conn,insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), selectedTeamToDistributeFrom.getEmployees());
+            //insert team  shared distribution
+
+
+            BigDecimal sharedDayRate = receivedTeams.get(selectedTeamToDistributeFrom).get(RateType.DAY_RATE);
+            BigDecimal sharedHourRate = receivedTeams.get(selectedTeamToDistributeFrom).get(RateType.HOUR_RATE);
+            insertTeamSharedDistribution(conn, insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), selectedTeamToDistributeFrom.getId(),sharedDayRate, sharedHourRate);
+            //insert teams into received overhead
+            insertReceivedOverhead(conn, insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), selectedTeamToDistributeFrom.getId(), receivedTeams);
+
+            conn.commit();
+            return true;
+        } catch (RateException | SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
+                }
+            }
+        } finally {
+
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -171,9 +181,8 @@ public class TeamDao implements ITeamDao {
             psmt.addBatch();
             for (Team team : receivedTeams) {
                 psmt.setString(1, "false");
-                psmt.setInt(2, selectedTem.getActiveConfiguration().getId());
+                psmt.setInt(2, team.getActiveConfiguration().getId());
                psmt.addBatch();
-
             }
            int[] updatedRows= psmt.executeBatch();
             if(updatedRows.length==0){
@@ -242,17 +251,15 @@ public class TeamDao implements ITeamDao {
      * insert team shared distribution
      */
 
-    private boolean insertTeamSharedDistribution(Connection conn, int configId, Map<Team, Map<RateType, Double>> receivedTeams) throws RateException {
+    private boolean insertTeamSharedDistribution(Connection conn, int configId, int selectedTeamId, BigDecimal sharedDay,BigDecimal sharedHour ) throws RateException {
         String sql = "INSERT INTO TeamSharedDistribution (TeamConfigurationID,SharedTeamID,SharedDayOverhead,SharedHourOverhead)  values(?,?,?,?)";
 
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-            for (Team team : receivedTeams.keySet()) {
                 psmt.setInt(1, configId);
-                psmt.setInt(2, team.getId());
-                psmt.setDouble(3, receivedTeams.get(team).get(RateType.DAY_RATE));
-                psmt.setDouble(4, receivedTeams.get(team).get(RateType.HOUR_RATE));
+                psmt.setInt(2, selectedTeamId);
+                psmt.setDouble(3,sharedDay.doubleValue() );
+                psmt.setDouble(4, sharedHour.doubleValue());
                 psmt.addBatch();
-            }
             psmt.executeBatch();
             return true;
         } catch (SQLException e) {
@@ -266,16 +273,19 @@ public class TeamDao implements ITeamDao {
     /**
      * insert the received  overhead from the distribution operation
      */
-    private boolean insertReceivedOverhead(Connection conn, int configId, Map<Team, Map<RateType, Double>> receivedTeams) throws RateException {
+    private boolean insertReceivedOverhead(Connection conn, int configId, int selectedTeamId,Map<Team, Map<RateType, BigDecimal>> receivedTeams) throws RateException {
         String sql = "INSERT INTO TeamReceivedDistribution(TeamConfigurationID,ReceivedTeamID,ReceivedDayOverhead,ReceivedHourOverhead) " +
                 "VALUES (?,?,?,?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             for (Team team : receivedTeams.keySet()) {
-                psmt.setInt(1, configId);
-                psmt.setInt(2, team.getId());
-                psmt.setDouble(3, receivedTeams.get(team).get(RateType.DAY_RATE));
-                psmt.setDouble(4, receivedTeams.get(team).get(RateType.HOUR_RATE));
-                psmt.addBatch();
+                if(team.getId()!=selectedTeamId){
+                    psmt.setInt(1, configId);
+                    psmt.setInt(2, team.getId());
+                    psmt.setDouble(3, receivedTeams.get(team).get(RateType.DAY_RATE).doubleValue());
+                    psmt.setDouble(4, receivedTeams.get(team).get(RateType.HOUR_RATE).doubleValue());
+                    psmt.addBatch();
+                }
+
             }
             psmt.executeBatch();
 
