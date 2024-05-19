@@ -13,7 +13,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -54,6 +56,7 @@ public class EmployeesToAdd implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
+
     }
 
     public void setLabels() {
@@ -79,6 +82,24 @@ public class EmployeesToAdd implements Initializable {
             }
         }
         return BigDecimal.valueOf(100).subtract(totalUtilization);
+    }
+
+    public Employee getEditedEmployee(Team team) {
+        if (addEmployee.isSelected()) {
+            System.out.println(employee);
+            Employee editedEmployee = employee;
+            model.recalculateEmployeeRates(editedEmployee, team);
+
+
+
+
+
+
+
+
+            return editedEmployee;
+        }
+        return null;
     }
 
 }

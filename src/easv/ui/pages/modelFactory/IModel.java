@@ -183,4 +183,5 @@ public interface IModel {
     /**save the  distribution operation*/
     boolean saveDistribution() throws RateException;
     List<Employee> getAllEmployees();
+    void recalculateEmployeeRates(Employee employee, Team team);
 }

@@ -8,6 +8,7 @@ import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.components.editPage.EditController;
 import easv.ui.components.teamManagement.TeamManagementController;
+import easv.ui.components.teamManagementEmployeesAdd.EmployeesToAdd;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.teamsPage.TeamsPageController;
 import javafx.application.Platform;
@@ -33,6 +34,7 @@ public class TeamInfoController implements Initializable {
     private IModel model;
     private Team team;
     private TeamsPageController teamsPageController;
+    private EmployeesToAdd employeesToAdd;
     private StackPane firstLayout;
     @FXML
     private VBox editButton;
@@ -50,7 +52,6 @@ public class TeamInfoController implements Initializable {
         try {
             teamInfoComponent = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
              ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -80,7 +81,7 @@ public class TeamInfoController implements Initializable {
     }
     private void addEditAction() {
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this);
+            TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this, employeesToAdd);
             firstLayout.getChildren().add(teamManagementController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
         });

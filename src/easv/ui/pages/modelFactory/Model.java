@@ -619,14 +619,52 @@ public class Model implements IModel {
 
     /**return all employees for team manage*/
     public List<Employee> getAllEmployees() {
+
+        // Create a set to store unique employees
+        HashSet<Employee> uniqueEmployees = new HashSet<>();
+
         for (Map.Entry<Integer, Team> entry : teamsWithEmployees.entrySet()) {
             Team team = entry.getValue();
             if (team != null && team.getTeamMembers() != null) {
-                employeesForTeamsPage.addAll(team.getTeamMembers());
+                // Add employees to the set to remove duplicates
+                uniqueEmployees.addAll(team.getTeamMembers());
             }
         }
 
+        // Clear the original list
+        employeesForTeamsPage.clear();
+
+        // Add unique employees back to the observable list
+        employeesForTeamsPage.addAll(uniqueEmployees);
+
         return employeesForTeamsPage;
+    }
+
+    public void recalculateEmployeeRates(Employee employee, Team team){
+        BigDecimal hourlyRate = employeeManager.getEmployeeHourlyRateOnTeam(employee, team);
+        BigDecimal dayRate = employeeManager.getEmployeeDayRateOnTeam(employee, team);
+
+    }
+    public void performEditTeam(List<Employee> employee, Configuration configuration, Team editedTeam, Team originalTeam) throws RateException, SQLException {
+        employee = employeeManager.addEmployee(employee, configuration, teams);
+        if (employee != null) {
+            employees.put(employee.getId(), employee);
+
+            for (Team team : teams) {
+                team.addNewTeamMember(employee);
+                TeamConfiguration teamConfiguration = getNewEmployeeTeamConfiguration(team);
+                Map<Integer, BigDecimal> employeesDayRates = new HashMap<>();
+                Map<Integer, BigDecimal> employeesHourlyRates = new HashMap<>();
+                for (Employee employeeToCheck : team.getEmployees()) {
+                    BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeam(employeeToCheck, team);
+                    employeesHourlyRates.put(employeeToCheck.getId(), employeeHourlyRate);
+                    BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeam(employeeToCheck, team);
+                    employeesDayRates.put(employeeToCheck.getId(), employeeDayRate);
+                }
+                addTeamConfiguration(teamConfiguration, team, employeesDayRates, employeesHourlyRates);
+                teamsWithEmployees.get(team.getId()).addNewTeamMember(employee);
+            }
+        }
     }
 
 
