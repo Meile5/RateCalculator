@@ -41,7 +41,7 @@ public class Team {
     }
 
     /**
-     * copy constructor
+     * copy constructor, this constructor will not do a deep copy off the employees list
      */
     public Team(Team team) {
         this(team.getTeamName(),team.getCurrency(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);
@@ -51,7 +51,9 @@ public class Team {
         this.teamMembers = new ArrayList<>();
         teamMembers.addAll(team.getTeamMembers());
         this.teamConfigurationsHistory = new ArrayList<>();
-        teamConfigurationsHistory.addAll(team.teamConfigurationsHistory);
+        for (TeamConfiguration config : team.getTeamConfigurationsHistory()) {
+            this.teamConfigurationsHistory.add(new TeamConfiguration(config));
+        }
         this.utilizationPercentage = team.getUtilizationPercentage();
         this.countries = team.getCountries();
         this.regions= team.getRegions();
@@ -73,7 +75,7 @@ public class Team {
 
     @Override
     public int hashCode() {
-        return Objects.hash(teamName);
+        return Objects.hash(teamName,id);
     }
 
     public List<TeamConfiguration> getTeamConfigurationsHistory() {

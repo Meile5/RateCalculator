@@ -182,5 +182,14 @@ public interface IModel {
 
     /**save the  distribution operation*/
     boolean saveDistribution() throws RateException;
+    /**initialize the distribution entities , when user enter on the page*/
+    void initializeDistributionEntities();
+    /**set  that the simulation was performed*/
+    void setSimulationPerformed(boolean simulationPerformed);
+
+
+
+
+    /**TEAM MANAGEMENT LOGIC*/
     List<Employee> getAllEmployees();
 }

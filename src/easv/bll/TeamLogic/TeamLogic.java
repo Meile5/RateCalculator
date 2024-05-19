@@ -192,28 +192,38 @@ public class TeamLogic implements ITeamLogic {
 
 
 
-    //TODO after the review change this method to retrieve  only the previous values, because new values are saved on the model insertedTeamsWithOverheadPercentage collection
+    //TODO after the review change this method to retrieve  only the previous values, because new values are saved on the model insertedTeamsWithOverheadPercentage collection,
+    // i do not think i need the previous values now, because in the insertedOverhead values i will not modify the teams overhead
 
     @Override
-    public Map<OverheadHistory, List<Team>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Team, String> insertedDistributionPercentageFromTeams) {
+    public Map<OverheadHistory, List<Team>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Team, String> insertedDistributionPercentageFromTeams,Map<Integer,Team> originalTeams) {
         Map<OverheadHistory, List<Team>> simulationValues = new HashMap<>();
         List<Team> previousOverheadValues = new ArrayList<>();
         List<Team> currentComputedOverheadValues = new ArrayList<>();
 
         // Create copies of the teams for previous values
         Team selectedTeamToDistributeFromCopy = new Team(selectedTeamToDistributeFrom);
-        if (selectedTeamToDistributeFrom.getActiveConfiguration() != null) {
-            selectedTeamToDistributeFromCopy.setActiveConfiguration(new TeamConfiguration(selectedTeamToDistributeFrom.getActiveConfiguration()));
-            previousOverheadValues.add(selectedTeamToDistributeFromCopy);
+
+        if(selectedTeamToDistributeFrom.getActiveConfiguration()!=null){
+            Team previousOverheadTeam = new Team(originalTeams.get(selectedTeamToDistributeFrom.getId()));
+            previousOverheadTeam.setActiveConfiguration(new TeamConfiguration(originalTeams.get(selectedTeamToDistributeFrom.getId()).getActiveConfiguration()));
+            previousOverheadValues.add(previousOverheadTeam);
         }
 
+        // add the original teams overhead to the previous teams list, in order to shoe the previous column in the table
         for (Team team : insertedDistributionPercentageFromTeams.keySet()) {
-            Team teamCopy = new Team(team);
+            Team teamCopy = new Team(originalTeams.get(team.getId()));
             if (team.getActiveConfiguration() != null) {
                 teamCopy.setActiveConfiguration(new TeamConfiguration(team.getActiveConfiguration()));
                 previousOverheadValues.add(teamCopy);
             }
         }
+
+//
+//        if (selectedTeamToDistributeFrom.getActiveConfiguration() != null) {
+//            selectedTeamToDistributeFromCopy.setActiveConfiguration(new TeamConfiguration(selectedTeamToDistributeFrom.getActiveConfiguration()));
+//            previousOverheadValues.add(selectedTeamToDistributeFromCopy);
+//        }
 
         // Compute new overhead for the selected team to distribute from
         double totalPercentage = calculateTotalOverheadInsertedForValidInputs(insertedDistributionPercentageFromTeams);
@@ -226,8 +236,8 @@ public class TeamLogic implements ITeamLogic {
         currentComputedOverheadValues.add(distributeFromNewComputation);
 
         // Set the new value for the selected team to distribute from
-        selectedTeamToDistributeFrom.getActiveConfiguration().setTeamDayRate(BigDecimal.valueOf(teamToDistributeFromNewDayRate));
-        selectedTeamToDistributeFrom.getActiveConfiguration().setTeamHourlyRate(BigDecimal.valueOf(teamToDistributeFromNewHourlyRate));
+//        selectedTeamToDistributeFrom.getActiveConfiguration().setTeamDayRate(BigDecimal.valueOf(teamToDistributeFromNewDayRate));
+//        selectedTeamToDistributeFrom.getActiveConfiguration().setTeamHourlyRate(BigDecimal.valueOf(teamToDistributeFromNewHourlyRate));
 
         // Compute new overhead values for the team to distribute to
         for (Team team : insertedDistributionPercentageFromTeams.keySet()) {
@@ -252,10 +262,10 @@ public class TeamLogic implements ITeamLogic {
                     distributeToTeam.getActiveConfiguration().setTeamDayRate(BigDecimal.valueOf(computedNewOverheadDayRate));
                     distributeToTeam.getActiveConfiguration().setTeamHourlyRate(BigDecimal.valueOf(computedNewOverheadHourRate));
                 }
-                if (team.getActiveConfiguration() != null) {
-                    team.getActiveConfiguration().setTeamDayRate(BigDecimal.valueOf(computedNewOverheadDayRate));
-                    team.getActiveConfiguration().setTeamHourlyRate(BigDecimal.valueOf(computedNewOverheadHourRate));
-                }
+//                if (team.getActiveConfiguration() != null) {
+//                    team.getActiveConfiguration().setTeamDayRate(BigDecimal.valueOf(computedNewOverheadDayRate));
+//                    team.getActiveConfiguration().setTeamHourlyRate(BigDecimal.valueOf(computedNewOverheadHourRate));
+//                }
                 currentComputedOverheadValues.add(distributeToTeam);
             }
         }
@@ -266,40 +276,84 @@ public class TeamLogic implements ITeamLogic {
     }
 
     @Override
-    public boolean saveDistributionOperation(Map<Team, String> insertedDistributionPercentageFromTeams, Team selectedTeamToDistributeFrom) throws RateException {
-        // calculate the  total overhead inserted to be distributed
-        Double totalOverhead = insertedDistributionPercentageFromTeams.values()
-                               .stream().map(this::validatePercentageValue)
-                                .reduce(0.0,Double::sum);
+    public boolean saveDistributionOperation(Map<Team, String> insertedDistributionPercentageFromTeams, Team selectedTeamToDistributeFrom,boolean simulationPerformed,Map<Integer,Team> initialTeamsValues) throws RateException {
+       if(simulationPerformed){
+           Map<Team, Map<RateType, Double>> distributionOperationOverheadValues= convertFromPercentageToOverheadValue(insertedDistributionPercentageFromTeams,selectedTeamToDistributeFrom,initialTeamsValues);
+           for(Team team : distributionOperationOverheadValues.keySet()){
+               System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + " in logic after the simulation was performed");
+               System.out.println(distributionOperationOverheadValues.get(team) + team.getTeamName() + " team shared or received overhead" );
+           }
+       return true;
+       }
 
-        // calculate the shared overhead value
-        double sharedOverhead = selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate().doubleValue()*(totalOverhead/100);
-        double sharedHourRate = selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate().doubleValue()*(totalOverhead/100);
-        selectedTeamToDistributeFrom.getActiveConfiguration().setTeamDayRate(BigDecimal.valueOf(sharedOverhead));
-        selectedTeamToDistributeFrom.getActiveConfiguration().setTeamHourlyRate(BigDecimal.valueOf(sharedHourRate));
-
-
-
-        Map<Team,Map<RateType,Double>> receivedTeams = new HashMap<>();
-        for(Team team : insertedDistributionPercentageFromTeams.keySet()){
-            Double overheadReceivedPercentage = validatePercentageValue(insertedDistributionPercentageFromTeams.get(team));
-            double overHeadReceivedValuePerDay = sharedOverhead*(overheadReceivedPercentage/100);
-            double overHeadReceivedPerHour = selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate().doubleValue()*(overheadReceivedPercentage/100);
-
-            // compute the team  new overhead
-            BigDecimal teamDayOverheadDistribution = team.getActiveConfiguration().getTeamDayRate().add(new BigDecimal(overHeadReceivedValuePerDay));
-            BigDecimal teamHourOverheadDistribution = team.getActiveConfiguration().getTeamHourlyRate().add(new BigDecimal(overHeadReceivedPerHour));
-            team.getActiveConfiguration().setTeamDayRate(teamDayOverheadDistribution);
-            team.getActiveConfiguration().setTeamHourlyRate(teamHourOverheadDistribution);
-            Map<RateType,Double> teamReceivedOverhead = new HashMap<>();
-            teamReceivedOverhead.put(RateType.DAY_RATE,overHeadReceivedValuePerDay);
-            teamReceivedOverhead.put(RateType.HOUR_RATE,overHeadReceivedPerHour);
-            receivedTeams.put(team,teamReceivedOverhead);
-        }
-        // after saving in the database, update in the cached memory
-
-        return  teamDao.savePerformedDistribution(receivedTeams,selectedTeamToDistributeFrom,sharedOverhead,sharedHourRate);
+//       System.out.println(selectedTeamToDistributeFrom + "initial value ");
+//
+//
+//        BigDecimal newOverheadAfterTheDistribution = selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate().subtract(BigDecimal.valueOf(sharedDayOverhead));
+//        BigDecimal newOverheadHouraftertheDistribution =  selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate().subtract(BigDecimal.valueOf(sharedHourRate));
+//        selectedTeamToDistributeFrom.getActiveConfiguration().setTeamDayRate(newOverheadAfterTheDistribution);
+//        selectedTeamToDistributeFrom.getActiveConfiguration().setTeamHourlyRate(newOverheadHouraftertheDistribution);
+//
+//
+//        System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate()  + " after the saved team day rate");
+//        // After saving in the database, update in the cached memory
+//        return teamDao.savePerformedDistribution(receivedTeams, selectedTeamToDistributeFrom, sharedDayOverhead, sharedHourRate);
+    return false;
     }
+
+
+private Map<Team, Map<RateType, Double>> convertFromPercentageToOverheadValue(Map<Team, String> insertedDistributionPercentageFromTeams, Team selectedTeamToDistributeFrom,Map<Integer,Team> originalTeams){
+    Map<Team, Map<RateType, Double>> distributionOperationOverheadValues =  new HashMap<>();
+
+    // calculate the total percentage choosed to be shared;
+    double totalOverhead = insertedDistributionPercentageFromTeams.values()
+            .stream().map(this::validatePercentageValue)
+            .reduce(0.0, Double::sum);
+
+    // Calculate the shared overhead value for the selected team to distribute from
+    BigDecimal selectedTeamInitialDayOverhead = originalTeams.get(selectedTeamToDistributeFrom.getId()).getActiveConfiguration().getTeamDayRate();
+    BigDecimal selectedTeamInitialHourRate  = originalTeams.get(selectedTeamToDistributeFrom.getId()).getActiveConfiguration().getTeamHourlyRate();
+
+    BigDecimal sharedDayOverhead = selectedTeamInitialDayOverhead.subtract(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate());
+
+    BigDecimal sharedHourOverhead = selectedTeamInitialHourRate.subtract(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate());
+
+
+  //  double sharedDayOverhead = selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate().doubleValue() * (totalOverhead / 100);
+ //   double sharedHourRate = selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate().doubleValue() * (totalOverhead / 100);
+
+    // Create copies of the team configurations
+    Team selectedTeamCopy = new Team(selectedTeamToDistributeFrom);
+    selectedTeamCopy.setActiveConfiguration(new TeamConfiguration(selectedTeamToDistributeFrom.getActiveConfiguration()));
+    Map<RateType,Double> selectedTeamToDistributeFromSharedOverhead = new HashMap<>();
+    selectedTeamToDistributeFromSharedOverhead.put(RateType.DAY_RATE,sharedDayOverhead.doubleValue());
+    selectedTeamToDistributeFromSharedOverhead.put(RateType.HOUR_RATE,sharedHourOverhead.doubleValue());
+    distributionOperationOverheadValues.put(selectedTeamCopy,selectedTeamToDistributeFromSharedOverhead);
+
+
+
+    // convert the percentage overhead received for the teams selected to receive overhead
+ //   Map<Team, Map<RateType, Double>> receivedTeams = new HashMap<>();
+    for (Team team : insertedDistributionPercentageFromTeams.keySet()) {
+        Team teamCopy = new Team(team);
+        teamCopy.setActiveConfiguration(new TeamConfiguration(team.getActiveConfiguration()));
+        Double overheadReceivedPercentage = validatePercentageValue(insertedDistributionPercentageFromTeams.get(team));
+        double overHeadReceivedValuePerDay = sharedDayOverhead.doubleValue() * (overheadReceivedPercentage / 100);
+        double overHeadReceivedPerHour = sharedHourOverhead.doubleValue() * (overheadReceivedPercentage / 100);
+//        // Compute the team new overhead
+//        BigDecimal teamDayOverheadDistribution = team.getActiveConfiguration().getTeamDayRate().add(BigDecimal.valueOf(overHeadReceivedValuePerDay));
+//        BigDecimal teamHourOverheadDistribution = team.getActiveConfiguration().getTeamHourlyRate().add(BigDecimal.valueOf(overHeadReceivedPerHour));
+//        teamCopy.getActiveConfiguration().setTeamDayRate(teamDayOverheadDistribution);
+//        teamCopy.getActiveConfiguration().setTeamHourlyRate(teamHourOverheadDistribution);
+        Map<RateType, Double> teamReceivedOverhead = new HashMap<>();
+        teamReceivedOverhead.put(RateType.DAY_RATE, overHeadReceivedValuePerDay);
+        teamReceivedOverhead.put(RateType.HOUR_RATE, overHeadReceivedPerHour);
+        distributionOperationOverheadValues.put(teamCopy,teamReceivedOverhead);
+    }
+
+  return distributionOperationOverheadValues;
+}
+
 
 
 }

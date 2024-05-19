@@ -31,7 +31,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -73,6 +72,7 @@ public class DistributionController implements Initializable, DistributionContro
         this.secondLayout = secondLayout;
         this.distributionMediator = new ControllerMediator();
         this.distributionMediator.registerDistributionController(this);
+        model.initializeDistributionEntities();
         try {
             distributionPage = loader.load();
         } catch (IOException e) {
@@ -162,8 +162,10 @@ public class DistributionController implements Initializable, DistributionContro
      */
     private void addSimulateButtonListener() {
         this.simulateButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            // if invalid  values  return
             if (distributionIsInvalid()) return;
-
+            //save in the model that the simulation was performed
+            model.setSimulationPerformed(true);
             this.secondLayout.getChildren().add(new MFXProgressSpinner());
             WindowsManagement.showStackPane(secondLayout);
             //start the service that will perform the computation
@@ -316,7 +318,7 @@ public class DistributionController implements Initializable, DistributionContro
             pauseTransition.setOnFinished((event) -> {
                 WindowsManagement.closeStackPane(secondLayout);
                 showThesimulationBarChart(simulateService.getValue());
-                updateComponentsOverheadValues();
+                updateComponentsOverheadValues(simulateService.getValue());
             });
             pauseTransition.playFromStart();
 
@@ -350,16 +352,39 @@ public class DistributionController implements Initializable, DistributionContro
     /**
      * update components values with the new calculation values
      */
-    private void updateComponentsOverheadValues() {
-        if (model.getSelectedTeamToDistributeFrom().getActiveConfiguration() != null) {
-            double dayRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
-            double hourlyRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamHourlyRate().setScale(2,RoundingMode.HALF_UP).doubleValue();
-            distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
-        }
-        for (Team team : model.getInsertedDistributionPercentageFromTeams().keySet()) {
-            System.out.println(team.getActiveConfiguration().getTeamDayRate());
+    private void updateComponentsOverheadValues(Map<OverheadHistory, List<Team>> performedSimulation) {
+
+          List<Team> performedComputation =  performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD);
+          Team teamToDistributeFromNewOverhead= performedComputation.getFirst();
+          if(teamToDistributeFromNewOverhead!=null){
+              double dayRate = teamToDistributeFromNewOverhead.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
+              double hourlyRate = teamToDistributeFromNewOverhead.getActiveConfiguration().getTeamHourlyRate().setScale(2,RoundingMode.HALF_UP).doubleValue();
+              distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
+          }
+
+
+//
+//        if (model.getSelectedTeamToDistributeFrom().getActiveConfiguration() != null) {
+//            double dayRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
+//            double hourlyRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamHourlyRate().setScale(2,RoundingMode.HALF_UP).doubleValue();
+//            distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
+//        }
+
+        for(int i=1; i<performedComputation.size();i++){
+            Team team =  performedComputation.get(i);
+            System.out.println( team.getActiveConfiguration().getTeamDayRate());
             distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue());
         }
+
+//
+//        for (Team team : model.getInsertedDistributionPercentageFromTeams().keySet()) {
+//            System.out.println(team.getActiveConfiguration().getTeamDayRate());
+//
+//
+//            distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue());
+//        }
+
+
     }
 
 
@@ -379,6 +404,9 @@ public class DistributionController implements Initializable, DistributionContro
         this.saveDistribution.setOnSucceeded((e) -> {
             // showInfoError(ErrorCode.OPERATION_EXECUTED.getValue());
             // display that the operation was performed
+      //  "do logic for graph"    //populateTeamBarChartWithSimulatedOverhead();
+           // this.populateDistributeFromTeams();
+          //  this.populateDistributeToTeams();
             WindowsManagement.closeStackPane(secondLayout);
         });
         this.saveDistribution.setOnCancelled((e) -> {

@@ -72,7 +72,7 @@ public class DistributeFromController implements Initializable, DistributionFrom
     /**
      * pupulate the component with the team values
      */
-    private void populateComponentWithValues() {
+    public void populateComponentWithValues() {
         String regions = teamToDisplay.getRegions().stream()
                 .map(Region::getRegionName)
                 .collect(Collectors.joining(", "));
@@ -115,10 +115,16 @@ public class DistributeFromController implements Initializable, DistributionFrom
                     showInfoError(ErrorCode.NO_EMPLOYEES.getValue());
                     return;
                 }
-                if(model.isTeamSelectedToDistribute(teamToDisplay.getId())){
-                    showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
-                    return;
+
+                if(model.getInsertedDistributionPercentageFromTeams()!=null){
+                    System.out.println("not nulll");
+                    if(model.isTeamSelectedToDistribute(teamToDisplay.getId())){
+                        System.out.println("team selected" + teamToDisplay.getId());
+                        showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
+                        return;
+                    }
                 }
+
                 //save a copy of the team into the model, in order to perform simulations without affecting the teams original values
                 model.setDistributeFromTeam( new Team(teamToDisplay));
                 controllerMediator.addTeamToDistributeFrom(teamToDisplay);
@@ -143,10 +149,18 @@ public class DistributeFromController implements Initializable, DistributionFrom
 
                 /*when the team to distribute  is selected from the list will be added
                   in the model insertedDistributionPercentageFromTeams without overhead percentage */
-                if(!model.isTeamSelectedToDistribute(teamToDisplay.getId())){
-                    model.addDistributionPercentageTeam(new Team(teamToDisplay), EMPTY_VALUE);
-                    controllerMediator.addDistributeToTeam(new Team(teamToDisplay));
-                }
+               if(model.getInsertedDistributionPercentageFromTeams()!=null){
+                   if(!model.isTeamSelectedToDistribute(teamToDisplay.getId())){
+                       model.addDistributionPercentageTeam(new Team(teamToDisplay), EMPTY_VALUE);
+                       controllerMediator.addDistributeToTeam(new Team(teamToDisplay));
+                   }else{
+                       showInfoError(ErrorCode.DISTRIBUTE_TO.getValue());
+                   }
+               }else{
+                   model.addDistributionPercentageTeam(new Team(teamToDisplay), EMPTY_VALUE);
+                   controllerMediator.addDistributeToTeam(new Team(teamToDisplay));
+               }
+
             }
 
         });

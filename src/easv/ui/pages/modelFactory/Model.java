@@ -97,12 +97,16 @@ public class Model implements IModel {
     /**
      * holds the temporary values for the teams that user inserted in the distribution page
      */
-    private final Map<Team, String> insertedDistributionPercentageFromTeams;
+    private Map<Team, String> insertedDistributionPercentageFromTeams;
 
     /**
      * the selected team that user chose to distribute from and the associated value
      */
     private Team selectedTeamToDistributeFrom;
+
+    /**store if the distribution simulation was executed before the user pressed save button */
+
+    private boolean simulationPerformed;
 
 
     public Model() throws RateException {
@@ -123,8 +127,6 @@ public class Model implements IModel {
         teamsWithEmployees = FXCollections.observableHashMap();
         countriesWithTeams = FXCollections.observableHashMap();
         regionsWithCountries = FXCollections.observableHashMap();
-        insertedDistributionPercentageFromTeams = new HashMap<>();
-
         populateCountries();
         populateTeams();
 
@@ -528,6 +530,13 @@ public class Model implements IModel {
      * @param overheadPercentage the overhead percentage received by the team
      */
     public void addDistributionPercentageTeam(Team team , String overheadPercentage) {
+//        if(this.insertedDistributionPercentageFromTeams!=null){
+//  ;
+//        }else{
+//            this.insertedDistributionPercentageFromTeams= new HashMap<>();
+//            this.insertedDistributionPercentageFromTeams.put(team,overheadPercentage);
+//        }
+
         this.insertedDistributionPercentageFromTeams.put(team, overheadPercentage);
     }
 
@@ -601,12 +610,12 @@ public class Model implements IModel {
     /**perform simulation computation*/
     @Override
     public Map<OverheadHistory, List<Team>> performSimulation() {
-        return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams);
+        return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams,teamsWithEmployees);
     }
 
 
     public boolean isTeamSelectedToDistribute(Integer teamId){
-       Team team =  insertedDistributionPercentageFromTeams.keySet().stream().filter(e->e.getId()==teamId).findFirst().orElse(null);
+        Team team =  insertedDistributionPercentageFromTeams.keySet().stream().filter(e->e.getId()==teamId).findFirst().orElse(null);
        return team!=null;
     }
 
@@ -614,8 +623,42 @@ public class Model implements IModel {
     public boolean saveDistribution() throws RateException {
       insertedDistributionPercentageFromTeams.keySet().forEach((e)-> System.out.println(e.getActiveConfiguration().getTeamDayRate() + " " +  e.getActiveConfiguration().getTeamHourlyRate() + " oon saved" ));
         System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "day rate" + selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate() + "team day rate");
-        return teamManager.saveDistributionOperation(insertedDistributionPercentageFromTeams,selectedTeamToDistributeFrom);
+        System.out.println("------=-  before");
+      boolean savedPerformed = teamManager.saveDistributionOperation(insertedDistributionPercentageFromTeams,selectedTeamToDistributeFrom,simulationPerformed,teamsWithEmployees);
+
+        // update the  local teams with the new values;
+//      if(savedPerformed){
+//          System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "team day rate after the saved data ");
+//          this.teamsWithEmployees.put(selectedTeamToDistributeFrom.getId(),selectedTeamToDistributeFrom);
+//          for(Team team : insertedDistributionPercentageFromTeams.keySet()){
+//              teamsWithEmployees.put(team.getId(),team);
+//          }
+//      }
+
+        return savedPerformed;
     }
+
+    public boolean isSimulationPerformed() {
+        return simulationPerformed;
+    }
+
+    public void setSimulationPerformed(boolean simulationPerformed) {
+        this.simulationPerformed = simulationPerformed;
+    }
+
+    /**initialize distribution entities to empty when the user enters on the distribution page */
+   public void  initializeDistributionEntities(){
+       this.insertedDistributionPercentageFromTeams = new HashMap<>();
+       this.selectedTeamToDistributeFrom = null;
+       this.simulationPerformed=false;
+   }
+
+
+
+
+
+   /**TEAM MANAGEMENT MODEL LOGIC*/
+
 
     /**return all employees for team manage*/
     public List<Employee> getAllEmployees() {
@@ -625,9 +668,7 @@ public class Model implements IModel {
                 employeesForTeamsPage.addAll(team.getTeamMembers());
             }
         }
-
         return employeesForTeamsPage;
     }
-
 
 }
