@@ -541,7 +541,6 @@ public class EmployeesDAO implements IEmployeeDAO {
                         if (employee.getUtilPerTeams() == null) {
                             employee.setUtilPerTeams(new HashMap<>());
                         }
-
                         employee.getUtilPerTeams().put(teamId, utilization);
                     }
                     for (Team team : retrievedTeams.values()) {

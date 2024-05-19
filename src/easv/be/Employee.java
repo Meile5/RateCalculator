@@ -27,35 +27,6 @@ public class Employee {
     // the idea to store the employee percentage per each team
     private Map<Integer,BigDecimal> utilPerTeams;
 
-    public Map<Integer, BigDecimal> getUtilPerTeams() {
-        return utilPerTeams;
-    }
-
-    public void setUtilPerTeams(Map<Integer, BigDecimal> utilPerTeams) {
-        this.utilPerTeams = utilPerTeams;
-    }
-
-    public void setOverhead(BigDecimal overhead) {
-        this.overhead = overhead;
-    }
-
-
-    public EmployeeType getEmployeeType() {
-        return employeeType;
-    }
-
-    public void setEmployeeType(EmployeeType employeeType) {
-        this.employeeType = employeeType;
-    }
-
-    public List<Configuration> getConfigurations() {
-        return configurations;
-    }
-
-    public void setConfigurations(List<Configuration> configurations) {
-        this.configurations = configurations;
-    }
-
 
     public Employee(String name, EmployeeType employeeType, Currency currency) {
         this.name = name;
@@ -66,6 +37,9 @@ public class Employee {
         this(name,employeeType,currency);
         this.configurations=configs;
     }
+
+
+
 
 
 
@@ -150,21 +124,8 @@ public class Employee {
         return currency;
     }
 
-//    public BigDecimal getDailyRate() {
-//        return dailyRate;
-//    }
-//
-//    public void setDailyRate(BigDecimal dailyRate) {
-//        this.dailyRate = dailyRate;
-//    }
-//
-//    public BigDecimal getHourlyRate() {
-//        return hourlyRate;
-//    }
 
-//    public void setHourlyRate(BigDecimal hourlyRate) {
-//        this.hourlyRate = hourlyRate;
-//    }
+
 
     @Override
     public String toString() {
@@ -219,5 +180,35 @@ public class Employee {
     public void setTeams(List<Team> teams) {
         this.teams = teams;
     }
+
+    public Map<Integer, BigDecimal> getUtilPerTeams() {
+        return utilPerTeams;
+    }
+
+    public void setUtilPerTeams(Map<Integer, BigDecimal> utilPerTeams) {
+        this.utilPerTeams = utilPerTeams;
+    }
+
+    public void setOverhead(BigDecimal overhead) {
+        this.overhead = overhead;
+    }
+
+
+    public EmployeeType getEmployeeType() {
+        return employeeType;
+    }
+
+    public void setEmployeeType(EmployeeType employeeType) {
+        this.employeeType = employeeType;
+    }
+
+    public List<Configuration> getConfigurations() {
+        return configurations;
+    }
+
+    public void setConfigurations(List<Configuration> configurations) {
+        this.configurations = configurations;
+    }
+
 
 }

@@ -2,7 +2,6 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
-<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -80,7 +79,6 @@
                                        </font>
                                     </Label>
                                     <MFXComboBox fx:id="teamComboBox" floatMode="DISABLED" layoutX="40.0" layoutY="212.0" prefHeight="40.0" prefWidth="200.0" />
-                                    <MFXScrollPane fx:id="teamsAndCountries" hbarPolicy="NEVER" maxWidth="-Infinity" prefHeight="98.0" prefViewportWidth="50.0" prefWidth="200.0" styleClass="chosenTeams" />
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" left="30.0" right="10.0" top="10.0" />
@@ -118,7 +116,7 @@
                                           <Insets />
                                        </VBox.margin>
                                     </MFXTextField>
-                                    <Label text="Working hours">
+                                    <Label text="Daily Working Hours">
                                        <font>
                                           <Font name="Open Sans Regular" size="14.0" />
                                        </font>
@@ -139,11 +137,7 @@
                                           <Font name="Open Sans Regular" size="14.0" />
                                        </font>
                                     </Label>
-                                    <MFXTextField fx:id="utilPercentageTF" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="percentage">
-                                       <VBox.margin>
-                                          <Insets />
-                                       </VBox.margin>
-                                    </MFXTextField>
+                                    <MFXTextField fx:id="percentageDisplayer" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" styleClass="percentage" />
                                     <Label text="Overhead or Resource">
                                        <font>
                                           <Font name="Open Sans Regular" size="14.0" />

@@ -23,7 +23,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -42,7 +44,7 @@ public class EditController implements Initializable {
     @FXML
     private MFXTextField utilPercentageTF, multiplierTF;
     @FXML
-    private MFXTextField nameInput, salaryTF, workingHoursTF, annualAmountTF, workingHoursInput;
+    private MFXTextField nameInput, salaryTF, workingHoursTF, annualAmountTF, workingHoursInput,percentageDisplayer;
 
     @FXML
     private MFXComboBox<Region> regionComboBox;
@@ -78,6 +80,7 @@ public class EditController implements Initializable {
         try {
             componentParent = loader.load();
         } catch (IOException e) {
+            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
         }
     }
@@ -109,28 +112,20 @@ public class EditController implements Initializable {
         //saveEdit();
 
         //initialize region listener
-        addRegionSelectionListener(regionComboBox,countryCB);
+       // addRegionSelectionListener(regionComboBox,countryCB);
         //initialize country listener
-        addCountrySelectionListener(countryCB,teamComboBox);
+       // addCountrySelectionListener(countryCB,teamComboBox);
     }
 
     /**
      * populate input fields with the employee data
      */
     private void populateInputs() {
-        //set country info
-
-        //TODO this will be used in the Country creation
-//        ObservableList<Country>  countries =  FXCollections.observableArrayList();
-//        countries.addAll(model.getCountiesValues());
-//        countries.addAll(model.getValidCountries());
-
 
         //setRegionInfo
-        this.regionComboBox.setItems(model.getOperationalRegions());
+        this.regionComboBox.setItems(FXCollections.observableArrayList(employee.getRegions()));
         if (!employee.getRegions().isEmpty()) {
             String employeeRegionName = employee.getRegions().get(0).getRegionName();
-
             Region regionToSelect = regionComboBox.getItems().stream()
                     .filter(c -> c.getRegionName().equals(employeeRegionName))
                     .findFirst()
@@ -138,9 +133,8 @@ public class EditController implements Initializable {
             this.regionComboBox.selectItem(regionToSelect);
         }
 
-
         //set Country Info
-        this.countryCB.setItems(model.getOperationalCountries());
+        this.countryCB.setItems(FXCollections.observableArrayList(employee.getCountries()));
         String employeeCountryName = employee.getCountries().get(0).getCountryName();
         Country countryToSelect = countryCB.getItems().stream()
                 .filter(c -> c.getCountryName().equals(employeeCountryName))
@@ -150,7 +144,7 @@ public class EditController implements Initializable {
         this.nameInput.setText(employee.getName());
 
         //set team info
-        this.teamComboBox.setItems(model.getOperationalTeams());
+        this.teamComboBox.setItems(FXCollections.observableArrayList(employee.getTeams()));
         String employeeTeamName = employee.getTeams().get(0).getTeamName();
         Team teamToSelect = teamComboBox.getItems().stream()
                 .filter(c -> c.getTeamName().equals(employeeTeamName))
@@ -176,42 +170,42 @@ public class EditController implements Initializable {
      * save the edited employee
      */
     //TODO call the method that changes the style off the employee container to default
-    /*private void saveEdit() {
-        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (EmployeeValidation.areNamesValid(nameInput, countryCB, teamCB) &&
-                    EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
-                    EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
-                    EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB)
-                    && EmployeeValidation.validateAditionalMultipliers(markup, grossMargin)) {
-                Configuration editedConfiguration = getConfiguration();
-                Employee editedEmployee = getEmployee(editedConfiguration);
-                if (model.isEditOperationPerformed(employee, editedEmployee)) {
-                     spinnerLayer.setDisable(false);
-                     spinnerLayer.setVisible(true);
-                    initializeService(employee,editedEmployee);
-                } else {
-                    WindowsManagement.closeStackPane(this.firstLayout);
-                }
-            }
-        });
-    }
+//    private void saveEdit() {
+//        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+//            if (EmployeeValidation.areNamesValid(nameInput, countryCB, teamComboBox) &&
+//                    EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
+//                    EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
+//                    EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB)
+//                    && EmployeeValidation.validateAditionalMultipliers(markup, grossMargin)) {
+//                Configuration editedConfiguration = getConfiguration();
+//                Employee editedEmployee = getEmployee(editedConfiguration);
+//                if (model.isEditOperationPerformed(employee, editedEmployee)) {
+//                     spinnerLayer.setDisable(false);
+//                     spinnerLayer.setVisible(true);
+//                    initializeService(employee,editedEmployee);
+//                } else {
+//                    WindowsManagement.closeStackPane(this.firstLayout);
+//                }
+//            }
+//        });
+//    }
 
 
     /**
      * create the employee object with the edited values
      */
-    /*private Employee getEmployee(Configuration editedConfiguration) {
-        Country country = countryCB.getSelectedItem();
-        Currency currency = Currency.valueOf(this.currencyCB.getSelectedItem());
-        Team team = getSelectedTeam();
-        String name = this.nameInput.getText();
-        EmployeeType employeeType = overOrResourceCB.getSelectedItem();
-        Employee editedEmployee = new Employee(name, country, team, employeeType, currency);
-        editedEmployee.setConfigurations(employee.getConfigurations());
-        editedEmployee.setActiveConfiguration(editedConfiguration);
-        editedEmployee.setId(employee.getId());
-        return editedEmployee;
-    }*/
+//private Employee getEmployee(Configuration editedConfiguration) {
+//        Country country = countryCB.getSelectedItem();
+//        Currency currency = Currency.valueOf(this.currencyCB.getSelectedItem());
+//        Team team = getSelectedTeam();
+//        String name = this.nameInput.getText();
+//        EmployeeType employeeType = overOrResourceCB.getSelectedItem();
+//        Employee editedEmployee = new Employee(name, country, team, employeeType, currency);
+//        editedEmployee.setConfigurations(employee.getConfigurations());
+//        editedEmployee.setActiveConfiguration(editedConfiguration);
+//        editedEmployee.setId(employee.getId());
+//        return editedEmployee;
+//    }
 
 
     /**
@@ -252,7 +246,11 @@ public class EditController implements Initializable {
      * @param configuration the configuration object that is active for an employee
      */
     private void setInputsValuesWithConfiguration(Configuration configuration) {
-        this.utilPercentageTF.setText(String.valueOf(configuration.getUtilizationPercentage()));
+        if(employee.getUtilPerTeams()!=null){
+            double employeeTotalUtilization = employee.getUtilPerTeams().values()
+                     .stream().map(BigDecimal::doubleValue).reduce(0.0,Double::sum);
+            this.percentageDisplayer.setText(employeeTotalUtilization+"");
+        }
         this.multiplierTF.setText(String.valueOf(configuration.getOverheadMultiplier()));
         this.salaryTF.setText(String.valueOf(configuration.getAnnualSalary()));
         this.workingHoursTF.setText(String.valueOf(configuration.getWorkingHours()));
@@ -261,10 +259,10 @@ public class EditController implements Initializable {
     }
 
     /**
-     * call the EmployeeInfoController to update the edited userValues
+     * call the EmployeeInfoController to update the edited userValues,and to update the performed calculations
      */
     private void updateUserValues(Employee employee) {
-       /* this.employeeDisplayer.setEmployeeName(employee.getName());
+        this.employeeDisplayer.setEmployeeName(employee.getName());
         this.employeeDisplayer.setCountry(employee.getCountry().getCountryName());
         this.employeeDisplayer.setEmployeeType(employee.getEmployeeType());
         this.employeeDisplayer.setTeam(employee.getTeam().getTeamName());
@@ -273,7 +271,7 @@ public class EditController implements Initializable {
         this.employeeDisplayer.setHourlyRate(model.getComputedHourlyRate(employee,0).toString());
        // this.employeeDisplayer.refreshRates();
         this.employeeDisplayer.callService();
-        WindowsManagement.closeStackPane(this.firstLayout);*/
+        WindowsManagement.closeStackPane(this.firstLayout);
     }
 
     private boolean isTextFieldEmpty(MFXTextField textField) {
@@ -294,9 +292,8 @@ public class EditController implements Initializable {
      * initialize  percentage inputs validation  listeners
      */
     private void initializePercentageInputValidationListeners() {
-        EmployeeValidation.addNonEmptyPercentageListener(utilPercentageTF);
+        EmployeeValidation.addNonEmptyPercentageListener(percentageDisplayer);
         EmployeeValidation.addNonEmptyPercentageListener(multiplierTF);
-
     }
 
     /**
@@ -361,28 +358,28 @@ public class EditController implements Initializable {
         return validFormat;
     }
 
-    private void addRegionSelectionListener(MFXComboBox<Region> region, MFXComboBox<Country> countries) {
-        region.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                countries.clearSelection();
-                ObservableList<Country> regionCountries= FXCollections.observableArrayList(newValue.getCountries());
-                countries.setItems(regionCountries);
-                countries.selectItem(regionCountries.get(0));
-
-            }
-        });
-    }
-
-    private void addCountrySelectionListener(MFXComboBox<Country> country, MFXComboBox<Team> teams) {
-        country.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                teams.clearSelection();
-                ObservableList<Team> countryTeams = FXCollections.observableArrayList(newValue.getTeams());
-                teams.setItems(countryTeams);
-                teams.selectItem(countryTeams.get(0));
-            }
-        });
-    }
+//    private void addRegionSelectionListener(MFXComboBox<Region> region, MFXComboBox<Country> countries) {
+//        region.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                countries.clearSelection();
+//                ObservableList<Country> regionCountries= FXCollections.observableArrayList(newValue.getCountries());
+//                countries.setItems(regionCountries);
+//                countries.selectItem(regionCountries.get(0));
+//
+//            }
+//        });
+//    }
+//
+//    private void addCountrySelectionListener(MFXComboBox<Country> country, MFXComboBox<Team> teams) {
+//        country.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                teams.clearSelection();
+//                ObservableList<Team> countryTeams = FXCollections.observableArrayList(newValue.getTeams());
+//                teams.setItems(countryTeams);
+//                teams.selectItem(countryTeams.get(0));
+//            }
+//        });
+//    }
 
     //TODO create a separate component for the seleted team tah will be added to the scrollPane , with an remove button
 }

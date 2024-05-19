@@ -13,15 +13,12 @@ public class Configuration {
     private BigDecimal utilizationPercentage;
     private BigDecimal workingHours;
     private LocalDateTime savedDate;
-
     private boolean active;
     private BigDecimal dayRate;
     private BigDecimal hourlyRate;
 
     //static  default value because it will be available for all objects
     private static final int  DAY_WORKING_HORS=8;
-
-
     private  int dayWorkingHours;
 
 
@@ -33,6 +30,8 @@ public class Configuration {
         this.utilizationPercentage = utilizationPercentage;
         this.workingHours = workingHours;
     }
+
+
 
 
     public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime savedDate, boolean active) {
