@@ -46,7 +46,7 @@ public class RegionDAO implements IRegionDAO{
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
-            String sql = "INSERT INTO Region (Name) VALUES (?)";
+            String sql = "INSERT INTO Region (RegionName) VALUES (?)";
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psmt.setString(1, region.getRegionName());
                 psmt.executeUpdate();
@@ -93,19 +93,22 @@ public class RegionDAO implements IRegionDAO{
     }
 
     @Override
-    public void updateRegion(Region region, List<Country> countries) throws RateException {
+    public void updateRegion(Region region, List<Country> addedCountries, List<Country> removedCountries) throws RateException {
         Connection conn = null;
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
-            String sql = "UPDATE Region SET Name = ? WHERE ID = ?";
+            String sql = "UPDATE Region SET RegionName = ? WHERE RegionID = ?";
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 psmt.setString(1, region.getRegionName());
                 psmt.setInt(2, region.getId());
                 psmt.executeUpdate();
 
-                if(!countries.isEmpty()){
-                    addCountryToRegion(region.getId(), countries, conn);
+                if(!addedCountries.isEmpty()){
+                    addCountryToRegion(region.getId(), addedCountries, conn);
+                }
+                if(!removedCountries.isEmpty()){
+                    removeCountryFromRegion(region.getId(), removedCountries, conn);
                 }
 
                 conn.commit();
@@ -123,6 +126,20 @@ public class RegionDAO implements IRegionDAO{
             } catch (SQLException e) {
                 throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
             }
+        }
+    }
+
+    private void removeCountryFromRegion(int regionID, List<Country> removedCountries, Connection conn) {
+        String sql = "DELETE FROM RegionCountry WHERE RegionID = ? AND CountryID = ?";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            for (Country country : removedCountries) {
+                psmt.setInt(1, regionID);
+                psmt.setInt(2, country.getId());
+                psmt.executeUpdate();
+            }
+            psmt.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,5 +1,6 @@
 package easv.ui.pages.geographyManagementPage.geographyMainPage;
 
+import easv.Utility.WindowsManagement;
 import easv.be.Country;
 import easv.be.Region;
 import easv.be.Team;
@@ -8,10 +9,12 @@ import easv.exception.ExceptionHandler;
 import easv.ui.pages.geographyManagementPage.countryComponents.CountryComponent;
 import easv.ui.pages.geographyManagementPage.countryComponents.DeleteCountryController;
 import easv.ui.pages.geographyManagementPage.regionComponents.DeleteRegionController;
+import easv.ui.pages.geographyManagementPage.regionComponents.ManageRegionController;
 import easv.ui.pages.geographyManagementPage.regionComponents.RegionComponent;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -20,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -38,9 +42,12 @@ public class GeographyManagementController implements Initializable {
     private Label operationStatusLB;
     @FXML
     private MFXProgressSpinner progressBar;
+    @FXML
+    private Button addRegionBTN, addCountryBTN;
 
     private IModel model;
     private StackPane pane;
+    private StackPane secondPane;
     private Service<Void> loadRegionsAndCountriesFromDB;
     private ObservableList<Region> regions;
     private ObservableList<Country> countries;
@@ -62,20 +69,30 @@ public class GeographyManagementController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeRegionsLoadingService();
+        addRegionButtonListener();
 
+    }
+
+    private void addRegionButtonListener() {
+        addRegionBTN.setOnAction(event -> {
+            ManageRegionController manageRegionController = new ManageRegionController(model, pane, secondPane, null, this);
+            this.pane.getChildren().add(manageRegionController.getRoot());
+            WindowsManagement.showStackPane(pane);
+        });
     }
 
     private void initializeRegionsLoadingService() {
         enableProgressBar();
-        loadRegionsAndCountriesFromDB = new Service<Void>() {
+        loadRegionsAndCountriesFromDB = new Service<>() {
             @Override
             protected Task<Void> createTask() {
-                return new Task<Void>() {
+                return new Task<>() {
                     @Override
                     protected Void call() throws Exception {
-                        regions = model.getOperationalRegions();
-                        countries = model.getOperationalCountries();
-                        teams = model.getOperationalTeams();
+                        Thread.sleep(1000);
+                        regions = FXCollections.observableArrayList(model.getOperationalRegions());
+                        countries = FXCollections.observableArrayList(model.getOperationalCountries());
+                        teams = FXCollections.observableArrayList(model.getOperationalTeams());
                         return null;
                     }
                 };
@@ -110,11 +127,23 @@ public class GeographyManagementController implements Initializable {
 
     private void displayRegions() {
         regionsVBox.getChildren().clear();
-        regions.forEach(r -> {
-            DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, r);
-            RegionComponent regionComponent = new RegionComponent(model, pane, r, deleteRegionController, this);
-            regionsVBox.getChildren().add(regionComponent.getRoot());
-        });
+        regions.forEach(this::addRegionComponent);
+    }
+
+    public void addRegionComponent(Region region){
+        DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region);
+        RegionComponent regionComponent = new RegionComponent(model, pane, region, deleteRegionController, this);
+        regionsVBox.getChildren().add(regionComponent.getRoot());
+        if(!regions.contains(region))
+            regions.add(region);
+    }
+
+    //TODO: ON UPDATE, ADD AND REMOVE COMPONENT ! - NELSON
+
+    private void removeRegionComponent(Region region){
+//        DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region);
+//        RegionComponent regionComponent = new RegionComponent(model, pane, region, deleteRegionController, this);
+//        regionsVBox.getChildren().add(regionComponent.getRoot());
     }
 
     private void enableProgressBar(){
