@@ -16,7 +16,7 @@ public enum ErrorCode {
     OVER_LIMIT ("Distributed overhead value is over 100 % !"),
     DISTRIBUTE_FROM_EMPTY("No team to distribute from selected !"),
     DISTRIBUTE_TO_EMPTY("No team to distribute to selected !"),
-    EMPTY_OVERHEAD("Empty overhead percentage value"),
+    EMPTY_OVERHEAD("Empty overhead percentage value , or value is equal with 0, value needs to be bigger than 0 and smaller or equal than 100"),
     SIMULATION_FAILED("Failed to perform simulation computation, please retry!"),
     NO_EMPLOYEES("The team that you are trying to select has no employees, can not perform overhead  distribution.  "),
     DISTRIBUTE_FROM("This team was selected to distribute from  !"),

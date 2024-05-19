@@ -5,6 +5,7 @@ public interface DistributionFromComponentInterface {
     void setTheStyleClassToDefault();
     void setDayRate(String value) ;
      void setHourlyRate(String value);
+    boolean isTheSameEntityDisplayed(int teamId);
 
 
 }

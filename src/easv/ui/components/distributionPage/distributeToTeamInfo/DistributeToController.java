@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -91,12 +92,15 @@ public class DistributeToController implements Initializable {
         this.teamCountries.setText(countries);
         /*add tooltip for the countries to display the whole value*/
         addInfoToolTip(this.teamCountries);
+
         this.teamName.setText(teamToDisplay.getTeamName());
+        addInfoToolTip(teamName);
+
         if (this.teamToDisplay.getActiveConfiguration() != null) {
-            this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate() + "");
+            this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP) + "");
             addInfoToolTip(this.dayRate);
             dayCurrency.setText(Currency.USD.toString());
-            this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate() + "");
+            this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate().setScale(2,RoundingMode.HALF_UP) + "");
             addInfoToolTip(this.hourlyRate);
             this.hourlyCurrency.setText(Currency.USD.toString());
         }
@@ -125,6 +129,7 @@ public class DistributeToController implements Initializable {
         this.distributionPercentage.textProperty().addListener((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((interupt) -> {
                 if (!newValue.isEmpty()) {
+
                     // Validate the new value format
                     if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
                         showInfoError(ErrorCode.INVALID_OVERHEADVALUE.getValue() + "\n" + teamToDisplay.getTeamName() + "\n" + ErrorCode.INVALID_OVERHEAD_MESSAGE.getValue());
@@ -134,7 +139,7 @@ public class DistributeToController implements Initializable {
                     } else {
                         // Convert new value to a double
                         Double overheadInserted = validatePercentageValue(newValue);
-                        if (!(overheadInserted >= 0 && overheadInserted <= 100)) {
+                        if (!(overheadInserted > 0 && overheadInserted <= 100)) {
                             teamComponentDistributeFrom.pseudoClassStateChanged(INVALID_INPUT, true);
                             model.setDistributionPercentageTeam(teamToDisplay, newValue);
                             distributionMediator.updateTotalOverheadValue();
@@ -220,7 +225,9 @@ public class DistributeToController implements Initializable {
         modalLayout.getChildren().add(errorWindowController.getRoot());
         WindowsManagement.showStackPane(modalLayout);
     }
-
+    public boolean isTheSameEntityDisplayed(int teamId){
+        return this.teamToDisplay.getId()== teamId;
+    }
 
 
 

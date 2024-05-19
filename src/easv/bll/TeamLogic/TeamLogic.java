@@ -116,7 +116,7 @@ public class TeamLogic implements ITeamLogic {
 
         for (Team team : insertedDistributionPercentageFromTeams.keySet()) {
             String overheadValue = insertedDistributionPercentageFromTeams.get(team);
-            if (overheadValue.isEmpty()) {
+            if (overheadValue.isEmpty() || overheadValue.equalsIgnoreCase("0")) {
                 emptyValuesInserted.add(team);
             }
 
@@ -277,6 +277,9 @@ public class TeamLogic implements ITeamLogic {
         boolean distributionOperationSaved = teamDao.savePerformedDistribution(computedOverheadValues, selectedTeamToDistributeFrom);
         if (distributionOperationSaved) {
             List<Team> distributionTeams = new ArrayList<>(computedOverheadValues.keySet());
+            List<Team> distributedFrom = new ArrayList<>();
+            distributedFrom.add(selectedTeamToDistributeFrom);
+            savedData.put(OverheadHistory.CURRENT_OVERHEAD_FROM,distributedFrom);
             savedData.put(OverheadHistory.CURRENT_OVERHEAD, distributionTeams);
             return savedData;
         }

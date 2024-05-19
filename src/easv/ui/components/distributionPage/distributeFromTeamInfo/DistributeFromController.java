@@ -22,6 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -86,11 +87,12 @@ public class DistributeFromController implements Initializable, DistributionFrom
         /*add tooltip for the countries to display the whole value*/
         addInfoToolTip(this.teamCountries);
         this.teamName.setText(teamToDisplay.getTeamName());
+        addInfoToolTip(teamName);
         if (this.teamToDisplay.getActiveConfiguration() != null) {
-            this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate() + "");
+            this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP) + "");
             addInfoToolTip(this.dayRate);
             dayCurrency.setText(Currency.USD.toString());
-            this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate() + "");
+            this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate().setScale(2,RoundingMode.HALF_UP) + "");
             addInfoToolTip(this.hourlyRate);
             this.hourlyCurrency.setText(Currency.USD.toString());
         }
@@ -117,12 +119,17 @@ public class DistributeFromController implements Initializable, DistributionFrom
                 }
 
                 if(model.getInsertedDistributionPercentageFromTeams()!=null){
-                    System.out.println("not nulll");
                     if(model.isTeamSelectedToDistribute(teamToDisplay.getId())){
-                        System.out.println("team selected" + teamToDisplay.getId());
                         showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
                         return;
                     }
+                }
+
+                if(model.getSelectedTeamToDistributeFrom()!=null){
+                    if(model.getSelectedTeamToDistributeFrom().getId()==teamToDisplay.getId()){
+                         showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
+                    }
+                    return;
                 }
 
                 //save a copy of the team into the model, in order to perform simulations without affecting the teams original values
@@ -192,6 +199,11 @@ public class DistributeFromController implements Initializable, DistributionFrom
     public void setHourlyRate(String value) {
         this.hourlyRate.setText(value);
         this.hourlyRate.getTooltip().setText(value);
+}
+
+
+public boolean isTheSameEntityDisplayed(int teamId){
+        return this.teamToDisplay.getId()== teamId;
 }
 
 }

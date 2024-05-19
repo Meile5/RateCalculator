@@ -104,6 +104,7 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
     private void populateDistributeFromTeams() {
+        System.out.println("called  ");
         List<Parent> distributeFromTeamsComponents = new ArrayList<>();
         model.getOperationalTeams().forEach(e -> {
             DistributeFromController distributeToController = new DistributeFromController(model, e, distributionMediator, DistributionType.DISTRIBUTE_FROM, secondLayout);
@@ -195,7 +196,7 @@ public class DistributionController implements Initializable, DistributionContro
 
         if (inputValidation.getErrorValues().containsKey(ErrorCode.EMPTY_OVERHEAD)) {
             StringBuilder emptyValues = new StringBuilder();
-            emptyValues.append(ErrorCode.EMPTY_OVERHEAD).append("\n");
+            emptyValues.append(ErrorCode.EMPTY_OVERHEAD.getValue()).append("\n");
             inputValidation.getErrorValues().get(ErrorCode.EMPTY_OVERHEAD).forEach(
                     e -> emptyValues.append(e.getTeamName()).append("\n"));
             showInfoError(emptyValues.toString());
@@ -343,6 +344,9 @@ public class DistributionController implements Initializable, DistributionContro
     /**save  the  performed distribution operation */
     private void saveDistributionOperation(){
         this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+            if(distributionIsInvalid())return;
+            this.secondLayout.getChildren().add(new MFXProgressSpinner());
+            WindowsManagement.showStackPane(secondLayout);
             initializeSaveService();
         });
     }
@@ -360,9 +364,7 @@ public class DistributionController implements Initializable, DistributionContro
               double hourlyRate = teamToDistributeFromNewOverhead.getActiveConfiguration().getTeamHourlyRate().setScale(2,RoundingMode.HALF_UP).doubleValue();
               distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
           }
-
         for(Team team : performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD)){
-            System.out.println( team.getActiveConfiguration().getTeamDayRate());
             distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue());
         }
     }
@@ -373,19 +375,20 @@ public class DistributionController implements Initializable, DistributionContro
         this.saveDistribution = new Service< Map<OverheadHistory, List<Team>>>() {
             @Override
             protected Task< Map<OverheadHistory, List<Team>>> createTask() {
-                return new Task< Map<OverheadHistory, List<Team>>>() {
+                return new Task<>() {
                     @Override
-                    protected  Map<OverheadHistory, List<Team>> call() throws Exception {
+                    protected Map<OverheadHistory, List<Team>> call() throws Exception {
                         return model.saveDistribution();
                     }
                 };
             }
         };
         this.saveDistribution.setOnSucceeded((e) -> {
-            // showInfoError(ErrorCode.OPERATION_EXECUTED.getValue());
+
             // display that the operation was performed
             showThesimulationBarChart(saveDistribution.getValue());
             updateComponentsOverheadValues(saveDistribution.getValue());
+            distributeFromTeams.getChildren().clear();
             this.populateDistributeFromTeams();
            this.populateDistributeToTeams();
             WindowsManagement.closeStackPane(secondLayout);

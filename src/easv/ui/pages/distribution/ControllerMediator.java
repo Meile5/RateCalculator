@@ -21,6 +21,7 @@ public class ControllerMediator {
     private DistributionFromComponentInterface selectedTeamToDistributeFromController;
 
 
+    //TODO if time replace with the interface
     private final Map<Integer, DistributeToController> distributeToControllers;
 
     public ControllerMediator() {
