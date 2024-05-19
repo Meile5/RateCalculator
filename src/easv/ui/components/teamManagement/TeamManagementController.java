@@ -1,5 +1,6 @@
 package easv.ui.components.teamManagement;
 
+import easv.Utility.WindowsManagement;
 import easv.be.Employee;
 import easv.be.Team;
 import easv.exception.ErrorCode;
@@ -13,12 +14,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -29,6 +34,10 @@ public class TeamManagementController implements Initializable {
     private VBox teamMembersContainer;
     @FXML
     private VBox allEmployeesContainer;
+    @FXML
+    private TextField grossMargin, markUp;
+    @FXML
+    private HBox closeButton;
 
     private IModel model;
     private StackPane firstLayout;
@@ -50,7 +59,6 @@ public class TeamManagementController implements Initializable {
         try {
             teamManagementComponent = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -63,6 +71,8 @@ public class TeamManagementController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         displayTeamMembers();
         displayAllEmployees();
+        populateTextFields();
+        addCloseButtonAction();
     }
    /** displays only team members for selected team*/
     public void displayTeamMembers() {
@@ -81,6 +91,26 @@ public class TeamManagementController implements Initializable {
                     allEmployeesContainer.getChildren().add(employeesToAdd.getRoot());
 
                 });
+    }
+
+    public void populateTextFields(){
+        if (team != null && team.getActiveConfiguration() != null) {
+            double margin = team.getActiveConfiguration().getGrossMargin();
+            grossMargin.setText(String.valueOf(margin));  /* Convert double to String*/
+            double markup = team.getActiveConfiguration().getMarkupMultiplier();
+            markUp.setText(String.valueOf(markup));  /* Convert double to String*/
+
+        } else {
+            grossMargin.setText("N/A");
+            markUp.setText("N/A");
+        }
+    }
+
+    /** closes manage popup*/
+    private void addCloseButtonAction() {
+        this.closeButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
+        {
+            WindowsManagement.closeStackPane(firstLayout);});
     }
 
 
