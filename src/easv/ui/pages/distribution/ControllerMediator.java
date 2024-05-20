@@ -118,7 +118,7 @@ public class ControllerMediator {
     public boolean removeTeamFromDistributionView(int id) {
         List<Parent> removedTeamControllers = new ArrayList<>();
         for (Integer teamId : distributeToControllers.keySet()) {
-            if (teamId != id) {
+            if (teamId == id) {
                 removedTeamControllers.add(distributeToControllers.get(teamId).getRoot());
             }
         }

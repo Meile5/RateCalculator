@@ -226,4 +226,11 @@ public interface IModel {
 
     /**get unsuported countries */
     ObservableList<Country> getUnsoportedCountries();
+
+
+    /**perform the search operation for teams and return the results*/
+    ObservableList<Team> getTeamsFilterResults(String filter);
+
+    /**return the selected team from the search operation results*/
+    Team getTeamById(int entityId);
 }

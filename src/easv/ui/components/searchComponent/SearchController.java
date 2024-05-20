@@ -1,9 +1,11 @@
 package easv.ui.components.searchComponent;
 
 import easv.be.Employee;
+import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -69,8 +71,7 @@ public class SearchController<T> implements Initializable {
             ExceptionHandler.errorAlertMessage(ErrorCode.SEARCH_FAILED.getValue());
         }
         goBack();
-
-
+        addFocusListener(searchField,button);
     }
 
     private void createPopUpWindow() {
@@ -98,7 +99,6 @@ public class SearchController<T> implements Initializable {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.isEmpty()) {
                 searchResponseHolder.setItems(dataHandler.getResultData(newValue));
-
                 if (!searchResponseHolder.getItems().isEmpty()) {
                     configurePopUpWindow();
                 } else {
@@ -124,6 +124,9 @@ public class SearchController<T> implements Initializable {
                 try {
                     if (newValue instanceof Employee) {
                         dataHandler.performSelectSearchOperation(((Employee) newValue).getId());
+                    }
+                    if(newValue instanceof Team){
+                        dataHandler.performSelectSearchOperation(((Team) newValue).getId());
                     }
 
                 } catch (RateException e) {
@@ -172,4 +175,14 @@ public class SearchController<T> implements Initializable {
     }
 
 
+    //change the style of the search button to match the search text field
+    private void addFocusListener(TextField filterInput, HBox sibling) {
+        filterInput.focusWithinProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (isNowFocused) {
+                sibling.getStyleClass().add("searchFocused");
+            } else {
+                sibling.getStyleClass().remove("searchFocused");
+            }
+        });
+    }
 }

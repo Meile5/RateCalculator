@@ -113,7 +113,7 @@ public class DistributeFromController implements Initializable, DistributionFrom
     private void addClickListener() {
         this.teamComponent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (this.distributionType.equals(DistributionType.DISTRIBUTE_FROM)) {
-                if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty()){
+                if(teamToDisplay.getEmployees()!=null || teamToDisplay.getEmployees().isEmpty()){
                     showInfoError(ErrorCode.NO_EMPLOYEES.getValue());
                     return;
                 }
@@ -123,7 +123,13 @@ public class DistributeFromController implements Initializable, DistributionFrom
                         showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
                         return;
                     }
+                }else{
+                    if(model.isTeamSelectedToDistribute(teamToDisplay.getId())){
+                        showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
+                        return;
+                    }
                 }
+
 
                 if(model.getSelectedTeamToDistributeFrom()!=null){
                     if(model.getSelectedTeamToDistributeFrom().getId()==teamToDisplay.getId()){
@@ -142,7 +148,7 @@ public class DistributeFromController implements Initializable, DistributionFrom
             }
 
             if (this.distributionType.equals(DistributionType.DISTRIBUTE_TO)) {
-                if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty() ){
+                if(teamToDisplay.getEmployees()!=null || teamToDisplay.getEmployees().isEmpty() ){
                     showInfoError(ErrorCode.NO_EMPLOYEES.getValue());
                     return;
                 }

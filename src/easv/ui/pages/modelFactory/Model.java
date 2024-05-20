@@ -302,7 +302,7 @@ public class Model implements IModel {
      */
 
 
-
+//MAP RELATED LOGIC
 
     //Please do not modify again
     /**used in the map to display teams info*/
@@ -319,6 +319,22 @@ public class Model implements IModel {
         this.countries.putAll(countryLogic.getCountriesForMap(countriesWithTeams));
    return countries;
     }
+
+
+    /**get the unsuported countries by the map in order to be shown in the unsuported countries view */
+    @Override
+    public ObservableList<Country> getUnsoportedCountries() {
+        ObservableList <Country> unsuportedCountries = FXCollections.observableArrayList();
+        for(Country country:countriesWithTeams.values()){
+            if(!validMapViewCountryNameValues.contains(country.getCountryName())){
+                unsuportedCountries.add(country);
+            }
+        }
+
+        return unsuportedCountries;
+    }
+
+
 
 
     //EMPLOYEE EDITING RELATED LOGIC
@@ -393,6 +409,10 @@ public class Model implements IModel {
         return teams;
     }
 
+
+
+
+    //FILTERS RELATED LOGIC
     public ObservableList<Employee> getSearchResult(String filter) {
         ObservableList searchResults = FXCollections.observableArrayList();
         searchResults.setAll(employeeManager.performSearchOperation(employees.values(), filter));
@@ -403,7 +423,6 @@ public class Model implements IModel {
         filteredEmployeesListByRegion.setAll(displayedEmployees);
         displayedEmployees.setAll(employee);
         displayEmployees.displayEmployees();
-
     }
 
 
@@ -414,8 +433,21 @@ public class Model implements IModel {
         displayEmployees.displayEmployees();
     }
 
+    //TEAMS FIlTER SEARCH LOGIC
 
-    //FILTERS RELATED LOGIC
+
+    @Override
+    public ObservableList<Team> getTeamsFilterResults(String filter) {
+        ObservableList<Team> filterResult =  FXCollections.observableArrayList();
+        filterResult.setAll(teamManager.performSearchTeamFilter(filter,teamsWithEmployees.values()));
+        return filterResult  ;
+    }
+
+    /**return the selected team from the search operation results*/
+    @Override
+    public Team getTeamById(int entityId) {
+        return  teamsWithEmployees.get(entityId);
+    }
 
 
     /**
@@ -539,6 +571,9 @@ public class Model implements IModel {
     public BigDecimal getComputedDayRate(Employee employee) {
         return employeeManager.getDayRate(employee);
     }
+
+
+
 
 
 /**OVERHEAD DISTRIBUTION RELATED LOGIC*/
@@ -713,17 +748,15 @@ public class Model implements IModel {
 
 
 
-    /**get the unsuported countries in order to be shown in the unsuported countries view */
-    @Override
-    public ObservableList<Country> getUnsoportedCountries() {
-        ObservableList <Country> unsuportedCountries = FXCollections.observableArrayList();
-        for(Country country:countriesWithTeams.values()){
-            if(!validMapViewCountryNameValues.contains(country.getCountryName())){
-                unsuportedCountries.add(country);
-            }
-        }
 
-        return unsuportedCountries;
-    }
+
+
+
+
+
+
+
+
+
 
 }

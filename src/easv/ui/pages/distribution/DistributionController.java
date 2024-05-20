@@ -11,9 +11,12 @@ import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFrom
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToInterface;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToListCell;
+import easv.ui.components.searchComponent.DataHandler;
+import easv.ui.components.searchComponent.SearchController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.animation.PauseTransition;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.css.PseudoClass;
@@ -38,7 +41,7 @@ import java.math.RoundingMode;
 import java.net.URL;
 import java.util.*;
 
-public class DistributionController implements Initializable, DistributionControllerInterface {
+public class DistributionController implements Initializable, DistributionControllerInterface, DataHandler<Team> {
     @FXML
     private Parent distributionPage;
     @FXML
@@ -58,7 +61,7 @@ public class DistributionController implements Initializable, DistributionContro
     @FXML
     private Label totalOverheadInserted;
     @FXML
-    private HBox totalOverheadContainer;
+    private HBox totalOverheadContainer,searchFromContainer;
     private StackPane secondLayout;
     private Service<Map<OverheadHistory, List<Team>>> simulateService;
     private Service< Map<OverheadHistory, List<Team>>> saveDistribution;
@@ -94,7 +97,13 @@ public class DistributionController implements Initializable, DistributionContro
         addSimulateButtonListener();
         // save the performed distribution operation
         saveDistributionOperation();
+        //initialize search component
+        initializeSearchComponent();
     }
+
+
+
+
 
     /**
      * add the teams in the  system  to the distribute to teams container
@@ -105,7 +114,6 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
     private void populateDistributeFromTeams() {
-        System.out.println("called  ");
         List<Parent> distributeFromTeamsComponents = new ArrayList<>();
         model.getOperationalTeams().forEach(e -> {
             DistributeFromController distributeToController = new DistributeFromController(model, e, distributionMediator, DistributionType.DISTRIBUTE_FROM, secondLayout);
@@ -401,4 +409,34 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
 
+
+
+    //SEARCH OPERATIONS
+
+
+    /**initialize searchComponent  */
+    private void initializeSearchComponent(){
+        SearchController<Team> searchController = new SearchController<>(this);
+        this.searchFromContainer.getChildren().add(searchController.getSearchRoot());
+    }
+
+
+    @Override
+    public ObservableList<Team> getResultData(String filter) {
+       return  model.getTeamsFilterResults(filter);
+    }
+
+    @Override
+    public void performSelectSearchOperation(int entityId) throws RateException {
+        Team resultedTeam  = model.getTeamById(entityId);
+       DistributeFromController resultedSearchTeam = new DistributeFromController(model,resultedTeam,distributionMediator,DistributionType.DISTRIBUTE_FROM,secondLayout);
+       this.distributeFromTeams.getChildren().clear();
+       this.distributeFromTeams.getChildren().add(resultedSearchTeam.getRoot());
+    }
+
+    @Override
+    public void undoSearchOperation() throws RateException {
+        this.distributeFromTeams.getChildren().clear();
+        populateDistributeFromTeams();
+    }
 }

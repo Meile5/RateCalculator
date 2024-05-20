@@ -287,6 +287,19 @@ public class TeamLogic implements ITeamLogic {
     }
 
 
+
+    //FILTER RELATED LOGIC
+    @Override
+    public List<Team> performSearchTeamFilter(String filter,Collection<Team> teams) {
+            String filterToLowerCase = filter.toLowerCase();
+            return teams.stream().filter((team) -> {
+                String name = team.getTeamName().toLowerCase();
+                return name.contains(filterToLowerCase);
+            }).toList();
+
+    }
+
+
     /**
      * calculate the resulted overhead from the distribution operation
      *

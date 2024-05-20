@@ -5,6 +5,7 @@ import javafx.collections.ObservableMap;
 
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -27,4 +28,7 @@ public interface ITeamLogic  {
 
     /**save the distribution operation performed*/
     Map<OverheadHistory, List<Team>>  saveDistributionOperation(Map<Team, String> insertedDistributionPercentageFromTeams ,Team selectedTeamToDistributeFrom,boolean simulationPerformed,Map<Integer,Team> initialTeamsValues) throws RateException;
+
+    /**perform the search operation for the teams*/
+    List<Team> performSearchTeamFilter(String filter, Collection<Team> teams);
 }
