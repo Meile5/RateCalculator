@@ -224,4 +224,6 @@ public interface IModel {
     List<Employee> getAllEmployees();
 
 
+    /**get unsuported countries */
+    ObservableList<Country> getUnsoportedCountries();
 }

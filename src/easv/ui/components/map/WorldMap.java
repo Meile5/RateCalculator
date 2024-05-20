@@ -4,12 +4,15 @@ import easv.be.Country;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.components.map.popUpInfo.CountryInfoContainer;
+import easv.ui.components.map.popUpInfo.notSupportedCountries.NotSupportedView;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import org.controlsfx.control.WorldMapView;
 import java.io.IOException;
 import java.net.URL;
@@ -17,25 +20,30 @@ import java.util.*;
 
 public class WorldMap implements Initializable {
     @FXML
+    private StackPane mapContainer;
+    @FXML
+    private VBox unsuportedCountries;
+    @FXML
     private WorldMapView worldMap;
     private StackPane firstLayout;
     private IModel model;
     private CountryInfoContainer countryInfoContainer;
 
     public WorldMap(StackPane firstLayout, IModel model) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("WorldMap.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("NewMap.fxml"));
         loader.setController(this);
         this.model = model;
         this.firstLayout = firstLayout;
         try {
-            worldMap = loader.load();
+            mapContainer = loader.load();
         } catch (IOException e) {
+            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
 
-    public WorldMapView getRoot() {
-        return worldMap;
+    public StackPane getRoot() {
+        return mapContainer;
     }
 
     @Override
@@ -49,6 +57,7 @@ public class WorldMap implements Initializable {
             }
             model.populateValidCountries(countries);
         });
+        addUnsuportedCountriesHandler();
     }
 
 
@@ -69,6 +78,14 @@ public class WorldMap implements Initializable {
         });
     }
 
+    private  void addUnsuportedCountriesHandler(){
+        this.unsuportedCountries.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+            NotSupportedView notSupportedView = new NotSupportedView(model,firstLayout);
+            firstLayout.getChildren().add(notSupportedView.getRoot());
+            WindowsManagement.showStackPane(firstLayout);
+        });
+    }
+
 
     /**
      * change the color of the countries that are operational
@@ -83,6 +100,8 @@ public class WorldMap implements Initializable {
             return countryView;
         });
     }
+
+
 
 
 }

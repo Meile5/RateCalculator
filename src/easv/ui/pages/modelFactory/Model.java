@@ -16,10 +16,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-
-
 import java.math.BigDecimal;
-
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -712,6 +709,21 @@ public class Model implements IModel {
             }
         }
         return employeesForTeamsPage;
+    }
+
+
+
+    /**get the unsuported countries in order to be shown in the unsuported countries view */
+    @Override
+    public ObservableList<Country> getUnsoportedCountries() {
+        ObservableList <Country> unsuportedCountries = FXCollections.observableArrayList();
+        for(Country country:countriesWithTeams.values()){
+            if(!validMapViewCountryNameValues.contains(country.getCountryName())){
+                unsuportedCountries.add(country);
+            }
+        }
+
+        return unsuportedCountries;
     }
 
 }
