@@ -330,6 +330,16 @@ public class Model implements IModel {
      */
     @Override
     public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
+        List<Team> originalEmployeeTeams =  new ArrayList<>();
+        for(Team team : employees.get(originalEmployee.getId()).getTeams()){
+             originalEmployeeTeams.add(teamsWithEmployees.get(team.getId()));
+        }
+
+
+
+        Employee editedSavedEmployee = employeeManager.saveEditOperation(editedEmployee, originalEmployee,originalEmployeeTeams );
+
+
        /* Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
         if (editedEmployeeSaved != null) {
             editedEmployeeSaved.addConfiguration(editedEmployeeSaved.getActiveConfiguration());
@@ -345,7 +355,7 @@ public class Model implements IModel {
             }
             return true;
         }*/
-        return false;
+        return true;
 
     }
 
@@ -356,13 +366,6 @@ public class Model implements IModel {
         return employeeManager.isEmployeeEdited(originalEmployee, editedEmployee);
     }
 
-
-//    public void setTotalRates(){
-//        System.out.println(model.calculateGroupDayRate()+" day rate");
-//        dayRateField.setText(model.calculateGroupDayRate().toString());
-//        hourlyRateField.setText(model.calculateGroupHourlyRate().toString());
-//        System.out.println(model.calculateGroupHourlyRate() + "hourly rate");
-//    }
 
     public void populateValidCountries(List<String> validCountries) {
         this.validMapViewCountryNameValues.addAll(validCountries);
@@ -467,7 +470,8 @@ public class Model implements IModel {
         teamEmployees.setAll(employeeManager.filterEmployeesByTeam(selectedTeam, employees));
         displayedEmployees.setAll(employeeManager.filterEmployeesByTeam(selectedTeam, employees));
         displayEmployees.displayEmployees();
-        // see if the filtered list needs to be updated
+        resultedTeamsFromFilterAction = new ArrayList<>();
+        resultedTeamsFromFilterAction.add(selectedTeam);
     }
 
 
@@ -480,13 +484,15 @@ public class Model implements IModel {
     /**
      * undo the country filter selection to show all the employees in the selected region , or all the employees in the system
      */
-    public void returnEmployeesByRegion() {
-
+    public void returnEmployeesByRegion(Region region) {
         displayedEmployees.setAll(filteredEmployeesListByRegion);
         displayEmployees.displayEmployees();
         if (areObservableListsEqual(filteredEmployeesListByRegion, displayedEmployees)) {
             filteredEmployeesListByRegion.setAll(displayedEmployees);
         }
+        resultedTeamsFromFilterAction = new ArrayList<>();
+        resultedTeamsFromFilterAction.addAll(employeeManager.filterTeamsByRegion(region, region. getCountries()));
+
     }
 
 
@@ -495,9 +501,11 @@ public class Model implements IModel {
      * from all the teams for the active country filter
      */
     @Override
-    public void returnEmployeesByCountry() {
+    public void returnEmployeesByCountry(Country country) {
         displayedEmployees.setAll(listEmployeeByCountryTemp);
         displayEmployees.displayEmployees();
+        resultedTeamsFromFilterAction = new ArrayList<>();
+        resultedTeamsFromFilterAction.addAll(countriesWithTeams.get(country.getId()).getTeams());
     }
 
 

@@ -36,7 +36,7 @@ public interface IEmployeeManager {
     /**check if an edit operation was performed on the epmloyee object*/
     boolean isEmployeeEdited(Employee originalEmployee,Employee editedEmployee);
     /**save the edit operation*/
-    Employee saveEditOperation(Employee editedEmployee,int oldConfigurationId) throws RateException;
+    Employee saveEditOperation(Employee editedEmployee,Employee originalEmployee,List<Team> originalEmployeeTeams) throws RateException;
     List<Employee> sortedEmployeesByName(Collection<Employee> values);
 
     /**calculate the day rate for an employee*/

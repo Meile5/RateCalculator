@@ -185,6 +185,7 @@ public class EditController implements Initializable {
                      spinnerLayer.setVisible(true);
                     initializeService(employee,editedEmployee);
                 } else {
+                    employeeDisplayer.setEmployeesVboxContainerStyleToDefault();
                     WindowsManagement.closeStackPane(this.firstLayout);
                 }
             }
@@ -195,9 +196,7 @@ public class EditController implements Initializable {
      * create the employee object with the edited values
      */
 private Employee getEmployee(Configuration editedConfiguration) {
-     //   Country country = countryCB.getSelectedItem();
         Currency currency = Currency.valueOf(this.currencyCB.getSelectedItem());
-     //   Team team = getSelectedTeam();
         String name = this.nameInput.getText();
         EmployeeType employeeType = overOrResourceCB.getSelectedItem();
         Employee editedEmployee = new Employee(name,employeeType, currency);
@@ -241,10 +240,8 @@ private Employee getEmployee(Configuration editedConfiguration) {
      * @param configuration the configuration object that is active for an employee
      */
     private void setInputsValuesWithConfiguration(Configuration configuration) {
-        if(employee.getUtilPerTeams()!=null){
-            double employeeTotalUtilization = employee.getUtilPerTeams().values()
-                     .stream().map(BigDecimal::doubleValue).reduce(0.0,Double::sum);
-            this.percentageDisplayer.setText(employeeTotalUtilization+"");
+        if(configuration.getUtilizationPercentage()!=null){
+            this.percentageDisplayer.setText(configuration.getUtilizationPercentage() +  "");
         }
         this.multiplierTF.setText(String.valueOf(configuration.getOverheadMultiplier()));
         this.salaryTF.setText(String.valueOf(configuration.getAnnualSalary()));
@@ -257,6 +254,7 @@ private Employee getEmployee(Configuration editedConfiguration) {
      * call the EmployeeInfoController to update the edited userValues,and to update the performed calculations
      */
     private void updateUserValues(Employee employee) {
+        try{
         this.employeeDisplayer.setEmployeeName(employee.getName());
         this.employeeDisplayer.setCountry(employee.getCountry().getCountryName());
         this.employeeDisplayer.setEmployeeType(employee.getEmployeeType());
@@ -264,11 +262,17 @@ private Employee getEmployee(Configuration editedConfiguration) {
         this.employeeDisplayer.setEmployee(employee);
         this.employeeDisplayer.setDayRate(model.getComputedDayRate(employee).toString());
         this.employeeDisplayer.setHourlyRate(model.getComputedHourlyRate(employee,0).toString());
-       // this.employeeDisplayer.refreshRates();
-        this.employeeDisplayer.callService();
-        PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
-        pauseTransition.setOnFinished((e)-> WindowsManagement.closeStackPane(this.firstLayout));
-        pauseTransition.playFromStart();
+        if(employeeDisplayer.isFilterActive()){
+           // this.employeeDisplayer.refreshRates();
+        }
+            System.out.println("aloooo i am here ");
+            PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
+            pauseTransition.setOnFinished((e)-> WindowsManagement.closeStackPane(this.firstLayout));
+            pauseTransition.playFromStart();
+        }catch (NullPointerException e){
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+            WindowsManagement.closeStackPane(this.spinnerLayer);
+        }
 
     }
 
@@ -328,6 +332,7 @@ private Employee getEmployee(Configuration editedConfiguration) {
         this.editService.setOnSucceeded((edit) -> {
             if (editService.getValue()) {
                 updateUserValues(editedEmployee);
+                employeeDisplayer.setEmployeesVboxContainerStyleToDefault();
             } else {
                 this.spinnerLayer.setVisible(false);
                 this.spinnerLayer.setDisable(true);

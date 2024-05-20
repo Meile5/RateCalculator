@@ -94,6 +94,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     @FXML
     private boolean countryFilterActive = false;
     @FXML
+    private boolean teamFilterActive = false;
+    @FXML
     private SVGPath teamRevertSvg;
     @FXML
     private SVGPath countryRevertSvg;
@@ -246,10 +248,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
     /**show the rates off the selected filter teams*/
     public void setTotalRates(){
-        System.out.println(model.calculateGroupDayRate()+" day rate");
-        dayRateField.setText(model.calculateGroupDayRate().toString());
-        hourlyRateField.setText(model.calculateGroupHourRate()+"");
-        System.out.println(model.calculateGroupHourRate() + "hourly rate");
+        dayRateField.setText(model.calculateGroupDayRate() + " " );
+        hourlyRateField.setText(model.calculateGroupHourRate()+" ");
     }
 
 
@@ -316,8 +316,10 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private void addTeamFilterListener() {
         this.teamsFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
+                teamFilterActive= true;
                 model.filterEmployeesByTeam(newValue);
                 showRevertButtonByFilterActive(teamRevertButton, teamRevertSvg);
+             setTotalRates();
             }
         });
     }
@@ -406,17 +408,20 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     @FXML
     private void undoCountryFilter() {
         if (regionFilterActive && countriesFilterCB.getSelectionModel().getSelectedItem() != null) {
-            model.returnEmployeesByRegion();
+            model.returnEmployeesByRegion(regionsFilter.getSelectionModel().getSelectedItem());
             teamsFilterCB.clearSelection();
          //   model.performRegionTeamsOverheadCalculations();
             // searchField.clear();
-            //setTotalRates();
+            setTotalRates();
+            countryFilterActive = false;
+            teamFilterActive=false;
         } else {
             model.performEmployeeSearchUndoOperation();
             teamsFilterCB.clearSelection();
             teamsFilterCB.setItems(FXCollections.observableArrayList(model.getOperationalTeams()));
             countriesFilterCB.clearSelection();
             countryFilterActive = false;
+            teamFilterActive=false;
             setTotalRatesDefault();
         }
     }
@@ -434,6 +439,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         teamsFilterCB.setItems(teamsInSystem);
         setTotalRatesDefault();
         regionFilterActive = false;
+        countryFilterActive=false;
+        teamFilterActive =false;
     }
 
 
@@ -444,15 +451,17 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
     private void undoTeamFilter() {
         if (countryFilterActive && teamsFilterCB.getSelectionModel().getSelectedItem() != null) {
-            model.returnEmployeesByCountry();
+            model.returnEmployeesByCountry(countriesFilterCB.getSelectionModel().getSelectedItem());
             teamsFilterCB.clearSelection();
             // searchField.clear();
-            //setTotalRates();
+            setTotalRates();
+            teamFilterActive=false;
         } else if (regionFilterActive && teamsFilterCB.getSelectionModel().getSelectedItem() != null) {
-            model.returnEmployeesByRegion();
+            model.returnEmployeesByRegion(regionsFilter.getSelectionModel().getSelectedItem());
             teamsFilterCB.clearSelection();
             // searchField.clear();
-            //setTotalRates();
+            setTotalRates();
+            teamFilterActive=false;
         } else {
             model.performEmployeeSearchUndoOperation();
             teamsFilterCB.clearSelection();
@@ -460,7 +469,14 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 //            countriesFilterCB.clearSelection();
 //            countryFilterActive = false;
             setTotalRatesDefault();
+            teamFilterActive=false;
         }
+    }
+
+
+    /**are filters active*/
+    public boolean isFilterActive(){
+        return regionFilterActive || countryFilterActive || teamFilterActive;
     }
 
 

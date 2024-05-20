@@ -17,7 +17,11 @@
 }
 
 .employeeComponentClicked{
-    -fx-border-color: #cccccc; /* Border color on hover */
+    -fx-border-color: #cccccc;
+    -fx-effect: dropshadow(gaussian, rgba(86,234,140,0.5), 10, 0, 0, 5);
+}
+.employeeComponentClicked:hover{
+    -fx-border-color: #cccccc;
     -fx-effect: dropshadow(gaussian, rgba(86,234,140,0.5), 10, 0, 0, 5);
 }
 

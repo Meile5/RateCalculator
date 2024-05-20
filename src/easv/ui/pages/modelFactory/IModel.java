@@ -105,7 +105,7 @@ public interface IModel {
 
     void teamFilterActiveRevert() throws RateException;
 
-    void returnEmployeesByRegion();
+    void returnEmployeesByRegion(Region region );
 
     Employee getEmployeeById(int id);
 
@@ -123,7 +123,7 @@ public interface IModel {
     /**
      * undo the team filter operation to display the country active filter
      */
-    void returnEmployeesByCountry();
+    void returnEmployeesByCountry(Country country);
 
     /**
      * calculate selected teams from filter day rate

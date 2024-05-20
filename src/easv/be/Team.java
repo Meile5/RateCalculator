@@ -41,7 +41,9 @@ public class Team {
     }
 
     /**
-     * copy constructor, this constructor will not do a deep copy off the employees list
+     * copy constructor, this constructor will not do a deep copy off the employees list,
+     * if operations are done on the team employees, they will be reflected in the employee
+     * so do not perform employee edit operations while this copy constructor is used
      */
     public Team(Team team) {
         this(team.getTeamName(),team.getCurrency(), team.getId(), team.teamMembers, team.teamConfigurationsHistory);

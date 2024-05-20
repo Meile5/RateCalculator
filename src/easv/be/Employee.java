@@ -15,8 +15,6 @@ public class Employee {
     private int id;
     private Currency currency;
 
-    /*private BigDecimal dailyRate;
-    private BigDecimal hourlyRate;*/
     private List<Configuration> configurations;
     private List<Region> regions;
     private List<Country> countries;

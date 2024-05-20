@@ -550,8 +550,6 @@ public class EmployeesDAO implements IEmployeeDAO {
                         }
                         team.setRegions(regions);
                     }
-
-
                 }
             }
         } catch (SQLException | RateException e) {
