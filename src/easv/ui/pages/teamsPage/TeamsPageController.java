@@ -67,8 +67,6 @@ public class TeamsPageController implements Initializable {
         try {
             model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
             displayTeams();
-
-
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }

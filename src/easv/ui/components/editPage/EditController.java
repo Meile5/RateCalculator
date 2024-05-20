@@ -3,6 +3,7 @@ package easv.ui.components.editPage;
 import easv.Utility.EmployeeValidation;
 import easv.Utility.WindowsManagement;
 import easv.be.*;
+import easv.be.Currency;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
@@ -12,11 +13,15 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -27,9 +32,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class EditController implements Initializable {
 
@@ -60,6 +64,10 @@ public class EditController implements Initializable {
     private MFXComboBox<EmployeeType> overOrResourceCB;
     @FXML
     private MFXComboBox<Configuration> configurations;
+    @FXML
+    private ComboBox<Integer> yearComboBox;
+    @FXML
+    private LineChart<String, BigDecimal> lineChart;
 
     @FXML
     private StackPane spinnerLayer;
@@ -112,6 +120,13 @@ public class EditController implements Initializable {
         populateSelectedConfiguration();
        // save the edit configuration
         saveEdit();
+        //show history graph on screen
+        populateComboBoxWithYears(employee);
+        //add combobox  listener
+        yearsComboBoxListener(employee);
+        //show all history
+        populateChartInitial(employee);
+
 
         //initialize region listener
        // addRegionSelectionListener(regionComboBox,countryCB);
@@ -362,31 +377,89 @@ private Employee getEmployee(Configuration editedConfiguration) {
         }
         return validFormat;
     }
+    /* listener that listens changes in selected years of combobox and calls a method to populate pieChart*/
+    public void yearsComboBoxListener(Employee employee) {
+        yearComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                populateChartForYear(employee, newValue);
+            }
+        });
+    }
 
-//    private void addRegionSelectionListener(MFXComboBox<Region> region, MFXComboBox<Country> countries) {
-//        region.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                countries.clearSelection();
-//                ObservableList<Country> regionCountries= FXCollections.observableArrayList(newValue.getCountries());
-//                countries.setItems(regionCountries);
-//                countries.selectItem(regionCountries.get(0));
-//
-//            }
-//        });
-//    }
-//
-//    private void addCountrySelectionListener(MFXComboBox<Country> country, MFXComboBox<Team> teams) {
-//        country.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                teams.clearSelection();
-//                ObservableList<Team> countryTeams = FXCollections.observableArrayList(newValue.getTeams());
-//                teams.setItems(countryTeams);
-//                teams.selectItem(countryTeams.get(0));
-//            }
-//        });
-//    }
+    // EMPLOYEE HISTORY
 
-    //TODO create a separate component for the seleted team tah will be added to the scrollPane , with an remove button
+
+
+    //show full history ,initial
+   private void populateChartInitial(Employee employee){
+        List<XYChart.Series<String,BigDecimal>> chartSeries =  new ArrayList<>();
+       XYChart.Series<String, BigDecimal> daySeries = new XYChart.Series<>();
+       daySeries.setName("DayRates");
+
+       XYChart.Series<String, BigDecimal> hourSeries = new XYChart.Series<>();
+       hourSeries.setName("HourRates");
+
+       for (Configuration config : employee.getConfigurations()) {
+           daySeries.getData().add(new XYChart.Data<>(config.getSavedDate().format(DateTimeFormatter.ofPattern("MMM dd")), config.getDayRate()));
+           hourSeries.getData().add(new XYChart.Data<>(config.getSavedDate().format(DateTimeFormatter.ofPattern("MMM dd")), config.getHourlyRate()));
+       }
+
+       chartSeries.add(daySeries);
+       chartSeries.add(hourSeries);
+
+       lineChart.getData().clear();
+       lineChart.getData().addAll(chartSeries);
+   }
+
+
+
+
+    /**
+     * populates the lineChart with history from a selected year, it includes day rates and months
+     * initializes a new series for an XYChart with String as the X-axis type and BigDecimal as the Y-axis type
+     * format String into "Jan 01"
+     * @param selectedYear is the year that is selected from a combobox
+     */
+    private void populateChartForYear(Employee employee, int selectedYear) {
+
+        XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
+        series.setName(employee.getName());
+        /* Get the configurations for the selected year*/
+        List<Configuration> configurations = employee.getConfigurations().stream()
+                .filter(config -> config.getSavedDate().getYear() == selectedYear)
+                .sorted(Comparator.comparing(Configuration::getSavedDate))
+                .toList();
+        /* Populate the series with sorted data from configurations*/
+        for (Configuration config : configurations) {
+            series.getData().add(new XYChart.Data<>(config.getSavedDate().format(DateTimeFormatter.ofPattern("MMM dd")), config.getDayRate()));
+        }
+        lineChart.getData().clear();
+        lineChart.getData().add(series);
+    }
+    /**
+     * populates the ComboBox with years based on the employee configurations history
+     * if configurations exist extracts only years from the configurations, sorts them in descending order
+     * sets the latest year as the initial value of the ComboBox
+     * @param employee the employee whose configurations history is used to populate the ComboBox
+     */
+    public void populateComboBoxWithYears(Employee employee) {
+        List<Configuration> configurations = employee.getConfigurations();
+        ObservableList<Integer> yearOptions = FXCollections.observableArrayList();
+        if (configurations != null) {
+            /*Collect years from configurations*/
+            configurations.stream()
+                    .map(config -> config.getSavedDate().getYear())
+                    .distinct()
+                    .sorted(Collections.reverseOrder())
+                    .forEach(yearOptions::add);
+        }
+        yearComboBox.setItems(yearOptions);
+        /* Set the latest year as the initial value of the ComboBox*/
+        if (!yearOptions.isEmpty()) {
+            yearComboBox.setValue(yearOptions.get(0));
+        }
+    }
+
 }
 
 

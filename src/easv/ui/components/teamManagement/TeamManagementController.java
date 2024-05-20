@@ -46,7 +46,6 @@ public class TeamManagementController implements Initializable {
         this.model = model;
         this.team = team;
         this.teamInfoController = teamInfoController;
-
         try {
             teamManagementComponent = loader.load();
         } catch (IOException e) {
@@ -79,7 +78,6 @@ public class TeamManagementController implements Initializable {
                 .forEach(e -> {
                     EmployeesToAdd employeesToAdd = new EmployeesToAdd( e, model, this);
                     allEmployeesContainer.getChildren().add(employeesToAdd.getRoot());
-
                 });
     }
 
