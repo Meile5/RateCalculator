@@ -29,22 +29,6 @@ public class EmployeeManager implements IEmployeeManager {
         return employee;
     }
 
-/*
-    private boolean checkIfNewCountry(Country country, ObservableMap<String, Country> countries) {
-        if (country == null) {
-            return false;
-        }
-        return countries.values().stream().noneMatch(t -> t.getCountryName().equals(country.getCountryName()));
-    }
-
-    private boolean checkIfNewTeam(Team team, ObservableMap<Integer, Team> teams) {
-        if (team == null) {
-            return false;
-        }
-        return teams.values().stream().noneMatch(t -> t.getTeamName().equals(team.getTeamName()));
-    }
-
- */
 
     @Override
     public Map<Integer, Employee> returnEmployees() throws RateException {
@@ -84,6 +68,12 @@ public class EmployeeManager implements IEmployeeManager {
     }
 
 
+    /**filter teams by region*/
+    @Override
+    public List<Team> filterTeamsByRegion(Region region, List<Country> countries) {
+       return countries.stream().flatMap((e)->e.getTeams().stream()).toList();
+    }
+
     /**
      * set to the filtered employee the regions, countries,and teams value in order to be displayed
      */
@@ -116,25 +106,40 @@ public class EmployeeManager implements IEmployeeManager {
 
 
 
-    /*
-    private BigDecimal calculateSumTeamDayRate(Team team) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (Employee employee : team.getEmployees()) {
-            BigDecimal dayRate = rateCalculator.calculateEmployeeDayRateOnTeam(employee, team);
-            sum = sum.add(dayRate);
+    /**calculate the total overhead of the teams */
+    public BigDecimal calculateGroupTotalDayRate(List<Team> filteredTeams){
+        BigDecimal teamsDayRateSum = BigDecimal.ZERO;
+
+        for(Team teams:filteredTeams){
+            TeamConfiguration teamConfiguration = teams.getActiveConfiguration();
+            if(teamConfiguration!=null){
+                BigDecimal  teamDayRate = teamConfiguration.getTeamDayRate();
+                if (teamDayRate!=null){
+                   teamsDayRateSum= teamsDayRateSum.add(teamDayRate);
+                }
+            }
         }
-        return sum;
+
+        return teamsDayRateSum;
     }
 
-    private BigDecimal calculateSumTeamHourlyRate(Team team) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (Employee employee : team.getEmployees()) {
-            sum = sum.add(rateCalculator.calculateEmployeeHourlyRateOnTeam(employee, team));
+
+    /**calculate the teams total  hourly rate */
+    public BigDecimal calculateGroupTotalHourRate(List<Team> filteredTeams){
+        BigDecimal teamsHourRateSum = BigDecimal.ZERO;
+        for(Team teams:filteredTeams){
+            TeamConfiguration teamConfiguration = teams.getActiveConfiguration();
+            if(teamConfiguration!=null){
+                BigDecimal  teamHourlyRate = teamConfiguration.getTeamHourlyRate();
+                if (teamHourlyRate!=null){
+                    teamsHourRateSum= teamsHourRateSum.add(teamHourlyRate);
+                }
+            }
         }
-        return sum;
+        return teamsHourRateSum;
     }
 
-     */
+
 
     @Override
     public List<Employee> performSearchOperation(Collection<Employee> employees, String filter) {
@@ -248,6 +253,5 @@ public class EmployeeManager implements IEmployeeManager {
         }
         return teamEmployees;
     }
-
 
 }

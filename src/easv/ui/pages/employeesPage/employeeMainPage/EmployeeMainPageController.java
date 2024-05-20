@@ -122,7 +122,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
-
     }
 
     public Parent getRoot() {
@@ -245,6 +244,14 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         regionsFilter.setItems(model.getOperationalRegions().sorted());
     }
 
+    /**show the rates off the selected filter teams*/
+    public void setTotalRates(){
+        System.out.println(model.calculateGroupDayRate()+" day rate");
+        dayRateField.setText(model.calculateGroupDayRate().toString());
+        hourlyRateField.setText(model.calculateGroupHourRate()+"");
+        System.out.println(model.calculateGroupHourRate() + "hourly rate");
+    }
+
 
     /**
      * add  region selection listener  that will filter the countries by regions and teams by countries in the region
@@ -269,6 +276,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                 this.teamsFilterCB.setItems(regionCountriesTeams);
                 this.teamsFilterCB.selectItem(regionCountriesTeams.getFirst());
                 showRevertButtonByFilterActive(regionRevertButton, regionRevertSvg);
+                setTotalRates();
             }
         });
     }
@@ -294,9 +302,9 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
               }catch (IndexOutOfBoundsException e){
                   System.out.println(e.getMessage());
               }
-                // call the model to display the resulted employees from the filter operation
                 model.filterByCountryTeams(newValue);
                 showRevertButtonByFilterActive(countryRevertButton, countryRevertSvg);
+                setTotalRates();
             }
         });
     }
@@ -392,11 +400,15 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
+
+
+    /**undo the countries filters , is the region filter is active , than show the region employees , else show all employees*/
     @FXML
     private void undoCountryFilter() {
         if (regionFilterActive && countriesFilterCB.getSelectionModel().getSelectedItem() != null) {
             model.returnEmployeesByRegion();
             teamsFilterCB.clearSelection();
+         //   model.performRegionTeamsOverheadCalculations();
             // searchField.clear();
             //setTotalRates();
         } else {
@@ -568,12 +580,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
-    public void setTotalRates(){
-        System.out.println(model.calculateGroupDayRate()+" day rate");
-        dayRateField.setText(model.calculateGroupDayRate().toString());
-        hourlyRateField.setText(model.calculateGroupHourlyRate().toString());
-        System.out.println(model.calculateGroupHourlyRate() + "hourly rate");
-    }
+
 
 
 

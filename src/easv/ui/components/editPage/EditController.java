@@ -9,9 +9,9 @@ import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 
-import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -21,12 +21,14 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class EditController implements Initializable {
@@ -42,9 +44,9 @@ public class EditController implements Initializable {
 
     private IModel model;
     @FXML
-    private MFXTextField utilPercentageTF, multiplierTF;
+    private MFXTextField  multiplierTF;
     @FXML
-    private MFXTextField nameInput, salaryTF, workingHoursTF, annualAmountTF, workingHoursInput,percentageDisplayer;
+    private MFXTextField nameInput, salaryTF, workingHoursTF, annualAmountTF, dayWorkingHoursInput,percentageDisplayer;
 
     @FXML
     private MFXComboBox<Region> regionComboBox;
@@ -108,8 +110,8 @@ public class EditController implements Initializable {
         populateInputs();
         //populate inputs with the values of the selected configuration from history(dropdown menu)
         populateSelectedConfiguration();
-        //save the edit configuration
-        //saveEdit();
+       // save the edit configuration
+        saveEdit();
 
         //initialize region listener
        // addRegionSelectionListener(regionComboBox,countryCB);
@@ -170,63 +172,56 @@ public class EditController implements Initializable {
      * save the edited employee
      */
     //TODO call the method that changes the style off the employee container to default
-//    private void saveEdit() {
-//        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-//            if (EmployeeValidation.areNamesValid(nameInput, countryCB, teamComboBox) &&
-//                    EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
-//                    EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
-//                    EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB)
-//                    && EmployeeValidation.validateAditionalMultipliers(markup, grossMargin)) {
-//                Configuration editedConfiguration = getConfiguration();
-//                Employee editedEmployee = getEmployee(editedConfiguration);
-//                if (model.isEditOperationPerformed(employee, editedEmployee)) {
-//                     spinnerLayer.setDisable(false);
-//                     spinnerLayer.setVisible(true);
-//                    initializeService(employee,editedEmployee);
-//                } else {
-//                    WindowsManagement.closeStackPane(this.firstLayout);
-//                }
-//            }
-//        });
-//    }
-
+    private void saveEdit() {
+        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (EmployeeValidation.areNamesValid(nameInput) &&
+                    EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF,dayWorkingHoursInput) &&
+                    EmployeeValidation.arePercentagesValid(multiplierTF) &&
+                    EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB)) {
+                Configuration editedConfiguration = getConfiguration();
+                Employee editedEmployee = getEmployee(editedConfiguration);
+                if (model.isEditOperationPerformed(employee, editedEmployee)) {
+                     spinnerLayer.setDisable(false);
+                     spinnerLayer.setVisible(true);
+                    initializeService(employee,editedEmployee);
+                } else {
+                    WindowsManagement.closeStackPane(this.firstLayout);
+                }
+            }
+        });
+    }
 
     /**
      * create the employee object with the edited values
      */
-//private Employee getEmployee(Configuration editedConfiguration) {
-//        Country country = countryCB.getSelectedItem();
-//        Currency currency = Currency.valueOf(this.currencyCB.getSelectedItem());
-//        Team team = getSelectedTeam();
-//        String name = this.nameInput.getText();
-//        EmployeeType employeeType = overOrResourceCB.getSelectedItem();
-//        Employee editedEmployee = new Employee(name, country, team, employeeType, currency);
-//        editedEmployee.setConfigurations(employee.getConfigurations());
-//        editedEmployee.setActiveConfiguration(editedConfiguration);
-//        editedEmployee.setId(employee.getId());
-//        return editedEmployee;
-//    }
-
+private Employee getEmployee(Configuration editedConfiguration) {
+     //   Country country = countryCB.getSelectedItem();
+        Currency currency = Currency.valueOf(this.currencyCB.getSelectedItem());
+     //   Team team = getSelectedTeam();
+        String name = this.nameInput.getText();
+        EmployeeType employeeType = overOrResourceCB.getSelectedItem();
+        Employee editedEmployee = new Employee(name,employeeType, currency);
+        editedEmployee.setConfigurations(employee.getConfigurations());
+        editedEmployee.setActiveConfiguration(editedConfiguration);
+        editedEmployee.setId(employee.getId());
+        return editedEmployee;
+    }
 
     /**
      * create the Configuration object from the inputs fields
      */
-//    private Configuration getConfiguration() {
-//        BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText()));
-//        BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText()));
-//        BigDecimal overheadMultiplier = new BigDecimal(convertToDecimalPoint(multiplierTF.getText()));
-//        BigDecimal utilizationPercentage = new BigDecimal(convertToDecimalPoint(utilPercentageTF.getText()));
-//        BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText()));
-//        double markupValue = 0;
-//        double grossMarginValue = 0;
-//        if (!isTextFieldEmpty(markup)) {
-//            markupValue = Double.parseDouble(convertToDecimalPoint(this.markup.getText()));
-//        }
-//        if (!isTextFieldEmpty(grossMargin)) {
-//            grossMarginValue = Double.parseDouble(convertToDecimalPoint(this.grossMargin.getText()));
-//        }
-//        return new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true, markupValue, grossMarginValue);
-//    }
+    private Configuration getConfiguration() {
+        BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText()));
+        BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText()));
+        BigDecimal overheadMultiplier = new BigDecimal(convertToDecimalPoint(multiplierTF.getText()));
+        BigDecimal utilizationPercentage = BigDecimal.ZERO;
+        if(!percentageDisplayer.getText().isEmpty()){
+            utilizationPercentage = new BigDecimal(convertToDecimalPoint(percentageDisplayer.getText()));
+        }
+        BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText()));
+        double dayWorkingHours = Double.parseDouble(convertToDecimalPoint(dayWorkingHoursInput.getText()));
+        return new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true,dayWorkingHours);
+    }
 
 
     /**
@@ -255,7 +250,7 @@ public class EditController implements Initializable {
         this.salaryTF.setText(String.valueOf(configuration.getAnnualSalary()));
         this.workingHoursTF.setText(String.valueOf(configuration.getWorkingHours()));
         this.annualAmountTF.setText(String.valueOf(configuration.getFixedAnnualAmount()));
-        this.workingHoursInput.setText(configuration.getDayWorkingHours() + "");
+        this.dayWorkingHoursInput.setText(configuration.getDayWorkingHours() + "");
     }
 
     /**
@@ -271,7 +266,10 @@ public class EditController implements Initializable {
         this.employeeDisplayer.setHourlyRate(model.getComputedHourlyRate(employee,0).toString());
        // this.employeeDisplayer.refreshRates();
         this.employeeDisplayer.callService();
-        WindowsManagement.closeStackPane(this.firstLayout);
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
+        pauseTransition.setOnFinished((e)-> WindowsManagement.closeStackPane(this.firstLayout));
+        pauseTransition.playFromStart();
+
     }
 
     private boolean isTextFieldEmpty(MFXTextField textField) {
@@ -303,6 +301,7 @@ public class EditController implements Initializable {
         EmployeeValidation.addInputDigitsListeners(salaryTF);
         EmployeeValidation.addInputDigitsListeners(workingHoursTF);
         EmployeeValidation.addInputDigitsListeners(annualAmountTF);
+        EmployeeValidation.addInputDigitsListeners(dayWorkingHoursInput);
     }
 
     /**
@@ -332,15 +331,16 @@ public class EditController implements Initializable {
             } else {
                 this.spinnerLayer.setVisible(false);
                 this.spinnerLayer.setDisable(true);
-                WindowsManagement.closeStackPane(firstLayout);
                 ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
             }
         });
-
         this.editService.setOnFailed((error) -> {
-            ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
-            this.spinnerLayer.setVisible(false);
-            this.spinnerLayer.setDisable(true);
+            PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
+            pauseTransition.setOnFinished((e)->{
+                ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
+                this.spinnerLayer.setVisible(false);
+                this.spinnerLayer.setDisable(true);
+            });
         });
         editService.restart();
     }

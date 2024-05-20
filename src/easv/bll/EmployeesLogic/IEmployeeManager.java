@@ -19,6 +19,14 @@ public interface IEmployeeManager {
     BigDecimal calculateTeamDayRate(Team team);
     BigDecimal calculateTeamHourlyRate(Team team);
 
+
+
+    /**calculate the total overhead of the teams */
+    public BigDecimal calculateGroupTotalDayRate(List<Team> filteredTeams);
+
+    /**calculate the teams total  hourly rate */
+    public BigDecimal calculateGroupTotalHourRate(List<Team> filteredTeams);
+
     BigDecimal getEmployeeDayRateOnTeam(Employee employee, Team team);
 
     BigDecimal getEmployeeHourlyRateOnTeam(Employee employee, Team team);
@@ -39,6 +47,9 @@ public interface IEmployeeManager {
 
     List<Employee> filterByCountry(Region region,List<Country> countries,Map<Integer,Employee> employees);
 
+    /**filter teams by region */
+    List<Team> filterTeamsByRegion(Region region , List<Country> countries);
+
 
 
     /**retrieve the teams in the system*/
@@ -55,4 +66,6 @@ public interface IEmployeeManager {
     List<Employee> filterTeamsByCountry(List<Team> countryTeams, ObservableMap<Integer, Employee> employees);
 
     List<Employee> filterEmployeesByTeam(Team selectedTeam,ObservableMap<Integer,Employee> employees);
+
+
 }
