@@ -143,9 +143,7 @@ public class GeographyManagementController implements Initializable {
             regions.add(region);
     }
 
-    //TODO: ON UPDATE, ADD AND REMOVE COMPONENT ! - NELSON
-
-    public void removeRegionComponent(Region region){
+    public void updateRegionComponents(){
         initializeGeographyLoadingService();
     }
 
@@ -193,7 +191,7 @@ public class GeographyManagementController implements Initializable {
             countries.add(country);
     }
 
-    public void removeCountryComponent(Country country) {
+    public void updateCountryComponents() {
         initializeGeographyLoadingService();
     }
 }

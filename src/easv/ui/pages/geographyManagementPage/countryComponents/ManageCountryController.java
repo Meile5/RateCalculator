@@ -8,10 +8,9 @@ import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.pages.geographyManagementPage.geographyMainPage.GeographyManagementController;
 import easv.ui.pages.modelFactory.IModel;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import io.github.palexdev.materialfx.controls.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -34,7 +33,7 @@ public class ManageCountryController implements Initializable {
     @FXML
     private VBox manageWindow;
     @FXML
-    private MFXTextField countryNameTF;
+    private MFXFilterComboBox<String> countryNameBox;
     @FXML
     private MFXComboBox<Team> teamsCB;
     @FXML
@@ -103,22 +102,27 @@ public class ManageCountryController implements Initializable {
     }
 
     private void setFields() {
+        ObservableList<String> countries = FXCollections.observableArrayList(model.getValidCountries());
+        countryNameBox.setItems(countries);
         if(country != null){
-            countryNameTF.setText(country.getCountryName());
-            teamsListView.getItems().addAll(country.getTeams());
-
-            existingTeamsList.addAll(country.getTeams());
             isEditOperation = true;
+            countryNameBox.setText(country.getCountryName());
+            if(!country.getTeams().isEmpty()) {
+                if(country.getTeams().getFirst() != null) {
+                    teamsListView.getItems().addAll(country.getTeams());
+                    existingTeamsList.addAll(country.getTeams());
+                }
+            }
         }
         teamsCB.getItems().addAll(model.getTeams());
     }
 
     private void saveCountryListener() {
         saveBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
-            if(CountryValidation.isCountryNameValid(countryNameTF) && CountryValidation.isTeamsListValid(teamsListView)){
+            if(CountryValidation.isCountryNameValid(countryNameBox) && CountryValidation.isTeamsListValid(teamsListView)){
                 enableProgressBar();
                 if(isEditOperation) {
-                    country.setCountryName(countryNameTF.getText());
+                    country.setCountryName(countryNameBox.getText());
 //                    secondPane.getChildren().add(progressSpinner);
 //                    WindowsManagement.showStackPane(secondPane);
 
@@ -127,7 +131,7 @@ public class ManageCountryController implements Initializable {
 //                    secondPane.getChildren().add(progressSpinner);
 //                    WindowsManagement.showStackPane(secondPane);
 
-                    String name = countryNameTF.getText();
+                    String name = countryNameBox.getText();
                     country = new Country(name);
                     saveCountryOperation(country, existingTeamsList);
                 }
@@ -166,12 +170,12 @@ public class ManageCountryController implements Initializable {
 
         saveCountry.setOnSucceeded(event -> {
             controller.showOperationStatus("Operation Successful!", Duration.seconds(2));
-            if (isEditOperation) {
-                controller.addCountryComponent(country);
-                controller.removeCountryComponent(country);
-            } else {
-                controller.addCountryComponent(country);
-            }
+            controller.updateCountryComponents();
+//            if (isEditOperation) {
+//                controller.updateCountryComponents();
+//            } else {
+//                controller.addCountryComponent(country);
+//            }
             //WindowsManagement.closeStackPane(secondPane);
             WindowsManagement.closeStackPane(pane);
             disableProgressBar();

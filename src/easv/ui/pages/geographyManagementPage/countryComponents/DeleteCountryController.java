@@ -34,7 +34,7 @@ public class DeleteCountryController implements Initializable, OperationHandler 
     private HBox employeeComponent;
     private ConfirmationWindowController confirmationWindowController;
     private GeographyManagementController controller;
-    private Service<Void> deleteEmployee;
+    private Service<Void> deleteCountry;
 
     public DeleteCountryController(StackPane firstLayout , IModel model, Country country, GeographyManagementController controller) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DeleteCountryComponent.fxml"));
@@ -82,7 +82,7 @@ public class DeleteCountryController implements Initializable, OperationHandler 
     }
     private void initializeDelete() {
 
-        deleteEmployee = new Service<Void>() {
+        deleteCountry = new Service<Void>() {
 
             @Override
             protected Task<Void> createTask() {
@@ -90,7 +90,7 @@ public class DeleteCountryController implements Initializable, OperationHandler 
                     @Override
                     protected Void call() throws Exception {
                         Thread.sleep(2000);
-                        //model.deleteEmployee(country);
+                        model.deleteCountry(country);
                         return null;
                     }
                 };
@@ -98,13 +98,16 @@ public class DeleteCountryController implements Initializable, OperationHandler 
         };
 
 
-        deleteEmployee.setOnSucceeded(event -> WindowsManagement.closeStackPane(firstLayout));
+        deleteCountry.setOnSucceeded(event -> {
+            WindowsManagement.closeStackPane(firstLayout);
+            controller.updateCountryComponents();
+        });
 
-        deleteEmployee.setOnFailed(event -> {
+        deleteCountry.setOnFailed(event -> {
             confirmationWindowController.setErrorMessage(ErrorCode.DELETING_EMPLOYEES_FAILED.getValue());
         });
 
-        deleteEmployee.restart();
+        deleteCountry.restart();
     }
 
 }

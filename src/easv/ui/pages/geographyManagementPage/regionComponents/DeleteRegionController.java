@@ -90,7 +90,7 @@ public class DeleteRegionController implements Initializable, OperationHandler {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        Thread.sleep(1000);
+                        Thread.sleep(2000);
                         model.deleteRegion(region);
                         return null;
                     }
@@ -99,8 +99,11 @@ public class DeleteRegionController implements Initializable, OperationHandler {
         };
 
 
-        deleteEmployee.setOnSucceeded(event -> WindowsManagement.closeStackPane(pane));
-        controller.removeRegionComponent(region);
+        deleteEmployee.setOnSucceeded(event -> {
+            WindowsManagement.closeStackPane(pane);
+            controller.updateRegionComponents();
+        });
+
 
         deleteEmployee.setOnFailed(event -> {
             confirmationWindowController.setErrorMessage(ErrorCode.DELETING_EMPLOYEES_FAILED.getValue());

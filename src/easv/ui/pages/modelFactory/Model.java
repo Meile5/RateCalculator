@@ -861,12 +861,8 @@ public class Model implements IModel {
         List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
         List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
         country = countryLogic.addCountry(country, existingTeams, newTeams);
-        if (country.getTeams() == null && country.getTeams().isEmpty()) {
-            countries.put(country.getCountryName(), country);
-        } else {
             countriesWithTeams.put(country.getId(), country);
             countries.put(country.getCountryName(), country);
-        }
     }
 
     @Override

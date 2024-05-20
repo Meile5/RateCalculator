@@ -139,7 +139,7 @@ public class CountryDao implements ICountryDao {
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
-            String sql = "UPDATE Country SET CountryName = ? WHERE CountryID = ?";
+            String sql = "UPDATE Countries SET CountryName = ? WHERE CountryID = ?";
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 psmt.setString(1, country.getCountryName());
                 psmt.setInt(2, country.getId());
@@ -196,7 +196,7 @@ public class CountryDao implements ICountryDao {
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
-            String sql = "DELETE FROM Country WHERE CountryID = ?";
+            String sql = "DELETE FROM Countries WHERE CountryID = ?";
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 psmt.setInt(1, country.getId());
                 psmt.executeUpdate();
