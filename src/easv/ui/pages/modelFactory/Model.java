@@ -129,7 +129,7 @@ public class Model implements IModel {
         teamsWithEmployees = FXCollections.observableHashMap();
         countriesWithTeams = FXCollections.observableHashMap();
         regionsWithCountries = FXCollections.observableHashMap();
-        populateCountries();
+   //     populateCountries();
         populateTeams();
         populateTeamsWithEmployees();
         populateCountriesWithTeams();
@@ -141,9 +141,10 @@ public class Model implements IModel {
         this.displayEmployees = displayEmployees;
     }
 
-    private void populateCountries() throws RateException {
-        this.countries.putAll(countryLogic.getCountries());
-    }
+//    private void populateCountries() throws RateException {
+//
+//       this.countries.putAll(countryLogic.getCountries());
+//    }
 
 
     /**
@@ -303,10 +304,14 @@ public class Model implements IModel {
 
      */
 
-    //TODO, to delete this method? (it's on the interface) - NELSON
+
+
+
+    //Please do not modify again
+    /**used in the map to display teams info*/
     @Override
     public List<Team> getCountryTeams() {
-        return List.of();
+        return this.countries.get(selectedCountry).getTeams();
     }
 
 
@@ -314,7 +319,8 @@ public class Model implements IModel {
      * return the operational countries
      */
     public Map<String, Country> getCountries() {
-        return countries;
+        this.countries.putAll(countryLogic.getCountriesForMap(countriesWithTeams));
+   return countries;
     }
 
 

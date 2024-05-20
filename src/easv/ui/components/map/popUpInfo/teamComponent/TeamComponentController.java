@@ -8,7 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
+
+import javax.tools.Tool;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -19,10 +22,11 @@ import java.util.ResourceBundle;
 public class TeamComponentController  implements Initializable {
     @FXML
     private VBox teamComponent;
+
     @FXML
-    private Label totalOverhead;
+    private Label totalOverheadHourly;
     @FXML
-    private Label expensesOverhead;
+    private Label totalOverheadDaily;
     @FXML
     private Label salaryOverhead;
     @FXML
@@ -45,6 +49,12 @@ public class TeamComponentController  implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializePieChart();
+        Tooltip totalOverhed=  new Tooltip();
+        totalOverhed.setText(totalOverheadDaily.getText());
+        totalOverheadDaily.setTooltip(totalOverhed);
+        Tooltip hourOverhead = new Tooltip();
+        hourOverhead.setText(totalOverheadHourly.getText());
+        totalOverheadHourly.setTooltip(hourOverhead);
     }
 
     public VBox getRoot() {
@@ -54,10 +64,21 @@ public class TeamComponentController  implements Initializable {
 
 /**initialize chart with the values*/
         private void initializePieChart(){
-            //TODO include percentage for the employee based on team total overhead
+
+            if(team==null){
+                initializeTeamNull();
+                return;
+            }
+
+            if(team.getEmployees()==null){
+                initializeTeamNoEmployees();
+                return;
+            }
 
             for(Employee employee :team.getEmployees()){
-                pieChartData.add(new PieChart.Data(employee.getName(),employee.getActiveConfiguration().getDayRate().doubleValue()));
+
+                String employeeData = employee.getName() +" " + employee.getActiveConfiguration().getDayRate() + " " + employee.getCurrency();
+                pieChartData.add(new PieChart.Data(employeeData,employee.getActiveConfiguration().getDayRate().doubleValue()));
             }
             teamChart.setData(pieChartData);
             teamChart.setTitle(team.getTeamName());
@@ -74,21 +95,27 @@ public class TeamComponentController  implements Initializable {
         /**initialize the team ovearhead values
          * */
 
-        //TODO if is more time calculate the salaries off the employees, to have the team total
         private void initializeTeamOverheadData(){
-//        BigDecimal salaryOverheadValue  = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD).setScale(2, RoundingMode.HALF_UP);
-//        salaryOverhead.setText(salaryOverheadValue + " " + team.getTeamMembers().getFirst().getCurrency());
-//        BigDecimal expensesOverheadValue = team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD).setScale(2,RoundingMode.HALF_UP);
-//        expensesOverhead.setText(expensesOverheadValue + " " + team.getTeamMembers().getFirst().getCurrency());
         if(team.getActiveConfiguration()!=null){
-            BigDecimal totalOverheadValue =   team.getActiveConfiguration().getTeamDayRate();
-            totalOverhead.setText(totalOverheadValue + " " + team.getEmployees().get(0).getCurrency());
+            BigDecimal totalOverheadDayValue =   team.getActiveConfiguration().getTeamDayRate();
+            BigDecimal totalOverheadHourValue = team.getActiveConfiguration().getTeamHourlyRate();
+            totalOverheadDaily.setText(totalOverheadDayValue.setScale(2,RoundingMode.HALF_UP) + " " + team.getCurrency());
+             totalOverheadHourly.setText(totalOverheadHourValue.setScale(2,RoundingMode.HALF_UP)+ " " + team.getCurrency());
         }else{
-            totalOverhead.setText("n/a");
+            totalOverheadDaily.setText("n/a");
+            totalOverheadHourly.setText("n/a");
         }
         }
 
-
+        // show that the team has no data
+       private void initializeTeamNoEmployees(){
+          totalOverheadDaily.setText("No available data for the team " + team.getTeamName());
+          totalOverheadHourly.setText("No availabel date for the team " +  team.getTeamName()) ;
+       }
+    private void initializeTeamNull(){
+        totalOverheadDaily.setText("No available data for the team " );
+        totalOverheadHourly.setText("No availabel date for the team ") ;
+    }
 
 
 }

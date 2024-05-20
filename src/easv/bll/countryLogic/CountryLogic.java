@@ -4,7 +4,6 @@ import easv.be.Country;
 import easv.dal.countryDao.CountryDao;
 import easv.dal.countryDao.ICountryDao;
 import easv.exception.RateException;
-import javafx.collections.ObservableMap;
 
 import java.util.HashMap;
 import java.util.Map;

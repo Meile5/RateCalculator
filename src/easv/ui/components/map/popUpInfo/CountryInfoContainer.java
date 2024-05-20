@@ -63,7 +63,6 @@ public class CountryInfoContainer implements Initializable {
     private void closeWindow() {
         closeButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             WindowsManagement.closeStackPane(this.parent);
-         //   model.resetCurrentIndexToRetrieve();
             this.teamsContainer.getChildren().clear();
         });
     }
@@ -72,6 +71,7 @@ public class CountryInfoContainer implements Initializable {
         List<Parent> teamComponentControllers = new ArrayList<>();
         if (countryTeams.isEmpty()) {
             initializeNoDataCountryInfo();
+            return;
         }
         for (Team team : countryTeams) {
             TeamComponentController teamComponentController = new TeamComponentController(team);
@@ -100,7 +100,6 @@ public class CountryInfoContainer implements Initializable {
         };
 
         teamsInitializer.setOnSucceeded(event -> {
-            teamsInitializer.getValue().forEach(e -> System.out.println(e.getTeamName()));
             populatePieChart(teamsInitializer.getValue());
         });
 
