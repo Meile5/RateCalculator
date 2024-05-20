@@ -1,6 +1,7 @@
 package easv.ui.pages.geographyManagementPage.regionComponents;
 
 import easv.Utility.WindowsManagement;
+import easv.be.Country;
 import easv.be.Region;
 import easv.ui.pages.geographyManagementPage.geographyMainPage.GeographyManagementController;
 import easv.ui.pages.modelFactory.IModel;
@@ -68,13 +69,22 @@ public class RegionComponent extends HBox implements Initializable {
     private void setLabels() {
         if(region != null) {
             nameLB.setText(region.getRegionName());
-            countryLB.setText("" + region.getCountries().size());
+
+            List<Country> validCountries = Optional.ofNullable(region.getCountries())
+                    .orElseGet(List::of) // If list of teams is null, returns an empty list
+                    .stream()
+                    .filter(country -> country != null)
+                    .toList();
+            String numberOfCountries = "" + validCountries.size();
+            countryLB.setText(numberOfCountries);
+
             int numberOfTeams = Optional.ofNullable(region.getCountries()) // If list of countries is null, returns an empty list
                     .orElseGet(List::of)
                     .stream()
-                    .mapToInt(country -> Optional.ofNullable(country)
-                            .map(c -> c.getTeams().size())
-                            .orElse(0)) // if country is null, return 0
+                    .filter(country -> country != null)
+                    .mapToInt(country -> Optional.ofNullable(country.getTeams())
+                            .map(List::size)
+                            .orElse(0))
                     .sum();
             teamLB.setText(numberOfTeams + "");
         }

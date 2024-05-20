@@ -17,7 +17,6 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -107,12 +106,13 @@ public class ManageRegionController implements Initializable {
     private void setFields() {
         if(region != null){
             regionNameTF.setText(region.getRegionName());
-            countriesListView.getItems().addAll(region.getCountries());
-
-            countriesList.addAll(region.getCountries());
-            isEditOperation = true;
+            if (region.getCountries().getFirst() != null) {
+                countriesListView.getItems().addAll(region.getCountries());
+                countriesList.addAll(region.getCountries());
+            }
         }
         countriesCB.getItems().addAll(model.getOperationalCountries());
+        isEditOperation = true;
     }
 
     private void saveRegionListener() {
@@ -168,12 +168,12 @@ public class ManageRegionController implements Initializable {
 
         saveRegion.setOnSucceeded(event -> {
             controller.showOperationStatus("Operation Successful!", Duration.seconds(2));
-            if (isEditOperation) {
-                controller.addRegionComponent(region);
-                controller.removeRegionComponent(region);
-            } else {
-                controller.addRegionComponent(region);
-            }
+            controller.updateRegionComponents();
+//            if (isEditOperation) {
+//                controller.updateRegionComponents();
+//            } else {
+//                controller.addRegionComponent(region);
+//            }
             //WindowsManagement.closeStackPane(secondPane);
             WindowsManagement.closeStackPane(pane);
             disableProgressBar();

@@ -70,15 +70,17 @@ public class CountryComponent extends HBox implements Initializable {
     private void setLabels() {
         if(country != null) {
             nameLB.setText(country.getCountryName());
-            List<Team> validTeams = Optional.ofNullable(country.getTeams()) // If list of teams is null, returns an empty list
-                    .orElseGet(List::of)
+
+            List<Team> validTeams = Optional.ofNullable(country.getTeams())
+                    .orElseGet(List::of) // If list of teams is null, returns an empty list
                     .stream()
                     .filter(team -> team != null)
                     .toList();
             String numberOfTeams = "" + validTeams.size();
             teamLB.setText(numberOfTeams);
+
             int numberOfEmployees = Optional.ofNullable(country.getTeams())
-                    .orElseGet(List::of) // Ensure an empty list if teams are null
+                    .orElseGet(List::of)
                     .stream()
                     .filter(team -> team != null) // Filter out null teams
                     .mapToInt(team -> Optional.ofNullable(team.getEmployees())
