@@ -4,7 +4,6 @@ import easv.Utility.DisplayEmployees;
 import easv.be.*;
 import easv.exception.RateException;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 
 import java.math.BigDecimal;
 
@@ -50,7 +49,7 @@ public interface IModel {
      */
     List<Team> getCountryTeams();
 
-    ObservableMap<Integer, Team> getTeams();
+    ObservableList<Team> getTeams();
 
     /**
      * used for country input validation
@@ -185,4 +184,11 @@ public interface IModel {
     List<Employee> getAllEmployees();
 
     void deleteRegion(Region region) throws RateException;
+
+    void updateCountry(Country country, List<Team> teams) throws RateException;
+
+    void addNewCountry(Country country, List<Team> teams) throws RateException;
+
+    void deleteCountry(Country country) throws RateException;
+
 }

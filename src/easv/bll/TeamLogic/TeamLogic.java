@@ -8,7 +8,6 @@ import easv.dal.teamDao.ITeamDao;
 import easv.dal.teamDao.TeamDao;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
-import javafx.collections.ObservableMap;
 
 
 import java.math.BigDecimal;
@@ -300,7 +299,6 @@ public class TeamLogic implements ITeamLogic {
 
         return  teamDao.savePerformedDistribution(receivedTeams,selectedTeamToDistributeFrom,sharedOverhead,sharedHourRate);
     }
-
 
 }
 

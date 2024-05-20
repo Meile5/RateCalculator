@@ -75,7 +75,6 @@ public class Model implements IModel {
     private final ObservableMap<Integer, Team> teamsWithEmployees;
 
 
-
     /**
      * holds all the data related to the operational  countries
      */
@@ -382,8 +381,12 @@ public class Model implements IModel {
         this.teams.putAll(teamManager.getTeams());
     }
 
-    public ObservableMap<Integer, Team> getTeams() {
-        return teams;
+    @Override
+    public ObservableList<Team> getTeams() {
+        ObservableList<Team> observableTeamList = FXCollections.observableArrayList();
+        observableTeamList.setAll(teams.values());
+        return observableTeamList;
+
     }
 
     public ObservableList<Employee> getSearchResult(String filter) {
@@ -527,7 +530,7 @@ public class Model implements IModel {
      * @param team               the team that will receive overhead
      * @param overheadPercentage the overhead percentage received by the team
      */
-    public void addDistributionPercentageTeam(Team team , String overheadPercentage) {
+    public void addDistributionPercentageTeam(Team team, String overheadPercentage) {
         this.insertedDistributionPercentageFromTeams.put(team, overheadPercentage);
     }
 
@@ -536,10 +539,12 @@ public class Model implements IModel {
     }
 
 
-    /**add the  overhead value to distribute,inserted by the user*/
+    /**
+     * add the  overhead value to distribute,inserted by the user
+     */
     @Override
-    public void setDistributionPercentageTeam(Team selectedTeam,String newValue) {
-         this.insertedDistributionPercentageFromTeams.put(selectedTeam,newValue);
+    public void setDistributionPercentageTeam(Team selectedTeam, String newValue) {
+        this.insertedDistributionPercentageFromTeams.put(selectedTeam, newValue);
     }
 
     @Override
@@ -549,18 +554,6 @@ public class Model implements IModel {
 
     public Team getSelectedTeamToDistributeFrom() {
         return selectedTeamToDistributeFrom;
-    }
-
-    @Override
-    public void addNewRegion(Region region, List<Country> countries) throws RateException {
-        region = regionManager.addRegion(region, countries);
-        regionsWithCountries.put(region.getId(), region);
-    }
-
-    @Override
-    public void updateRegion(Region region, List<Country> countries) throws RateException {
-        region = regionManager.updateRegion(region, countries);
-        regionsWithCountries.get(region.getId()).setCountries(countries);
     }
 
     /**
@@ -587,37 +580,42 @@ public class Model implements IModel {
 
     @Override
     public DistributionValidation validateInputs() {
-        return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams ,selectedTeamToDistributeFrom);
+        return teamManager.validateDistributionInputs(insertedDistributionPercentageFromTeams, selectedTeamToDistributeFrom);
 
     }
 
-    /**return the name of the team , by team id*/
-    public String  getTeamName(int teamId) {
-        return  this.teamsWithEmployees.get(teamId).getTeamName();
+    /**
+     * return the name of the team , by team id
+     */
+    public String getTeamName(int teamId) {
+        return this.teamsWithEmployees.get(teamId).getTeamName();
     }
 
 
-
-    /**perform simulation computation*/
+    /**
+     * perform simulation computation
+     */
     @Override
     public Map<OverheadHistory, List<Team>> performSimulation() {
-        return teamManager.performSimulationComputation(selectedTeamToDistributeFrom,insertedDistributionPercentageFromTeams);
+        return teamManager.performSimulationComputation(selectedTeamToDistributeFrom, insertedDistributionPercentageFromTeams);
     }
 
 
-    public boolean isTeamSelectedToDistribute(Integer teamId){
-       Team team =  insertedDistributionPercentageFromTeams.keySet().stream().filter(e->e.getId()==teamId).findFirst().orElse(null);
-       return team!=null;
+    public boolean isTeamSelectedToDistribute(Integer teamId) {
+        Team team = insertedDistributionPercentageFromTeams.keySet().stream().filter(e -> e.getId() == teamId).findFirst().orElse(null);
+        return team != null;
     }
 
     @Override
     public boolean saveDistribution() throws RateException {
-      insertedDistributionPercentageFromTeams.keySet().forEach((e)-> System.out.println(e.getActiveConfiguration().getTeamDayRate() + " " +  e.getActiveConfiguration().getTeamHourlyRate() + " oon saved" ));
+        insertedDistributionPercentageFromTeams.keySet().forEach((e) -> System.out.println(e.getActiveConfiguration().getTeamDayRate() + " " + e.getActiveConfiguration().getTeamHourlyRate() + " oon saved"));
         System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "day rate" + selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate() + "team day rate");
-        return teamManager.saveDistributionOperation(insertedDistributionPercentageFromTeams,selectedTeamToDistributeFrom);
+        return teamManager.saveDistributionOperation(insertedDistributionPercentageFromTeams, selectedTeamToDistributeFrom);
     }
 
-    /**return all employees for team manage*/
+    /**
+     * return all employees for team manage
+     */
     public List<Employee> getAllEmployees() {
         for (Map.Entry<Integer, Team> entry : teamsWithEmployees.entrySet()) {
             Team team = entry.getValue();
@@ -630,12 +628,54 @@ public class Model implements IModel {
     }
 
     @Override
+    public void addNewRegion(Region region, List<Country> countries) throws RateException {
+        region = regionManager.addRegion(region, countries);
+        regionsWithCountries.put(region.getId(), region);
+    }
+
+    @Override
+    public void updateRegion(Region region, List<Country> countries) throws RateException {
+        region = regionManager.updateRegion(region, countries);
+        regionsWithCountries.get(region.getId()).setCountries(countries);
+    }
+
+    @Override
     public void deleteRegion(Region region) throws RateException {
         boolean succeeded = regionManager.deleteRegion(region);
-        if(succeeded){
+        if (succeeded) {
             regionsWithCountries.remove(region.getId());
         }
     }
 
+    @Override
+    public void addNewCountry(Country country, List<Team> teamsToAdd) throws RateException {
+        List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
+        List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
+        country = countryLogic.addCountry(country, existingTeams, newTeams);
+        if (country.getTeams() == null && country.getTeams().isEmpty()) {
+            countries.put(country.getCountryName(), country);
+        } else {
+            countriesWithTeams.put(country.getId(), country);
+            countries.put(country.getCountryName(), country);
+        }
+    }
+
+    @Override
+    public void updateCountry(Country country, List<Team> teamsToAdd) throws RateException {
+        List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
+        List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
+        country = countryLogic.updateCountry(country, existingTeams, newTeams);
+        countriesWithTeams.get(country.getId()).setTeams(teamsToAdd);
+        countries.put(country.getCountryName(), country);
+    }
+
+    @Override
+    public void deleteCountry(Country country) throws RateException {
+        boolean succeeded = countryLogic.deleteCountry(country);
+        if (succeeded) {
+            countriesWithTeams.remove(country.getId());
+            countries.remove(country.getCountryName());
+        }
+    }
 
 }

@@ -27,4 +27,5 @@ public interface ITeamLogic  {
 
     /**save the distribution operation performed*/
   boolean saveDistributionOperation(Map<Team, String> insertedDistributionPercentageFromTeams ,Team selectedTeamToDistributeFrom) throws RateException;
+
 }

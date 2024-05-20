@@ -16,6 +16,8 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class RegionComponent extends HBox implements Initializable {
@@ -67,7 +69,13 @@ public class RegionComponent extends HBox implements Initializable {
         if(region != null) {
             nameLB.setText(region.getRegionName());
             countryLB.setText("" + region.getCountries().size());
-            int numberOfTeams = region.getCountries().stream().mapToInt(country -> country.getTeams().size()).sum();
+            int numberOfTeams = Optional.ofNullable(region.getCountries()) // If list of countries is null, returns an empty list
+                    .orElseGet(List::of)
+                    .stream()
+                    .mapToInt(country -> Optional.ofNullable(country)
+                            .map(c -> c.getTeams().size())
+                            .orElse(0)) // if country is null, return 0
+                    .sum();
             teamLB.setText(numberOfTeams + "");
         }
     }
