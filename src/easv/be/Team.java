@@ -42,6 +42,12 @@ public class Team {
         this.id = id;
     }
 
+    public Team(String teamName, int id, Currency currency) {
+        this.teamName = teamName;
+        this.id = id;
+        this.currency = currency;
+    }
+
     public Team(String teamName, int id, BigDecimal utilizationPercentage) {
         this.teamName = teamName;
         this.id = id;

@@ -5,6 +5,7 @@ import easv.be.Country;
 import easv.exception.ErrorCode;
 import easv.ui.components.confirmationView.ConfirmationWindowController;
 import easv.ui.components.confirmationView.OperationHandler;
+import easv.ui.pages.geographyManagementPage.geographyMainPage.GeographyManagementController;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -32,14 +33,16 @@ public class DeleteCountryController implements Initializable, OperationHandler 
     private VBox employeesContainer;
     private HBox employeeComponent;
     private ConfirmationWindowController confirmationWindowController;
+    private GeographyManagementController controller;
     private Service<Void> deleteEmployee;
 
-    public DeleteCountryController(StackPane firstLayout , IModel model, Country country) {
+    public DeleteCountryController(StackPane firstLayout , IModel model, Country country, GeographyManagementController controller) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DeleteCountryComponent.fxml"));
         loader.setController(this);
         this.firstLayout=firstLayout;
         this.model= model;
         this.country = country;
+        this.controller = controller;
         try {
             deleteComponent = loader.load();
            // this.deleteContainer = deleteContainer;

@@ -169,7 +169,7 @@ public class RegionDAO implements IRegionDAO{
                 throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
             }
         }
-        return false;
+        return true;
     }
 
 }

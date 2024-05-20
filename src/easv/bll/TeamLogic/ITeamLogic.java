@@ -31,4 +31,6 @@ public interface ITeamLogic  {
 
     /**perform the search operation for the teams*/
     List<Team> performSearchTeamFilter(String filter, Collection<Team> teams);
+  boolean saveDistributionOperation(Map<Team, String> insertedDistributionPercentageFromTeams ,Team selectedTeamToDistributeFrom) throws RateException;
+
 }
