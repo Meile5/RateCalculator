@@ -47,7 +47,27 @@
     line-height: 19.07px;
     text-align: left;
 }
+
 .circle{
     -fx-fill: #CCCCCC;
+}
+
+
+.mfx-combo-box:focus-within .caret .mfx-font-icon {
+    -mfx-color: #2ba746;
+}
+
+
+.mfx-combo-box:focus-within{
+    -fx-border-color: #2ba746;
+    -fx-text-fill: #2ba746;
+}
+
+.mfx-combo-box-cell:hover {
+    -fx-background-color: #56EA8C7F;
+}
+
+.mfx-combo-box-cell:selected {
+    -fx-background-color: #2ba746;
 }
 

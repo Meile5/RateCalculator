@@ -70,6 +70,7 @@ public class NotSupportedView implements Initializable {
 
     private void addCountriesInputListener(){
         countriesInput.getSelectionModel().selectedItemProperty().addListener((e)->{
+
             model.setSelectedCountry(countriesInput.getSelectionModel().getSelectedItem().getCountryName());
             initializeService();
         });
@@ -122,11 +123,11 @@ public class NotSupportedView implements Initializable {
         };
 
         teamsInitializer.setOnSucceeded(event -> {
+            teamsContainer.getChildren().clear();
             populatePieChart(teamsInitializer.getValue());
         });
 
         teamsInitializer.setOnFailed(event -> {
-            teamsInitializer.getException().printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.CONNECTION_FAILED.getValue());
         });
         teamsInitializer.start();
