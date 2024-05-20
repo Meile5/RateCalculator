@@ -16,6 +16,7 @@ import easv.ui.components.searchComponent.SearchController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -35,13 +36,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.util.*;
 
-public class DistributionController implements Initializable, DistributionControllerInterface, DataHandler<Team> {
+public class DistributionController implements Initializable, DistributionControllerInterface {
     @FXML
     private Parent distributionPage;
     @FXML
@@ -61,10 +63,10 @@ public class DistributionController implements Initializable, DistributionContro
     @FXML
     private Label totalOverheadInserted;
     @FXML
-    private HBox totalOverheadContainer,searchFromContainer;
+    private HBox totalOverheadContainer, searchFromContainer, searchToContainer;
     private StackPane secondLayout;
     private Service<Map<OverheadHistory, List<Team>>> simulateService;
-    private Service< Map<OverheadHistory, List<Team>>> saveDistribution;
+    private Service<Map<OverheadHistory, List<Team>>> saveDistribution;
 
 
     private final static PseudoClass OVER_LIMIT = PseudoClass.getPseudoClass("errorLimit");
@@ -100,9 +102,6 @@ public class DistributionController implements Initializable, DistributionContro
         //initialize search component
         initializeSearchComponent();
     }
-
-
-
 
 
     /**
@@ -350,10 +349,12 @@ public class DistributionController implements Initializable, DistributionContro
         WindowsManagement.showStackPane(secondLayout);
     }
 
-    /**save  the  performed distribution operation */
-    private void saveDistributionOperation(){
-        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
-            if(distributionIsInvalid())return;
+    /**
+     * save  the  performed distribution operation
+     */
+    private void saveDistributionOperation() {
+        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (distributionIsInvalid()) return;
             this.secondLayout.getChildren().add(new MFXProgressSpinner());
             WindowsManagement.showStackPane(secondLayout);
             initializeSaveService();
@@ -361,29 +362,30 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
 
-
     /**
      * update components values with the new calculation values
      */
     private void updateComponentsOverheadValues(Map<OverheadHistory, List<Team>> performedSimulation) {
-          List<Team> performedComputation =  performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD_FROM);
-          Team teamToDistributeFromNewOverhead= performedComputation.getFirst();
-          if(teamToDistributeFromNewOverhead!=null){
-              double dayRate = teamToDistributeFromNewOverhead.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
-              double hourlyRate = teamToDistributeFromNewOverhead.getActiveConfiguration().getTeamHourlyRate().setScale(2,RoundingMode.HALF_UP).doubleValue();
-              distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
-          }
-        for(Team team : performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD)){
+        List<Team> performedComputation = performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD_FROM);
+        Team teamToDistributeFromNewOverhead = performedComputation.getFirst();
+        if (teamToDistributeFromNewOverhead != null) {
+            double dayRate = teamToDistributeFromNewOverhead.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
+            double hourlyRate = teamToDistributeFromNewOverhead.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
+            distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
+        }
+        for (Team team : performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD)) {
             distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue());
         }
     }
 
 
-    /**initialize the save service */
+    /**
+     * initialize the save service
+     */
     private void initializeSaveService() {
-        this.saveDistribution = new Service< Map<OverheadHistory, List<Team>>>() {
+        this.saveDistribution = new Service<Map<OverheadHistory, List<Team>>>() {
             @Override
-            protected Task< Map<OverheadHistory, List<Team>>> createTask() {
+            protected Task<Map<OverheadHistory, List<Team>>> createTask() {
                 return new Task<>() {
                     @Override
                     protected Map<OverheadHistory, List<Team>> call() throws Exception {
@@ -399,7 +401,7 @@ public class DistributionController implements Initializable, DistributionContro
             updateComponentsOverheadValues(saveDistribution.getValue());
             distributeFromTeams.getChildren().clear();
             this.populateDistributeFromTeams();
-           this.populateDistributeToTeams();
+            this.populateDistributeToTeams();
             WindowsManagement.closeStackPane(secondLayout);
         });
         this.saveDistribution.setOnCancelled((e) -> {
@@ -409,34 +411,64 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
 
-
-
     //SEARCH OPERATIONS
 
 
-    /**initialize searchComponent  */
-    private void initializeSearchComponent(){
-        SearchController<Team> searchController = new SearchController<>(this);
-        this.searchFromContainer.getChildren().add(searchController.getSearchRoot());
+    /**
+     * initialize searchComponent
+     */
+    private void initializeSearchComponent() {
+
+        // initialize search from component
+        SearchDistributeFromTeamHandler searchFromHandler = new SearchDistributeFromTeamHandler(this);
+        SearchController<Team> searchControllerDistributeFrom = new SearchController<>(searchFromHandler);
+
+        // initialize distribute to search component
+        SearchDistributeToTeamHandler searchToHandler = new SearchDistributeToTeamHandler(this);
+        SearchController<Team> searchControllerDistributeTo = new SearchController<>(searchToHandler);
+        this.searchFromContainer.getChildren().add(searchControllerDistributeFrom.getSearchRoot());
+        this.searchToContainer.getChildren().add(searchControllerDistributeTo.getSearchRoot());
     }
 
 
-    @Override
     public ObservableList<Team> getResultData(String filter) {
-       return  model.getTeamsFilterResults(filter);
+        return model.getTeamsFilterResults(filter);
     }
 
-    @Override
-    public void performSelectSearchOperation(int entityId) throws RateException {
-        Team resultedTeam  = model.getTeamById(entityId);
-       DistributeFromController resultedSearchTeam = new DistributeFromController(model,resultedTeam,distributionMediator,DistributionType.DISTRIBUTE_FROM,secondLayout);
-       this.distributeFromTeams.getChildren().clear();
-       this.distributeFromTeams.getChildren().add(resultedSearchTeam.getRoot());
+
+    public void performSelectSearchOperationFrom(int entityId) {
+        Team resultedTeam = model.getTeamById(entityId);
+        DistributeFromController resultedSearchTeam = new DistributeFromController(model, resultedTeam, distributionMediator, DistributionType.DISTRIBUTE_FROM, secondLayout);
+        this.distributeFromTeams.getChildren().clear();
+        this.distributeFromTeams.getChildren().add(resultedSearchTeam.getRoot());
     }
 
-    @Override
-    public void undoSearchOperation() throws RateException {
+    public void performSelectSearchOperationTo(int entityId) {
+        Team resultedTeam = model.getTeamById(entityId);
+        //  distributeToTeams.getItems().clear();
+        distributeToTeams.setItems(FXCollections.observableArrayList(resultedTeam));
+    }
+
+
+    public void undoSearchOperationFrom() {
         this.distributeFromTeams.getChildren().clear();
         populateDistributeFromTeams();
     }
+
+    public void undoSearchOperationTo() {
+        this.distributeToTeams.setItems(model.getOperationalTeams());
+    }
+
+
+    @Override
+    public void displayDistributeFromTeamsInContainer() {
+        populateDistributeFromTeams();
+    }
+
+    @Override
+    public void displayDistributeToTeamsInContainer() {
+        populateDistributeToTeams();
+    }
+
+
 }
