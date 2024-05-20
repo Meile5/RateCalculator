@@ -1,5 +1,4 @@
 package easv.ui.pages.distribution;
-
 import easv.Utility.WindowsManagement;
 import easv.be.DistributionValidation;
 import easv.be.OverheadHistory;
@@ -11,7 +10,6 @@ import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFrom
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToInterface;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToListCell;
-import easv.ui.components.searchComponent.DataHandler;
 import easv.ui.components.searchComponent.SearchController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
@@ -36,7 +34,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
