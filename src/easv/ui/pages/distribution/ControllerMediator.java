@@ -48,7 +48,6 @@ public class ControllerMediator {
 
     public void addSelectedTeamToDistributeFromController(DistributionFromComponentInterface selectedTeamToDistributeFromController){
         this.selectedTeamToDistributeFromController=selectedTeamToDistributeFromController;
-
     }
 
     /**
