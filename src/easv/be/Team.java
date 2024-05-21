@@ -13,9 +13,25 @@ public class Team {
     private List<Region> regions;
     private BigDecimal utilizationPercentage;
     private Currency currency;
+    private double grossMarginTemporary;
+    private double markupMultiplierTemporary;
 
 
+    public double getGrossMarginTemporary() {
+        return grossMarginTemporary;
+    }
 
+    public void setGrossMarginTemporary(double grossMarginTemporary) {
+        this.grossMarginTemporary = grossMarginTemporary;
+    }
+
+    public double getMarkupMultiplierTemporary() {
+        return markupMultiplierTemporary;
+    }
+
+    public void setMarkupMultiplierTemporary(double markupMultiplierTemporary) {
+        this.markupMultiplierTemporary = markupMultiplierTemporary;
+    }
 
     public Team(String teamName) {
         this.teamName = teamName;
@@ -143,6 +159,26 @@ public class Team {
 
     public List<Employee> getTeamMembers() {
         return teamMembers;
+    }
+
+    public Employee getTeamMember(int Id) {
+        for(Employee employee: teamMembers){
+            if(employee.getId() == id){
+                return employee;
+            }
+        }
+        return null;
+    }
+    public void replaceTeaMember(Employee employee) {
+        for(Employee employeeReplace: teamMembers){
+            if(employeeReplace.getId() == employee.getId()){
+                teamMembers.remove(employeeReplace);
+                teamMembers.add(employee);
+
+
+            }
+        }
+
     }
 
     public void setTeamMembers(List<Employee> teamMembers) {

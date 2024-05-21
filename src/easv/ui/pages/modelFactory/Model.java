@@ -69,6 +69,8 @@ public class Model implements IModel {
     private final ObservableMap<Integer, Team> teamsWithEmployees;
 
 
+
+
     /**
      * holds all the data related to the operational  countries
      */
@@ -85,6 +87,7 @@ public class Model implements IModel {
     private ObservableList<Employee> sortedEmployeesByName;
     private ObservableList<Employee> filteredEmployeesListByRegion;
     private ObservableList<Employee> listEmployeeByCountryTemp;
+    private ObservableList<Team> displayedTeams;
 
     /**
      * golds the selected region cho0sed by the employee from  the filter
@@ -149,6 +152,7 @@ public class Model implements IModel {
      */
     private void populateTeamsWithEmployees() throws RateException {
         this.teamsWithEmployees.putAll(employeeManager.getTeamWithEmployees());
+
     }
 
     /**
@@ -360,7 +364,7 @@ public class Model implements IModel {
 
 
        /* Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
-        if (editedEmployeeSaved != null) {
+        if (editedEmployeeSaved != null) {*
             editedEmployeeSaved.addConfiguration(editedEmployeeSaved.getActiveConfiguration());
             editedEmployeeSaved.setHourlyRate(employeeManager.getHourlyRate(editedEmployeeSaved,0));
             editedEmployeeSaved.setDailyRate(employeeManager.getDayRate(editedEmployeeSaved));
@@ -737,14 +741,93 @@ public class Model implements IModel {
      * return all employees for team manage
      */
     public List<Employee> getAllEmployees() {
+
+        // Create a set to store unique employees
+        HashSet<Employee> uniqueEmployees = new HashSet<>();
+
         for (Map.Entry<Integer, Team> entry : teamsWithEmployees.entrySet()) {
             Team team = entry.getValue();
             if (team != null && team.getTeamMembers() != null) {
-                employeesForTeamsPage.addAll(team.getTeamMembers());
+                // Add employees to the set to remove duplicates
+                uniqueEmployees.addAll(team.getTeamMembers());
             }
         }
+
+        // Clear the original list
+        employeesForTeamsPage.clear();
+
+        // Add unique employees back to the observable list
+        employeesForTeamsPage.addAll(uniqueEmployees);
+        System.out.println(uniqueEmployees);
+
         return employeesForTeamsPage;
     }
+
+    public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
+
+        // Clear existing employees in the team
+        for (Employee employeesDelete : employeesToDelete) {
+            System.out.println(employeesToDelete +" in model");
+            editedTeam.removeTeamMember(employeesDelete);
+        }
+
+        // Replace with new employees from the provided list and update their rates
+        for (Employee employee : employees) {
+            TeamConfigurationEmployee teamConfigurationEmployee = null;
+            // Calculate and set the new hourly and daily rates for the employee
+            BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeamE(employee, editedTeam);
+            employee.setTeamHourlyRate(employeeHourlyRate);
+
+
+            BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeamE(employee, editedTeam);
+            employee.setTeamDailyRate(employeeDayRate);
+
+            if (editedTeam.getTeamMember(employee.getId()) != null) {
+                editedTeam.replaceTeaMember(employee);
+                teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
+            } else {
+                teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
+                editedTeam.addNewTeamMember(employee);
+            }
+
+            TeamConfiguration newTeamConfiguration = getNewEmployeeTeamConfiguration1(editedTeam);
+            newTeamConfiguration.addEmployeeToTeamHistory(teamConfigurationEmployee);
+            editedTeam.setActiveConfiguration(newTeamConfiguration);
+        }
+        Team editedTeamSaved = employeeManager.saveTeamEditOperation(editedTeam, originalTeam.getActiveConfiguration().getId(), employeesToDelete, employees);
+        // Update the model map with the edited team
+        if (editedTeamSaved != null) {
+            System.out.println("Updating map with edited team: " + editedTeamSaved.getActiveConfiguration().getId());
+           // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
+           // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
+            teamsWithEmployees.remove(originalTeam.getId());
+            teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
+            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamDayRate() + "" + editedTeamSaved.getActiveConfiguration().getId());
+        } else {
+            System.out.println("Failed to save the edited team.");
+        }
+
+
+
+    }
+
+
+
+    private TeamConfiguration getNewEmployeeTeamConfiguration1(Team team) {
+        BigDecimal teamHourlyRate = employeeManager.calculateTeamHourlyRateE(team);
+        BigDecimal teamDayRate = employeeManager.calculateTeamDayRateE(team);
+        double grossMargin = 0;
+        double markupMultiplier = 0;
+        if (team.getActiveConfiguration() != null) {
+            grossMargin = checkNullValues(team.getGrossMarginTemporary());
+            System.out.println(grossMargin);
+            markupMultiplier = checkNullValues(team.getMarkupMultiplierTemporary());
+            System.out.println(markupMultiplier);
+        }
+        LocalDateTime savedDate = LocalDateTime.now();
+        return new TeamConfiguration(teamDayRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, true);
+    }
+
 
 
 

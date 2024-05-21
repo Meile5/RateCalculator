@@ -764,6 +764,141 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
         return configurationTeamMembers;
     }
+    @Override
+    public Team saveEditOperationTeam(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException {
+        Connection conn = null;
+        try {
+            conn = connectionManager.getConnection();
+            conn.setAutoCommit(false);
+
+            int configurationID = addTeamConfigurationT(editedTeam, conn);
+            System.out.println(configurationID);
+            editedTeam.getActiveConfiguration().setId(configurationID);
+            System.out.println(editedTeam.getActiveConfiguration().getId() + "id after setting ");
+            addTeamToConfiguration(editedTeam, configurationID, conn);
+            addEmployeeHistoryTeams(configurationID, employees, conn);
+            deleteTeamEmployeeConnections(conn, employeesToDelete, editedTeam.getId()); //team id
+            setOldConfigurationToInactiveTeams(idOriginalTeam, conn);
+            addEmployeesToTeam(employees, editedTeam.getId(), conn);
+            conn.commit();
+            return editedTeam;
+        } catch (RateException | SQLException e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    LOGGER.log(Level.SEVERE, "error in save edit team operation", e);
+                    throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
+                }
+            }
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.log(Level.SEVERE, "Failed to close the database connection", e);
+                }
+            }
+        }
+        return null;
+    }
+    private void setOldConfigurationToInactiveTeams(int configurationId, Connection conn) throws RateException {
+        String sql = "UPDATE  TeamConfiguration  Set Active =? where TeamConfiguration.TeamConfigurationID=?";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setString(1, "false");
+            psmt.setInt(2, configurationId);
+            psmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
+        }
+    }
+    public void deleteTeamEmployeeConnections(Connection conn, List<Employee> employeesToDelete, int teamID) throws SQLException {
+        String sql = "DELETE FROM TeamEmployee WHERE EmployeeID = ? AND TeamID = ?";
+        System.out.println(employeesToDelete + "dao");
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            for (Employee employee : employeesToDelete) {
+                psmt.setInt(1, employee.getId());
+                psmt.setInt(2,teamID);
+                psmt.executeUpdate();
+            }
+        }
+    }
+
+    public void addEmployeesToTeam(List<Employee> employees, int teamId, Connection conn) throws RateException, SQLException {
+        String checkSql = "SELECT COUNT(*) FROM TeamEmployee WHERE TeamID = ? AND EmployeeID = ?";
+        String insertSql = "INSERT INTO TeamEmployee (TeamID, EmployeeID, UtilizationPercentage) VALUES (?, ?, ?)";
+
+        try (PreparedStatement checkPsmt = conn.prepareStatement(checkSql);
+             PreparedStatement insertPsmt = conn.prepareStatement(insertSql)) {
+
+            for (Employee employee : employees) {
+                // Check if the connection already exists
+                checkPsmt.setInt(1, teamId);
+                checkPsmt.setInt(2, employee.getId());
+                ResultSet rs = checkPsmt.executeQuery();
+                rs.next();
+                int count = rs.getInt(1);
+                rs.close();
+
+                if (count == 0) {
+                    // Insert the new connection if it doesn't exist
+                    insertPsmt.setInt(1, teamId);
+                    insertPsmt.setInt(2, employee.getId());
+                    insertPsmt.setBigDecimal(3, employee.getUtilPerTeams().get(teamId));
+                    insertPsmt.addBatch();
+                }
+            }
+
+            // Execute batch insert
+            insertPsmt.executeBatch();
+        }
+    }
+
+    private void addEmployeeHistoryTeams(int teamConfigurationID, List<Employee> employees, Connection conn) throws RateException {
+        String sql = "INSERT INTO TeamEmployeesHistory (EmployeeName, EmployeeDailyRate, EmployeeHourlyRate, TeamConfigurationId, Currency) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            for (Employee employee : employees) {
+                psmt.setString(1, employee.getName());
+                psmt.setBigDecimal(2, employee.getTeamDailyRate());
+                psmt.setBigDecimal(3, employee.getTeamHourlyRate());
+                psmt.setInt(4, teamConfigurationID);
+                psmt.setString(5, employee.getCurrency().name());
+                psmt.addBatch();
+            }
+            psmt.executeBatch();  // Execute batch outside the loop
+        } catch (SQLException e) {
+            throw new RateException(ErrorCode.OPERATION_DB_FAILED);        }
+    }
+    public Integer addTeamConfigurationT(Team editedTeam, Connection conn) throws SQLException, RateException {
+        String sql = "INSERT INTO TeamConfiguration (TeamDailyRate, TeamHourlyRate, GrossMargin, MarkupMultiplier, ConfigurationDate, Active) VALUES (?, ?, ?, ?, ?, ?)";
+        Integer configurationID = null;
+        try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            // Retrieve the active configuration from the team
+            TeamConfiguration teamConfiguration = editedTeam.getActiveConfiguration();
+
+            psmt.setBigDecimal(1, teamConfiguration.getTeamDayRate());
+            psmt.setBigDecimal(2, teamConfiguration.getTeamHourlyRate());
+            psmt.setDouble(3, teamConfiguration.getGrossMargin());
+            psmt.setDouble(4, teamConfiguration.getMarkupMultiplier());
+            psmt.setTimestamp(5, Timestamp.valueOf(teamConfiguration.getSavedDate()));
+            psmt.setString(6, String.valueOf(teamConfiguration.isActive()));
+            psmt.executeUpdate();
+
+            try (ResultSet res = psmt.getGeneratedKeys()) {
+                if (res.next()) {
+                    configurationID = res.getInt(1);
+                } else {
+                    throw new RateException(ErrorCode.OPERATION_DB_FAILED);
+                }
+
+            }
+        }
+        return configurationID;
+    }
+
+
 
 
 

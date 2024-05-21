@@ -104,6 +104,29 @@ public class EmployeeManager implements IEmployeeManager {
         return rateCalculator.calculateEmployeeHourlyRateOnTeam(employee, team);
     }
 
+    public BigDecimal getEmployeeHourlyRateOnTeamE(Employee employee, Team team){
+        return rateCalculator.calculateEmployeeHourlyRateOnTeamE(employee, team);
+    }
+
+    public BigDecimal getEmployeeDayRateOnTeamE(Employee employee, Team team) {
+        return rateCalculator.calculateEmployeeDayRateOnTeamE(employee, team);
+    }
+
+    public BigDecimal calculateTeamHourlyRateE(Team team) {
+        return rateCalculator.calculateTeamHourlyRateE(team);
+    }
+    public BigDecimal calculateTeamDayRateE(Team team) {
+        return rateCalculator.calculateTeamDailyRateE(team);
+    }
+
+    public Team saveTeamEditOperation(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException {
+        return employeeDAO.saveEditOperationTeam(editedTeam, idOriginalTeam, employeesToDelete, employees);
+
+    }
+
+
+
+
 
 
     /**calculate the total overhead of the teams */

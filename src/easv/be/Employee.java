@@ -1,7 +1,6 @@
 
 package easv.be;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -15,6 +14,8 @@ public class Employee {
     private int id;
     private Currency currency;
 
+    private BigDecimal teamDailyRate;
+    private BigDecimal teamHourlyRate;
     private List<Configuration> configurations;
     private List<Region> regions;
     private List<Country> countries;
@@ -22,6 +23,24 @@ public class Employee {
     private BigDecimal overhead;
     private Configuration  activeConfiguration;
 
+
+
+
+    public BigDecimal getTeamDailyRate() {
+        return teamDailyRate;
+    }
+
+    public void setTeamDailyRate(BigDecimal teamDailyRate) {
+        this.teamDailyRate = teamDailyRate;
+    }
+
+    public BigDecimal getTeamHourlyRate() {
+        return teamHourlyRate;
+    }
+
+    public void setTeamHourlyRate(BigDecimal teamHourlyRate) {
+        this.teamHourlyRate = teamHourlyRate;
+    }
 
     // the idea to store the employee percentage per each team
     private Map<Integer,BigDecimal> utilPerTeams;
@@ -36,6 +55,7 @@ public class Employee {
         this(name,employeeType,currency);
         this.configurations=configs;
     }
+
 
 
     /**equals method is used to compare  if the original employee is equal with the

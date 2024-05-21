@@ -57,6 +57,7 @@ public class TeamConfiguration {
         this.markupMultiplier = markupMultiplier;
         this.savedDate = savedDate;
         this.active = active;
+        this.teamMembers = new ArrayList<>();
     }
 
 
@@ -151,4 +152,6 @@ public class TeamConfiguration {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         return savedDate.format(formatter) + " " ;
     }
+
+
 }

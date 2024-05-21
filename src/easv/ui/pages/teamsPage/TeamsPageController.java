@@ -9,6 +9,7 @@ import easv.exception.RateException;
 import easv.ui.components.teamsInfoComponent.TeamInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.modelFactory.ModelFactory;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,6 +21,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -54,6 +56,7 @@ public class TeamsPageController implements Initializable {
         try {
             teamPage = loader.load();
         } catch (IOException e) {
+            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -64,24 +67,49 @@ public class TeamsPageController implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            model = ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
+
+
             displayTeams();
-        } catch (RateException e) {
-            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
-        }
 
     }
 
     public void displayTeams() {
-        teamsContainer.getChildren().clear();
-        model.getOperationalTeams()
-                .forEach(t -> {
-                    TeamInfoController teamInfoController = new TeamInfoController( t, model, this, firstLayout);
-                    teamsContainer.getChildren().add(teamInfoController.getRoot());
+        System.out.println("called from manage");
+        //teamsContainer.getChildren().clear();
+        List<HBox> teamInfoControllers = new ArrayList<>();
+        Platform.runLater(()-> {
+            model.getOperationalTeams()
 
-                });
+
+                .forEach(t -> {
+                if (t.getActiveConfiguration() != null) {
+                    System.out.println("----------------");
+                    System.out.println(t.getActiveConfiguration().getTeamDayRate() + t.getTeamName()
+
+
+                    );
+                    t.setTeamName(" team name" + t.getTeamName());
+                    System.out.println("------------");
+                }
+
+                TeamInfoController teamInfoController = new TeamInfoController(t, model, this, firstLayout);
+                //teamsContainer.getChildren().add(teamInfoController.getRoot());
+                    teamInfoControllers.add(teamInfoController
+                            .getRoot());
+
+            });
+            teamsContainer.getChildren().setAll(teamInfoControllers);
+        });
     }
+
+
+
+    public void clearTeams(){
+        System.out.println(teamsContainer.getChildren().size() + "children size");
+        teamsContainer.getChildren().clear();
+        System.out.println(teamsContainer.getChildren().size() + "children size");
+    }
+
 
     /* adds green border to selected team and removes it after another is selected*/
     public void setSelectedComponentStyleToSelected(TeamInfoController selectedTeam) {

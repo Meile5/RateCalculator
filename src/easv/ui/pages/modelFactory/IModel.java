@@ -223,6 +223,8 @@ public interface IModel {
      */
     List<Employee> getAllEmployees();
 
+    void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException;
+
 
     /**get unsuported countries */
     ObservableList<Country> getUnsoportedCountries();

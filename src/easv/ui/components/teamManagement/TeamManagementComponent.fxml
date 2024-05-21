@@ -32,8 +32,9 @@
                 <HBox maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="36.0" prefWidth="328.0">
                     <children>
                         <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Name" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                        <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Utilization" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Reomove" textOverrun="CLIP" />
+                        <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Utilization%" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Change%" textOverrun="CLIP" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Remove" textOverrun="CLIP" />
                     </children>
                 </HBox>
             <MFXScrollPane prefHeight="322.0" prefWidth="328.0" styleClass="scrollPane">
@@ -54,8 +55,9 @@
             <HBox maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="36.0" prefWidth="328.0">
                <children>
                   <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Name" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Utilization" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Reomove" textOverrun="CLIP" />
+                  <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Utilization left%" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Add util%" textOverrun="CLIP" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Add    " textOverrun="CLIP" />
                </children>
             </HBox>
             <MFXScrollPane prefHeight="322.0" prefWidth="338.0" styleClass="scrollPane">
@@ -96,13 +98,13 @@
             <VBox prefHeight="48.0" prefWidth="164.0" spacing="10.0">
                <children>
                   <Label text="Gross margin %" />
-                  <TextField maxWidth="120.0" prefHeight="39.0" prefWidth="149.0" />
+                  <TextField fx:id="grossMargin" maxWidth="120.0" prefHeight="39.0" prefWidth="149.0" styleClass="textField" />
                </children>
             </VBox>
             <VBox prefHeight="29.0" prefWidth="168.0" spacing="10.0">
                <children>
                   <Label text="Markup %" />
-                  <TextField maxWidth="120.0" prefHeight="39.0" prefWidth="149.0" />
+                  <TextField fx:id="markUp" maxWidth="120.0" prefHeight="39.0" prefWidth="149.0" styleClass="textField" />
                </children>
             </VBox>
          </children>

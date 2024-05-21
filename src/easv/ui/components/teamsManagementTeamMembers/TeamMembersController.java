@@ -29,6 +29,7 @@ public class TeamMembersController implements Initializable {
     private Label teamMemberName, utilizationInTeam;
     @FXML
     private MFXCheckbox removeTeamMember;
+
     @FXML
     private MFXTextField utilPercentageToAdd;
     private IModel model;
@@ -47,7 +48,6 @@ public class TeamMembersController implements Initializable {
         try {
             membersComponent = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -75,6 +75,35 @@ public class TeamMembersController implements Initializable {
 
         }
     }
+    public Employee getEditedTeamMember(Team team) {
+        if (!removeTeamMember.isSelected()) {
+            System.out.println(employee);
+            Employee editedEmployee = employee;
+            String utilPercentageStr = utilPercentageToAdd.getText().trim();
+
+            // Check if the trimmed input string is not empty
+            if (!utilPercentageStr.isEmpty()) {
+                BigDecimal utilPercentage = new BigDecimal(utilPercentageStr);
+                editedEmployee.getUtilPerTeams().put(team.getId(), utilPercentage);
+
+            }
+
+            return editedEmployee;
+        }
+        return null;
+    }
+    public Employee membersToDelete() {
+        if (removeTeamMember.isSelected()) {
+            Employee employeeToDelete = employee;
+            System.out.println(employeeToDelete + "ddd");
+            return employeeToDelete;
+        }
+        return null;
+    }
+
+
+
+
 
 
 }

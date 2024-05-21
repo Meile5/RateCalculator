@@ -8,6 +8,7 @@ import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.components.editPage.EditController;
 import easv.ui.components.teamManagement.TeamManagementController;
+import easv.ui.components.teamManagementEmployeesAdd.EmployeesToAdd;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.teamsPage.TeamsPageController;
 import javafx.application.Platform;
@@ -33,6 +34,7 @@ public class TeamInfoController implements Initializable {
     private IModel model;
     private Team team;
     private TeamsPageController teamsPageController;
+    private EmployeesToAdd employeesToAdd;
     private StackPane firstLayout;
     @FXML
     private VBox editButton;
@@ -80,7 +82,7 @@ public class TeamInfoController implements Initializable {
     }
     private void addEditAction() {
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this);
+            TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this, employeesToAdd);
             firstLayout.getChildren().add(teamManagementController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
         });
@@ -95,6 +97,8 @@ public class TeamInfoController implements Initializable {
 
             TeamConfiguration activeConfiguration = team.getActiveConfiguration();
             if (activeConfiguration != null) {
+                System.out.println(activeConfiguration.getTeamDayRate()+ "from labels");
+
                 teamDailyRate.setText(activeConfiguration.getTeamDayRate().toString());
                 teamHourlyRate.setText(activeConfiguration.getTeamHourlyRate().toString());
             } else {
@@ -125,6 +129,10 @@ public class TeamInfoController implements Initializable {
                 teamRegion.setText("N/A");
                 teamRegion.setTooltip(new Tooltip("N/A"));
             }
+            if(team.getActiveConfiguration() != null){
+                System.out.println("................");
+            System.out.println(team.getActiveConfiguration().getTeamDayRate() + team.getTeamName());
+                System.out.println("................");}
         }
     }
 
