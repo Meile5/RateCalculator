@@ -173,8 +173,9 @@ public class Team {
     }
 
     public Employee getTeamMember(int Id) {
-        for(Employee employee: teamMembers){
-            if(employee.getId() == id){
+
+        for(Employee employee: getEmployees()){
+            if(employee.getId() == Id){
                 return employee;
             }
         }
