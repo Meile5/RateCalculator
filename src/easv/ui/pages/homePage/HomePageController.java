@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 public class HomePageController implements Initializable, PageManager {
     private Parent root;
     @FXML
-    private StackPane menu, firstLayout;
+    private StackPane menu, firstLayout, secondLayout;
     @FXML
     private VBox pageContainer;
     @FXML
@@ -67,6 +67,8 @@ public class HomePageController implements Initializable, PageManager {
         CallBackFactory.setPageHolder(this);
         CallBackFactory.setModel(this.model);
         CallBackFactory.setModalWindow(this.firstLayout);
+        CallBackFactory.setSecondLayout(this.secondLayout);
+
         Platform.runLater(()->{
             CallBackFactory.createCallBack(Navigation.HOME).call();
         });

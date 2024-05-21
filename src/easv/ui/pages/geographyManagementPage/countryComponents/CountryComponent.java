@@ -38,13 +38,14 @@ public class CountryComponent extends HBox implements Initializable {
     private DeleteCountryController deleteCountryController;
     private GeographyManagementController controller;
 
-    public CountryComponent(IModel model, StackPane pane, Country country, DeleteCountryController deleteCountryController, GeographyManagementController controller) {
+    public CountryComponent(IModel model, StackPane pane, Country country, DeleteCountryController deleteCountryController, GeographyManagementController controller, StackPane secondPane) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CountryComponent.fxml"));
         loader.setController(this);
         this.model = model;
         this.country = country;
         this.deleteCountryController = deleteCountryController;
         this.pane = pane;
+        this.secondPane = secondPane;
         this.controller = controller;
         try {
             loader.load();
@@ -108,7 +109,7 @@ public class CountryComponent extends HBox implements Initializable {
 
     private void setAddTeamButton() {
         this.addTeamButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            CreateTeamController createTeamController = new CreateTeamController(model, pane, country, controller);
+            CreateTeamController createTeamController = new CreateTeamController(model, pane, country, controller, null, null, false, null);
             this.pane.getChildren().add(createTeamController.getRoot());
             WindowsManagement.showStackPane(pane);
 
