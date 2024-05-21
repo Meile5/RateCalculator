@@ -762,29 +762,42 @@ public class Model implements IModel {
         return employeesForTeamsPage;
     }
 
+
+
+
+
     public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
 
-
-        System.out.println(employees.size() + "team Mambers"+"");
         // Clear existing employees in the team
         for (Employee employeesDelete : employeesToDelete) {
-            System.out.println(employeesToDelete +" in model");
+            //System.out.println(employeesToDelete +" in model");
             editedTeam.removeTeamMember(employeesDelete);
         }
-        System.out.println(editedTeam.getTeamMembers() + "team Mambers"+"");
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("before loop performEditTeam: " + employees + " :employees");
+        System.out.println("before loop performEditTeam: " + editedTeam.getEmployees() + " :editedTeam");
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         // Replace with new employees from the provided list and update their rates
         for (Employee employee : employees) {
-            System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");
+          //  System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");
             TeamConfigurationEmployee teamConfigurationEmployee = null;
             // Calculate and set the new hourly and daily rates for the employee
             BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeamE(employee, editedTeam);
             employee.setTeamHourlyRate(employeeHourlyRate);
             BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeamE(employee, editedTeam);
             employee.setTeamDailyRate(employeeDayRate);
+            System.out.println("edited team member id: " + editedTeam.getEmployees().getFirst().getId());
+            System.out.println(employee + " employee in loop with id " + employee.getId());
+            System.out.println("get teaM MEMBER" + editedTeam.getTeamMember(employee.getId()));
             if (editedTeam.getTeamMember(employee.getId()) != null) {
+                System.out.println("im inside the loop to replacememeber");
+                System.out.println("with employee " + employee);
                 editedTeam.replaceTeaMember(employee);
                 teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
             } else {
+                System.out.println("-------------------------------");
+                System.out.println("im inside the else loop");
+                System.out.println("with employee " + employee);
                 teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
                 editedTeam.addNewTeamMember(employee);
             }
@@ -793,25 +806,26 @@ public class Model implements IModel {
             newTeamConfiguration.addEmployeeToTeamHistory(teamConfigurationEmployee);
             editedTeam.setActiveConfiguration(newTeamConfiguration);
         }
-        System.out.println(employees.size() + "after the loop ");
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("after loop performEditTeam: " + employees + " :employees");
+        System.out.println("after loop performEditTeam: " + editedTeam.getEmployees() + " :editedTeam");
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+        System.out.println("before " + teamsWithEmployees.get(editedTeam.getId()).getEmployees() + "from the model");
         Team editedTeamSaved = employeeManager.saveTeamEditOperation(editedTeam, originalTeam.getActiveConfiguration().getId(), employeesToDelete, employees);
+        System.out.println("after employeeManager.saveTeamEditOperation" + editedTeamSaved.getEmployees());
         // Update the model map with the edited team
         if (editedTeamSaved != null) {
+            System.out.println("-------------------------------------------------------------------");
+            System.out.println("Updating map with edited team: " + editedTeamSaved.getEmployees());
             System.out.println("Updating map with edited team: " + editedTeamSaved.getActiveConfiguration().getId());
-            System.out.println(editedTeamSaved.getTeamMembers().size() + "after the map call ");
             // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-           // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
+            // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
             teamsWithEmployees.remove(originalTeam.getId());
             teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamDayRate() + "" + editedTeamSaved.getActiveConfiguration().getId());
-            System.out.println(editedTeamSaved.getTeamMembers());
-            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getEmployees() + "from the model");
-        } else {
-            System.out.println("Failed to save the edited team.");
+            //System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamDayRate() + "" + editedTeamSaved.getActiveConfiguration().getId());
+
         }
-
-
-
     }
 
 
