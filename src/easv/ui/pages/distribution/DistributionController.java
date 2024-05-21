@@ -252,7 +252,7 @@ public class DistributionController implements Initializable, DistributionContro
             return true;
         }
 
-        return this.selectedToDistributeTo.getChildren().addAll(teamsAfterRemoveOperation);gitgit
+        return this.selectedToDistributeTo.getChildren().addAll(teamsAfterRemoveOperation);
     }
 
     /**
