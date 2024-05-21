@@ -857,18 +857,36 @@ public class Model implements IModel {
     public void addNewCountry(Country country, List<Team> teamsToAdd) throws RateException {
         List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
         List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
-        country = countryLogic.addCountry(country, existingTeams, newTeams);
+        List<Team> teamsToUpdate = countryLogic.checkTeamsToUpdate(teamsToAdd, teams);
+        country = countryLogic.addCountry(country, existingTeams, newTeams, teamsToUpdate);
         countriesWithTeams.put(country.getId(), country);
         countries.put(country.getCountryName(), country);
+        newTeams.forEach(team -> {
+            teamsWithEmployees.put(team.getId(), team);
+            teams.put(team.getId(), team);
+        });
+        teamsToUpdate.forEach(team -> {
+            teamsWithEmployees.put(team.getId(), team);
+            teams.put(team.getId(), team);
+        });
     }
 
     @Override
     public void updateCountry(Country country, List<Team> teamsToAdd) throws RateException {
         List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
         List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
-        country = countryLogic.updateCountry(country, existingTeams, newTeams);
+        List<Team> teamsToUpdate = countryLogic.checkTeamsToUpdate(teamsToAdd, teams);
+        country = countryLogic.updateCountry(country, existingTeams, newTeams, teamsToUpdate);
         countriesWithTeams.get(country.getId()).setTeams(teamsToAdd);
         countries.put(country.getCountryName(), country);
+        newTeams.forEach(team -> {
+            teamsWithEmployees.put(team.getId(), team);
+            teams.put(team.getId(), team);
+        });
+        teamsToUpdate.forEach(team -> {
+            teamsWithEmployees.put(team.getId(), team);
+            teams.put(team.getId(), team);
+        });
     }
 
     @Override
@@ -881,27 +899,23 @@ public class Model implements IModel {
     }
 
     @Override
-    public void addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException {
-        boolean isSucceed = countryLogic.addNewTeams(country, newTeams);
+    public void addNewTeam(Country country, Team team) throws SQLException, RateException {
+        boolean isSucceed = countryLogic.addNewTeam(country, team);
         if(isSucceed){
-            for (Team team : newTeams){
-                countriesWithTeams.get(country.getId()).addNewTeam(team);
-            }
+            teamsWithEmployees.put(team.getId(), team);
+            teams.put(team.getId(), team);
+            countriesWithTeams.get(country.getId()).addNewTeam(team);
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public void deleteTeam(Team team) throws RateException {
+        boolean isSucceed = countryLogic.deleteTeam(team);
+        if(isSucceed){
+            teamsWithEmployees.remove(team.getId());
+            teams.remove(team.getId());
+        }
+    }
 
 
 }

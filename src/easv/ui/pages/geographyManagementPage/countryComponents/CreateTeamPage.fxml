@@ -2,7 +2,6 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
-<?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -39,12 +38,8 @@
         </HBox>
         <HBox alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="65.0" prefWidth="384.0" spacing="20.0">
             <children>
-            <MFXProgressSpinner fx:id="progressSpinner" prefHeight="50.0" prefWidth="50.0" visible="false">
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-            </MFXProgressSpinner>
-            <Region prefHeight="57.0" prefWidth="190.0" />
+            <MFXButton fx:id="deleteBTN" buttonType="RAISED" depthLevel="LEVEL0" layoutX="204.0" layoutY="45.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="80.0" rippleColor="#ff5656" styleClass="button-cancel" text="Delete" />
+            <Region prefHeight="65.0" prefWidth="49.0" />
                 <MFXButton fx:id="cancelBTN" buttonType="RAISED" depthLevel="LEVEL0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="80.0" rippleColor="#427972" styleClass="button-cancel" text="Cancel" />
                 <MFXButton fx:id="saveBTN" buttonType="RAISED" depthLevel="LEVEL0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="80.0" rippleColor="#63b2e1" styleClass="button-save" text="Save" textFill="WHITE">
                     <HBox.margin>

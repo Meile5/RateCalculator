@@ -109,7 +109,7 @@ public class CountryComponent extends HBox implements Initializable {
 
     private void setAddTeamButton() {
         this.addTeamButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            CreateTeamController createTeamController = new CreateTeamController(model, pane, country, controller, null, null, false, null);
+            CreateTeamController createTeamController = new CreateTeamController(pane, controller, null, null, false, null);
             this.pane.getChildren().add(createTeamController.getRoot());
             WindowsManagement.showStackPane(pane);
 

@@ -7,9 +7,12 @@ import easv.be.Currency;
 import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
+import easv.exception.RateException;
+import easv.ui.components.confirmationView.ConfirmationWindowController;
 import easv.ui.pages.geographyManagementPage.geographyMainPage.GeographyManagementController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -37,28 +40,23 @@ public class CreateTeamController implements Initializable {
     @FXML
     private MFXComboBox<String> currencyCB;
     @FXML
-    private MFXButton saveBTN, cancelBTN;
+    private MFXButton saveBTN, cancelBTN, deleteBTN;
     @FXML
     private MFXProgressSpinner progressSpinner;
 
 
-    private IModel model;
     private StackPane pane, secondPane;
-    private Country country;
     private GeographyManagementController geographyManagementController;
     private ManageCountryController manageCountryController;
-    private List<Team> teamsList;
     private Service<Void> saveTeam;
     private Team team;
     private boolean isEditOperation;
 
-    public CreateTeamController(IModel model, StackPane pane, Country country, GeographyManagementController geographyManagementController, Team team, StackPane secondPane, boolean isEditOperation, ManageCountryController manageCountryController){
+    public CreateTeamController(StackPane pane, GeographyManagementController geographyManagementController, Team team, StackPane secondPane, boolean isEditOperation, ManageCountryController manageCountryController){
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CreateTeamPage.fxml"));
         loader.setController(this);
-        this.model = model;
         this.pane = pane;
         this.secondPane = secondPane;
-        this.country = country;
         this.geographyManagementController = geographyManagementController;
         this.manageCountryController = manageCountryController;
         this.team = team;
@@ -72,40 +70,67 @@ public class CreateTeamController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        teamsList = new ArrayList<>();
+        System.out.println("team " + team);
         setFields();
 
         saveTeamListener();
+        deleteTeamListener();
         cancelOperationListener();
     }
 
     private void saveTeamListener() {
         saveBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(CountryValidation.isTeamNameValid(teamNameTF) && CountryValidation.isCurrencySelected(currencyCB)){
-                enableProgressBar();
                 if(team == null) {
                     Team newTeam = new Team(teamNameTF.getText(), getCurrency());
-                    saveTeamOperation(country, newTeam);
+                    saveTeamOperation(newTeam);
                 } else {
-                    saveTeamOperation(country, team);
+                    team.setTeamName(teamNameTF.getText());
+                    team.setCurrency(getCurrency());
+                    saveTeamOperation(team);
                 }
             }
         });
 
     }
 
-    private void saveTeamOperation(Country country, Team team) {
+    private void deleteTeamListener() {
+        deleteBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
+                if(team != null) {
+                    try {
+                        manageCountryController.deleteTeam(team);
+                    } catch (RateException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    WindowsManagement.closeStackPane(secondPane);
+                    WindowsManagement.showStackPane(pane);
+                }
+        });
+//        firstLayout.getChildren().clear();
+//        ConfirmationWindowController confirmationWindowController = new ConfirmationWindowController(firstLayout, this);
+//        firstLayout.getChildren().add(confirmationWindowController.getRoot());
+//        firstLayout.setDisable(false);
+//        firstLayout.setVisible(true);
+    }
+
+    private void saveTeamOperation(Team team) {
         saveTeam = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        Thread.sleep(200);
-                        if (isEditOperation){
-                            manageCountryController.getNewTeam(team);
+                        if (isEditOperation) {
+                            Platform.runLater(() -> {
+                                System.out.println("Updated team " + team);
+                                manageCountryController.getUpdatedTeam(team);
+                            });
+                        } else {
+                            Platform.runLater(() -> {
+                                System.out.println("New team " + team);
+                                manageCountryController.getNewTeam(team);
+                            });
                         }
-                            //model.addNewTeam(country, team);
                         return null;
                     }
                 };
@@ -113,35 +138,30 @@ public class CreateTeamController implements Initializable {
         };
 
         saveTeam.setOnSucceeded(event -> {
-            geographyManagementController.showOperationStatus("Operation Successful!", Duration.seconds(2));
-            geographyManagementController.updateCountryComponents();
-            checkPaneToClose();
-            disableProgressBar();
-
+            Platform.runLater(() -> {
+                WindowsManagement.closeStackPane(secondPane);
+                WindowsManagement.showStackPane(pane);
+            });
         });
 
         saveTeam.setOnFailed(event -> {
-            geographyManagementController.showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
-            checkPaneToClose();
-            disableProgressBar();
+            Platform.runLater(() -> {
+                WindowsManagement.closeStackPane(secondPane);
+                WindowsManagement.showStackPane(pane);
+            });
         });
+
         saveTeam.restart();
     }
 
     private void cancelOperationListener() {
         cancelBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
-            checkPaneToClose();
+            WindowsManagement.closeStackPane(secondPane);
         });
     }
 
-    private void checkPaneToClose() {
-        if(secondPane != null)
-            WindowsManagement.closeStackPane(secondPane);
-        else
-            WindowsManagement.closeStackPane(pane);
-    }
-
     private void setFields(){
+        pane.setVisible(false);
         ObservableList<String> currencies = FXCollections.observableArrayList(Currency.EUR.name(), Currency.USD.name());
         currencyCB.setItems(currencies);
         if(team != null){
@@ -156,16 +176,6 @@ public class CreateTeamController implements Initializable {
         } else {
             return Currency.USD;
         }
-    }
-
-    private void enableProgressBar() {
-        progressSpinner.setVisible(true);
-        progressSpinner.setDisable(false);
-    }
-
-    private void disableProgressBar() {
-        progressSpinner.setVisible(false);
-        progressSpinner.setDisable(true);
     }
 
     private void clearFields(){

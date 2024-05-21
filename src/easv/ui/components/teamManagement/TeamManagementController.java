@@ -156,7 +156,7 @@ public class TeamManagementController implements Initializable {
             returnEmployeesToDelete();
             getTeam();
           /*  try {
-                model.performEditTeam(returnAllEmployees(), returnEmployeesToDelete(), getNewTeam(), team);
+                model.performEditTeam(returnAllEmployees(), returnEmployeesToDelete(), getUpdatedTeam(), team);
             } catch (RateException e) {}*/
             saveTeamOperation(returnAllEmployees(), returnEmployeesToDelete(), getTeam(), team);
          //
