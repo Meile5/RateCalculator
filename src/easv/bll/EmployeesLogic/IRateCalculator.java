@@ -5,6 +5,8 @@ import easv.be.Team;
 import easv.be.TeamWithEmployees;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public interface IRateCalculator {
 
@@ -24,5 +26,12 @@ public interface IRateCalculator {
     BigDecimal calculateTeamHourlyRate(Team team);
     BigDecimal calculateEmployeeDayRateOnTeam(Employee employee,Team  team);
     BigDecimal calculateEmployeeHourlyRateOnTeam(Employee employee,Team  team);
+    BigDecimal calculateEmployeeHourlyRateOnTeamE(Employee employee, Team team) ;
+
+    BigDecimal calculateEmployeeDayRateOnTeamE(Employee employee, Team team);
+    BigDecimal calculateTeamDailyRateE(Team team) ;
+
+
+    BigDecimal calculateTeamHourlyRateE(Team team) ;
 
 }
