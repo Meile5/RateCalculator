@@ -105,7 +105,7 @@ public class CreateTeamController implements Initializable {
                         if (isEditOperation){
                             manageCountryController.getNewTeam(team);
                         }
-                            model.addNewTeam(country, team);
+                            //model.addNewTeam(country, team);
                         return null;
                     }
                 };
