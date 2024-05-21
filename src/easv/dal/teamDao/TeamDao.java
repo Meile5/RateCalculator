@@ -1,6 +1,7 @@
 package easv.dal.teamDao;
 
 import easv.be.*;
+import easv.be.Currency;
 import easv.dal.connectionManagement.DatabaseConnectionFactory;
 import easv.dal.connectionManagement.IConnection;
 import easv.exception.ErrorCode;
@@ -29,7 +30,8 @@ public class TeamDao implements ITeamDao {
                 while (rs.next()) {
                     int id = rs.getInt("TeamId");
                     String name = rs.getString("TeamName");
-                    Team team = new Team(name, id);
+                    Currency currency = Currency.valueOf(rs.getString("TeamCurrency"));
+                    Team team = new Team(name, id, currency);
                     teams.put(team.getId(), team);
                 }
             }

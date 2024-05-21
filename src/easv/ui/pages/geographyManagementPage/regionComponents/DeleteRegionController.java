@@ -3,8 +3,10 @@ package easv.ui.pages.geographyManagementPage.regionComponents;
 import easv.Utility.WindowsManagement;
 import easv.be.Region;
 import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
 import easv.ui.components.confirmationView.ConfirmationWindowController;
 import easv.ui.components.confirmationView.OperationHandler;
+import easv.ui.pages.geographyManagementPage.geographyMainPage.GeographyManagementController;
 import easv.ui.pages.modelFactory.IModel;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -32,20 +34,22 @@ public class DeleteRegionController implements Initializable, OperationHandler {
     private VBox employeesContainer;
     private HBox employeeComponent;
     private ConfirmationWindowController confirmationWindowController;
+    private GeographyManagementController controller;
     private Service<Void> deleteEmployee;
 
-    public DeleteRegionController(StackPane pane , IModel model, Region region) {
+    public DeleteRegionController(StackPane pane , IModel model, Region region, GeographyManagementController controller) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DeleteRegionComponent.fxml"));
         loader.setController(this);
         this.pane = pane;
         this.model= model;
         this.region = region;
+        this.controller = controller;
         try {
             deleteComponent = loader.load();
            // this.deleteContainer = deleteContainer;
 
         } catch (IOException e) {
-            //ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }
@@ -86,8 +90,8 @@ public class DeleteRegionController implements Initializable, OperationHandler {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        //Thread.sleep(2000);
-                        //model.deleteEmployee(region);
+                        Thread.sleep(2000);
+                        model.deleteRegion(region);
                         return null;
                     }
                 };
@@ -95,7 +99,11 @@ public class DeleteRegionController implements Initializable, OperationHandler {
         };
 
 
-        deleteEmployee.setOnSucceeded(event -> WindowsManagement.closeStackPane(pane));
+        deleteEmployee.setOnSucceeded(event -> {
+            WindowsManagement.closeStackPane(pane);
+            controller.updateRegionComponents();
+        });
+
 
         deleteEmployee.setOnFailed(event -> {
             confirmationWindowController.setErrorMessage(ErrorCode.DELETING_EMPLOYEES_FAILED.getValue());

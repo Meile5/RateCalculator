@@ -15,5 +15,5 @@ public interface IRegionDAO {
 
     void updateRegion(Region region, List<Country> addedCountries, List<Country> removedCountries) throws RateException;
 
-    void deleteRegion(Region region) throws RateException;
+    boolean deleteRegion(Region region) throws RateException;
 }
