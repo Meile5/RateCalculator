@@ -88,6 +88,7 @@ public class TeamsPageController implements Initializable {
 
 
 
+
     public void clearTeams(){
         teamsContainer.getChildren().clear();
     }

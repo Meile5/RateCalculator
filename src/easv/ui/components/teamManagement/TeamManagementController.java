@@ -60,7 +60,8 @@ public class TeamManagementController implements Initializable {
     private Service<Void> saveTeam;
 
 
-    public TeamManagementController(Team team, IModel model, StackPane firstLayout, TeamInfoController teamInfoController, EmployeesToAdd employeesToAdd) {
+
+    public TeamManagementController(Team team, IModel model, StackPane firstLayout, TeamInfoController teamInfoController, EmployeesToAdd employeesToAdd, TeamsPageController teamsPageController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamManagementComponent.fxml"));
         loader.setController(this);
         this.firstLayout = firstLayout;
@@ -75,7 +76,7 @@ public class TeamManagementController implements Initializable {
        // this.employeesToAdd = employeesToAdd;
         employeesToAddList = new ArrayList<>();
         teamMembersToAddList = new ArrayList<>();
-       teamsPageController = teamInfoController.getTeamsPageController();
+       this.teamsPageController = teamsPageController;
         System.out.println(teamInfoController + "  teamInfoController");
 
        // teamsPageController = new TeamsPageController(model, firstLayout);

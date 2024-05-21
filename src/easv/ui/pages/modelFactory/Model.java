@@ -764,55 +764,6 @@ public class Model implements IModel {
         return employeesForTeamsPage;
     }
 
-    /*public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
-
-
-        System.out.println(employees.size() + "team Mambers"+"");
-        // Clear existing employees in the team
-        for (Employee employeesDelete : employeesToDelete) {
-            System.out.println(employeesToDelete +" in model");
-            editedTeam.removeTeamMember(employeesDelete);
-        }
-
-        // Replace with new employees from the provided list and update their rates
-        for (Employee employee : employees) {
-            TeamConfigurationEmployee teamConfigurationEmployee = null;
-            // Calculate and set the new hourly and daily rates for the employee
-            BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeamE(employee, editedTeam);
-            employee.setTeamHourlyRate(employeeHourlyRate);
-
-
-            BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeamE(employee, editedTeam);
-            employee.setTeamDailyRate(employeeDayRate);
-
-            if (editedTeam.getTeamMember(employee.getId()) != null) {
-                editedTeam.replaceTeaMember(employee);
-                teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
-            } else {
-                teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
-                editedTeam.addNewTeamMember(employee);
-            }
-
-            TeamConfiguration newTeamConfiguration = getNewEmployeeTeamConfiguration1(editedTeam);
-            newTeamConfiguration.addEmployeeToTeamHistory(teamConfigurationEmployee);
-            editedTeam.setActiveConfiguration(newTeamConfiguration);
-        }
-        Team editedTeamSaved = employeeManager.saveTeamEditOperation(editedTeam, originalTeam.getActiveConfiguration().getId(), employeesToDelete, employees);
-        // Update the model map with the edited team
-        if (editedTeamSaved != null) {
-            System.out.println("Updating map with edited team: " + editedTeamSaved.getActiveConfiguration().getTeamMembers() + "lllllllll");
-           // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-           // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-            teamsWithEmployees.remove(originalTeam.getId());
-            teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamMembers() + "aaaaaaaaaaaaa");
-        } else {
-            System.out.println("Failed to save the edited team.");
-        }
-
-
-
-    }*/
     public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
 
         // Clear existing employees in the team
@@ -824,10 +775,8 @@ public class Model implements IModel {
         System.out.println("before loop performEditTeam: " + employees + " :employees");
         System.out.println("before loop performEditTeam: " + editedTeam.getEmployees() + " :editedTeam");
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println(editedTeam.getTeamMembers() + "team Mambers"+"");
         // Replace with new employees from the provided list and update their rates
         for (Employee employee : employees) {
-            System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");
           //  System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");
             TeamConfigurationEmployee teamConfigurationEmployee = null;
             // Calculate and set the new hourly and daily rates for the employee
@@ -855,7 +804,6 @@ public class Model implements IModel {
             newTeamConfiguration.addEmployeeToTeamHistory(teamConfigurationEmployee);
             editedTeam.setActiveConfiguration(newTeamConfiguration);
         }
-
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("after loop performEditTeam: " + employees + " :employees");
         System.out.println("after loop performEditTeam: " + editedTeam.getEmployees() + " :editedTeam");
@@ -873,18 +821,9 @@ public class Model implements IModel {
             // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
             teamsWithEmployees.remove(originalTeam.getId());
             teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamDayRate() + "" + editedTeamSaved.getActiveConfiguration().getId());
-
-            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getEmployees() + "from the model");
             //System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamDayRate() + "" + editedTeamSaved.getActiveConfiguration().getId());
 
-            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getEmployees() + "from the model");
-        } else {
-            System.out.println("Failed to save the edited team.");
         }
-
-
-
     }
 
 
@@ -896,9 +835,9 @@ public class Model implements IModel {
         double markupMultiplier = 0;
         if (team.getActiveConfiguration() != null) {
             grossMargin = checkNullValues(team.getGrossMarginTemporary());
-            //System.out.println(grossMargin);
+            System.out.println(grossMargin);
             markupMultiplier = checkNullValues(team.getMarkupMultiplierTemporary());
-            //System.out.println(markupMultiplier);
+            System.out.println(markupMultiplier);
         }
         LocalDateTime savedDate = LocalDateTime.now();
         return new TeamConfiguration(teamDayRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, true);
