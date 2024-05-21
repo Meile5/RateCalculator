@@ -805,7 +805,8 @@ public class EmployeesDAO implements IEmployeeDAO {
         return null;
     }
     private void setOldConfigurationToInactiveTeams(int configurationId, Connection conn) throws RateException {
-        String sql = "UPDATE  TeamConfiguration  Set Active =? where TeamConfiguration.TeamConfigurationID=?";
+        System.out.println(configurationId + "old one");
+        String sql = "UPDATE  TeamConfiguration  Set Active =? where TeamConfigurationID=?";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             psmt.setString(1, "false");
             psmt.setInt(2, configurationId);

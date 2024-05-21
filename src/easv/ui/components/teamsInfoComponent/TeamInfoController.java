@@ -49,6 +49,7 @@ public class TeamInfoController implements Initializable {
         this.model = model;
         this.teamsPageController = teamsPageController;
         this.firstLayout=firstLayout;
+        System.out.println(teamsPageController + " " + "temas Page controller");
         try {
             teamInfoComponent = loader.load();
         } catch (IOException e) {
@@ -82,6 +83,7 @@ public class TeamInfoController implements Initializable {
     }
     private void addEditAction() {
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            System.out.println(this + "teamInfoController");
             TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this, employeesToAdd);
             firstLayout.getChildren().add(teamManagementController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
@@ -134,6 +136,16 @@ public class TeamInfoController implements Initializable {
             System.out.println(team.getActiveConfiguration().getTeamDayRate() + team.getTeamName());
                 System.out.println("................");}
         }
+    }
+
+
+    public String getTeamName(){
+        return this.team.getActiveConfiguration().getTeamDayRate()+" from the creation of the info controller";
+    }
+
+
+    public TeamsPageController getTeamsPageController(){
+        return this.teamsPageController;
     }
 
 

@@ -74,40 +74,46 @@ public class TeamsPageController implements Initializable {
     }
 
     public void displayTeams() {
-        System.out.println("called from manage");
-        //teamsContainer.getChildren().clear();
+        teamsContainer.getChildren().clear();
         List<HBox> teamInfoControllers = new ArrayList<>();
-        Platform.runLater(()-> {
             model.getOperationalTeams()
-
-
                 .forEach(t -> {
-                if (t.getActiveConfiguration() != null) {
-                    System.out.println("----------------");
-                    System.out.println(t.getActiveConfiguration().getTeamDayRate() + t.getTeamName()
-
-
-                    );
-                    t.setTeamName(" team name" + t.getTeamName());
-                    System.out.println("------------");
-                }
-
                 TeamInfoController teamInfoController = new TeamInfoController(t, model, this, firstLayout);
-                //teamsContainer.getChildren().add(teamInfoController.getRoot());
                     teamInfoControllers.add(teamInfoController
                             .getRoot());
-
             });
             teamsContainer.getChildren().setAll(teamInfoControllers);
-        });
     }
+
+
+//    public void displayNewTeams(){
+//        System.out.println("called from the new ");
+//
+//        List<HBox> teamInfoControllers = new ArrayList<>();
+//            model.getOperationalTeams()
+//                    .forEach(t -> {
+//                        if (t.getActiveConfiguration() != null) {
+//                            System.out.println("----------------");
+//                            System.out.println(t.getActiveConfiguration().getTeamDayRate() + t.getTeamName()
+//                            );
+//                            t.setTeamName("abracadabra" + t.getTeamName());
+//                            System.out.println("------------");
+//                            TeamInfoController teamInfoController = new TeamInfoController(t, model, this, firstLayout);
+//                            //teamsContainer.getChildren().add(teamInfoController.getRoot());
+//                            teamInfoControllers.add(teamInfoController
+//                                    .getRoot());
+//                        }
+//
+//                    });
+//
+//            teamsContainer.getChildren().setAll(teamInfoControllers);
+//
+//    }
 
 
 
     public void clearTeams(){
-        System.out.println(teamsContainer.getChildren().size() + "children size");
         teamsContainer.getChildren().clear();
-        System.out.println(teamsContainer.getChildren().size() + "children size");
     }
 
 

@@ -43,6 +43,8 @@ public class EmployeesToAdd implements Initializable {
         this.model = model;
         this.employee = employee;
         this.teamManagementController = teamManagementController;
+        System.out.println(teamManagementController + " " +  teamManagementController);
+        System.out.println("------------------");
 
         try {
             employeesToAddComponent = loader.load();
@@ -89,7 +91,7 @@ public class EmployeesToAdd implements Initializable {
 
     public Employee getEditedEmployee(Team team) {
         if (addEmployee.isSelected()) {
-            System.out.println(employee);
+            System.out.println(employee +"from add edit");
             Employee editedEmployee = employee;
             String utilPercentageStr = utilPercentageToAdd.getText();
             BigDecimal utilPercentage = new BigDecimal(utilPercentageStr);

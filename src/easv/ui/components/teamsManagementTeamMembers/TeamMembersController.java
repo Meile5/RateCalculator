@@ -44,7 +44,7 @@ public class TeamMembersController implements Initializable {
         this.employee = employee;
         this.team = team;
         this.teamManagementController = teamManagementController;
-
+        System.out.println(this.teamManagementController + "team management controller");
         try {
             membersComponent = loader.load();
         } catch (IOException e) {
@@ -76,8 +76,11 @@ public class TeamMembersController implements Initializable {
         }
     }
     public Employee getEditedTeamMember(Team team) {
+        System.out.println(removeTeamMember.isSelected());
+
         if (!removeTeamMember.isSelected()) {
-            System.out.println(employee);
+            System.out.println(removeTeamMember.isSelected());
+            System.out.println(employee + "employee to edit  ");
             Employee editedEmployee = employee;
             String utilPercentageStr = utilPercentageToAdd.getText().trim();
 
@@ -87,7 +90,6 @@ public class TeamMembersController implements Initializable {
                 editedEmployee.getUtilPerTeams().put(team.getId(), utilPercentage);
 
             }
-
             return editedEmployee;
         }
         return null;
@@ -95,15 +97,9 @@ public class TeamMembersController implements Initializable {
     public Employee membersToDelete() {
         if (removeTeamMember.isSelected()) {
             Employee employeeToDelete = employee;
-            System.out.println(employeeToDelete + "ddd");
+            System.out.println(employeeToDelete + "dddelete employeee");
             return employeeToDelete;
         }
         return null;
     }
-
-
-
-
-
-
 }

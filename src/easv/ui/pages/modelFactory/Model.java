@@ -777,8 +777,6 @@ public class Model implements IModel {
             // Calculate and set the new hourly and daily rates for the employee
             BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeamE(employee, editedTeam);
             employee.setTeamHourlyRate(employeeHourlyRate);
-
-
             BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeamE(employee, editedTeam);
             employee.setTeamDailyRate(employeeDayRate);
 
