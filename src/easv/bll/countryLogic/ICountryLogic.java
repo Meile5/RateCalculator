@@ -5,6 +5,7 @@ import easv.be.Team;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,4 +24,6 @@ public interface ICountryLogic {
     List<Team> checkNewTeams(List<Team> teamsToCheck, Map<Integer, Team> teams);
 
     List<Team> checkExistingTeams(List<Team> teamsToCheck, ObservableMap<Integer, Team> teams);
+
+    boolean addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException;
 }

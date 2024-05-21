@@ -7,6 +7,7 @@ import easv.dal.countryDao.ICountryDao;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class CountryLogic implements ICountryLogic {
@@ -35,9 +36,9 @@ public class CountryLogic implements ICountryLogic {
 
     @Override
     public Country addCountry(Country country, List<Team> teams, List<Team> newTeams) throws RateException {
-        int regionID = countryDao.addCountry(country, teams, newTeams);
-        if (regionID > 0) {
-            country.setId(regionID);
+        int countryID = countryDao.addCountry(country, teams, newTeams);
+        if (countryID > 0) {
+            country.setId(countryID);
             country.setTeams(teams);
         }
         return country;
@@ -88,5 +89,15 @@ public class CountryLogic implements ICountryLogic {
         return existingTeams;
     }
 
+    @Override
+    public boolean addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException {
+        List<Integer> teamsIds = countryDao.addTeams(newTeams, null);
+        if (!teamsIds.isEmpty()) {
+            countryDao.addNewTeamsToCountry(teamsIds, country.getId(), null);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

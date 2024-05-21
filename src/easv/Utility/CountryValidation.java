@@ -1,5 +1,6 @@
 package easv.Utility;
 
+import easv.be.Currency;
 import easv.be.Team;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -21,6 +22,14 @@ public class CountryValidation {
     }
 
     public static boolean isTeamsListValid(ListView<Team> teamsListView) {
+        return true;
+    }
+
+    public static boolean isTeamNameValid(MFXTextField teamNameTF) {
+        return true;
+    }
+
+    public static boolean isCurrencySelected(MFXComboBox<String> currencyCB) {
         return true;
     }
 }

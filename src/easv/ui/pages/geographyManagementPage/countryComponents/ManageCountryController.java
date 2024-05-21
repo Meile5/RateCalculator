@@ -84,9 +84,15 @@ public class ManageCountryController implements Initializable {
     private void addTeamListener() {
         addTeamBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(CountryValidation.isTeamSelected(teamsCB)){
-                Team team = teamsCB.getSelectedItem();
-                existingTeamsList.add(team);
-                teamsListView.getItems().add(team);
+                if(teamsCB.getSelectedItem() != null) {
+                    Team team = teamsCB.getSelectedItem();
+                    existingTeamsList.add(team);
+                    teamsListView.getItems().add(team);
+                } else {
+                    Team team = new Team(teamsCB.getText());
+                    existingTeamsList.add(team);
+                    teamsListView.getItems().add(team);
+                }
 
                 teamsCB.clearSelection();
             }
