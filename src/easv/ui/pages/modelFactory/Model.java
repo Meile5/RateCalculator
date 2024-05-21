@@ -766,6 +766,8 @@ public class Model implements IModel {
 
     /*public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
 
+
+        System.out.println(employees.size() + "team Mambers"+"");
         // Clear existing employees in the team
         for (Employee employeesDelete : employeesToDelete) {
             System.out.println(employeesToDelete +" in model");
@@ -822,6 +824,7 @@ public class Model implements IModel {
         System.out.println("before loop performEditTeam: " + employees + " :employees");
         System.out.println("before loop performEditTeam: " + editedTeam.getEmployees() + " :editedTeam");
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println(editedTeam.getTeamMembers() + "team Mambers"+"");
         // Replace with new employees from the provided list and update their rates
         for (Employee employee : employees) {
             System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");

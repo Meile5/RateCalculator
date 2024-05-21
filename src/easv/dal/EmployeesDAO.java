@@ -768,9 +768,6 @@ public class EmployeesDAO implements IEmployeeDAO {
     public Team saveEditOperationTeam(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException {
         Connection conn = null;
         try {
-            System.out.println("At start of saveEditOperationTeam" + editedTeam.getEmployees()+ " :editedTeam");
-            System.out.println("At start of saveEditOperationTeam" + employees + " :employees");
-
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
 
@@ -782,13 +779,8 @@ public class EmployeesDAO implements IEmployeeDAO {
             addEmployeeHistoryTeams(configurationID, employees, conn);
             deleteTeamEmployeeConnections(conn, employeesToDelete, editedTeam.getId()); //team id
             setOldConfigurationToInactiveTeams(idOriginalTeam, conn);
-            System.out.println("Before addEmployees to team" + editedTeam.getEmployees()+ " :editedTeam");
-            System.out.println("Before addEmployees to team" + employees + " :employees");
             addEmployeesToTeam(employees, editedTeam.getId(), conn);
-
             conn.commit();
-            System.out.println("Before return" + editedTeam.getEmployees() + " :editedTeam");
-            System.out.println("Before return" + employees + " :employees");
             return editedTeam;
         } catch (RateException | SQLException e) {
             e.printStackTrace();
