@@ -174,8 +174,8 @@ public class TeamManagementController implements Initializable {
 
         saveTeam.setOnSucceeded(event -> {
             System.out.println("success");
-          //  teamsPageController.clearTeams();
-            teamsPageController.displayNewTeams();
+           teamsPageController.clearTeams();
+            teamsPageController.displayTeams();
             //showOperationStatus("Operation Successful!", Duration.seconds(2));
             WindowsManagement.closeStackPane(firstLayout);
             // closeWindowSpinner(firstLayout);

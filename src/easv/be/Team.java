@@ -174,22 +174,22 @@ public class Team {
 
     public Employee getTeamMember(int Id) {
         for(Employee employee: teamMembers){
-            if(employee.getId() == id){
+            if(employee.getId() == Id){
                 return employee;
             }
         }
         return null;
     }
     public void replaceTeaMember(Employee employee) {
-        for(Employee employeeReplace: teamMembers){
-            if(employeeReplace.getId() == employee.getId()){
-                teamMembers.remove(employeeReplace);
+        Iterator<Employee> iterator = teamMembers.iterator();
+        while (iterator.hasNext()) {
+            Employee employeeReplace = iterator.next();
+            if (employeeReplace.getId() == employee.getId()) {
+                iterator.remove();
                 teamMembers.add(employee);
-
-
+                break;  // Assuming IDs are unique, we can break the loop after finding the match
             }
         }
-
     }
 
     public void setTeamMembers(List<Employee> teamMembers) {

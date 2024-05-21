@@ -781,6 +781,8 @@ public class EmployeesDAO implements IEmployeeDAO {
             setOldConfigurationToInactiveTeams(idOriginalTeam, conn);
             addEmployeesToTeam(employees, editedTeam.getId(), conn);
             conn.commit();
+            System.out.println(editedTeam.getTeamMembers().size() + "from dao" + "");
+
             return editedTeam;
         } catch (RateException | SQLException e) {
             e.printStackTrace();
