@@ -16,14 +16,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-
-
 import java.math.BigDecimal;
-
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
-
 public class Model implements IModel {
 
 
@@ -412,12 +408,8 @@ public class Model implements IModel {
         this.teams.putAll(teamManager.getTeams());
     }
 
-    @Override
-    public ObservableList<Team> getTeams() {
-        ObservableList<Team> observableTeamList = FXCollections.observableArrayList();
-        observableTeamList.setAll(teams.values());
-        return observableTeamList;
-
+    public ObservableMap<Integer, Team> getTeams() {
+        return teams;
     }
 
 
@@ -635,6 +627,18 @@ public class Model implements IModel {
         return selectedTeamToDistributeFrom;
     }
 
+    @Override
+    public void addNewRegion(Region region, List<Country> countries) throws RateException {
+        region = regionManager.addRegion(region, countries);
+        regionsWithCountries.put(region.getId(), region);
+    }
+
+    @Override
+    public void updateRegion(Region region, List<Country> countries) throws RateException {
+        region = regionManager.updateRegion(region, countries);
+        regionsWithCountries.get(region.getId()).setCountries(countries);
+    }
+
     /**
      * remove the team and the inserted overhead percentage from the map
      */
@@ -715,12 +719,6 @@ public class Model implements IModel {
         return simulationPerformed;
     }
 
-    /**
-     * return all employees for team manage
-     */
-    /**
-     * return all employees for team manage
-     */
     public void setSimulationPerformed(boolean simulationPerformed) {
         this.simulationPerformed = simulationPerformed;
     }
@@ -764,7 +762,55 @@ public class Model implements IModel {
         return employeesForTeamsPage;
     }
 
+    public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
 
+        // Clear existing employees in the team
+        for (Employee employeesDelete : employeesToDelete) {
+            System.out.println(employeesToDelete +" in model");
+            editedTeam.removeTeamMember(employeesDelete);
+        }
+
+        // Replace with new employees from the provided list and update their rates
+        for (Employee employee : employees) {
+            System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");
+            TeamConfigurationEmployee teamConfigurationEmployee = null;
+            // Calculate and set the new hourly and daily rates for the employee
+            BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeamE(employee, editedTeam);
+            employee.setTeamHourlyRate(employeeHourlyRate);
+            BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeamE(employee, editedTeam);
+            employee.setTeamDailyRate(employeeDayRate);
+
+            if (editedTeam.getTeamMember(employee.getId()) != null) {
+                editedTeam.replaceTeaMember(employee);
+                teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
+            } else {
+                teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
+                editedTeam.addNewTeamMember(employee);
+            }
+
+            TeamConfiguration newTeamConfiguration = getNewEmployeeTeamConfiguration1(editedTeam);
+            newTeamConfiguration.addEmployeeToTeamHistory(teamConfigurationEmployee);
+            editedTeam.setActiveConfiguration(newTeamConfiguration);
+        }
+
+        Team editedTeamSaved = employeeManager.saveTeamEditOperation(editedTeam, originalTeam.getActiveConfiguration().getId(), employeesToDelete, employees);
+        // Update the model map with the edited team
+        if (editedTeamSaved != null) {
+            System.out.println("Updating map with edited team: " + editedTeamSaved.getActiveConfiguration().getId());
+           // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
+           // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
+            teamsWithEmployees.remove(originalTeam.getId());
+            teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
+            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamDayRate() + "" + editedTeamSaved.getActiveConfiguration().getId());
+
+            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getEmployees() + "from the model");
+        } else {
+            System.out.println("Failed to save the edited team.");
+        }
+
+
+
+    }
 
 
 
@@ -796,61 +842,5 @@ public class Model implements IModel {
 
 
 
-    @Override
-    public void addNewRegion(Region region, List<Country> countries) throws RateException {
-        region = regionManager.addRegion(region, countries);
-        regionsWithCountries.put(region.getId(), region);
-    }
-
-    @Override
-    public void updateRegion(Region region, List<Country> countries) throws RateException {
-        region = regionManager.updateRegion(region, countries);
-        regionsWithCountries.get(region.getId()).setCountries(countries);
-    }
-
-    @Override
-    public void deleteRegion(Region region) throws RateException {
-        boolean succeeded = regionManager.deleteRegion(region);
-        if (succeeded) {
-            regionsWithCountries.remove(region.getId());
-        }
-    }
-
-    @Override
-    public void addNewCountry(Country country, List<Team> teamsToAdd) throws RateException {
-        List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
-        List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
-        country = countryLogic.addCountry(country, existingTeams, newTeams);
-        countriesWithTeams.put(country.getId(), country);
-        countries.put(country.getCountryName(), country);
-    }
-
-    @Override
-    public void updateCountry(Country country, List<Team> teamsToAdd) throws RateException {
-        List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
-        List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
-        country = countryLogic.updateCountry(country, existingTeams, newTeams);
-        countriesWithTeams.get(country.getId()).setTeams(teamsToAdd);
-        countries.put(country.getCountryName(), country);
-    }
-
-    @Override
-    public void deleteCountry(Country country) throws RateException {
-        boolean succeeded = countryLogic.deleteCountry(country);
-        if (succeeded) {
-            countriesWithTeams.remove(country.getId());
-            countries.remove(country.getCountryName());
-        }
-    }
-
-    @Override
-    public void addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException {
-        boolean isSucceed = countryLogic.addNewTeams(country, newTeams);
-        if(isSucceed){
-            for (Team team : newTeams){
-                countriesWithTeams.get(country.getId()).addNewTeam(team);
-            }
-        }
-    }
 
 }
