@@ -9,11 +9,11 @@ import javafx.scene.control.ListView;
 public class CountryValidation {
 
 
-    public static boolean isTeamSelected(MFXComboBox<Team> teamsCB) {
+    public static boolean isTeamSelected(MFXComboBox<Team> teamsCB, ListView<String> teamsListView) {
         return true;
     }
 
-    public static boolean isTeamToRemoveSelected(ListView<Team> teamsListView) {
+    public static boolean isTeamToRemoveSelected(ListView<String> teamsListView) {
         return true;
     }
 
@@ -21,7 +21,7 @@ public class CountryValidation {
         return true;
     }
 
-    public static boolean isTeamsListValid(ListView<Team> teamsListView) {
+    public static boolean isTeamsListValid(ListView<String> teamsListView) {
         return true;
     }
 

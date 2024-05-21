@@ -37,11 +37,11 @@ public class ManageCountryController implements Initializable {
     @FXML
     private MFXComboBox<Team> teamsCB;
     @FXML
-    private ListView<Team> teamsListView;
+    private ListView<String> teamsListView;
     @FXML
     private Button addTeamBTN, removeTeamBTN;
     @FXML
-    private MFXButton saveBTN, cancelBTN;
+    private MFXButton saveBTN, cancelBTN, editTeamBT;
     @FXML
     private MFXProgressSpinner progressSpinner;
 
@@ -75,25 +75,33 @@ public class ManageCountryController implements Initializable {
 
         setFields();
         addTeamListener();
+        editTeamListener();
         removeTeamListener();
+        addListViewListener();
 
         saveCountryListener();
         cancelOperationListener();
     }
 
+    private void addListViewListener() {
+        teamsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != null){
+                editTeamBT.setText("Edit Team");
+            } else {
+                editTeamBT.setText("Add Team");
+            }
+        });
+    }
+
     private void addTeamListener() {
         addTeamBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
-            if(CountryValidation.isTeamSelected(teamsCB)){
+            if(CountryValidation.isTeamSelected(teamsCB, null)){
                 if(teamsCB.getSelectedItem() != null) {
                     Team team = teamsCB.getSelectedItem();
                     existingTeamsList.add(team);
-                    teamsListView.getItems().add(team);
-                } else {
-                    Team team = new Team(teamsCB.getText());
-                    existingTeamsList.add(team);
-                    teamsListView.getItems().add(team);
+                    String teamAndCurrency = team.getTeamName() + " - " + team.getCurrency().name();
+                    teamsListView.getItems().add(teamAndCurrency);
                 }
-
                 teamsCB.clearSelection();
             }
         });
@@ -115,7 +123,7 @@ public class ManageCountryController implements Initializable {
             countryNameBox.setText(country.getCountryName());
             if(!country.getTeams().isEmpty()) {
                 if(country.getTeams().getFirst() != null) {
-                    teamsListView.getItems().addAll(country.getTeams());
+                    teamsListView.getItems().addAll(getTeams(country.getTeams()));
                     existingTeamsList.addAll(country.getTeams());
                 }
             }
@@ -144,6 +152,41 @@ public class ManageCountryController implements Initializable {
             }
         });
 
+    }
+
+    private void editTeamListener() {
+        editTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
+            if(CountryValidation.isTeamSelected(null, teamsListView)){
+                Team team = getSelectedTeam();
+                CreateTeamController createTeamController = new CreateTeamController(model, pane, country, controller, team, secondPane, true, this);
+                secondPane.getChildren().add(createTeamController.getRoot());
+                WindowsManagement.showStackPane(secondPane);
+            }
+        });
+    }
+
+    private Team getSelectedTeam() {
+        if(teamsListView.getSelectionModel().getSelectedItem() == null) {
+            return null;
+        } else {
+            String teamAndCurrency = teamsListView.getSelectionModel().getSelectedItem();
+            String[] teamAndCurrencyArray = teamAndCurrency.split(" - ");
+            String teamName = teamAndCurrencyArray[0];
+            return existingTeamsList.stream()
+                    .filter(team -> team.getTeamName().equals(teamName))
+                    .findFirst()
+                    .orElse(null);
+        }
+    }
+
+    private List<String> getTeams(List<Team> teams) {
+        String teamAndCurrency = null;
+        List<String> teamsList = new ArrayList<>();
+        for(Team team : teams){
+            teamAndCurrency = team.getTeamName() + " - " + team.getCurrency().name();
+            teamsList.add(teamAndCurrency);
+        }
+        return teamsList;
     }
 
     private void enableProgressBar() {
@@ -205,5 +248,11 @@ public class ManageCountryController implements Initializable {
 
     public VBox getRoot(){
         return manageWindow;
+    }
+
+    public void getNewTeam(Team team) {
+        existingTeamsList.add(team);
+        String teamAndCurrency = team.getTeamName() + " - " + team.getCurrency().name();
+        teamsListView.getItems().add(teamAndCurrency);
     }
 }

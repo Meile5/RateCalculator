@@ -466,7 +466,7 @@ public class EmployeesDAO implements IEmployeeDAO {
 //                psmt.setString(1, editedEmployee.getName());
 //                psmt.setString(2, editedEmployee.getType().toString());
 //                psmt.setInt(3, editedEmployee.getCountry().getId());
-//                psmt.setInt(4, editedEmployee.getTeam().getId());
+//                psmt.setInt(4, editedEmployee.getNewTeam().getId());
 //                psmt.setString(5, editedEmployee.getCurrency().name());
 //                psmt.setInt(6, editedEmployee.getId());
 //                psmt.executeUpdate();

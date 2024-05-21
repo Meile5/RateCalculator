@@ -14,12 +14,15 @@ public class CallBackFactory {
     private static PageManager pageManager;
     private static IModel model;
     private final static Observable observer = new Observer();
-    private  static StackPane modalLayout;
+    private  static StackPane modalLayout, secondLayout;
 
 
      public static  void setModalWindow(StackPane stackPane){
          modalLayout=stackPane;
      }
+    public static  void setSecondLayout(StackPane stackPane){
+        secondLayout=stackPane;
+    }
     public static CallBack createCallBack(Navigation pageTo) {
         return () -> getCallBack(pageTo).call();
     }
@@ -55,7 +58,7 @@ public class CallBackFactory {
                 observer.addSubject(navigateToModeling);
             }
             case GEOGRAPHY -> {
-                NavigateToGeography navigateToGeography = new NavigateToGeography(pageManager,model, modalLayout);
+                NavigateToGeography navigateToGeography = new NavigateToGeography(pageManager,model, modalLayout, secondLayout);
                 callBack = navigateToGeography;
                 callBacks.put(pageTo, callBack);
                 observer.addSubject(navigateToGeography);
