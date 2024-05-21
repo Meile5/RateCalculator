@@ -68,6 +68,11 @@ public class TeamManagementController implements Initializable {
         this.model = model;
         this.team = team;
         this.teamInfoController = teamInfoController;
+        this.employeesToAdd = employeesToAdd;
+        employeesToAddList = new ArrayList<EmployeesToAdd>();
+        teamMembersToAddList = new ArrayList<TeamMembersController>();
+        this.teamsPageController = teamsPageController;
+       // teamsPageController = new TeamsPageController(model, firstLayout); //?
        // this.employeesToAdd = employeesToAdd;
         employeesToAddList = new ArrayList<>();
         teamMembersToAddList = new ArrayList<>();

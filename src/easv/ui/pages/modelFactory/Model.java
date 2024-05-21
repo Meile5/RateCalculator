@@ -18,8 +18,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.util.*;
+
 public class Model implements IModel {
 
 
@@ -408,9 +410,9 @@ public class Model implements IModel {
         this.teams.putAll(teamManager.getTeams());
     }
 
-//    public ObservableMap<Integer, Team> getTeams() {
-//        return teams;
-//    }
+    public ObservableMap<Integer, Team> getTeams() {
+        return teams;
+    }
 
 
 
@@ -761,10 +763,6 @@ public class Model implements IModel {
 
         return employeesForTeamsPage;
     }
-
-
-
-
 
     public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
 
