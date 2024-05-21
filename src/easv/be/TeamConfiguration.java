@@ -57,6 +57,7 @@ public class TeamConfiguration {
         this.markupMultiplier = markupMultiplier;
         this.savedDate = savedDate;
         this.active = active;
+        this.teamMembers = new ArrayList<>();
     }
 
 

@@ -22,6 +22,11 @@ public interface IEmployeeManager {
     BigDecimal getEmployeeDayRateOnTeam(Employee employee, Team team);
 
     BigDecimal getEmployeeHourlyRateOnTeam(Employee employee, Team team);
+    BigDecimal getEmployeeHourlyRateOnTeamE(Employee employee, Team team);
+    BigDecimal getEmployeeDayRateOnTeamE(Employee employee, Team team);
+    BigDecimal calculateTeamDayRateE(Team team);
+    BigDecimal calculateTeamHourlyRateE(Team team);
+
 
     public List<Employee> performSearchOperation (Collection<Employee> employees, String filter);
 
@@ -55,4 +60,6 @@ public interface IEmployeeManager {
     List<Employee> filterTeamsByCountry(List<Team> countryTeams, ObservableMap<Integer, Employee> employees);
 
     List<Employee> filterEmployeesByTeam(Team selectedTeam,ObservableMap<Integer,Employee> employees);
+
+    Team saveTeamEditOperation(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException;
 }

@@ -21,7 +21,7 @@
         </VBox>
         <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="40.0" prefHeight="50.0" prefWidth="85.0">
             <children>
-                <MFXTextField maxHeight="-Infinity" maxWidth="40.0" minHeight="30.0" minWidth="20.0" prefHeight="30.0" prefWidth="23.0" styleClass="percentageInput" />
+                <MFXTextField fx:id="utilPercentageToAdd" maxHeight="-Infinity" maxWidth="40.0" minHeight="30.0" minWidth="20.0" prefHeight="30.0" prefWidth="23.0" styleClass="percentageInput" />
             </children>
         </VBox>
         <HBox alignment="CENTER" layoutX="471.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="85.0" minHeight="-Infinity" minWidth="40.0" prefHeight="50.0" prefWidth="85.0" HBox.hgrow="ALWAYS">

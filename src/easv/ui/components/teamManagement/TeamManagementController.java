@@ -1,17 +1,21 @@
 package easv.ui.components.teamManagement;
 
 import easv.Utility.WindowsManagement;
+import easv.be.Configuration;
 import easv.be.Employee;
 import easv.be.Team;
 import easv.be.TeamConfiguration;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
+import easv.exception.RateException;
 import easv.ui.components.teamManagementEmployeesAdd.EmployeesToAdd;
 import easv.ui.components.teamsInfoComponent.TeamInfoController;
 import easv.ui.components.teamsManagementTeamMembers.TeamMembersController;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.teamsPage.TeamsPageController;
 import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,6 +27,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -48,8 +53,11 @@ public class TeamManagementController implements Initializable {
     private Team team;
     private TeamInfoController teamInfoController;
     private TeamMembersController teamMembersController;
+    private TeamsPageController teamsPageController;
     private EmployeesToAdd employeesToAdd;
     private List<EmployeesToAdd> employeesToAddList;
+    private List<TeamMembersController> teamMembersToAddList;
+    private Service<Void> saveTeam;
 
 
 
@@ -63,6 +71,8 @@ public class TeamManagementController implements Initializable {
         this.teamInfoController = teamInfoController;
         this.employeesToAdd = employeesToAdd;
         employeesToAddList = new ArrayList<EmployeesToAdd>();
+        teamMembersToAddList = new ArrayList<TeamMembersController>();
+        teamsPageController = new TeamsPageController(model, firstLayout); //?
 
         try {
             teamManagementComponent = loader.load();
@@ -89,6 +99,7 @@ public class TeamManagementController implements Initializable {
         for (Employee employee : team.getTeamMembers()) {
             TeamMembersController teamMembersController = new TeamMembersController(employee, team, model, this);
             teamMembersContainer.getChildren().add(teamMembersController.getRoot());
+            teamMembersToAddList.add(teamMembersController);
         }
     }
     /** displays all employees in the system  with their left util*/
@@ -106,90 +117,108 @@ public class TeamManagementController implements Initializable {
     private void editAction() {
         saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
         {
-            List<Employee> editedEmployeesList = new ArrayList<Employee>();
-            for(EmployeesToAdd employeesToAdd : employeesToAddList){
-               Employee editedEmployee = employeesToAdd.getEditedEmployee(team);
-               if(editedEmployee != null){
-                   editedEmployeesList.add(editedEmployee);
-               }
+            returnAllEmployees();
+           returnEmployeesToDelete();
+           getTeam();
+          /*  try {
+                model.performEditTeam(returnAllEmployees(), returnEmployeesToDelete(), getTeam(), team);
+            } catch (RateException e) {}*/
 
-           }
+
+            saveTeamOperation(returnAllEmployees(), returnEmployeesToDelete(), getTeam(), team);
 
         });
 
     }
-
-  /*  private Employee getTeam(TeamConfiguration editedConfiguration) {
-        Country country = countryCB.getSelectedItem();
-        Currency currency = Currency.valueOf(this.currencyCB.getSelectedItem());
-        Team team = getSelectedTeam();
-        String name = this.nameInput.getText();
-        EmployeeType employeeType = overOrResourceCB.getSelectedItem();
-        Team editedTeam = new Team(name, country, team, employeeType, currency);
-        editedEmployee.setConfigurations(employee.getConfigurations());
-        editedEmployee.setActiveConfiguration(editedConfiguration);
-        editedEmployee.setId(employee.getId());
-        return editedEmployee;
-    }*/
-
-    //TODO call the method that changes the style off the employee container to default
-  /*  private void saveEdit() {
-        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (EmployeeValidation.areNamesValid(nameInput, countryCB, teamCB) &&
-                    EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
-                    EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
-                    EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB)
-                    && EmployeeValidation.validateAditionalMultipliers(markup, grossMargin)) {
-                Configuration editedConfiguration = getConfiguration();
-                Employee editedEmployee = getEmployee(editedConfiguration);
-                if (model.isEditOperationPerformed(employee, editedEmployee)) {
-                     spinnerLayer.setDisable(false);
-                     spinnerLayer.setVisible(true);
-                    initializeService(employee,editedEmployee);
-                } else {
-                    WindowsManagement.closeStackPane(this.firstLayout);
-                }
+    private void saveTeamOperation(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) {
+        saveTeam = new Service<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        model.performEditTeam(employees, employeesToDelete, editedTeam, originalTeam);
+                        return null;
+                    }
+                };
             }
+        };
+
+        saveTeam.setOnSucceeded(event -> {
+            System.out.println("success");
+           teamsPageController.clearTeams();
+           teamsPageController.displayTeams();
+
+
+            //showOperationStatus("Operation Successful!", Duration.seconds(2));
+            WindowsManagement.closeStackPane(firstLayout);
+           // closeWindowSpinner(firstLayout);
+
         });
-    }*/
 
+        saveTeam.setOnFailed(event -> {
 
-    /**
-     * create the employee object with the edited values
-     */
-   /* private Employee getEmployee(Configuration editedConfiguration) {
-        Country country = countryCB.getSelectedItem();
-        Currency currency = Currency.valueOf(this.currencyCB.getSelectedItem());
-        Team team = getSelectedTeam();
-        String name = this.nameInput.getText();
-        EmployeeType employeeType = overOrResourceCB.getSelectedItem();
-        Employee editedEmployee = new Employee(name, country, team, employeeType, currency);
-        editedEmployee.setConfigurations(employee.getConfigurations());
-        editedEmployee.setActiveConfiguration(editedConfiguration);
-        editedEmployee.setId(employee.getId());
-        return editedEmployee;
-    }*/
-
-
-    /**
-     * create the Configuration object from the inputs fields
-     */
-   /* private Configuration getConfiguration() {
-        BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText()));
-        BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText()));
-        BigDecimal overheadMultiplier = new BigDecimal(convertToDecimalPoint(multiplierTF.getText()));
-        BigDecimal utilizationPercentage = new BigDecimal(convertToDecimalPoint(utilPercentageTF.getText()));
-       BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText()));
-        double markupValue = 0;
-        double grossMarginValue = 0;
-        if (!isTextFieldEmpty(markup)) {
-            markupValue = Double.parseDouble(convertToDecimalPoint(this.markup.getText()));
+            //showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
+            WindowsManagement.closeStackPane(firstLayout);
+            //closeWindowSpinner(firstLayout);
+        });
+        saveTeam.restart();
+    }
+    public Team getTeam(){
+        String grossMarginString = grossMargin.getText();
+        double grossMargin = 0.0; // Default value if null or empty
+        if (grossMarginString != null && !grossMarginString.isEmpty()) {
+            grossMargin = Double.parseDouble(grossMarginString);
         }
-       if (!isTextFieldEmpty(grossMargin)) {
-           grossMarginValue = Double.parseDouble(convertToDecimalPoint(this.grossMargin.getText()));
-       }
-        return new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true, markupValue, grossMarginValue);
-    }*/
+
+        String markUpString = markUp.getText();
+        double markUp = 0.0; // Default value if null or empty
+        if (markUpString != null && !markUpString.isEmpty()) {
+            markUp = Double.parseDouble(markUpString);
+        }
+        Team editedTeam = new Team(team);
+        editedTeam.setGrossMarginTemporary(grossMargin);
+        editedTeam.setMarkupMultiplierTemporary(markUp);
+        return editedTeam;
+    }
+
+
+    public List<Employee> returnEmployeesToDelete(){
+        List<Employee> employeesToDeleteList = new ArrayList<Employee>();
+        for(TeamMembersController teamMembersToAdd : teamMembersToAddList) {
+            Employee employeesToDelete = teamMembersToAdd.membersToDelete();
+            if (employeesToDelete != null) {
+                employeesToDeleteList.add(employeesToDelete);
+            }
+        }
+        return employeesToDeleteList;
+
+    }
+    public List<Employee> returnAllEmployees(){
+        List<Employee> editedEmployeesList = new ArrayList<Employee>();
+        for(EmployeesToAdd employeesToAdd : employeesToAddList){
+            Employee editedEmployee = employeesToAdd.getEditedEmployee(team);
+            if(editedEmployee != null){
+                editedEmployeesList.add(editedEmployee);
+            }
+
+        }
+        List<Employee> editedTeamMembersList = new ArrayList<Employee>();
+        for(TeamMembersController teamMembersToAdd : teamMembersToAddList){
+            Employee editedTeamMember = teamMembersToAdd.getEditedTeamMember(team);
+            if(editedTeamMember != null){
+                editedTeamMembersList.add(editedTeamMember);
+            }
+
+        }
+        List<Employee> employeesList = new ArrayList<Employee>();
+        employeesList.addAll(editedTeamMembersList);
+        employeesList.addAll(editedEmployeesList);
+        return employeesList;
+
+    }
+
+
 
     public void populateTextFields(){
         if (team != null && team.getActiveConfiguration() != null) {
