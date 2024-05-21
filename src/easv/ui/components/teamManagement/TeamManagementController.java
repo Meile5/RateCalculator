@@ -67,9 +67,9 @@ public class TeamManagementController implements Initializable {
         this.model = model;
         this.team = team;
         this.teamInfoController = teamInfoController;
-        this.employeesToAdd = employeesToAdd;
-        employeesToAddList = new ArrayList<EmployeesToAdd>();
-        teamMembersToAddList = new ArrayList<TeamMembersController>();
+       // this.employeesToAdd = employeesToAdd;
+        employeesToAddList = new ArrayList<>();
+        teamMembersToAddList = new ArrayList<>();
        teamsPageController = teamInfoController.getTeamsPageController();
         System.out.println(teamInfoController + "  teamInfoController");
 
@@ -99,15 +99,28 @@ public class TeamManagementController implements Initializable {
     /**
      * displays only team members for selected team
      */
+//    public void displayTeamMembers() {
+//        teamMembersContainer.getChildren().clear();
+//        System.out.println(this + " team management Controller at the time of the teamMembersControllers initialization ");
+//
+//        System.out.println( teamMembersToAddList.size() + "size off the list that holds the team members");
+//        for (Employee employee : team.getTeamMembers()) {
+//            TeamMembersController teamMembersController = new TeamMembersController(employee, team, model, this);
+//            teamMembersContainer.getChildren().add(teamMembersController.getRoot());
+//            teamMembersToAddList.add(teamMembersController);
+//            System.out.println( teamMembersToAddList.size() + "size off the list that holds the team members after ");
+//            System.out.println( teamMembersController + "team members controller ");
+//        }
+//    }
+
     public void displayTeamMembers() {
         teamMembersContainer.getChildren().clear();
-        System.out.println(this + " team management Controller at the time of the teamMembersControllers initialization ");
+        teamMembersToAddList.clear(); // Clear the list before adding new members
+        System.out.println(team.getEmployees().size() + " from the team Page ");
         for (Employee employee : team.getTeamMembers()) {
-
             TeamMembersController teamMembersController = new TeamMembersController(employee, team, model, this);
             teamMembersContainer.getChildren().add(teamMembersController.getRoot());
             teamMembersToAddList.add(teamMembersController);
-            System.out.println( teamMembersController + "team members controller ");
         }
     }
 
@@ -116,33 +129,33 @@ public class TeamManagementController implements Initializable {
      */
     public void displayAllEmployees() {
         allEmployeesContainer.getChildren().clear();
+        employeesToAddList.clear();
         System.out.println(this + " team management Controller at the time of the EmployeesToAdd initialization ");
+        employeesToAddList.forEach(EmployeesToAdd::changeName);
         model.getAllEmployees()
                 .forEach(e -> {
                     EmployeesToAdd employeesToAdd = new EmployeesToAdd(e, model, this);
                     allEmployeesContainer.getChildren().add(employeesToAdd.getRoot());
                     employeesToAddList.add(employeesToAdd);
-                    System.out.println(employeesToAdd+"employees to add ontrollers");
+                    System.out.println(employeesToAdd+"employees to add controllers");
                 });
     }
-
 
     private void editAction() {
         saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
         {
+            System.out.println("on save");
             returnAllEmployees();
+            returnAllEmployees().forEach((e)->{System.out.println(e.getName() + " " + e.getId() +"" + " testing");});
             returnEmployeesToDelete();
             getTeam();
           /*  try {
                 model.performEditTeam(returnAllEmployees(), returnEmployeesToDelete(), getTeam(), team);
             } catch (RateException e) {}*/
-
-
             saveTeamOperation(returnAllEmployees(), returnEmployeesToDelete(), getTeam(), team);
-
+         //
 
         });
-
     }
 
     private void saveTeamOperation(List<Employee> employees, List<Employee> employeesToDelete, Team editedTeam, Team originalTeam) {
@@ -161,10 +174,8 @@ public class TeamManagementController implements Initializable {
 
         saveTeam.setOnSucceeded(event -> {
             System.out.println("success");
-            teamsPageController.clearTeams();
-            teamsPageController.displayTeams();
-
-
+          //  teamsPageController.clearTeams();
+            teamsPageController.displayNewTeams();
             //showOperationStatus("Operation Successful!", Duration.seconds(2));
             WindowsManagement.closeStackPane(firstLayout);
             // closeWindowSpinner(firstLayout);

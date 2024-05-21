@@ -41,7 +41,6 @@ public class TeamInfoController implements Initializable {
     @FXML
     private Label teamName, teamRegion, teamCountry, teamDailyRate, teamHourlyRate, teamDayCurrency, teamHourlyCurrency;
 
-
     public TeamInfoController(Team team , IModel model, TeamsPageController teamsPageController, StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamInfoComponent.fxml"));
         loader.setController(this);
@@ -49,7 +48,6 @@ public class TeamInfoController implements Initializable {
         this.model = model;
         this.teamsPageController = teamsPageController;
         this.firstLayout=firstLayout;
-        System.out.println(teamsPageController + " " + "temas Page controller");
         try {
             teamInfoComponent = loader.load();
         } catch (IOException e) {
@@ -83,7 +81,6 @@ public class TeamInfoController implements Initializable {
     }
     private void addEditAction() {
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println(this + "teamInfoController");
             TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this, employeesToAdd);
             firstLayout.getChildren().add(teamManagementController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
@@ -139,6 +136,9 @@ public class TeamInfoController implements Initializable {
     }
 
 
+
+
+    //TODO delete them
     public String getTeamName(){
         return this.team.getActiveConfiguration().getTeamDayRate()+" from the creation of the info controller";
     }
@@ -147,7 +147,5 @@ public class TeamInfoController implements Initializable {
     public TeamsPageController getTeamsPageController(){
         return this.teamsPageController;
     }
-
-
 
 }

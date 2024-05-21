@@ -1,5 +1,6 @@
 package easv.ui.pages.teamsPage;
 
+import easv.Utility.WindowsManagement;
 import easv.be.Team;
 import easv.be.TeamConfiguration;
 import easv.be.TeamConfigurationEmployee;
@@ -75,7 +76,7 @@ public class TeamsPageController implements Initializable {
 
     public void displayTeams() {
         teamsContainer.getChildren().clear();
-        List<HBox> teamInfoControllers = new ArrayList<>();
+        ObservableList<HBox> teamInfoControllers = FXCollections.observableArrayList();
             model.getOperationalTeams()
                 .forEach(t -> {
                 TeamInfoController teamInfoController = new TeamInfoController(t, model, this, firstLayout);
@@ -86,10 +87,14 @@ public class TeamsPageController implements Initializable {
     }
 
 
-//    public void displayNewTeams(){
-//        System.out.println("called from the new ");
-//
-//        List<HBox> teamInfoControllers = new ArrayList<>();
+    public void displayNewTeams(){
+        System.out.println("called from the new team seef;ndjknfd,lbf,mb'rtmbok ");
+        teamsContainer.getChildren().clear();
+        List<HBox> teamInfoControllers = new ArrayList<>();
+
+        Team team  = new Team(model.getTeamById(98));
+        TeamInfoController teamInfoController = new TeamInfoController(team,model,this,firstLayout);
+firstLayout.getChildren().add(teamInfoController.getRoot());
 //            model.getOperationalTeams()
 //                    .forEach(t -> {
 //                        if (t.getActiveConfiguration() != null) {
@@ -105,10 +110,10 @@ public class TeamsPageController implements Initializable {
 //                        }
 //
 //                    });
-//
-//            teamsContainer.getChildren().setAll(teamInfoControllers);
-//
-//    }
+
+            teamsContainer.getChildren().add(teamInfoController.getRoot());
+
+    }
 
 
 

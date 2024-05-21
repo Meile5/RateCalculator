@@ -88,7 +88,6 @@ public class TeamMembersController implements Initializable {
             if (!utilPercentageStr.isEmpty()) {
                 BigDecimal utilPercentage = new BigDecimal(utilPercentageStr);
                 editedEmployee.getUtilPerTeams().put(team.getId(), utilPercentage);
-
             }
             return editedEmployee;
         }
