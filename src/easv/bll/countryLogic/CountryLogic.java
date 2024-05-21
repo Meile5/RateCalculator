@@ -1,12 +1,14 @@
 package easv.bll.countryLogic;
 
 import easv.be.Country;
+import easv.be.Team;
 import easv.dal.countryDao.CountryDao;
 import easv.dal.countryDao.ICountryDao;
 import easv.exception.RateException;
+import javafx.collections.ObservableMap;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 
 public class CountryLogic implements ICountryLogic {
 
@@ -32,5 +34,70 @@ public class CountryLogic implements ICountryLogic {
         return countriesForMap;
     }
 
+    @Override
+    public Country addCountry(Country country, List<Team> teams, List<Team> newTeams) throws RateException {
+        int countryID = countryDao.addCountry(country, teams, newTeams);
+        if (countryID > 0) {
+            country.setId(countryID);
+            country.setTeams(teams);
+        }
+        return country;
+    }
+
+    @Override
+    public Country updateCountry(Country country, List<Team> currentTeams, List<Team> newTeams) throws RateException {
+        List<Team> teamsBeforeUpdate = country.getTeams();
+
+        Set<Team> existingSet = new HashSet<>(teamsBeforeUpdate);
+        Set<Team> newSet = new HashSet<>(currentTeams);
+
+        Set<Team> addedTeams = new HashSet<>(newSet);
+        addedTeams.removeAll(existingSet);
+
+        Set<Team> removedTeams = new HashSet<>(existingSet);
+        removedTeams.removeAll(newSet);
+
+        countryDao.updateCountry(country, addedTeams.stream().toList(), removedTeams.stream().toList(), newTeams);
+        country.setTeams(currentTeams);
+        return country;
+    }
+
+    @Override
+    public boolean deleteCountry(Country country) throws RateException {
+        return countryDao.deleteCountry(country);
+    }
+
+    @Override
+    public List<Team> checkNewTeams(List<Team> teamsToCheck, Map<Integer, Team> teams){
+        List<Team> newTeams = new ArrayList<>();
+        for (Team team : teamsToCheck) {
+            if (team != null && !teams.containsValue(team)) {
+                newTeams.add(team);
+            }
+        }
+        return newTeams;
+    }
+
+    @Override
+    public List<Team> checkExistingTeams(List<Team> teamsToCheck, ObservableMap<Integer, Team> teams) {
+        List<Team> existingTeams = new ArrayList<>();
+        for (Team team : teamsToCheck) {
+            if (teams.containsValue(team)) {
+                existingTeams.add(team);
+            }
+        }
+        return existingTeams;
+    }
+
+    @Override
+    public boolean addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException {
+        List<Integer> teamsIds = countryDao.addTeams(newTeams, null);
+        if (!teamsIds.isEmpty()) {
+            countryDao.addNewTeamsToCountry(teamsIds, country.getId(), null);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

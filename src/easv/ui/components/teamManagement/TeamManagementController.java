@@ -60,20 +60,20 @@ public class TeamManagementController implements Initializable {
     private Service<Void> saveTeam;
 
 
-
-
-    public TeamManagementController(Team team , IModel model, StackPane firstLayout, TeamInfoController teamInfoController, EmployeesToAdd employeesToAdd, TeamsPageController teamsPageController) {
+    public TeamManagementController(Team team, IModel model, StackPane firstLayout, TeamInfoController teamInfoController, EmployeesToAdd employeesToAdd) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamManagementComponent.fxml"));
         loader.setController(this);
         this.firstLayout = firstLayout;
         this.model = model;
         this.team = team;
         this.teamInfoController = teamInfoController;
-        this.employeesToAdd = employeesToAdd;
-        employeesToAddList = new ArrayList<EmployeesToAdd>();
-        teamMembersToAddList = new ArrayList<TeamMembersController>();
-        this.teamsPageController = teamsPageController;
-       // teamsPageController = new TeamsPageController(model, firstLayout); //?
+       // this.employeesToAdd = employeesToAdd;
+        employeesToAddList = new ArrayList<>();
+        teamMembersToAddList = new ArrayList<>();
+       teamsPageController = teamInfoController.getTeamsPageController();
+        System.out.println(teamInfoController + "  teamInfoController");
+
+       // teamsPageController = new TeamsPageController(model, firstLayout);
 
         try {
             teamManagementComponent = loader.load();
@@ -86,6 +86,7 @@ public class TeamManagementController implements Initializable {
     public GridPane getRoot() {
         return teamManagementComponent;
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         displayTeamMembers();
@@ -94,44 +95,70 @@ public class TeamManagementController implements Initializable {
         addCloseButtonAction();
         Platform.runLater(this::editAction);
     }
-   /** displays only team members for selected team*/
+
+    /**
+     * displays only team members for selected team
+     */
+//    public void displayTeamMembers() {
+//        teamMembersContainer.getChildren().clear();
+//        System.out.println(this + " team management Controller at the time of the teamMembersControllers initialization ");
+//
+//        System.out.println( teamMembersToAddList.size() + "size off the list that holds the team members");
+//        for (Employee employee : team.getTeamMembers()) {
+//            TeamMembersController teamMembersController = new TeamMembersController(employee, team, model, this);
+//            teamMembersContainer.getChildren().add(teamMembersController.getRoot());
+//            teamMembersToAddList.add(teamMembersController);
+//            System.out.println( teamMembersToAddList.size() + "size off the list that holds the team members after ");
+//            System.out.println( teamMembersController + "team members controller ");
+//        }
+//    }
+
     public void displayTeamMembers() {
         teamMembersContainer.getChildren().clear();
+        teamMembersToAddList.clear(); // Clear the list before adding new members
+        System.out.println(team.getEmployees().size() + " from the team Page ");
         for (Employee employee : team.getTeamMembers()) {
             TeamMembersController teamMembersController = new TeamMembersController(employee, team, model, this);
             teamMembersContainer.getChildren().add(teamMembersController.getRoot());
             teamMembersToAddList.add(teamMembersController);
         }
     }
-    /** displays all employees in the system  with their left util*/
+
+    /**
+     * displays all employees in the system  with their left util
+     */
     public void displayAllEmployees() {
         allEmployeesContainer.getChildren().clear();
+        employeesToAddList.clear();
+        System.out.println(this + " team management Controller at the time of the EmployeesToAdd initialization ");
+        employeesToAddList.forEach(EmployeesToAdd::changeName);
         model.getAllEmployees()
                 .forEach(e -> {
-                    EmployeesToAdd employeesToAdd = new EmployeesToAdd( e, model, this);
+                    EmployeesToAdd employeesToAdd = new EmployeesToAdd(e, model, this);
                     allEmployeesContainer.getChildren().add(employeesToAdd.getRoot());
                     employeesToAddList.add(employeesToAdd);
-
+                    System.out.println(employeesToAdd+"employees to add controllers");
                 });
     }
 
     private void editAction() {
         saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
         {
+            System.out.println("on save");
             returnAllEmployees();
-           returnEmployeesToDelete();
-           getTeam();
+            returnAllEmployees().forEach((e)->{System.out.println(e.getName() + " " + e.getId() +"" + " testing");});
+            returnEmployeesToDelete();
+            getTeam();
           /*  try {
                 model.performEditTeam(returnAllEmployees(), returnEmployeesToDelete(), getTeam(), team);
             } catch (RateException e) {}*/
-
-
             saveTeamOperation(returnAllEmployees(), returnEmployeesToDelete(), getTeam(), team);
+         //
 
         });
-
     }
-    private void saveTeamOperation(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) {
+
+    private void saveTeamOperation(List<Employee> employees, List<Employee> employeesToDelete, Team editedTeam, Team originalTeam) {
         saveTeam = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
@@ -148,24 +175,23 @@ public class TeamManagementController implements Initializable {
         saveTeam.setOnSucceeded(event -> {
             System.out.println("success");
            teamsPageController.clearTeams();
-           teamsPageController.displayTeams();
-
-
+            teamsPageController.displayTeams();
             //showOperationStatus("Operation Successful!", Duration.seconds(2));
             WindowsManagement.closeStackPane(firstLayout);
-           // closeWindowSpinner(firstLayout);
+            // closeWindowSpinner(firstLayout);
 
         });
 
         saveTeam.setOnFailed(event -> {
-
+            saveTeam.getException().printStackTrace();
             //showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
             WindowsManagement.closeStackPane(firstLayout);
             //closeWindowSpinner(firstLayout);
         });
         saveTeam.restart();
     }
-    public Team getTeam(){
+
+    public Team getTeam() {
         String grossMarginString = grossMargin.getText();
         double grossMargin = 0.0; // Default value if null or empty
         if (grossMarginString != null && !grossMarginString.isEmpty()) {
@@ -184,30 +210,30 @@ public class TeamManagementController implements Initializable {
     }
 
 
-    public List<Employee> returnEmployeesToDelete(){
+    public List<Employee> returnEmployeesToDelete() {
         List<Employee> employeesToDeleteList = new ArrayList<Employee>();
-        for(TeamMembersController teamMembersToAdd : teamMembersToAddList) {
+        for (TeamMembersController teamMembersToAdd : teamMembersToAddList) {
             Employee employeesToDelete = teamMembersToAdd.membersToDelete();
             if (employeesToDelete != null) {
                 employeesToDeleteList.add(employeesToDelete);
             }
         }
+        System.out.println(employeesToDeleteList + "employeesToDelete");
         return employeesToDeleteList;
-
     }
-    public List<Employee> returnAllEmployees(){
+
+    public List<Employee> returnAllEmployees() {
         List<Employee> editedEmployeesList = new ArrayList<Employee>();
-        for(EmployeesToAdd employeesToAdd : employeesToAddList){
+        for (EmployeesToAdd employeesToAdd : employeesToAddList) {
             Employee editedEmployee = employeesToAdd.getEditedEmployee(team);
-            if(editedEmployee != null){
+            if (editedEmployee != null) {
                 editedEmployeesList.add(editedEmployee);
             }
-
         }
         List<Employee> editedTeamMembersList = new ArrayList<Employee>();
-        for(TeamMembersController teamMembersToAdd : teamMembersToAddList){
+        for (TeamMembersController teamMembersToAdd : teamMembersToAddList) {
             Employee editedTeamMember = teamMembersToAdd.getEditedTeamMember(team);
-            if(editedTeamMember != null){
+            if (editedTeamMember != null) {
                 editedTeamMembersList.add(editedTeamMember);
             }
 
@@ -220,8 +246,7 @@ public class TeamManagementController implements Initializable {
     }
 
 
-
-    public void populateTextFields(){
+    public void populateTextFields() {
         if (team != null && team.getActiveConfiguration() != null) {
             double margin = team.getActiveConfiguration().getGrossMargin();
             grossMargin.setText(String.valueOf(margin));  /* Convert double to String*/
@@ -229,16 +254,19 @@ public class TeamManagementController implements Initializable {
             markUp.setText(String.valueOf(markup));  /* Convert double to String*/
 
         } else {
-            grossMargin.setText("N/A");
-            markUp.setText("N/A");
+            grossMargin.setText("0");
+            markUp.setText("0");
         }
     }
 
-    /** closes manage popup*/
+    /**
+     * closes manage popup
+     */
     private void addCloseButtonAction() {
         closeButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
         {
-            WindowsManagement.closeStackPane(firstLayout);});
+            WindowsManagement.closeStackPane(firstLayout);
+        });
 
     }
 

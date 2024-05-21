@@ -8,6 +8,7 @@ import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.pages.geographyManagementPage.countryComponents.CountryComponent;
 import easv.ui.pages.geographyManagementPage.countryComponents.DeleteCountryController;
+import easv.ui.pages.geographyManagementPage.countryComponents.ManageCountryController;
 import easv.ui.pages.geographyManagementPage.regionComponents.DeleteRegionController;
 import easv.ui.pages.geographyManagementPage.regionComponents.ManageRegionController;
 import easv.ui.pages.geographyManagementPage.regionComponents.RegionComponent;
@@ -68,8 +69,9 @@ public class GeographyManagementController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initializeRegionsLoadingService();
+        initializeGeographyLoadingService();
         addRegionButtonListener();
+        addCountryButtonListener();
 
     }
 
@@ -81,15 +83,22 @@ public class GeographyManagementController implements Initializable {
         });
     }
 
-    private void initializeRegionsLoadingService() {
+    private void addCountryButtonListener() {
+        addCountryBTN.setOnAction(event -> {
+            ManageCountryController manageCountryController = new ManageCountryController(model, pane, secondPane, null, this);
+            this.pane.getChildren().add(manageCountryController.getRoot());
+            WindowsManagement.showStackPane(pane);
+        });
+    }
+
+    private void initializeGeographyLoadingService() {
         enableProgressBar();
         loadRegionsAndCountriesFromDB = new Service<>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<>() {
                     @Override
-                    protected Void call() throws Exception {
-                        Thread.sleep(1000);
+                    protected Void call() {
                         regions = FXCollections.observableArrayList(model.getOperationalRegions());
                         countries = FXCollections.observableArrayList(model.getOperationalCountries());
                         teams = FXCollections.observableArrayList(model.getOperationalTeams());
@@ -118,11 +127,7 @@ public class GeographyManagementController implements Initializable {
 
     private void displayCountries() {
         countriesVBox.getChildren().clear();
-        countries.forEach(c -> {
-            DeleteCountryController deleteCountryController = new DeleteCountryController(pane, model, c);
-            CountryComponent countryComponent = new CountryComponent(model, pane, c, deleteCountryController);
-            countriesVBox.getChildren().add(countryComponent.getRoot());
-        });
+        countries.forEach(this::addCountryComponent);
     }
 
     private void displayRegions() {
@@ -131,19 +136,15 @@ public class GeographyManagementController implements Initializable {
     }
 
     public void addRegionComponent(Region region){
-        DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region);
+        DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region, this);
         RegionComponent regionComponent = new RegionComponent(model, pane, region, deleteRegionController, this);
         regionsVBox.getChildren().add(regionComponent.getRoot());
         if(!regions.contains(region))
             regions.add(region);
     }
 
-    //TODO: ON UPDATE, ADD AND REMOVE COMPONENT ! - NELSON
-
-    private void removeRegionComponent(Region region){
-//        DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region);
-//        RegionComponent regionComponent = new RegionComponent(model, pane, region, deleteRegionController, this);
-//        regionsVBox.getChildren().add(regionComponent.getRoot());
+    public void updateRegionComponents(){
+        initializeGeographyLoadingService();
     }
 
     private void enableProgressBar(){
@@ -180,5 +181,17 @@ public class GeographyManagementController implements Initializable {
         PauseTransition delay = new PauseTransition(duration);
         delay.setOnFinished(event -> operationStatusLB.setText(""));
         delay.play();
+    }
+
+    public void addCountryComponent(Country country) {
+        DeleteCountryController deleteCountryController = new DeleteCountryController(pane, model, country, this);
+        CountryComponent countryComponent = new CountryComponent(model, pane, country, deleteCountryController, this);
+        countriesVBox.getChildren().add(countryComponent.getRoot());
+        if(!countries.contains(country))
+            countries.add(country);
+    }
+
+    public void updateCountryComponents() {
+        initializeGeographyLoadingService();
     }
 }

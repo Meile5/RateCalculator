@@ -43,4 +43,9 @@ public class RegionManager implements IRegionManager{
         region.setCountries(countries);
         return region;
     }
+
+    @Override
+    public boolean deleteRegion(Region region) throws RateException {
+        return regionDAO.deleteRegion(region);
+    }
 }

@@ -41,7 +41,6 @@ public class TeamInfoController implements Initializable {
     @FXML
     private Label teamName, teamRegion, teamCountry, teamDailyRate, teamHourlyRate, teamDayCurrency, teamHourlyCurrency;
 
-
     public TeamInfoController(Team team , IModel model, TeamsPageController teamsPageController, StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamInfoComponent.fxml"));
         loader.setController(this);
@@ -137,5 +136,16 @@ public class TeamInfoController implements Initializable {
     }
 
 
+
+
+    //TODO delete them
+    public String getTeamName(){
+        return this.team.getActiveConfiguration().getTeamDayRate()+" from the creation of the info controller";
+    }
+
+
+    public TeamsPageController getTeamsPageController(){
+        return this.teamsPageController;
+    }
 
 }

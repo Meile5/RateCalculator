@@ -42,6 +42,17 @@ public class Team {
         this.id = id;
     }
 
+    public Team(String teamName, Currency currency) {
+        this.teamName = teamName;
+        this.currency = currency;
+    }
+
+    public Team(String teamName, int id, Currency currency) {
+        this.teamName = teamName;
+        this.id = id;
+        this.currency = currency;
+    }
+
     public Team(String teamName, int id, BigDecimal utilizationPercentage) {
         this.teamName = teamName;
         this.id = id;
@@ -162,9 +173,8 @@ public class Team {
     }
 
     public Employee getTeamMember(int Id) {
-
-        for(Employee employee: getEmployees()){
-            if(employee.getId() == Id){
+        for(Employee employee: teamMembers){
+            if(employee.getId() == id){
                 return employee;
             }
         }
