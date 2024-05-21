@@ -85,7 +85,11 @@ public class CountryDao implements ICountryDao {
         return countryID;
     }
 
-    private void addNewTeamsToCountry(List<Integer> newTeamsIds, Integer countryID, Connection conn) throws RateException {
+    @Override
+    public void addNewTeamsToCountry(List<Integer> newTeamsIds, Integer countryID, Connection conn) throws RateException {
+        if (conn == null) {
+            conn = connectionManager.getConnection();
+        }
         String sql = "INSERT INTO CountryTeam (CountryID, TeamID) VALUES (?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             for (Integer teamID : newTeamsIds) {
@@ -114,11 +118,15 @@ public class CountryDao implements ICountryDao {
 
     @Override
     public List<Integer> addTeams(List<Team> teams, Connection conn) throws RateException, SQLException {
+        if (conn == null) {
+            conn = connectionManager.getConnection();
+        }
         List<Integer> teamIds = new ArrayList<>();
-        String sql = "INSERT INTO Teams (TeamName) VALUES (?)";
+        String sql = "INSERT INTO Teams (TeamName, TeamCurrency) VALUES (?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             for (Team team : teams) {
                 psmt.setString(1, team.getTeamName());
+                psmt.setString(2, team.getCurrency().name());
                 psmt.executeUpdate();
                 try (ResultSet res = psmt.getGeneratedKeys()) {
                     if (res.next()) {

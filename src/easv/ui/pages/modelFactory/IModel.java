@@ -243,4 +243,5 @@ public interface IModel {
 
     void deleteCountry(Country country) throws RateException;
 
+    void addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException;
 }

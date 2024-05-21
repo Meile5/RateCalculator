@@ -14,6 +14,8 @@ public interface ICountryDao {
 
     Integer addCountry(Country country, List<Team> teams, List<Team> newTeams) throws RateException;
 
+    void addNewTeamsToCountry(List<Integer> newTeamsIds, Integer countryID, Connection conn) throws RateException;
+
     void addTeamToCountry(Integer countryID, List<Team> teams, Connection conn) throws SQLException;
 
     List<Integer> addTeams(List<Team> teams, Connection conn) throws RateException, SQLException;

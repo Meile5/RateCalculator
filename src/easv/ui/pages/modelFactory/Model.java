@@ -861,8 +861,8 @@ public class Model implements IModel {
         List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
         List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
         country = countryLogic.addCountry(country, existingTeams, newTeams);
-            countriesWithTeams.put(country.getId(), country);
-            countries.put(country.getCountryName(), country);
+        countriesWithTeams.put(country.getId(), country);
+        countries.put(country.getCountryName(), country);
     }
 
     @Override
@@ -880,6 +880,16 @@ public class Model implements IModel {
         if (succeeded) {
             countriesWithTeams.remove(country.getId());
             countries.remove(country.getCountryName());
+        }
+    }
+
+    @Override
+    public void addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException {
+        boolean isSucceed = countryLogic.addNewTeams(country, newTeams);
+        if(isSucceed){
+            for (Team team : newTeams){
+                countriesWithTeams.get(country.getId()).addNewTeam(team);
+            }
         }
     }
 
