@@ -82,7 +82,7 @@ public class TeamInfoController implements Initializable {
     }
     private void addEditAction() {
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this, employeesToAdd);
+            TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this, employeesToAdd, teamsPageController);
             firstLayout.getChildren().add(teamManagementController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
         });

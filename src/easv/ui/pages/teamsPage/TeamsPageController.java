@@ -82,15 +82,6 @@ public class TeamsPageController implements Initializable {
 
 
                 .forEach(t -> {
-                if (t.getActiveConfiguration() != null) {
-                    System.out.println("----------------");
-                    System.out.println(t.getActiveConfiguration().getTeamDayRate() + t.getTeamName()
-
-
-                    );
-                    t.setTeamName(" team name" + t.getTeamName());
-                    System.out.println("------------");
-                }
 
                 TeamInfoController teamInfoController = new TeamInfoController(t, model, this, firstLayout);
                 //teamsContainer.getChildren().add(teamInfoController.getRoot());
