@@ -3,6 +3,7 @@ package easv.ui.pages.distribution;
 import easv.be.Team;
 import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributionFromComponentInterface;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
+import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToInterface;
 import javafx.scene.Parent;
 
 import java.util.ArrayList;
@@ -21,7 +22,8 @@ public class ControllerMediator {
     private DistributionFromComponentInterface selectedTeamToDistributeFromController;
 
 
-    private final Map<Integer, DistributeToController> distributeToControllers;
+    //TODO if time replace with the interface
+    private final Map<Integer, DistributeToInterface> distributeToControllers;
 
     public ControllerMediator() {
         distributeToControllers = new HashMap<>();
@@ -46,7 +48,6 @@ public class ControllerMediator {
 
     public void addSelectedTeamToDistributeFromController(DistributionFromComponentInterface selectedTeamToDistributeFromController){
         this.selectedTeamToDistributeFromController=selectedTeamToDistributeFromController;
-
     }
 
     /**
@@ -59,7 +60,7 @@ public class ControllerMediator {
     /**
      * save added controllers in order to change their style
      */
-    public void addDistributeToController(DistributeToController selectedTeamToDistributeTo, int teamId) {
+    public void addDistributeToController(DistributeToInterface selectedTeamToDistributeTo, int teamId) {
         distributeToControllers.put(teamId, selectedTeamToDistributeTo);
     }
 
@@ -75,7 +76,7 @@ public class ControllerMediator {
      * change the component style when the user entered invalid values
      */
     public void changeComponentStyleToError(Integer teamId) {
-        DistributeToController distributeToController = distributeToControllers.get(teamId);
+        DistributeToInterface distributeToController = distributeToControllers.get(teamId);
         if (distributeToController != null) {
             distributeToController.changeStyleToError();
         }
@@ -87,7 +88,7 @@ public class ControllerMediator {
      * update the  selected components to distribute overhead, after the save operation was performed
      */
     public void updateComponentOverheadValues(int teamId, double dayOverhead, double hourOverhead) {
-        DistributeToController distributeToController = distributeToControllers.get(teamId);
+        DistributeToInterface distributeToController = distributeToControllers.get(teamId);
         if (distributeToController != null) {
             distributeToController.setDayRate(dayOverhead + "");
             distributeToController.setHourlyRate(hourOverhead + "");

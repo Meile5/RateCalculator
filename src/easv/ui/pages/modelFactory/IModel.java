@@ -62,6 +62,14 @@ public interface IModel {
      */
     void setSelectedCountry(String selectedCountry);
 
+
+    /**EDIT EMPLOYEE  RELATED LOGIC*/
+
+    /**
+     * check if edit operation was performed
+     */
+    boolean isEditOperationPerformed(Employee originalEmployee, Employee editedEmployee);
+
     /**
      * save the updated employee to the database
      */
@@ -77,11 +85,6 @@ public interface IModel {
     void filterByRegion(Region region, List<Country> countries);
 
 
-    /**
-     * check if edit operation was performed
-     */
-    boolean isEditOperationPerformed(Employee originalEmployee, Employee editedEmployee);
-
     void performEmployeeSearchUndoOperation();
 
 
@@ -96,9 +99,13 @@ public interface IModel {
 
     BigDecimal getComputedDayRate(Employee employee);
 
+
+    //FILTERS RELATED LOGIC
+
+
     void teamFilterActiveRevert() throws RateException;
 
-    void returnEmployeesByRegion();
+    void returnEmployeesByRegion(Region region );
 
     Employee getEmployeeById(int id);
 
@@ -116,23 +123,30 @@ public interface IModel {
     /**
      * undo the team filter operation to display the country active filter
      */
-    void returnEmployeesByCountry();
+    void returnEmployeesByCountry(Country country);
+
+    /**
+     * calculate selected teams from filter day rate
+     */
+    BigDecimal calculateGroupDayRate();
+
+
+    /**
+     * calculate selected teams from filter hour rate
+     */
+    BigDecimal calculateGroupHourRate();
 
 
     /**OVERHEAD DISTRIBUTION RELATED LOGIC*/
 
-    /**
-     * calculate team  regions overhead
-     */
-    List<OverheadComputationPair<String, BigDecimal>> teamRegionsOverhead(int teamId);
 
     /**
      * add the team and the percentage that user chose to distribute
      *
-     * @param team            the   team that will receive overhead
+     * @param team               the   team that will receive overhead
      * @param overheadPercentage the overhead percentage received by the team
      */
-    void addDistributionPercentageTeam(Team team , String overheadPercentage);
+    void addDistributionPercentageTeam(Team team, String overheadPercentage);
 
     /**
      * remove the team and the inserted overhead percentage from the map
@@ -147,6 +161,7 @@ public interface IModel {
      */
 
     void setDistributeFromTeam(Team selectedTeamToDistributeFrom);
+
     Team getSelectedTeamToDistributeFrom();
 
 
@@ -165,24 +180,59 @@ public interface IModel {
      */
     void setDistributionPercentageTeam(Team selectedTeam, String newValue);
 
-    /** calculate total overhead inserted in order to update the displayed value*/
+    /**
+     * calculate total overhead inserted in order to update the displayed value
+     */
     double calculateTeTotalOverheadInserted();
 
 
-    /**get the team name based on the  team id , is used in order to display the error message in distribution page */
-    String  getTeamName(int teamId);
+    /**
+     * get the team name based on the  team id , is used in order to display the error message in distribution page
+     */
+    String getTeamName(int teamId);
 
     Map<OverheadHistory, List<Team>> performSimulation();
+
     void addNewRegion(Region region, List<Country> countries) throws RateException;
 
     void updateRegion(Region region, List<Country> countries) throws RateException;
 
-    /**check if the team is already selected to distribute*/
+    /**
+     * check if the team is already selected to distribute
+     */
     boolean isTeamSelectedToDistribute(Integer teamId);
 
-    /**save the  distribution operation*/
-    boolean saveDistribution() throws RateException;
+    /**
+     * save the  distribution operation
+     */
+    Map<OverheadHistory, List<Team>> saveDistribution() throws RateException;
+
+    /**
+     * initialize the distribution entities , when user enter on the page
+     */
+    void initializeDistributionEntities();
+
+    /**
+     * set  that the simulation was performed
+     */
+    void setSimulationPerformed(boolean simulationPerformed);
+
+
+    /**
+     * TEAM MANAGEMENT LOGIC
+     */
     List<Employee> getAllEmployees();
 
     void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException;
+
+
+    /**get unsuported countries */
+    ObservableList<Country> getUnsoportedCountries();
+
+
+    /**perform the search operation for teams and return the results*/
+    ObservableList<Team> getTeamsFilterResults(String filter);
+
+    /**return the selected team from the search operation results*/
+    Team getTeamById(int entityId);
 }

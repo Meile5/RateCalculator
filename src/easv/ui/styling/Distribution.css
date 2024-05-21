@@ -1,3 +1,8 @@
+
+.distributioParent{
+    -fx-background-color: #F9F9F9;
+}
+
 /*style the list view  that display the teams  to distribute to */
 .teamsListView {
     -fx-background-color: #d1d0d0;
@@ -18,7 +23,6 @@
     -fx-min-width: 250;
     -fx-background-radius: 20;
 }
-
 
 /*style the scrollPane that is holding the teams*/
 .teamsScrollPane {

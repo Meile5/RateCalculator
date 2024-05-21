@@ -79,6 +79,34 @@ public class EmployeeValidation {
         return isValid;
     }
 
+
+    /**
+     * validate the user inputs for the add operation
+     */
+    public static boolean arePercentagesValid(MFXTextField overheadMultiplier) {
+        boolean isValid = true;
+
+        String overheadMultiplierText = overheadMultiplier.getText();
+        if (overheadMultiplierText.isEmpty()) {
+            overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            System.out.println("HERE");
+            ExceptionHandler.errorAlertMessage("The Overhead Multiplier % field cannot be empty.");
+            return false;
+        } else if (!overheadMultiplierText.matches(validPercentagePattern)) {
+            overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("The Overhead Multiplier % should be a number.");
+            return false;
+        } else{
+            BigDecimal multiplierValue = new BigDecimal(convertToDecimalPoint(overheadMultiplierText));
+            if (multiplierValue.compareTo(BigDecimal.ZERO) < 0 || multiplierValue.compareTo(new BigDecimal("100")) > 0) {
+                overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                ExceptionHandler.errorAlertMessage("The Overhead Multiplier % should be between 0 and 100.");
+                return false;
+            }
+        }
+        return isValid;
+    }
+
     public static boolean isPercentageValid(MFXTextField percentageField) {
         boolean isValid = true;
 
@@ -170,8 +198,8 @@ public class EmployeeValidation {
             ExceptionHandler.errorAlertMessage("The Daily Working Hours should be a number.");
             return false;
         } else {
-            int numberToCheck = Integer.parseInt(convertToDecimalPoint(dailyHours));
-            if (numberToCheck < 0) {
+            double numberToCheck = Double.parseDouble(convertToDecimalPoint(dailyHours));
+            if (numberToCheck < 0 || numberToCheck >=24 ) {
                 dailyWorkingHours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                 ExceptionHandler.errorAlertMessage("The Daily Working Hours should be equal or greater than 0.");
                 return false;
@@ -194,6 +222,20 @@ public class EmployeeValidation {
         }
         return isValid;
     }
+
+
+    public static boolean areNamesValid(MFXTextField name) {
+        boolean isValid = true;
+
+        if (name.getText().isEmpty()) {
+            name.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+            ExceptionHandler.errorAlertMessage("Name field cannot be empty.");
+            return false;
+        }
+        return isValid;
+    }
+
+
 
     public static boolean isItemSelected(MFXComboBox currency, MFXComboBox overOrResource) {
         boolean isValid = true;
@@ -327,7 +369,6 @@ public class EmployeeValidation {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
         percentageDisplayer.textProperty().addListener(((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((event) -> {
-
                 try {
                     if (!newValue.matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
                         percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
@@ -376,11 +417,19 @@ public class EmployeeValidation {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
         normalDigitInputs.textProperty().addListener((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((event -> {
-                double value = parseMultiplierToNumber(newValue, Locale.GERMANY);
-                if (Double.isNaN(value)) {
-                    value = parseMultiplierToNumber(newValue, Locale.US);
+                Double value = null;
+                try {
+                    String convertToDecimalPoint = convertToDecimalPoint(newValue);
+                    value =Double.parseDouble(convertToDecimalPoint);
+                }catch (NumberFormatException e){
+                    normalDigitInputs.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
+                    return;
                 }
-                boolean isValueValid = !Double.isNaN(value) && value > 0;
+                double valueConverted = parseMultiplierToNumber(newValue, Locale.GERMANY);
+                if (Double.isNaN(valueConverted)) {
+                    valueConverted = parseMultiplierToNumber(newValue, Locale.US);
+                }
+                boolean isValueValid = !Double.isNaN(valueConverted) && valueConverted > 0;
                 normalDigitInputs.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValueValid);
             }));
             pauseTransition.playFromStart();
@@ -392,6 +441,7 @@ public class EmployeeValidation {
      * convert the format of the input strings to  accept US and Europe values
      */
     private static double parseMultiplierToNumber(String numberStr, Locale locale) {
+
         DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(locale);
         DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
         if (locale.equals(Locale.GERMANY)) {

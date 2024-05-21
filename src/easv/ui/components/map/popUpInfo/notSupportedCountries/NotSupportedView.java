@@ -1,13 +1,14 @@
-package easv.ui.components.map.popUpInfo;
+package easv.ui.components.map.popUpInfo.notSupportedCountries;
 
 import easv.Utility.WindowsManagement;
+import easv.be.Country;
 import easv.be.Team;
-import easv.be.TeamWithEmployees;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
 import easv.ui.components.map.popUpInfo.teamComponent.TeamComponentController;
 import easv.ui.pages.modelFactory.IModel;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -19,32 +20,35 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class CountryInfoContainer implements Initializable {
+public class NotSupportedView implements Initializable {
+   @FXML
+    private MFXComboBox<Country> countriesInput;
+
     @FXML
-    private VBox countryPopUp;
+    private VBox notSupportedPopup;
     @FXML
     private HBox closeButton;
     @FXML
     private VBox teamsContainer;
     private IModel model;
     private StackPane parent;
-    private Service<List<Team>>teamsInitializer;
-    private boolean isOperational;
+    private Service<List<Team>> teamsInitializer;
 
-    public CountryInfoContainer(IModel model, StackPane parent, boolean isOperational) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("CountryInfo.fxml"));
+
+    public NotSupportedView(IModel model, StackPane parent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("NotSupportedInfo.fxml"));
         loader.setController(this);
         this.model = model;
         this.parent = parent;
-        this.isOperational = isOperational;
         try {
-            countryPopUp = loader.load();
+            notSupportedPopup = loader.load();
         } catch (IOException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
@@ -53,11 +57,30 @@ public class CountryInfoContainer implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         closeWindow();
-        initializeWindow();
+        populateCountriesInput();
+        addCountriesInputListener();
     }
 
+    /**populate the countries input with values*/
+    private void populateCountriesInput(){
+        this.countriesInput.setItems(model.getUnsoportedCountries());
+        this.countriesInput.setText("Countries");
+    }
+
+
+    private void addCountriesInputListener(){
+        countriesInput.getSelectionModel().selectedItemProperty().addListener((e)->{
+
+            model.setSelectedCountry(countriesInput.getSelectionModel().getSelectedItem().getCountryName());
+            initializeService();
+        });
+    }
+
+
+
+
     public VBox getRoot() {
-        return countryPopUp;
+        return notSupportedPopup;
     }
 
     private void closeWindow() {
@@ -100,11 +123,11 @@ public class CountryInfoContainer implements Initializable {
         };
 
         teamsInitializer.setOnSucceeded(event -> {
+            teamsContainer.getChildren().clear();
             populatePieChart(teamsInitializer.getValue());
         });
 
         teamsInitializer.setOnFailed(event -> {
-            teamsInitializer.getException().printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.CONNECTION_FAILED.getValue());
         });
         teamsInitializer.start();
@@ -116,23 +139,6 @@ public class CountryInfoContainer implements Initializable {
      */
     private void initializeNoDataCountryInfo() {
         teamsContainer.getChildren().add(new Label("No data present for this country"));
-    }
-
-    private void initializeNoOperationalCountry() {
-        teamsContainer.getChildren().add(new Label("No operations in this country"));
-    }
-
-    /**
-     * initialize window different based on the country operational status
-     * if the country is operational , retrieve data from the db else not
-     */
-
-    private void initializeWindow() {
-        if (isOperational) {
-            initializeNoOperationalCountry();
-            return;
-        }
-        initializeService();
     }
 
 

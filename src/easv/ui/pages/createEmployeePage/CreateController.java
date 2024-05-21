@@ -97,6 +97,8 @@ public class CreateController implements Initializable {
         listenerForEmptyFieldsAfterSaving();
     }
 
+
+    /**daylly working hours need to be  a double in order to allow decimal point numbers */
     @FXML
     private void saveEmployee() throws RateException {
         if(EmployeeValidation.areNamesValid(nameTF, teamsListView) &&
@@ -119,12 +121,10 @@ public class CreateController implements Initializable {
             BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText().trim()));
             LocalDateTime savedDate = LocalDateTime.now();
             boolean isActive = true;
-            int dailyWorkingHours = Integer.parseInt(dayWorkingHours.getText());
-
+            double dailyWorkingHours = Double.parseDouble( convertToDecimalPoint(dayWorkingHours.getText()));
             Employee employee = new Employee(name, employeeType, currency);
-            Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate, isActive);
+            Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate, isActive,dailyWorkingHours);
             employee.setActiveConfiguration(configuration);
-
             BigDecimal dayRate = model.getComputedDayRate(employee);
             BigDecimal hourlyRate = model.getComputedHourlyRate(employee, dailyWorkingHours);
             configuration.setDayRate(dayRate);

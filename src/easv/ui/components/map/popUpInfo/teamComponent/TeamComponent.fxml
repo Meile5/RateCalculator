@@ -11,25 +11,25 @@
       <PieChart fx:id="teamChart" animated="false" legendVisible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="390.0" />
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="2.0">
          <children>
-            <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="100.0" prefWidth="10.0" spacing="5.0">
-               <children>
-                  <Circle radius="7.0" styleClass="circle" />
-                  <Label maxWidth="-Infinity" prefWidth="120.0" text="Salary overhead" />
-                  <Label fx:id="salaryOverhead" maxWidth="-Infinity" prefWidth="100.0" text="Label" />
-               </children>
-            </HBox>
+<!--            <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="100.0" prefWidth="10.0" spacing="5.0">-->
+<!--               <children>-->
+<!--                  <Circle radius="7.0" styleClass="circle" />-->
+<!--                  <Label maxWidth="-Infinity" prefWidth="120.0" text="Salary overhead" />-->
+<!--                  <Label fx:id="salaryOverhead" maxWidth="-Infinity" prefWidth="100.0" text="Label" />-->
+<!--               </children>-->
+<!--            </HBox>-->
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                <children>
                   <Circle radius="7.0" styleClass="circle" />
                   <Label maxWidth="-Infinity" prefWidth="120.0" text="Expenses overhead" />
-                  <Label fx:id="expensesOverhead" maxWidth="-Infinity" prefWidth="100.0" text="Label" />
+                  <Label fx:id="totalOverheadDaily" maxWidth="-Infinity" prefWidth="100.0" text="Label" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                <children>
                   <Circle radius="7.0" styleClass="circle" />
                   <Label maxWidth="-Infinity" prefWidth="120.0" text="Total overhead" />
-                  <Label fx:id="totalOverhead" maxWidth="-Infinity" prefWidth="100.0" text="Label" />
+                  <Label fx:id="totalOverheadHourly" maxWidth="-Infinity" prefWidth="100.0" text="Label" />
                </children>
             </HBox>
          </children>

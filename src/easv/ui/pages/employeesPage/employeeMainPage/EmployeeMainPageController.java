@@ -94,6 +94,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     @FXML
     private boolean countryFilterActive = false;
     @FXML
+    private boolean teamFilterActive = false;
+    @FXML
     private SVGPath teamRevertSvg;
     @FXML
     private SVGPath countryRevertSvg;
@@ -122,7 +124,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
-
     }
 
     public Parent getRoot() {
@@ -245,6 +246,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         regionsFilter.setItems(model.getOperationalRegions().sorted());
     }
 
+    /**show the rates off the selected filter teams*/
+    public void setTotalRates(){
+        dayRateField.setText(model.calculateGroupDayRate() + " " );
+        hourlyRateField.setText(model.calculateGroupHourRate()+" ");
+    }
+
 
     /**
      * add  region selection listener  that will filter the countries by regions and teams by countries in the region
@@ -269,6 +276,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                 this.teamsFilterCB.setItems(regionCountriesTeams);
                 this.teamsFilterCB.selectItem(regionCountriesTeams.getFirst());
                 showRevertButtonByFilterActive(regionRevertButton, regionRevertSvg);
+                setTotalRates();
             }
         });
     }
@@ -294,9 +302,9 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
               }catch (IndexOutOfBoundsException e){
                   System.out.println(e.getMessage());
               }
-                // call the model to display the resulted employees from the filter operation
                 model.filterByCountryTeams(newValue);
                 showRevertButtonByFilterActive(countryRevertButton, countryRevertSvg);
+                setTotalRates();
             }
         });
     }
@@ -308,8 +316,10 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private void addTeamFilterListener() {
         this.teamsFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
+                teamFilterActive= true;
                 model.filterEmployeesByTeam(newValue);
                 showRevertButtonByFilterActive(teamRevertButton, teamRevertSvg);
+             setTotalRates();
             }
         });
     }
@@ -392,19 +402,26 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
+
+
+    /**undo the countries filters , is the region filter is active , than show the region employees , else show all employees*/
     @FXML
     private void undoCountryFilter() {
         if (regionFilterActive && countriesFilterCB.getSelectionModel().getSelectedItem() != null) {
-            model.returnEmployeesByRegion();
+            model.returnEmployeesByRegion(regionsFilter.getSelectionModel().getSelectedItem());
             teamsFilterCB.clearSelection();
+         //   model.performRegionTeamsOverheadCalculations();
             // searchField.clear();
-            //setTotalRates();
+            setTotalRates();
+            countryFilterActive = false;
+            teamFilterActive=false;
         } else {
             model.performEmployeeSearchUndoOperation();
             teamsFilterCB.clearSelection();
             teamsFilterCB.setItems(FXCollections.observableArrayList(model.getOperationalTeams()));
             countriesFilterCB.clearSelection();
             countryFilterActive = false;
+            teamFilterActive=false;
             setTotalRatesDefault();
         }
     }
@@ -422,6 +439,8 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         teamsFilterCB.setItems(teamsInSystem);
         setTotalRatesDefault();
         regionFilterActive = false;
+        countryFilterActive=false;
+        teamFilterActive =false;
     }
 
 
@@ -432,15 +451,17 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 
     private void undoTeamFilter() {
         if (countryFilterActive && teamsFilterCB.getSelectionModel().getSelectedItem() != null) {
-            model.returnEmployeesByCountry();
+            model.returnEmployeesByCountry(countriesFilterCB.getSelectionModel().getSelectedItem());
             teamsFilterCB.clearSelection();
             // searchField.clear();
-            //setTotalRates();
+            setTotalRates();
+            teamFilterActive=false;
         } else if (regionFilterActive && teamsFilterCB.getSelectionModel().getSelectedItem() != null) {
-            model.returnEmployeesByRegion();
+            model.returnEmployeesByRegion(regionsFilter.getSelectionModel().getSelectedItem());
             teamsFilterCB.clearSelection();
             // searchField.clear();
-            //setTotalRates();
+            setTotalRates();
+            teamFilterActive=false;
         } else {
             model.performEmployeeSearchUndoOperation();
             teamsFilterCB.clearSelection();
@@ -448,7 +469,14 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 //            countriesFilterCB.clearSelection();
 //            countryFilterActive = false;
             setTotalRatesDefault();
+            teamFilterActive=false;
         }
+    }
+
+
+    /**are filters active*/
+    public boolean isFilterActive(){
+        return regionFilterActive || countryFilterActive || teamFilterActive;
     }
 
 
@@ -568,12 +596,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
-    public void setTotalRates(){
-        System.out.println(model.calculateGroupDayRate()+" day rate");
-        dayRateField.setText(model.calculateGroupDayRate().toString());
-        hourlyRateField.setText(model.calculateGroupHourlyRate().toString());
-        System.out.println(model.calculateGroupHourlyRate() + "hourly rate");
-    }
+
 
 
 

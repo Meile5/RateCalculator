@@ -9,7 +9,6 @@ public class ModelFactory {
 
     public enum ModelType {
         NORMAL_MODEL,
-
     }
 
 

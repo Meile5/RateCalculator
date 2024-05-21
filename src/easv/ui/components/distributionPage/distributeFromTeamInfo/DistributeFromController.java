@@ -22,6 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -41,8 +42,9 @@ public class DistributeFromController implements Initializable, DistributionFrom
     private Team teamToDisplay;
     private ControllerMediator controllerMediator;
     private DistributionType distributionType;
-    private static final String EMPTY_VALUE = "" ;
-    private StackPane  modalLayout;
+    private static final String EMPTY_VALUE = "";
+    private StackPane modalLayout;
+
     public DistributeFromController(IModel model, Team teamToDisplay, ControllerMediator distributionControllerMediator, DistributionType distributionType, StackPane modalLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DistributeFromTeamInfo.fxml"));
         loader.setController(this);
@@ -62,7 +64,6 @@ public class DistributeFromController implements Initializable, DistributionFrom
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateComponentWithValues();
-
         Platform.runLater(this::addClickListener);
     }
 
@@ -72,7 +73,7 @@ public class DistributeFromController implements Initializable, DistributionFrom
     /**
      * pupulate the component with the team values
      */
-    private void populateComponentWithValues() {
+    public void populateComponentWithValues() {
         String regions = teamToDisplay.getRegions().stream()
                 .map(Region::getRegionName)
                 .collect(Collectors.joining(", "));
@@ -86,11 +87,12 @@ public class DistributeFromController implements Initializable, DistributionFrom
         /*add tooltip for the countries to display the whole value*/
         addInfoToolTip(this.teamCountries);
         this.teamName.setText(teamToDisplay.getTeamName());
+        addInfoToolTip(teamName);
         if (this.teamToDisplay.getActiveConfiguration() != null) {
-            this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate() + "");
+            this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP) + "");
             addInfoToolTip(this.dayRate);
             dayCurrency.setText(Currency.USD.toString());
-            this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate() + "");
+            this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP) + "");
             addInfoToolTip(this.hourlyRate);
             this.hourlyCurrency.setText(Currency.USD.toString());
         }
@@ -111,16 +113,32 @@ public class DistributeFromController implements Initializable, DistributionFrom
     private void addClickListener() {
         this.teamComponent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (this.distributionType.equals(DistributionType.DISTRIBUTE_FROM)) {
-                if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty()){
+                if (teamToDisplay.getEmployees() == null || teamToDisplay.getEmployees().isEmpty()) {
                     showInfoError(ErrorCode.NO_EMPLOYEES.getValue());
                     return;
                 }
-                if(model.isTeamSelectedToDistribute(teamToDisplay.getId())){
-                    showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
-                    return;
+
+                if (model.getInsertedDistributionPercentageFromTeams() != null) {
+                    if (model.isTeamSelectedToDistribute(teamToDisplay.getId())) {
+                        showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
+                        return;
+                    }
+                } else {
+                    if (model.isTeamSelectedToDistribute(teamToDisplay.getId())) {
+                        showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
+                        return;
+                    }
                 }
+
+                if (model.getSelectedTeamToDistributeFrom() != null) {
+                    if (model.getSelectedTeamToDistributeFrom().getId() == teamToDisplay.getId()) {
+                        showInfoError(ErrorCode.DISTRIBUTE_TO.getValue() + "\n" + teamToDisplay.getTeamName());
+                        return;
+                    }
+                }
+
                 //save a copy of the team into the model, in order to perform simulations without affecting the teams original values
-                model.setDistributeFromTeam( new Team(teamToDisplay));
+                model.setDistributeFromTeam(new Team(teamToDisplay));
                 controllerMediator.addTeamToDistributeFrom(teamToDisplay);
                 this.teamComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"), false);
                 this.controllerMediator.setTheSelectedComponentToDistributeFrom(this);
@@ -129,13 +147,13 @@ public class DistributeFromController implements Initializable, DistributionFrom
             }
 
             if (this.distributionType.equals(DistributionType.DISTRIBUTE_TO)) {
-                if(teamToDisplay.getEmployees()!=null && teamToDisplay.getEmployees().isEmpty() ){
+                if (teamToDisplay.getEmployees() == null || teamToDisplay.getEmployees().isEmpty()) {
                     showInfoError(ErrorCode.NO_EMPLOYEES.getValue());
                     return;
                 }
 
-                if(model.getSelectedTeamToDistributeFrom()!=null){
-                    if(model.getSelectedTeamToDistributeFrom().getId()==teamToDisplay.getId()){
+                if (model.getSelectedTeamToDistributeFrom() != null) {
+                    if (model.getSelectedTeamToDistributeFrom().getId() == teamToDisplay.getId()) {
                         showInfoError(ErrorCode.DISTRIBUTE_FROM.getValue());
                         return;
                     }
@@ -143,10 +161,18 @@ public class DistributeFromController implements Initializable, DistributionFrom
 
                 /*when the team to distribute  is selected from the list will be added
                   in the model insertedDistributionPercentageFromTeams without overhead percentage */
-                if(!model.isTeamSelectedToDistribute(teamToDisplay.getId())){
+                if (model.getInsertedDistributionPercentageFromTeams() != null) {
+                    if (!model.isTeamSelectedToDistribute(teamToDisplay.getId())) {
+                        model.addDistributionPercentageTeam(new Team(teamToDisplay), EMPTY_VALUE);
+                        controllerMediator.addDistributeToTeam(new Team(teamToDisplay));
+                    } else {
+                        showInfoError(ErrorCode.DISTRIBUTE_TO.getValue());
+                    }
+                } else {
                     model.addDistributionPercentageTeam(new Team(teamToDisplay), EMPTY_VALUE);
                     controllerMediator.addDistributeToTeam(new Team(teamToDisplay));
                 }
+
             }
 
         });
@@ -154,6 +180,7 @@ public class DistributeFromController implements Initializable, DistributionFrom
 
     @Override
     public void setTheStyleClassToDefault() {
+        System.out.println("removed");
         this.teamComponent.getStyleClass().remove("teamComponentClicked");
     }
 
@@ -162,22 +189,30 @@ public class DistributeFromController implements Initializable, DistributionFrom
     }
 
 
-    /**display an information  message for the user when the input is invalid*/
-    private void showInfoError(String errorValue){
-        ErrorWindowController errorWindowController = new ErrorWindowController(modalLayout,errorValue);
+    /**
+     * display an information  message for the user when the input is invalid
+     */
+    private void showInfoError(String errorValue) {
+        ErrorWindowController errorWindowController = new ErrorWindowController(modalLayout, errorValue);
         modalLayout.getChildren().add(errorWindowController.getRoot());
         WindowsManagement.showStackPane(modalLayout);
     }
 
     @Override
     public void setDayRate(String value) {
-            this.dayRate.setText(value);
-            this.dayRate.getTooltip().setText(value);
+        this.dayRate.setText(value);
+        this.dayRate.getTooltip().setText(value);
     }
-@Override
+
+    @Override
     public void setHourlyRate(String value) {
         this.hourlyRate.setText(value);
         this.hourlyRate.getTooltip().setText(value);
-}
+    }
+
+
+    public boolean isTheSameEntityDisplayed(int teamId) {
+        return this.teamToDisplay.getId() == teamId;
+    }
 
 }

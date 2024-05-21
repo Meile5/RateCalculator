@@ -3,12 +3,14 @@ package easv.ui.components.editPage;
 import easv.Utility.EmployeeValidation;
 import easv.Utility.WindowsManagement;
 import easv.be.*;
+import easv.be.Currency;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 
 import javafx.collections.ObservableList;
@@ -17,15 +19,21 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.ResourceBundle;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class EditController implements Initializable {
 
@@ -40,9 +48,9 @@ public class EditController implements Initializable {
 
     private IModel model;
     @FXML
-    private MFXTextField utilPercentageTF, multiplierTF;
+    private MFXTextField  multiplierTF;
     @FXML
-    private MFXTextField nameInput, salaryTF, workingHoursTF, annualAmountTF, workingHoursInput;
+    private MFXTextField nameInput, salaryTF, workingHoursTF, annualAmountTF, dayWorkingHoursInput,percentageDisplayer;
 
     @FXML
     private MFXComboBox<Region> regionComboBox;
@@ -56,6 +64,10 @@ public class EditController implements Initializable {
     private MFXComboBox<EmployeeType> overOrResourceCB;
     @FXML
     private MFXComboBox<Configuration> configurations;
+    @FXML
+    private ComboBox<Integer> yearComboBox;
+    @FXML
+    private LineChart<String, BigDecimal> lineChart;
 
     @FXML
     private StackPane spinnerLayer;
@@ -78,6 +90,7 @@ public class EditController implements Initializable {
         try {
             componentParent = loader.load();
         } catch (IOException e) {
+            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
         }
     }
@@ -105,32 +118,31 @@ public class EditController implements Initializable {
         populateInputs();
         //populate inputs with the values of the selected configuration from history(dropdown menu)
         populateSelectedConfiguration();
-        //save the edit configuration
-        //saveEdit();
+       // save the edit configuration
+        saveEdit();
+        //show history graph on screen
+        populateComboBoxWithYears(employee);
+        //add combobox  listener
+        yearsComboBoxListener(employee);
+        //show all history
+        populateChartInitial(employee);
+
 
         //initialize region listener
-        addRegionSelectionListener(regionComboBox,countryCB);
+       // addRegionSelectionListener(regionComboBox,countryCB);
         //initialize country listener
-        addCountrySelectionListener(countryCB,teamComboBox);
+       // addCountrySelectionListener(countryCB,teamComboBox);
     }
 
     /**
      * populate input fields with the employee data
      */
     private void populateInputs() {
-        //set country info
-
-        //TODO this will be used in the Country creation
-//        ObservableList<Country>  countries =  FXCollections.observableArrayList();
-//        countries.addAll(model.getCountiesValues());
-//        countries.addAll(model.getValidCountries());
-
 
         //setRegionInfo
-        this.regionComboBox.setItems(model.getOperationalRegions());
+        this.regionComboBox.setItems(FXCollections.observableArrayList(employee.getRegions()));
         if (!employee.getRegions().isEmpty()) {
             String employeeRegionName = employee.getRegions().get(0).getRegionName();
-
             Region regionToSelect = regionComboBox.getItems().stream()
                     .filter(c -> c.getRegionName().equals(employeeRegionName))
                     .findFirst()
@@ -138,9 +150,8 @@ public class EditController implements Initializable {
             this.regionComboBox.selectItem(regionToSelect);
         }
 
-
         //set Country Info
-        this.countryCB.setItems(model.getOperationalCountries());
+        this.countryCB.setItems(FXCollections.observableArrayList(employee.getCountries()));
         String employeeCountryName = employee.getCountries().get(0).getCountryName();
         Country countryToSelect = countryCB.getItems().stream()
                 .filter(c -> c.getCountryName().equals(employeeCountryName))
@@ -150,7 +161,7 @@ public class EditController implements Initializable {
         this.nameInput.setText(employee.getName());
 
         //set team info
-        this.teamComboBox.setItems(model.getOperationalTeams());
+        this.teamComboBox.setItems(FXCollections.observableArrayList(employee.getTeams()));
         String employeeTeamName = employee.getTeams().get(0).getTeamName();
         Team teamToSelect = teamComboBox.getItems().stream()
                 .filter(c -> c.getTeamName().equals(employeeTeamName))
@@ -176,13 +187,12 @@ public class EditController implements Initializable {
      * save the edited employee
      */
     //TODO call the method that changes the style off the employee container to default
-    /*private void saveEdit() {
+    private void saveEdit() {
         this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (EmployeeValidation.areNamesValid(nameInput, countryCB, teamCB) &&
-                    EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF) &&
-                    EmployeeValidation.arePercentagesValid(utilPercentageTF, multiplierTF) &&
-                    EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB)
-                    && EmployeeValidation.validateAditionalMultipliers(markup, grossMargin)) {
+            if (EmployeeValidation.areNamesValid(nameInput) &&
+                    EmployeeValidation.areNumbersValid(salaryTF, workingHoursTF, annualAmountTF,dayWorkingHoursInput) &&
+                    EmployeeValidation.arePercentagesValid(multiplierTF) &&
+                    EmployeeValidation.isItemSelected(currencyCB, overOrResourceCB)) {
                 Configuration editedConfiguration = getConfiguration();
                 Employee editedEmployee = getEmployee(editedConfiguration);
                 if (model.isEditOperationPerformed(employee, editedEmployee)) {
@@ -190,49 +200,42 @@ public class EditController implements Initializable {
                      spinnerLayer.setVisible(true);
                     initializeService(employee,editedEmployee);
                 } else {
+                    employeeDisplayer.setEmployeesVboxContainerStyleToDefault();
                     WindowsManagement.closeStackPane(this.firstLayout);
                 }
             }
         });
     }
 
-
     /**
      * create the employee object with the edited values
      */
-    /*private Employee getEmployee(Configuration editedConfiguration) {
-        Country country = countryCB.getSelectedItem();
+private Employee getEmployee(Configuration editedConfiguration) {
         Currency currency = Currency.valueOf(this.currencyCB.getSelectedItem());
-        Team team = getSelectedTeam();
         String name = this.nameInput.getText();
         EmployeeType employeeType = overOrResourceCB.getSelectedItem();
-        Employee editedEmployee = new Employee(name, country, team, employeeType, currency);
+        Employee editedEmployee = new Employee(name,employeeType, currency);
         editedEmployee.setConfigurations(employee.getConfigurations());
         editedEmployee.setActiveConfiguration(editedConfiguration);
         editedEmployee.setId(employee.getId());
         return editedEmployee;
-    }*/
-
+    }
 
     /**
      * create the Configuration object from the inputs fields
      */
-//    private Configuration getConfiguration() {
-//        BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText()));
-//        BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText()));
-//        BigDecimal overheadMultiplier = new BigDecimal(convertToDecimalPoint(multiplierTF.getText()));
-//        BigDecimal utilizationPercentage = new BigDecimal(convertToDecimalPoint(utilPercentageTF.getText()));
-//        BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText()));
-//        double markupValue = 0;
-//        double grossMarginValue = 0;
-//        if (!isTextFieldEmpty(markup)) {
-//            markupValue = Double.parseDouble(convertToDecimalPoint(this.markup.getText()));
-//        }
-//        if (!isTextFieldEmpty(grossMargin)) {
-//            grossMarginValue = Double.parseDouble(convertToDecimalPoint(this.grossMargin.getText()));
-//        }
-//        return new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true, markupValue, grossMarginValue);
-//    }
+    private Configuration getConfiguration() {
+        BigDecimal annualSalary = new BigDecimal(convertToDecimalPoint(salaryTF.getText()));
+        BigDecimal fixedAnnualAmount = new BigDecimal(convertToDecimalPoint(annualAmountTF.getText()));
+        BigDecimal overheadMultiplier = new BigDecimal(convertToDecimalPoint(multiplierTF.getText()));
+        BigDecimal utilizationPercentage = BigDecimal.ZERO;
+        if(!percentageDisplayer.getText().isEmpty()){
+            utilizationPercentage = new BigDecimal(convertToDecimalPoint(percentageDisplayer.getText()));
+        }
+        BigDecimal workingHours = new BigDecimal(convertToDecimalPoint(workingHoursTF.getText()));
+        double dayWorkingHours = Double.parseDouble(convertToDecimalPoint(dayWorkingHoursInput.getText()));
+        return new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, LocalDateTime.now(), true,dayWorkingHours);
+    }
 
 
     /**
@@ -252,28 +255,40 @@ public class EditController implements Initializable {
      * @param configuration the configuration object that is active for an employee
      */
     private void setInputsValuesWithConfiguration(Configuration configuration) {
-        this.utilPercentageTF.setText(String.valueOf(configuration.getUtilizationPercentage()));
+        if(configuration.getUtilizationPercentage()!=null){
+            this.percentageDisplayer.setText(configuration.getUtilizationPercentage() +  "");
+        }
         this.multiplierTF.setText(String.valueOf(configuration.getOverheadMultiplier()));
         this.salaryTF.setText(String.valueOf(configuration.getAnnualSalary()));
         this.workingHoursTF.setText(String.valueOf(configuration.getWorkingHours()));
         this.annualAmountTF.setText(String.valueOf(configuration.getFixedAnnualAmount()));
-        this.workingHoursInput.setText(configuration.getDayWorkingHours() + "");
+        this.dayWorkingHoursInput.setText(configuration.getDayWorkingHours() + "");
     }
 
     /**
-     * call the EmployeeInfoController to update the edited userValues
+     * call the EmployeeInfoController to update the edited userValues,and to update the performed calculations
      */
     private void updateUserValues(Employee employee) {
-       /* this.employeeDisplayer.setEmployeeName(employee.getName());
+        try{
+        this.employeeDisplayer.setEmployeeName(employee.getName());
         this.employeeDisplayer.setCountry(employee.getCountry().getCountryName());
         this.employeeDisplayer.setEmployeeType(employee.getEmployeeType());
         this.employeeDisplayer.setTeam(employee.getTeam().getTeamName());
         this.employeeDisplayer.setEmployee(employee);
         this.employeeDisplayer.setDayRate(model.getComputedDayRate(employee).toString());
         this.employeeDisplayer.setHourlyRate(model.getComputedHourlyRate(employee,0).toString());
-       // this.employeeDisplayer.refreshRates();
-        this.employeeDisplayer.callService();
-        WindowsManagement.closeStackPane(this.firstLayout);*/
+        if(employeeDisplayer.isFilterActive()){
+           // this.employeeDisplayer.refreshRates();
+        }
+            System.out.println("aloooo i am here ");
+            PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
+            pauseTransition.setOnFinished((e)-> WindowsManagement.closeStackPane(this.firstLayout));
+            pauseTransition.playFromStart();
+        }catch (NullPointerException e){
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+            WindowsManagement.closeStackPane(this.spinnerLayer);
+        }
+
     }
 
     private boolean isTextFieldEmpty(MFXTextField textField) {
@@ -294,9 +309,8 @@ public class EditController implements Initializable {
      * initialize  percentage inputs validation  listeners
      */
     private void initializePercentageInputValidationListeners() {
-        EmployeeValidation.addNonEmptyPercentageListener(utilPercentageTF);
+        EmployeeValidation.addNonEmptyPercentageListener(percentageDisplayer);
         EmployeeValidation.addNonEmptyPercentageListener(multiplierTF);
-
     }
 
     /**
@@ -306,6 +320,7 @@ public class EditController implements Initializable {
         EmployeeValidation.addInputDigitsListeners(salaryTF);
         EmployeeValidation.addInputDigitsListeners(workingHoursTF);
         EmployeeValidation.addInputDigitsListeners(annualAmountTF);
+        EmployeeValidation.addInputDigitsListeners(dayWorkingHoursInput);
     }
 
     /**
@@ -332,18 +347,20 @@ public class EditController implements Initializable {
         this.editService.setOnSucceeded((edit) -> {
             if (editService.getValue()) {
                 updateUserValues(editedEmployee);
+                employeeDisplayer.setEmployeesVboxContainerStyleToDefault();
             } else {
                 this.spinnerLayer.setVisible(false);
                 this.spinnerLayer.setDisable(true);
-                WindowsManagement.closeStackPane(firstLayout);
                 ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
             }
         });
-
         this.editService.setOnFailed((error) -> {
-            ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
-            this.spinnerLayer.setVisible(false);
-            this.spinnerLayer.setDisable(true);
+            PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
+            pauseTransition.setOnFinished((e)->{
+                ExceptionHandler.errorAlertMessage(ErrorCode.OPERATION_DB_FAILED.getValue());
+                this.spinnerLayer.setVisible(false);
+                this.spinnerLayer.setDisable(true);
+            });
         });
         editService.restart();
     }
@@ -360,31 +377,89 @@ public class EditController implements Initializable {
         }
         return validFormat;
     }
-
-    private void addRegionSelectionListener(MFXComboBox<Region> region, MFXComboBox<Country> countries) {
-        region.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+    /* listener that listens changes in selected years of combobox and calls a method to populate pieChart*/
+    public void yearsComboBoxListener(Employee employee) {
+        yearComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                countries.clearSelection();
-                ObservableList<Country> regionCountries= FXCollections.observableArrayList(newValue.getCountries());
-                countries.setItems(regionCountries);
-                countries.selectItem(regionCountries.get(0));
-
+                populateChartForYear(employee, newValue);
             }
         });
     }
 
-    private void addCountrySelectionListener(MFXComboBox<Country> country, MFXComboBox<Team> teams) {
-        country.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                teams.clearSelection();
-                ObservableList<Team> countryTeams = FXCollections.observableArrayList(newValue.getTeams());
-                teams.setItems(countryTeams);
-                teams.selectItem(countryTeams.get(0));
-            }
-        });
+    // EMPLOYEE HISTORY
+
+
+
+    //show full history ,initial
+   private void populateChartInitial(Employee employee){
+        List<XYChart.Series<String,BigDecimal>> chartSeries =  new ArrayList<>();
+       XYChart.Series<String, BigDecimal> daySeries = new XYChart.Series<>();
+       daySeries.setName("DayRates");
+
+       XYChart.Series<String, BigDecimal> hourSeries = new XYChart.Series<>();
+       hourSeries.setName("HourRates");
+
+       for (Configuration config : employee.getConfigurations()) {
+           daySeries.getData().add(new XYChart.Data<>(config.getSavedDate().format(DateTimeFormatter.ofPattern("MMM dd")), config.getDayRate()));
+           hourSeries.getData().add(new XYChart.Data<>(config.getSavedDate().format(DateTimeFormatter.ofPattern("MMM dd")), config.getHourlyRate()));
+       }
+
+       chartSeries.add(daySeries);
+       chartSeries.add(hourSeries);
+
+       lineChart.getData().clear();
+       lineChart.getData().addAll(chartSeries);
+   }
+
+
+
+
+    /**
+     * populates the lineChart with history from a selected year, it includes day rates and months
+     * initializes a new series for an XYChart with String as the X-axis type and BigDecimal as the Y-axis type
+     * format String into "Jan 01"
+     * @param selectedYear is the year that is selected from a combobox
+     */
+    private void populateChartForYear(Employee employee, int selectedYear) {
+
+        XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
+        series.setName(employee.getName());
+        /* Get the configurations for the selected year*/
+        List<Configuration> configurations = employee.getConfigurations().stream()
+                .filter(config -> config.getSavedDate().getYear() == selectedYear)
+                .sorted(Comparator.comparing(Configuration::getSavedDate))
+                .toList();
+        /* Populate the series with sorted data from configurations*/
+        for (Configuration config : configurations) {
+            series.getData().add(new XYChart.Data<>(config.getSavedDate().format(DateTimeFormatter.ofPattern("MMM dd")), config.getDayRate()));
+        }
+        lineChart.getData().clear();
+        lineChart.getData().add(series);
+    }
+    /**
+     * populates the ComboBox with years based on the employee configurations history
+     * if configurations exist extracts only years from the configurations, sorts them in descending order
+     * sets the latest year as the initial value of the ComboBox
+     * @param employee the employee whose configurations history is used to populate the ComboBox
+     */
+    public void populateComboBoxWithYears(Employee employee) {
+        List<Configuration> configurations = employee.getConfigurations();
+        ObservableList<Integer> yearOptions = FXCollections.observableArrayList();
+        if (configurations != null) {
+            /*Collect years from configurations*/
+            configurations.stream()
+                    .map(config -> config.getSavedDate().getYear())
+                    .distinct()
+                    .sorted(Collections.reverseOrder())
+                    .forEach(yearOptions::add);
+        }
+        yearComboBox.setItems(yearOptions);
+        /* Set the latest year as the initial value of the ComboBox*/
+        if (!yearOptions.isEmpty()) {
+            yearComboBox.setValue(yearOptions.get(0));
+        }
     }
 
-    //TODO create a separate component for the seleted team tah will be added to the scrollPane , with an remove button
 }
 
 

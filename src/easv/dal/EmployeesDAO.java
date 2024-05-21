@@ -357,7 +357,7 @@ public class EmployeesDAO implements IEmployeeDAO {
             psmt.setString(6, String.valueOf(configuration.isActive()));
             psmt.setBigDecimal(7, configuration.getDayRate());
             psmt.setBigDecimal(8, configuration.getHourlyRate());
-            psmt.setInt(9, configuration.getDayWorkingHours());
+            psmt.setDouble(9, configuration.getDayWorkingHours());
             psmt.setBigDecimal(10, configuration.getUtilizationPercentage());
             psmt.executeUpdate();
             try (ResultSet res = psmt.getGeneratedKeys()) {
@@ -462,19 +462,19 @@ public class EmployeesDAO implements IEmployeeDAO {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
             conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
-            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-                psmt.setString(1, editedEmployee.getName());
-                psmt.setString(2, editedEmployee.getType().toString());
-                psmt.setInt(3, editedEmployee.getCountry().getId());
-                psmt.setInt(4, editedEmployee.getTeam().getId());
-                psmt.setString(5, editedEmployee.getCurrency().name());
-                psmt.setInt(6, editedEmployee.getId());
-                psmt.executeUpdate();
-            }
-            editedEmployee.getActiveConfiguration().setConfigurationId(addConfigurationWithAdditionalMultipliers(conn, editedEmployee.getActiveConfiguration()));
-            setOldConfigurationToInactive(oldConfigurationId, conn);
-            addEmployeeConfiguration(editedEmployee.getId(), editedEmployee.getActiveConfiguration().getConfigurationId(), conn);
-            conn.commit();
+//            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+//                psmt.setString(1, editedEmployee.getName());
+//                psmt.setString(2, editedEmployee.getType().toString());
+//                psmt.setInt(3, editedEmployee.getCountry().getId());
+//                psmt.setInt(4, editedEmployee.getTeam().getId());
+//                psmt.setString(5, editedEmployee.getCurrency().name());
+//                psmt.setInt(6, editedEmployee.getId());
+//                psmt.executeUpdate();
+//            }
+//            editedEmployee.getActiveConfiguration().setConfigurationId(addConfigurationWithAdditionalMultipliers(conn, editedEmployee.getActiveConfiguration()));
+//            setOldConfigurationToInactive(oldConfigurationId, conn);
+//            addEmployeeConfiguration(editedEmployee.getId(), editedEmployee.getActiveConfiguration().getConfigurationId(), conn);
+//            conn.commit();
             return editedEmployee;
         } catch (RateException | SQLException e) {
             e.printStackTrace();
@@ -541,7 +541,6 @@ public class EmployeesDAO implements IEmployeeDAO {
                         if (employee.getUtilPerTeams() == null) {
                             employee.setUtilPerTeams(new HashMap<>());
                         }
-
                         employee.getUtilPerTeams().put(teamId, utilization);
                     }
                     for (Team team : retrievedTeams.values()) {
@@ -551,8 +550,6 @@ public class EmployeesDAO implements IEmployeeDAO {
                         }
                         team.setRegions(regions);
                     }
-
-
                 }
             }
         } catch (SQLException | RateException e) {

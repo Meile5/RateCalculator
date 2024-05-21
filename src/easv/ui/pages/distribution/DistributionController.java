@@ -1,5 +1,4 @@
 package easv.ui.pages.distribution;
-
 import easv.Utility.WindowsManagement;
 import easv.be.DistributionValidation;
 import easv.be.OverheadHistory;
@@ -9,10 +8,14 @@ import easv.exception.RateException;
 import easv.ui.components.common.errorWindow.ErrorWindowController;
 import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFromController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
+import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToInterface;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToListCell;
+import easv.ui.components.searchComponent.SearchController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.css.PseudoClass;
@@ -31,7 +34,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -58,10 +60,10 @@ public class DistributionController implements Initializable, DistributionContro
     @FXML
     private Label totalOverheadInserted;
     @FXML
-    private HBox totalOverheadContainer;
+    private HBox totalOverheadContainer, searchFromContainer, searchToContainer;
     private StackPane secondLayout;
     private Service<Map<OverheadHistory, List<Team>>> simulateService;
-    private Service<Boolean> saveDistribution;
+    private Service<Map<OverheadHistory, List<Team>>> saveDistribution;
 
 
     private final static PseudoClass OVER_LIMIT = PseudoClass.getPseudoClass("errorLimit");
@@ -73,6 +75,7 @@ public class DistributionController implements Initializable, DistributionContro
         this.secondLayout = secondLayout;
         this.distributionMediator = new ControllerMediator();
         this.distributionMediator.registerDistributionController(this);
+        model.initializeDistributionEntities();
         try {
             distributionPage = loader.load();
         } catch (IOException e) {
@@ -93,7 +96,10 @@ public class DistributionController implements Initializable, DistributionContro
         addSimulateButtonListener();
         // save the performed distribution operation
         saveDistributionOperation();
+        //initialize search component
+        initializeSearchComponent();
     }
+
 
     /**
      * add the teams in the  system  to the distribute to teams container
@@ -162,8 +168,10 @@ public class DistributionController implements Initializable, DistributionContro
      */
     private void addSimulateButtonListener() {
         this.simulateButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            // if invalid  values  return
             if (distributionIsInvalid()) return;
-
+            //save in the model that the simulation was performed
+            model.setSimulationPerformed(true);
             this.secondLayout.getChildren().add(new MFXProgressSpinner());
             WindowsManagement.showStackPane(secondLayout);
             //start the service that will perform the computation
@@ -193,7 +201,7 @@ public class DistributionController implements Initializable, DistributionContro
 
         if (inputValidation.getErrorValues().containsKey(ErrorCode.EMPTY_OVERHEAD)) {
             StringBuilder emptyValues = new StringBuilder();
-            emptyValues.append(ErrorCode.EMPTY_OVERHEAD).append("\n");
+            emptyValues.append(ErrorCode.EMPTY_OVERHEAD.getValue()).append("\n");
             inputValidation.getErrorValues().get(ErrorCode.EMPTY_OVERHEAD).forEach(
                     e -> emptyValues.append(e.getTeamName()).append("\n"));
             showInfoError(emptyValues.toString());
@@ -264,7 +272,7 @@ public class DistributionController implements Initializable, DistributionContro
      */
     @Override
     public void addDistributeToTeam(Team teamToDisplay) {
-        DistributeToController selectedTeam = new DistributeToController(model, teamToDisplay, distributionMediator, secondLayout);
+        DistributeToInterface selectedTeam = new DistributeToController(model, teamToDisplay, distributionMediator, secondLayout);
         distributionMediator.addDistributeToController(selectedTeam, teamToDisplay.getId());
         this.selectedToDistributeTo.getChildren().add(selectedTeam.getRoot());
     }
@@ -316,7 +324,7 @@ public class DistributionController implements Initializable, DistributionContro
             pauseTransition.setOnFinished((event) -> {
                 WindowsManagement.closeStackPane(secondLayout);
                 showThesimulationBarChart(simulateService.getValue());
-                updateComponentsOverheadValues();
+                updateComponentsOverheadValues(simulateService.getValue());
             });
             pauseTransition.playFromStart();
 
@@ -338,55 +346,125 @@ public class DistributionController implements Initializable, DistributionContro
         WindowsManagement.showStackPane(secondLayout);
     }
 
-    /**save  the  performed distribution operation */
-    private void saveDistributionOperation(){
-        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+    /**
+     * save  the  performed distribution operation
+     */
+    private void saveDistributionOperation() {
+        this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (distributionIsInvalid()) return;
+            this.secondLayout.getChildren().add(new MFXProgressSpinner());
+            WindowsManagement.showStackPane(secondLayout);
             initializeSaveService();
         });
     }
 
 
-
     /**
      * update components values with the new calculation values
      */
-    private void updateComponentsOverheadValues() {
-        if (model.getSelectedTeamToDistributeFrom().getActiveConfiguration() != null) {
-            double dayRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
-            double hourlyRate = model.getSelectedTeamToDistributeFrom().getActiveConfiguration().getTeamHourlyRate().setScale(2,RoundingMode.HALF_UP).doubleValue();
+    private void updateComponentsOverheadValues(Map<OverheadHistory, List<Team>> performedSimulation) {
+        List<Team> performedComputation = performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD_FROM);
+        Team teamToDistributeFromNewOverhead = performedComputation.getFirst();
+        if (teamToDistributeFromNewOverhead != null) {
+            double dayRate = teamToDistributeFromNewOverhead.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
+            double hourlyRate = teamToDistributeFromNewOverhead.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue();
             distributionMediator.updateDistributeFromComponent(dayRate, hourlyRate);
         }
-        for (Team team : model.getInsertedDistributionPercentageFromTeams().keySet()) {
-            System.out.println(team.getActiveConfiguration().getTeamDayRate());
+        for (Team team : performedSimulation.get(OverheadHistory.CURRENT_OVERHEAD)) {
             distributionMediator.updateComponentOverheadValues(team.getId(), team.getActiveConfiguration().getTeamDayRate().setScale(2, RoundingMode.HALF_UP).doubleValue(), team.getActiveConfiguration().getTeamHourlyRate().setScale(2, RoundingMode.HALF_UP).doubleValue());
         }
     }
 
 
-    /**initialize the save service */
+    /**
+     * initialize the save service
+     */
     private void initializeSaveService() {
-        this.saveDistribution = new Service<Boolean>() {
+        this.saveDistribution = new Service<Map<OverheadHistory, List<Team>>>() {
             @Override
-            protected Task<Boolean> createTask() {
-                return new Task<Boolean>() {
+            protected Task<Map<OverheadHistory, List<Team>>> createTask() {
+                return new Task<>() {
                     @Override
-                    protected Boolean call() throws Exception {
+                    protected Map<OverheadHistory, List<Team>> call() throws Exception {
                         return model.saveDistribution();
                     }
                 };
             }
         };
         this.saveDistribution.setOnSucceeded((e) -> {
-            // showInfoError(ErrorCode.OPERATION_EXECUTED.getValue());
+
             // display that the operation was performed
+            showThesimulationBarChart(saveDistribution.getValue());
+            updateComponentsOverheadValues(saveDistribution.getValue());
+            distributeFromTeams.getChildren().clear();
+            this.populateDistributeFromTeams();
+            this.populateDistributeToTeams();
             WindowsManagement.closeStackPane(secondLayout);
         });
         this.saveDistribution.setOnCancelled((e) -> {
             WindowsManagement.closeStackPane(secondLayout);
         });
-
         saveDistribution.restart();
+    }
 
+
+    //SEARCH OPERATIONS
+
+
+    /**
+     * initialize searchComponent
+     */
+    private void initializeSearchComponent() {
+
+        // initialize search from component
+        SearchDistributeFromTeamHandler searchFromHandler = new SearchDistributeFromTeamHandler(this);
+        SearchController<Team> searchControllerDistributeFrom = new SearchController<>(searchFromHandler);
+
+        // initialize distribute to search component
+        SearchDistributeToTeamHandler searchToHandler = new SearchDistributeToTeamHandler(this);
+        SearchController<Team> searchControllerDistributeTo = new SearchController<>(searchToHandler);
+        this.searchFromContainer.getChildren().add(searchControllerDistributeFrom.getSearchRoot());
+        this.searchToContainer.getChildren().add(searchControllerDistributeTo.getSearchRoot());
+    }
+
+
+    public ObservableList<Team> getResultData(String filter) {
+        return model.getTeamsFilterResults(filter);
+    }
+
+
+    public void performSelectSearchOperationFrom(int entityId) {
+        Team resultedTeam = model.getTeamById(entityId);
+        DistributeFromController resultedSearchTeam = new DistributeFromController(model, resultedTeam, distributionMediator, DistributionType.DISTRIBUTE_FROM, secondLayout);
+        this.distributeFromTeams.getChildren().clear();
+        this.distributeFromTeams.getChildren().add(resultedSearchTeam.getRoot());
+    }
+
+    public void performSelectSearchOperationTo(int entityId) {
+        Team resultedTeam = model.getTeamById(entityId);
+        //  distributeToTeams.getItems().clear();
+        distributeToTeams.setItems(FXCollections.observableArrayList(resultedTeam));
+    }
+
+
+    public void undoSearchOperationFrom() {
+        this.distributeFromTeams.getChildren().clear();
+        populateDistributeFromTeams();
+    }
+
+    public void undoSearchOperationTo() {
+        this.distributeToTeams.setItems(model.getOperationalTeams());
+    }
+
+
+    @Override
+    public void displayDistributeFromTeamsInContainer() {
+        populateDistributeFromTeams();
+    }
+
+    @Override
+    public void displayDistributeToTeamsInContainer() {
+        populateDistributeToTeams();
     }
 
 

@@ -124,12 +124,10 @@ public class EmployeeInfoController implements Initializable {
             }
             region.setText(regionNames.toString());
             region.setTooltip(new Tooltip(region.getText()));
-
             dayRate.setText(employee.getActiveConfiguration().getDayRate().toString());
             hourlyRate.setText(employee.getActiveConfiguration().getHourlyRate().toString());
             hourlyCurrency.setText(employee.getCurrency().toString());
             dayCurrency.setText(employee.getCurrency().toString());
-
         }
     }
 
@@ -141,25 +139,11 @@ public class EmployeeInfoController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         deleteContainer.getChildren().clear();
         this.deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
-        //displayDelete();
         setLabels();
         addEditAction();
-
-
+        setEmployeeComponentOnClick();
 
     }
-
-
-
-
-
-    /*public void displayDelete(){
-        DeleteRegionController deleteEmployeeController = new DeleteRegionController( firstLayout,  deleteContainer);
-        deleteContainer.getChildren().clear();
-        deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
-
-    }*/
-
 
 
     private void addEditAction() {
@@ -206,11 +190,21 @@ public class EmployeeInfoController implements Initializable {
     }
 
     public void refreshRates() {
-        //employeeController.setTotalRates();
+        employeeController.setTotalRates();
     }
 
-    public void callService(){
-        //employeeController.callService();
+
+    //change the style on the clicked employee info  component
+    private void setEmployeeComponentOnClick(){
+        this.employeeComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+            employeeController.setSelectedComponentStyleToSelected(this);
+
+        });
+    }
+
+    /**check if filters are active*/
+    public boolean isFilterActive(){
+        return employeeController.isFilterActive();
     }
 }
 

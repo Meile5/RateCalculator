@@ -13,16 +13,13 @@ public class Configuration {
     private BigDecimal utilizationPercentage;
     private BigDecimal workingHours;
     private LocalDateTime savedDate;
-
     private boolean active;
     private BigDecimal dayRate;
     private BigDecimal hourlyRate;
 
     //static  default value because it will be available for all objects
     private static final int  DAY_WORKING_HORS=8;
-
-
-    private  int dayWorkingHours;
+    private  double dayWorkingHours;
 
 
 
@@ -35,16 +32,20 @@ public class Configuration {
     }
 
 
-    public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime savedDate, boolean active) {
+
+
+    public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime savedDate, boolean active,double dayWorkingHours ) {
         this(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours);
         this.savedDate = savedDate;
         this.active = active;
+        this.dayWorkingHours = dayWorkingHours;
     }
 
 
-    public Configuration(int configurationId, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime savedDate, boolean active,int dayWorkingHours) {
-        this(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate, active);
+    public Configuration(int configurationId, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime savedDate, boolean active,double dayWorkingHours) {
+        this(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate, active,dayWorkingHours);
         this.configurationId = configurationId;
+
     }
 
 
@@ -64,7 +65,7 @@ public class Configuration {
      * @param dayWorkingHours       The amount of working hours in a day, if is 0 will be set to default 8 hours;
      */
 
-    public Configuration(int configurationId, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,LocalDateTime configurationDate, boolean active , BigDecimal dayRate, BigDecimal hourlyRate, int dayWorkingHours) {
+    public Configuration(int configurationId, BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours,LocalDateTime configurationDate, boolean active , BigDecimal dayRate, BigDecimal hourlyRate, double dayWorkingHours) {
         this(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours);
         this.configurationId = configurationId;
         this.savedDate = configurationDate;
@@ -77,6 +78,23 @@ public class Configuration {
         this.dayRate=dayRate;
         this.hourlyRate=hourlyRate;
     }
+
+
+    /**copy constructor for when the employee configurations are edited*/
+    public Configuration(Configuration other) {
+        this(other.configurationId,
+                other.annualSalary,
+                other.fixedAnnualAmount,
+                other.overheadMultiplier,
+                other.utilizationPercentage,
+                other.workingHours,
+                other.savedDate,
+                other.active,
+                other.dayRate,
+                other.hourlyRate,
+                other.dayWorkingHours);
+    }
+
 
 
 
@@ -104,6 +122,8 @@ public class Configuration {
         return Objects.hash(savedDate);
     }
 
+    //TODO remove the utilization percentage from the employee configuration if not used annymore
+
 /**used to compare to configuration objects if are equal */
 public boolean isEqualTo(Configuration other) {
     if (other == null) {
@@ -115,8 +135,6 @@ public boolean isEqualTo(Configuration other) {
             && Objects.equals(this.getUtilizationPercentage(), other.getUtilizationPercentage())
             && Objects.equals(this.getWorkingHours(), other.getWorkingHours())
             && Objects.equals(this.getDayWorkingHours(),other.getDayWorkingHours());
-
-
 }
 
 
@@ -136,11 +154,11 @@ public String printConfiguration(){
 
     }
 
-    public int getDayWorkingHours() {
+    public double getDayWorkingHours() {
         return dayWorkingHours;
     }
 
-    public void setDayWorkingHours(int dayWorkingHours) {
+    public void setDayWorkingHours(double dayWorkingHours) {
         this.dayWorkingHours = dayWorkingHours;
     }
 

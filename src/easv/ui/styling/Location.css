@@ -17,3 +17,22 @@
 .country_operational:selected{
     -fx-fill: #f61cf6;
 }
+
+.unsuportedButton{
+    -fx-background-color: #e8f5e9;
+    -fx-background-radius: 10;
+}
+.unsuportedIcon{
+    -fx-stroke: #2ba746;
+}
+
+.unsuportedButton:hover{
+    -fx-background-color: #63B2E1;
+}
+.unsuportedButton:hover .unsuportedIcon{
+   -fx-stroke: #fff;
+    -fx-fill: #fff;
+}
+
+
+

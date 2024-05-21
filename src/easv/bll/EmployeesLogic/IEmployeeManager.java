@@ -19,6 +19,14 @@ public interface IEmployeeManager {
     BigDecimal calculateTeamDayRate(Team team);
     BigDecimal calculateTeamHourlyRate(Team team);
 
+
+
+    /**calculate the total overhead of the teams */
+    public BigDecimal calculateGroupTotalDayRate(List<Team> filteredTeams);
+
+    /**calculate the teams total  hourly rate */
+    public BigDecimal calculateGroupTotalHourRate(List<Team> filteredTeams);
+
     BigDecimal getEmployeeDayRateOnTeam(Employee employee, Team team);
 
     BigDecimal getEmployeeHourlyRateOnTeam(Employee employee, Team team);
@@ -33,7 +41,7 @@ public interface IEmployeeManager {
     /**check if an edit operation was performed on the epmloyee object*/
     boolean isEmployeeEdited(Employee originalEmployee,Employee editedEmployee);
     /**save the edit operation*/
-    Employee saveEditOperation(Employee editedEmployee,int oldConfigurationId) throws RateException;
+    Employee saveEditOperation(Employee editedEmployee,Employee originalEmployee,List<Team> originalEmployeeTeams) throws RateException;
     List<Employee> sortedEmployeesByName(Collection<Employee> values);
 
     /**calculate the day rate for an employee*/
@@ -43,6 +51,9 @@ public interface IEmployeeManager {
     BigDecimal getHourlyRate(Employee employee,double configurableHours);
 
     List<Employee> filterByCountry(Region region,List<Country> countries,Map<Integer,Employee> employees);
+
+    /**filter teams by region */
+    List<Team> filterTeamsByRegion(Region region , List<Country> countries);
 
 
 

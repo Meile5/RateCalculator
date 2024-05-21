@@ -40,6 +40,7 @@ public class DistributeToListCell extends ListCell<Team> {
                 controller = new DistributeFromController(model, team,distributeToMediator, distributionType,modalLayout);
             } else {
                 controller.setTeamToDisplay(team);
+                controller.populateComponentWithValues();
             }
             setGraphic(controller.getRoot());
         }
