@@ -251,7 +251,8 @@ public class DistributionController implements Initializable, DistributionContro
         if (teamsAfterRemoveOperation.isEmpty()) {
             return true;
         }
-        return this.selectedToDistributeTo.getChildren().addAll(teamsAfterRemoveOperation);
+
+        return this.selectedToDistributeTo.getChildren().addAll(teamsAfterRemoveOperation);gitgit
     }
 
     /**
