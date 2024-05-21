@@ -694,8 +694,8 @@ public class Model implements IModel {
     @Override
     public Map<OverheadHistory, List<Team>> saveDistribution() throws RateException {
         insertedDistributionPercentageFromTeams.keySet().forEach((e) -> System.out.println(e.getActiveConfiguration().getTeamDayRate() + " " + e.getActiveConfiguration().getTeamHourlyRate() + " oon saved"));
-        System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "day rate" + selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate() + "team day rate");
-        System.out.println("------=-  before");
+        //System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "day rate" + selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate() + "team day rate");
+        //System.out.println("------=-  before");
         Map<OverheadHistory, List<Team>> performedValues = teamManager.saveDistributionOperation(insertedDistributionPercentageFromTeams, selectedTeamToDistributeFrom, simulationPerformed, teamsWithEmployees);
         //   update the  local teams with the new values;
         if (!performedValues.isEmpty()) {
@@ -759,7 +759,7 @@ public class Model implements IModel {
 
         // Add unique employees back to the observable list
         employeesForTeamsPage.addAll(uniqueEmployees);
-        System.out.println(uniqueEmployees);
+        //System.out.println(uniqueEmployees);
 
         return employeesForTeamsPage;
     }
