@@ -49,7 +49,7 @@ public interface IModel {
      */
     List<Team> getCountryTeams();
 
-    ObservableList<Team> getTeams();
+//    ObservableList<Team> getTeams();
 
     /**
      * used for country input validation

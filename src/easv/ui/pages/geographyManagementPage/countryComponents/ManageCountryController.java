@@ -120,7 +120,7 @@ public class ManageCountryController implements Initializable {
                 }
             }
         }
-        teamsCB.getItems().addAll(model.getTeams());
+        teamsCB.getItems().addAll(model.getOperationalTeams());
     }
 
     private void saveCountryListener() {

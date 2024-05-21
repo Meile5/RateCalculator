@@ -408,9 +408,9 @@ public class Model implements IModel {
         this.teams.putAll(teamManager.getTeams());
     }
 
-    public ObservableMap<Integer, Team> getTeams() {
-        return teams;
-    }
+//    public ObservableMap<Integer, Team> getTeams() {
+//        return teams;
+//    }
 
 
 
@@ -827,6 +827,53 @@ public class Model implements IModel {
         }
         LocalDateTime savedDate = LocalDateTime.now();
         return new TeamConfiguration(teamDayRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, true);
+    }
+
+
+
+    @Override
+    public void deleteRegion(Region region) throws RateException {
+        boolean succeeded = regionManager.deleteRegion(region);
+        if (succeeded) {
+            regionsWithCountries.remove(region.getId());
+        }
+    }
+
+    @Override
+    public void addNewCountry(Country country, List<Team> teamsToAdd) throws RateException {
+        List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
+        List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
+        country = countryLogic.addCountry(country, existingTeams, newTeams);
+        countriesWithTeams.put(country.getId(), country);
+        countries.put(country.getCountryName(), country);
+    }
+
+    @Override
+    public void updateCountry(Country country, List<Team> teamsToAdd) throws RateException {
+        List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
+        List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
+        country = countryLogic.updateCountry(country, existingTeams, newTeams);
+        countriesWithTeams.get(country.getId()).setTeams(teamsToAdd);
+        countries.put(country.getCountryName(), country);
+    }
+
+    @Override
+    public void deleteCountry(Country country) throws RateException {
+        boolean succeeded = countryLogic.deleteCountry(country);
+        if (succeeded) {
+            countriesWithTeams.remove(country.getId());
+            countries.remove(country.getCountryName());
+        }
+    }
+
+    @Override
+    public void addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException {
+        boolean isSucceed = countryLogic.addNewTeams(country, newTeams);
+        if(isSucceed){
+            for (Team team : newTeams){
+                countriesWithTeams.get(country.getId()).addNewTeam(team);
+            }
+        }
     }
 
 
