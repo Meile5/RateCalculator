@@ -217,9 +217,12 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
         String currency = team.getCurrency().toString();
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         List<TeamConfigurationEmployee> teamMembers = selectedConfig.getTeamMembers();
+        System.out.println(selectedConfig.getTeamMembers());
         for (TeamConfigurationEmployee employee : teamMembers) {
+            System.out.println(employee.getEmployeeDailyRate());
             String label = employee.getEmployeeName() + " " + currency + " ";
             pieChartData.add(new PieChart.Data(label, employee.getEmployeeDailyRate()));
+
         }
         /* binds each PieChart.Data object's name property to a concatenated string
          containing the name and day rate, ensuring that both are displayed in the pie chart.*/
