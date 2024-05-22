@@ -21,14 +21,14 @@
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                <children>
                   <Circle radius="7.0" styleClass="circle" />
-                  <Label maxWidth="-Infinity" prefWidth="120.0" text="Expenses overhead" />
-                  <Label fx:id="totalOverheadDaily" maxWidth="-Infinity" prefWidth="100.0" text="Label" />
+                  <Label maxWidth="-Infinity" prefWidth="120.0" text="DayRate" />
+                  <Label fx:id="totalOverheadDaily" maxWidth="-Infinity" prefWidth="100.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                <children>
                   <Circle radius="7.0" styleClass="circle" />
-                  <Label maxWidth="-Infinity" prefWidth="120.0" text="Total overhead" />
+                  <Label maxWidth="-Infinity" prefWidth="120.0" text="HourRate" />
                   <Label fx:id="totalOverheadHourly" maxWidth="-Infinity" prefWidth="100.0" text="Label" />
                </children>
             </HBox>
