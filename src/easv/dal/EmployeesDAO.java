@@ -477,6 +477,7 @@ public class EmployeesDAO implements IEmployeeDAO {
             setOldConfigurationToInactive(oldConfigurationId, conn);
             addEmployeeConfiguration(editedEmployee.getId(), editedEmployee.getActiveConfiguration().getConfigurationId(), conn);
             for(Team team: editedEmployee.getTeams()){
+                System.out.println(team.getActiveConfiguration().isActive() + "alooewed");
                 setOldConfigurationToInactiveTeams(team.getActiveConfiguration().getId(),conn);
                 Integer teamConfigId =  addTeamConfigurationT(team,conn);
                 addEmployeesToTeamHistory(teamConfigId,team.getEmployees(),conn);
@@ -916,6 +917,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
     public Integer addTeamConfigurationT(Team editedTeam, Connection conn) throws SQLException, RateException {
         String sql = "INSERT INTO TeamConfiguration (TeamDailyRate, TeamHourlyRate, GrossMargin, MarkupMultiplier, ConfigurationDate, Active) VALUES (?, ?, ?, ?, ?, ?)";
+
         Integer configurationID = null;
         try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             // Retrieve the active configuration from the team

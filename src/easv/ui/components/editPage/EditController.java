@@ -326,7 +326,7 @@ public class EditController implements Initializable {
             this.employeeDisplayer.setDayRate(employee.getActiveConfiguration().getDayRate().toString());
             this.employeeDisplayer.setHourlyRate(employee.getActiveConfiguration().getHourlyRate().toString());
             if (employeeDisplayer.isFilterActive()) {
-                // this.employeeDisplayer.refreshRates();
+                this.employeeDisplayer.refreshRates();
             }
             PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
             pauseTransition.setOnFinished((e) -> WindowsManagement.closeStackPane(this.firstLayout));
