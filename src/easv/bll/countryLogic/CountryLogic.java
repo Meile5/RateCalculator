@@ -1,6 +1,7 @@
 package easv.bll.countryLogic;
 
 import easv.be.Country;
+import easv.be.Region;
 import easv.be.Team;
 import easv.dal.countryDao.CountryDao;
 import easv.dal.countryDao.ICountryDao;
@@ -138,6 +139,15 @@ public class CountryLogic implements ICountryLogic {
     @Override
     public boolean deleteTeam(Team team) throws RateException {
         return countryDao.deleteTeam(team);
+    }
+
+    @Override
+    public List<Country> performSearchCountryFilter(String filter, Collection<Country> values) {
+        String filterToLowerCase = filter.toLowerCase();
+        return values.stream().filter((country) -> {
+            String name = country.getCountryName().toLowerCase();
+            return name.contains(filterToLowerCase);
+        }).toList();
     }
 
 }

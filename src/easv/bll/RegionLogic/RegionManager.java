@@ -5,7 +5,9 @@ import easv.be.Region;
 import easv.dal.regionDAO.IRegionDAO;
 import easv.dal.regionDAO.RegionDAO;
 import easv.exception.RateException;
+import javafx.collections.ObservableMap;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,5 +49,14 @@ public class RegionManager implements IRegionManager{
     @Override
     public boolean deleteRegion(Region region) throws RateException {
         return regionDAO.deleteRegion(region);
+    }
+
+    @Override
+    public List<Region> performSearchRegionFilter(String filter, Collection<Region> allRegions) {
+        String filterToLowerCase = filter.toLowerCase();
+        return allRegions.stream().filter((region) -> {
+            String name = region.getRegionName().toLowerCase();
+            return name.contains(filterToLowerCase);
+        }).toList();
     }
 }

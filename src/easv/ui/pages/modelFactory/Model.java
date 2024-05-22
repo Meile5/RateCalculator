@@ -444,11 +444,38 @@ public class Model implements IModel {
         return filterResult  ;
     }
 
+    //REGION FILTER LOGIC
+    public ObservableList<Region> getRegionFilterResults(String filter){
+        ObservableList<Region> regionFilterResult= FXCollections.observableArrayList();
+        regionFilterResult.setAll(regionManager.performSearchRegionFilter(filter,regionsWithCountries.values()));
+        return regionFilterResult;
+    }
+
+
+
+
+
+
+
     /**return the selected team from the search operation results*/
     @Override
     public Team getTeamById(int entityId) {
         return  teamsWithEmployees.get(entityId);
     }
+    /**return region by id */
+    public Region getRegionById(int regionId){
+        return regionsWithCountries.get(regionId);
+    }
+
+    public Country getCountryById(int countryId){
+        return countriesWithTeams.get(countryId);
+    };
+    /**perform the region search operation*/
+   public   ObservableList<Country> getCountryFilterResults(String filter){
+       ObservableList<Country> countryFilterResult= FXCollections.observableArrayList();
+       countryFilterResult.setAll(countryLogic.performSearchCountryFilter(filter,countriesWithTeams.values()));
+       return countryFilterResult;
+    };
 
 
     /**
