@@ -480,6 +480,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 System.out.println(team.getActiveConfiguration().isActive() + "alooewed");
                 setOldConfigurationToInactiveTeams(team.getActiveConfiguration().getId(),conn);
                 Integer teamConfigId =  addTeamConfigurationT(team,conn);
+                addTeamToConfiguration(team,teamConfigId,conn);
                 addEmployeesToTeamHistory(teamConfigId,team.getEmployees(),conn);
             }
             conn.commit();
@@ -915,6 +916,8 @@ public class EmployeesDAO implements IEmployeeDAO {
         } catch (SQLException e) {
             throw new RateException(ErrorCode.OPERATION_DB_FAILED);        }
     }
+
+    //TODO added the true for the configuration when is added in the database, i had problems with
     public Integer addTeamConfigurationT(Team editedTeam, Connection conn) throws SQLException, RateException {
         String sql = "INSERT INTO TeamConfiguration (TeamDailyRate, TeamHourlyRate, GrossMargin, MarkupMultiplier, ConfigurationDate, Active) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -928,7 +931,8 @@ public class EmployeesDAO implements IEmployeeDAO {
             psmt.setDouble(3, teamConfiguration.getGrossMargin());
             psmt.setDouble(4, teamConfiguration.getMarkupMultiplier());
             psmt.setTimestamp(5, Timestamp.valueOf(teamConfiguration.getSavedDate()));
-            psmt.setString(6, String.valueOf(teamConfiguration.isActive()));
+           psmt.setString(6,"true");
+            // psmt.setString(6, String.valueOf(teamConfiguration.isActive()));
             psmt.executeUpdate();
 
             try (ResultSet res = psmt.getGeneratedKeys()) {

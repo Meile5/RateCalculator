@@ -228,10 +228,10 @@ public class EmployeeManager implements IEmployeeManager {
 //        }
 
     //     Print old values , remove the print statatement
-        for (Team team : employeeTeams) {
-            System.out.println(team.getActiveConfiguration().getTeamHourlyRate() + team.getTeamName() + " old value hour");
-            System.out.println(team.getActiveConfiguration().getTeamDayRate() + team.getTeamName() + " old day rate");
-        }
+//        for (Team team : employeeTeams) {
+//            System.out.println(team.getActiveConfiguration().getTeamHourlyRate() + team.getTeamName() + " old value hour");
+//            System.out.println(team.getActiveConfiguration().getTeamDayRate() + team.getTeamName() + " old day rate");
+//        }
 
         // Create copies of the original employee teams
         for (Team team : employeeTeams) {
@@ -282,13 +282,12 @@ public class EmployeeManager implements IEmployeeManager {
             for (Employee emplo : team.getTeamMembers()) {
                 System.out.println(emplo.getName() + "emplooverhead" + emplo.getName() + emplo.getActiveConfiguration().getDayRate() + "day rate");
             }
-
         }
         editedEmployee.setTeams(validTeams);
         editedEmployee.getTeams().forEach((e)->{
             System.out.println(e.getActiveConfiguration().isActive());});
-        return editedEmployee;
-        //return  employeeDAO.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
+       // return editedEmployee;
+        return  employeeDAO.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
     }
 
 
