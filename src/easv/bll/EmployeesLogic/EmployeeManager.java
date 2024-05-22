@@ -135,9 +135,11 @@ public class EmployeeManager implements IEmployeeManager {
      */
     public BigDecimal calculateGroupTotalDayRate(List<Team> filteredTeams) {
         BigDecimal teamsDayRateSum = BigDecimal.ZERO;
+        System.out.println(filteredTeams.size());
 
         for (Team teams : filteredTeams) {
             TeamConfiguration teamConfiguration = teams.getActiveConfiguration();
+            System.out.println(teamConfiguration+"config");
             if (teamConfiguration != null) {
                 BigDecimal teamDayRate = teamConfiguration.getTeamDayRate();
                 if (teamDayRate != null) {
@@ -145,7 +147,7 @@ public class EmployeeManager implements IEmployeeManager {
                 }
             }
         }
-
+        System.out.println(teamsDayRateSum+"day rate sum");
         return teamsDayRateSum;
     }
 
@@ -225,7 +227,7 @@ public class EmployeeManager implements IEmployeeManager {
 //            }
 //        }
 
-        // Print old values , remove the print statatement
+    //     Print old values , remove the print statatement
 //        for (Team team : employeeTeams) {
 //            System.out.println(team.getActiveConfiguration().getTeamHourlyRate() + team.getTeamName() + " old value hour");
 //            System.out.println(team.getActiveConfiguration().getTeamDayRate() + team.getTeamName() + " old day rate");
@@ -280,10 +282,12 @@ public class EmployeeManager implements IEmployeeManager {
             for (Employee emplo : team.getTeamMembers()) {
                 System.out.println(emplo.getName() + "emplooverhead" + emplo.getName() + emplo.getActiveConfiguration().getDayRate() + "day rate");
             }
-
         }
         editedEmployee.setTeams(validTeams);
-        return employeeDAO.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
+        editedEmployee.getTeams().forEach((e)->{
+            System.out.println(e.getActiveConfiguration().isActive());});
+       // return editedEmployee;
+        return  employeeDAO.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
     }
 
 

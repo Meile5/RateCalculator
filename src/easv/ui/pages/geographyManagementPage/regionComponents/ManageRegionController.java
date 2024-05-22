@@ -105,6 +105,7 @@ public class ManageRegionController implements Initializable {
 
     private void setFields() {
         if(region != null){
+            isEditOperation = true;
             regionNameTF.setText(region.getRegionName());
             if (region.getCountries().getFirst() != null) {
                 countriesListView.getItems().addAll(region.getCountries());
@@ -112,7 +113,6 @@ public class ManageRegionController implements Initializable {
             }
         }
         countriesCB.getItems().addAll(model.getOperationalCountries());
-        isEditOperation = true;
     }
 
     private void saveRegionListener() {

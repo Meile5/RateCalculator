@@ -7,7 +7,11 @@ import easv.be.TeamConfigurationEmployee;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
+import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFromController;
+import easv.ui.components.searchComponent.DataHandler;
+import easv.ui.components.searchComponent.SearchController;
 import easv.ui.components.teamsInfoComponent.TeamInfoController;
+import easv.ui.pages.distribution.DistributionType;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.modelFactory.ModelFactory;
 import javafx.application.Platform;
@@ -32,7 +36,7 @@ import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class TeamsPageController implements Initializable {
+public class TeamsPageController implements Initializable, DataHandler<Team> {
     private IModel model;
     @FXML
     private Parent teamPage;
@@ -47,12 +51,15 @@ public class TeamsPageController implements Initializable {
     @FXML
     private PieChart teamsPieChart;
     private StackPane firstLayout;
+    @FXML
+    private VBox searchField;
 
     private TeamInfoController selectedTeam;
+
     public TeamsPageController(IModel model, StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamsManagementPage.fxml"));
         loader.setController(this);
-        this.model=model;
+        this.model = model;
         this.firstLayout = firstLayout;
         try {
             teamPage = loader.load();
@@ -62,34 +69,44 @@ public class TeamsPageController implements Initializable {
         }
 
     }
-    public Parent getRoot(){
+
+    public Parent getRoot() {
         return teamPage;
 
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //display teams
+        displayTeams();
+        //initialize search field
+        intializeSearchField();
+
+    }
 
 
-            displayTeams();
-
+    /**
+     * add the team search
+     */
+    private void intializeSearchField() {
+        SearchController<Team> searchField = new SearchController<>(this);
+        this.searchField.getChildren().add(searchField.getSearchRoot());
     }
 
     public void displayTeams() {
         teamsContainer.getChildren().clear();
         ObservableList<HBox> teamInfoControllers = FXCollections.observableArrayList();
-            model.getOperationalTeams()
+        model.getOperationalTeams()
                 .forEach(t -> {
-                TeamInfoController teamInfoController = new TeamInfoController(t, model, this, firstLayout);
+                    TeamInfoController teamInfoController = new TeamInfoController(t, model, this, firstLayout);
                     teamInfoControllers.add(teamInfoController
                             .getRoot());
-            });
-            teamsContainer.getChildren().setAll(teamInfoControllers);
-        }
+                });
+        teamsContainer.getChildren().setAll(teamInfoControllers);
+    }
 
 
-
-
-    public void clearTeams(){
+    public void clearTeams() {
         teamsContainer.getChildren().clear();
     }
 
@@ -117,6 +134,7 @@ public class TeamsPageController implements Initializable {
      * populates the lineChart with history from a selected year, it includes day rates and months
      * initializes a new series for an XYChart with String as the X-axis type and BigDecimal as the Y-axis type
      * format String into "Jan 01"
+     *
      * @param selectedYear is the year that is selected from a combobox
      */
     private void populateChartForYear(Team team, int selectedYear) {
@@ -134,10 +152,12 @@ public class TeamsPageController implements Initializable {
         lineChart.getData().clear();
         lineChart.getData().add(series);
     }
+
     /**
      * populates the ComboBox with years based on the team's configurations history
      * if configurations exist extracts only years from the configurations, sorts them in descending order
      * sets the latest year as the initial value of the ComboBox
+     *
      * @param team the team whose configurations history is used to populate the ComboBox
      */
     public void populateComboBoxWithYears(Team team) {
@@ -158,10 +178,12 @@ public class TeamsPageController implements Initializable {
         }
     }
 
-    /** sets a list of team history dates in combobox of pieChart
+    /**
+     * sets a list of team history dates in combobox of pieChart
+     *
      * @param team is being passed from teamInfo controller to get the selected team component team
      */
-    public void setTeamHistoryDatesInComboBox(Team team){
+    public void setTeamHistoryDatesInComboBox(Team team) {
         List<TeamConfiguration> teamConfigurations = team.getTeamConfigurationsHistory();
         teamConfigurations.sort(Comparator.comparing(TeamConfiguration::getSavedDate).reversed());
         teamsHistory.getItems().clear();
@@ -172,10 +194,12 @@ public class TeamsPageController implements Initializable {
         }
 
     }
-    /** sets a list of team history dates in combobox of pieChart
+
+    /**
+     * sets a list of team history dates in combobox of pieChart
      * adds listener in order to display pieChart info based on selected history configuration
      */
-    public void historyComboBoxListener(Team team){
+    public void historyComboBoxListener(Team team) {
         teamsHistory.setOnAction(event -> {
             TeamConfiguration selectedConfig = teamsHistory.getValue();
             if (selectedConfig != null) {
@@ -184,16 +208,17 @@ public class TeamsPageController implements Initializable {
         });
     }
 
-    /** displays pieChart data which is teamMembers of teamHistory configurations
+    /**
+     * displays pieChart data which is teamMembers of teamHistory configurations
      * gets employee name and rate for each to display in pieChart slice
      * sets team name into pieChart label
      */
-    private void displayEmployeesForDate(Team team, TeamConfiguration selectedConfig){
+    private void displayEmployeesForDate(Team team, TeamConfiguration selectedConfig) {
         String currency = team.getCurrency().toString();
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         List<TeamConfigurationEmployee> teamMembers = selectedConfig.getTeamMembers();
         for (TeamConfigurationEmployee employee : teamMembers) {
-            String label = employee.getEmployeeName() + " " + currency+ " ";
+            String label = employee.getEmployeeName() + " " + currency + " ";
             pieChartData.add(new PieChart.Data(label, employee.getEmployeeDailyRate()));
         }
         /* binds each PieChart.Data object's name property to a concatenated string
@@ -202,7 +227,7 @@ public class TeamsPageController implements Initializable {
                 data.nameProperty().bind(
                         Bindings.concat(data.getName(), " ", data.pieValueProperty())
                 )
-                );
+        );
         teamsPieChart.setData(pieChartData);
         teamsPieChart.setTitle(team.getTeamName());
         teamsPieChart.setLabelLineLength(10);
@@ -213,11 +238,22 @@ public class TeamsPageController implements Initializable {
     }
 
 
+    @Override
+    public ObservableList<Team> getResultData(String filter) {
+        return model.getTeamsFilterResults(filter);
+    }
 
+    @Override
+    public void performSelectSearchOperation(int entityId) throws RateException {
+        Team resultedTeam = model.getTeamById(entityId);
+        TeamInfoController teamInfoController = new TeamInfoController(resultedTeam, model, this, firstLayout);
+        this.teamsContainer.getChildren().clear();
+        this.teamsContainer.getChildren().add(teamInfoController.getRoot());
+    }
 
-
-
-
-
-
+    @Override
+    public void undoSearchOperation() throws RateException {
+        teamsContainer.getChildren().clear();
+        displayTeams();
+    }
 }

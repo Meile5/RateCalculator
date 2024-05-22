@@ -361,22 +361,20 @@ public class Model implements IModel {
 
         Employee editedSavedEmployee = employeeManager.saveEditOperation(editedEmployee, originalEmployee,originalEmployeeTeams );
 
-
-       /* Employee editedEmployeeSaved = employeeManager.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
-        if (editedEmployeeSaved != null) {*
-            editedEmployeeSaved.addConfiguration(editedEmployeeSaved.getActiveConfiguration());
-            editedEmployeeSaved.setHourlyRate(employeeManager.getHourlyRate(editedEmployeeSaved,0));
-            editedEmployeeSaved.setDailyRate(employeeManager.getDayRate(editedEmployeeSaved));
-            this.employees.put(editedEmployee.getId(), editedEmployeeSaved);
+        editedSavedEmployee.setCountries(originalEmployee.getCountries());
+        editedSavedEmployee.setRegions(originalEmployee.getRegions());
+        editedSavedEmployee.setTeams(originalEmployee.getTeams());
+        System.out.println(editedSavedEmployee.getTeams().size() + "teams size");
+       if (editedSavedEmployee != null) {
+            this.employees.put(editedEmployee.getId(), editedSavedEmployee);
             // update the filter list with the new updated values
-            for (int i = 0; i < filteredEmployeesList.size(); i++) {
-                if (displayedEmployees.get(i).getId()==editedEmployeeSaved.getId()) {
-                    displayedEmployees.set(i, editedEmployeeSaved);
+            for (int i = 0; i <sortedEmployeesByName.size(); i++) {
+                if (displayedEmployees.get(i).getId()==editedSavedEmployee.getId()) {
+                    displayedEmployees.set(i, editedSavedEmployee);
                     break;
                 }
             }
-            return true;
-        }*/
+        }
         return editedSavedEmployee;
 
     }
