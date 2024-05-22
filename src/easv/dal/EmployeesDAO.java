@@ -811,13 +811,13 @@ public class EmployeesDAO implements IEmployeeDAO {
             int configurationID = addTeamConfigurationT(editedTeam, conn);
             System.out.println(configurationID);
             editedTeam.getActiveConfiguration().setId(configurationID);
+            editedTeam.getTeamConfigurationsHistory().add(editedTeam.getActiveConfiguration());
             System.out.println(editedTeam.getActiveConfiguration().getId() + "id after setting ");
             addTeamToConfiguration(editedTeam, configurationID, conn);
             addEmployeeHistoryTeams(configurationID, employees, conn);
             deleteTeamEmployeeConnections(conn, employeesToDelete, editedTeam.getId()); //team id
             setOldConfigurationToInactiveTeams(idOriginalTeam, conn);
-            System.out.println("Before addEmployees to team" + editedTeam.getEmployees()+ " :editedTeam");
-            System.out.println("Before addEmployees to team" + employees + " :employees");
+
             addEmployeesToTeam(employees, editedTeam.getId(), conn);
 
             conn.commit();
@@ -938,6 +938,7 @@ public class EmployeesDAO implements IEmployeeDAO {
             try (ResultSet res = psmt.getGeneratedKeys()) {
                 if (res.next()) {
                     configurationID = res.getInt(1);
+
                 } else {
                     throw new RateException(ErrorCode.OPERATION_DB_FAILED);
                 }

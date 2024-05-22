@@ -138,6 +138,7 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
      * @param selectedYear is the year that is selected from a combobox
      */
     private void populateChartForYear(Team team, int selectedYear) {
+        System.out.println(team.getTeamConfigurationsHistory() + "----------");
         XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
         series.setName(team.getTeamName());
         /* Get the configurations for the selected year*/
