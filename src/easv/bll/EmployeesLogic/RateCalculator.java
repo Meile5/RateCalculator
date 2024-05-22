@@ -121,7 +121,8 @@ public class RateCalculator implements IRateCalculator {
 
     public BigDecimal calculateEmployeeHourlyRateOnTeam(Employee employee, Team team){
         BigDecimal hourlyRate = employee.getActiveConfiguration().getHourlyRate();
-        BigDecimal utilizationPercentage = team.getUtilizationPercentage().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
+        BigDecimal utilizationPercentage = employee.getUtilPerTeams().get(team.getId()).divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
+        System.out.println("utilizationPercentage: " + utilizationPercentage);
         return (hourlyRate.multiply(utilizationPercentage)).setScale(2, RoundingMode.HALF_UP);
     }
     public BigDecimal calculateEmployeeHourlyRateOnTeamE(Employee employee, Team team){
@@ -189,8 +190,8 @@ public class RateCalculator implements IRateCalculator {
         double markupMultiplier = 0;
         double grossMargin = 0;
         if(team.getActiveConfiguration() != null) {
-            markupMultiplier = team.getActiveConfiguration().getMarkupMultiplier();
-            grossMargin = team.getActiveConfiguration().getGrossMargin();
+            markupMultiplier = team.getMarkupMultiplierTemporary();
+            grossMargin = team.getGrossMarginTemporary();
         }
         for (Employee employee : team.getEmployees()) {
             BigDecimal dayRate = calculateEmployeeDayRateOnTeamE(employee, team);
@@ -213,8 +214,8 @@ public class RateCalculator implements IRateCalculator {
         double markupMultiplier = 0;
         double grossMargin = 0;
         if(team.getActiveConfiguration() != null) {
-            markupMultiplier = team.getActiveConfiguration().getMarkupMultiplier();
-            grossMargin = team.getActiveConfiguration().getGrossMargin();
+            markupMultiplier = team.getMarkupMultiplierTemporary();
+            grossMargin = team.getGrossMarginTemporary();
         }
         for (Employee employee : team.getEmployees()) {
             BigDecimal hourlyRate = calculateEmployeeHourlyRateOnTeamE(employee, team);
