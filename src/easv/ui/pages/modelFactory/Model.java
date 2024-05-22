@@ -769,10 +769,6 @@ public class Model implements IModel {
             //System.out.println(employeesToDelete +" in model");
             editedTeam.removeTeamMember(employeesDelete);
         }
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("before loop performEditTeam: " + employees + " :employees");
-        System.out.println("before loop performEditTeam: " + editedTeam.getEmployees() + " :editedTeam");
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         // Replace with new employees from the provided list and update their rates
         for (Employee employee : employees) {
           //  System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");
@@ -802,19 +798,14 @@ public class Model implements IModel {
             newTeamConfiguration.addEmployeeToTeamHistory(teamConfigurationEmployee);
             editedTeam.setActiveConfiguration(newTeamConfiguration);
         }
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("after loop performEditTeam: " + employees + " :employees");
-        System.out.println("after loop performEditTeam: " + editedTeam.getEmployees() + " :editedTeam");
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
-        System.out.println("before " + teamsWithEmployees.get(editedTeam.getId()).getEmployees() + "from the model");
+
+
         Team editedTeamSaved = employeeManager.saveTeamEditOperation(editedTeam, originalTeam.getActiveConfiguration().getId(), employeesToDelete, employees);
-        System.out.println("after employeeManager.saveTeamEditOperation" + editedTeamSaved.getEmployees());
+
         // Update the model map with the edited team
         if (editedTeamSaved != null) {
-            System.out.println("-------------------------------------------------------------------");
-            System.out.println("Updating map with edited team: " + editedTeamSaved.getEmployees());
-            System.out.println("Updating map with edited team: " + editedTeamSaved.getActiveConfiguration().getId());
+
             // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
             // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
             teamsWithEmployees.remove(originalTeam.getId());
@@ -833,9 +824,8 @@ public class Model implements IModel {
         double markupMultiplier = 0;
         if (team.getActiveConfiguration() != null) {
             grossMargin = checkNullValues(team.getGrossMarginTemporary());
-            System.out.println(grossMargin);
             markupMultiplier = checkNullValues(team.getMarkupMultiplierTemporary());
-            System.out.println(markupMultiplier);
+
         }
         LocalDateTime savedDate = LocalDateTime.now();
         return new TeamConfiguration(teamDayRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, true);

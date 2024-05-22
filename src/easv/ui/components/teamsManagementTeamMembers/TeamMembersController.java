@@ -63,13 +63,13 @@ public class TeamMembersController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
-        utilListener();
+       // utilListener();
     }
-    private void utilListener() {
+  /*  private void utilListener() {
         utilPercentageToAdd.textProperty().addListener((observable, oldValue, newValue) -> {
             validateUtilization();
         });
-    }
+    }*/
 
     public void setLabels() {
         if (employee != null) {
@@ -127,7 +127,7 @@ public class TeamMembersController implements Initializable {
         return newUtil.compareTo(currentUtilInTeam.add(remainingUtilization)) <= 0;
 
     }*/
-   private boolean isValidUtilization() {
+  /* private boolean isValidUtilization() {
        String currentUtilInTeamStr = utilizationInTeam.getText().replace("%", "").trim();
        String newUtilStr = utilPercentageToAdd.getText().trim();
 
@@ -158,6 +158,6 @@ public class TeamMembersController implements Initializable {
         }
 
         return isValid;
-    }
+    }*/
 
 }

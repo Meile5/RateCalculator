@@ -59,14 +59,14 @@ public class EmployeesToAdd implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
-        utilListener();
+       // utilListener();
 
     }
-    private void utilListener() {
+   /* private void utilListener() {
         utilPercentageToAdd.textProperty().addListener((observable, oldValue, newValue) -> {
            TeamValidation.isPercentageValid(utilPercentageToAdd, employee);
         });
-    }
+    }*/
 
     public void setLabels() {
         if (employee != null) {

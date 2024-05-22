@@ -27,3 +27,7 @@
     -fx-background-radius: 5px; /* Rounded corners */
     -fx-border-radius: 5px; /* Rounded corners */
 }
+
+.scroll-bar {
+    -fx-opacity: 0;
+}
