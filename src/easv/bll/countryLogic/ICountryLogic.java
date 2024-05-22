@@ -14,18 +14,24 @@ public interface ICountryLogic {
     Map<String, Country> getCountries() throws RateException;
 
 
-    /**extract the countries to be used for the  map view component*/
-  Map<String, Country> getCountriesForMap(Map<Integer, Country> operationalCountries);
+    /**
+     * extract the countries to be used for the  map view component
+     */
+    Map<String, Country> getCountriesForMap(Map<Integer, Country> operationalCountries);
 
-    Country addCountry(Country country, List<Team> teams, List<Team> newTeams) throws RateException;
+    Country addCountry(Country country, List<Team> teams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException;
 
-    Country updateCountry(Country country, List<Team> teams, List<Team> newTeams) throws RateException;
+    Country updateCountry(Country country, List<Team> teams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException;
 
     boolean deleteCountry(Country country) throws RateException;
 
     List<Team> checkNewTeams(List<Team> teamsToCheck, Map<Integer, Team> teams);
 
-    List<Team> checkExistingTeams(List<Team> teamsToCheck, ObservableMap<Integer, Team> teams);
+    List<Team> checkExistingTeams(List<Team> teamsToCheck, Map<Integer, Team> teams);
 
-    boolean addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException;
+    List<Team> checkTeamsToUpdate(List<Team> teamsToCheck, Map<Integer, Team> teams);
+
+    boolean addNewTeam(Country country, Team team) throws SQLException, RateException;
+
+    boolean deleteTeam(Team team) throws RateException;
 }

@@ -18,8 +18,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.util.*;
+
 public class Model implements IModel {
 
 
@@ -351,13 +353,11 @@ public class Model implements IModel {
      * @param editedEmployee   the employee after editing
      */
     @Override
-    public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
+    public Employee updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
         List<Team> originalEmployeeTeams =  new ArrayList<>();
         for(Team team : employees.get(originalEmployee.getId()).getTeams()){
              originalEmployeeTeams.add(teamsWithEmployees.get(team.getId()));
         }
-
-
 
         Employee editedSavedEmployee = employeeManager.saveEditOperation(editedEmployee, originalEmployee,originalEmployeeTeams );
 
@@ -377,7 +377,7 @@ public class Model implements IModel {
             }
             return true;
         }*/
-        return true;
+        return editedSavedEmployee;
 
     }
 
@@ -408,9 +408,9 @@ public class Model implements IModel {
         this.teams.putAll(teamManager.getTeams());
     }
 
-//    public ObservableMap<Integer, Team> getTeams() {
-//        return teams;
-//    }
+    public ObservableMap<Integer, Team> getTeams() {
+        return teams;
+    }
 
 
 
@@ -692,8 +692,8 @@ public class Model implements IModel {
     @Override
     public Map<OverheadHistory, List<Team>> saveDistribution() throws RateException {
         insertedDistributionPercentageFromTeams.keySet().forEach((e) -> System.out.println(e.getActiveConfiguration().getTeamDayRate() + " " + e.getActiveConfiguration().getTeamHourlyRate() + " oon saved"));
-        System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "day rate" + selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate() + "team day rate");
-        System.out.println("------=-  before");
+        //System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "day rate" + selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate() + "team day rate");
+        //System.out.println("------=-  before");
         Map<OverheadHistory, List<Team>> performedValues = teamManager.saveDistributionOperation(insertedDistributionPercentageFromTeams, selectedTeamToDistributeFrom, simulationPerformed, teamsWithEmployees);
         //   update the  local teams with the new values;
         if (!performedValues.isEmpty()) {
@@ -757,14 +757,10 @@ public class Model implements IModel {
 
         // Add unique employees back to the observable list
         employeesForTeamsPage.addAll(uniqueEmployees);
-        System.out.println(uniqueEmployees);
+        //System.out.println(uniqueEmployees);
 
         return employeesForTeamsPage;
     }
-
-
-
-
 
     public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
 
@@ -859,18 +855,36 @@ public class Model implements IModel {
     public void addNewCountry(Country country, List<Team> teamsToAdd) throws RateException {
         List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
         List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
-        country = countryLogic.addCountry(country, existingTeams, newTeams);
+        List<Team> teamsToUpdate = countryLogic.checkTeamsToUpdate(teamsToAdd, teams);
+        country = countryLogic.addCountry(country, existingTeams, newTeams, teamsToUpdate);
         countriesWithTeams.put(country.getId(), country);
         countries.put(country.getCountryName(), country);
+        newTeams.forEach(team -> {
+            teamsWithEmployees.put(team.getId(), team);
+            teams.put(team.getId(), team);
+        });
+        teamsToUpdate.forEach(team -> {
+            teamsWithEmployees.put(team.getId(), team);
+            teams.put(team.getId(), team);
+        });
     }
 
     @Override
     public void updateCountry(Country country, List<Team> teamsToAdd) throws RateException {
         List<Team> newTeams = countryLogic.checkNewTeams(teamsToAdd, teams);
         List<Team> existingTeams = countryLogic.checkExistingTeams(teamsToAdd, teams);
-        country = countryLogic.updateCountry(country, existingTeams, newTeams);
+        List<Team> teamsToUpdate = countryLogic.checkTeamsToUpdate(teamsToAdd, teams);
+        country = countryLogic.updateCountry(country, existingTeams, newTeams, teamsToUpdate);
         countriesWithTeams.get(country.getId()).setTeams(teamsToAdd);
         countries.put(country.getCountryName(), country);
+        newTeams.forEach(team -> {
+            teamsWithEmployees.put(team.getId(), team);
+            teams.put(team.getId(), team);
+        });
+        teamsToUpdate.forEach(team -> {
+            teamsWithEmployees.put(team.getId(), team);
+            teams.put(team.getId(), team);
+        });
     }
 
     @Override
@@ -883,27 +897,23 @@ public class Model implements IModel {
     }
 
     @Override
-    public void addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException {
-        boolean isSucceed = countryLogic.addNewTeams(country, newTeams);
+    public void addNewTeam(Country country, Team team) throws SQLException, RateException {
+        boolean isSucceed = countryLogic.addNewTeam(country, team);
         if(isSucceed){
-            for (Team team : newTeams){
-                countriesWithTeams.get(country.getId()).addNewTeam(team);
-            }
+            teamsWithEmployees.put(team.getId(), team);
+            teams.put(team.getId(), team);
+            countriesWithTeams.get(country.getId()).addNewTeam(team);
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public void deleteTeam(Team team) throws RateException {
+        boolean isSucceed = countryLogic.deleteTeam(team);
+        if(isSucceed){
+            teamsWithEmployees.remove(team.getId());
+            teams.remove(team.getId());
+        }
+    }
 
 
 }

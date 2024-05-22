@@ -12,7 +12,7 @@ import java.util.Map;
 public interface ICountryDao {
     Map<String, Country> getCountries() throws RateException;
 
-    Integer addCountry(Country country, List<Team> teams, List<Team> newTeams) throws RateException;
+    Integer addCountry(Country country, List<Team> teams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException;
 
     void addNewTeamsToCountry(List<Integer> newTeamsIds, Integer countryID, Connection conn) throws RateException;
 
@@ -20,7 +20,9 @@ public interface ICountryDao {
 
     List<Integer> addTeams(List<Team> teams, Connection conn) throws RateException, SQLException;
 
-    void updateCountry(Country country, List<Team> teamsToAdd, List<Team> teamsToRemove, List<Team> newTeams) throws RateException;
+    void updateCountry(Country country, List<Team> teamsToAdd, List<Team> teamsToRemove, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException;
 
     boolean deleteCountry(Country country) throws RateException;
+
+    boolean deleteTeam(Team team) throws RateException;
 }

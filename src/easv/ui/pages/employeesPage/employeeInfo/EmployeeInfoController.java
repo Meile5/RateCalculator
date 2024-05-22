@@ -206,6 +206,7 @@ public class EmployeeInfoController implements Initializable {
     public boolean isFilterActive(){
         return employeeController.isFilterActive();
     }
+
 }
 
 

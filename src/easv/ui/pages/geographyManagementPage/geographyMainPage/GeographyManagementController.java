@@ -54,11 +54,12 @@ public class GeographyManagementController implements Initializable {
     private ObservableList<Country> countries;
     private ObservableList<Team> teams;
 
-    public GeographyManagementController(IModel model, StackPane pane) {
+    public GeographyManagementController(IModel model, StackPane pane, StackPane secondPane) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("GeographyManagementPage.fxml"));
         loader.setController(this);
         this.model=model;
         this.pane = pane;
+        this.secondPane = secondPane;
         try {
             createPage=loader.load();
         } catch (IOException e) {
@@ -99,8 +100,11 @@ public class GeographyManagementController implements Initializable {
                 return new Task<>() {
                     @Override
                     protected Void call() {
+                        System.out.println("FIRST: " + model.getOperationalRegions());
                         regions = FXCollections.observableArrayList(model.getOperationalRegions());
+                        System.out.println("SECOND: " + model.getOperationalCountries());
                         countries = FXCollections.observableArrayList(model.getOperationalCountries());
+                        System.out.println("THIRD: " + model.getOperationalTeams());
                         teams = FXCollections.observableArrayList(model.getOperationalTeams());
                         return null;
                     }
@@ -185,7 +189,7 @@ public class GeographyManagementController implements Initializable {
 
     public void addCountryComponent(Country country) {
         DeleteCountryController deleteCountryController = new DeleteCountryController(pane, model, country, this);
-        CountryComponent countryComponent = new CountryComponent(model, pane, country, deleteCountryController, this);
+        CountryComponent countryComponent = new CountryComponent(model, pane, country, deleteCountryController, this, secondPane);
         countriesVBox.getChildren().add(countryComponent.getRoot());
         if(!countries.contains(country))
             countries.add(country);

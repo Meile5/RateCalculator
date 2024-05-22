@@ -72,7 +72,7 @@ public interface IModel {
     /**
      * save the updated employee to the database
      */
-    boolean updateEditedEmployee(Employee employee, Employee editedEmployee) throws RateException;
+    Employee updateEditedEmployee(Employee employee, Employee editedEmployee) throws RateException;
 
     List<String> getValidCountries();
 
@@ -245,5 +245,7 @@ public interface IModel {
 
     void deleteCountry(Country country) throws RateException;
 
-    void addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException;
+    void addNewTeam(Country country, Team team) throws SQLException, RateException;
+
+    void deleteTeam(Team team) throws RateException;
 }

@@ -37,4 +37,7 @@ public interface IEmployeeDAO {
 
     Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException;
     Team saveEditOperationTeam(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException;
+
+    /** retrieve the employee utilization per teams in order to calculate the  new team overhead*/
+   Map<Integer, BigDecimal> getEmployeeUtilizationPerTeams(int employeeId) throws RateException;
 }

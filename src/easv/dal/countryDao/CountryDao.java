@@ -41,7 +41,7 @@ public class CountryDao implements ICountryDao {
     }
 
     @Override
-    public Integer addCountry(Country country, List<Team> teams, List<Team> newTeams) throws RateException {
+    public Integer addCountry(Country country, List<Team> teams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException {
         Integer countryID = null;
         Connection conn = null;
         try {
@@ -57,6 +57,9 @@ public class CountryDao implements ICountryDao {
                     } else {
                         throw new RateException(ErrorCode.OPERATION_DB_FAILED);
                     }
+                }
+                if(!teamsToUpdate.isEmpty()){
+                    updateTeams(teamsToUpdate, conn);
                 }
                 if(!newTeams.isEmpty()){
                     List<Integer> teamsIds = addTeams(newTeams, conn);
@@ -83,6 +86,21 @@ public class CountryDao implements ICountryDao {
             }
         }
         return countryID;
+    }
+
+    private void updateTeams(List<Team> teamsToUpdate, Connection conn) throws RateException {
+        String sql = "UPDATE Teams SET TeamName = ?, TeamCurrency = ? WHERE TeamID = ?";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            for (Team team : teamsToUpdate) {
+                psmt.setString(1, team.getTeamName());
+                psmt.setString(2, team.getCurrency().name());
+                psmt.setInt(3, team.getId());
+                psmt.executeUpdate();
+            }
+            psmt.executeBatch();
+        } catch (SQLException e) {
+            throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+        }
     }
 
     @Override
@@ -142,7 +160,7 @@ public class CountryDao implements ICountryDao {
     }
 
     @Override
-    public void updateCountry(Country country, List<Team> teamsToAdd, List<Team> teamsToRemove, List<Team> newTeams) throws RateException {
+    public void updateCountry(Country country, List<Team> teamsToAdd, List<Team> teamsToRemove, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException {
         Connection conn = null;
         try {
             conn = connectionManager.getConnection();
@@ -152,6 +170,10 @@ public class CountryDao implements ICountryDao {
                 psmt.setString(1, country.getCountryName());
                 psmt.setInt(2, country.getId());
                 psmt.executeUpdate();
+
+                if(!teamsToUpdate.isEmpty()){
+                    updateTeams(teamsToUpdate, conn);
+                }
 
                 if(!newTeams.isEmpty()){
                     List<Integer> teamsIds = addTeams(newTeams, conn);
@@ -223,6 +245,19 @@ public class CountryDao implements ICountryDao {
             } catch (SQLException e) {
                 throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean deleteTeam(Team team) throws RateException {
+        String sql = "DELETE FROM Teams WHERE TeamID = ?";
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setInt(1, team.getId());
+            psmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
         }
         return true;
     }

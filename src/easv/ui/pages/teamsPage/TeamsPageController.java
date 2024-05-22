@@ -84,7 +84,7 @@ public class TeamsPageController implements Initializable {
                             .getRoot());
             });
             teamsContainer.getChildren().setAll(teamInfoControllers);
-    }
+        }
 
 
 

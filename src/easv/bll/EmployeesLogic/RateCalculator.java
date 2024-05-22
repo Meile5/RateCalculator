@@ -19,8 +19,6 @@ public class RateCalculator implements IRateCalculator {
      */
 
     public BigDecimal calculateEmployeeTotalDayRate(Employee employee) {
-
-
         BigDecimal annualSalary = employee.getActiveConfiguration().getAnnualSalary();
         BigDecimal overheadMultiplier = employee.getActiveConfiguration().getOverheadMultiplier().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32).add(BigDecimal.ONE);
         BigDecimal fixedAnnualAmount = employee.getActiveConfiguration().getFixedAnnualAmount();
@@ -48,6 +46,46 @@ public class RateCalculator implements IRateCalculator {
         }
         return dayRate.setScale(2, RoundingMode.HALF_UP);
     }
+
+
+
+
+    /** calculate employee day rate without the utilization percentage */
+    public BigDecimal calculateEmployeeDayRateWithoutUtilization(Employee employee) {
+        BigDecimal dayEmployeeConfigHours = employee.getActiveConfiguration().getWorkingHours() != null
+                ? BigDecimal.valueOf(employee.getActiveConfiguration().getDayWorkingHours())
+                : BigDecimal.valueOf(HoursInDay);
+
+        BigDecimal hourlyRate = calculateEmployeeHourlyRateWithoutUtilization(employee);
+        BigDecimal dayRate = hourlyRate.multiply(dayEmployeeConfigHours);
+
+        return dayRate.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /** calculate employee hour  rate without the utilization percentage  */
+    public BigDecimal calculateEmployeeHourlyRateWithoutUtilization(Employee employee) {
+        BigDecimal annualSalary = employee.getActiveConfiguration().getAnnualSalary();
+        BigDecimal overheadMultiplier = employee.getActiveConfiguration().getOverheadMultiplier()
+                .divide(BigDecimal.valueOf(100), MathContext.DECIMAL32).add(BigDecimal.ONE);
+        BigDecimal fixedAnnualAmount = employee.getActiveConfiguration().getFixedAnnualAmount();
+        BigDecimal annualEffectiveWorkingHours = employee.getActiveConfiguration().getWorkingHours();
+
+        BigDecimal hourlyRate = BigDecimal.ZERO;
+
+        if (employee.getEmployeeType() == EmployeeType.Overhead) {
+            hourlyRate = (annualSalary.multiply(overheadMultiplier).add(fixedAnnualAmount))
+                    .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP);
+    }
+
+        //else {
+//            hourlyRate = annualSalary
+//                    .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP);
+//        }
+        return hourlyRate.setScale(2, RoundingMode.HALF_UP);
+    }
+
+
+
 
     public BigDecimal calculateHourlyRate(Employee employee) {
 
