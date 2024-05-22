@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.CategoryAxis?>
@@ -18,6 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
 
 <HBox fx:id="teamPage" maxHeight="700.0" prefHeight="700.0" prefWidth="1200.0" styleClass="parent" stylesheets="/easv/ui/styling/TeamsPage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
@@ -35,7 +35,10 @@
                     <children>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                             <children>
-                                <Label fx:id="employees" styleClass="employees" text="Teams" />
+                                <Label fx:id="employees" styleClass="employees" text="Teams">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font></Label>
                             </children>
                         </HBox>
                     </children>
@@ -60,7 +63,6 @@
                                         <Insets right="-1.0" />
                                     </HBox.margin>
                                 </HBox>
-                                <MFXComboBox fx:id="countriesFilterCB" allowEdit="true" floatMode="DISABLED" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="37.0" prefWidth="100.0" promptText="Countries" styleClass="countryFilterComboBox" />
                             </children>
                         </HBox>
                         <StackPane maxHeight="32.0" maxWidth="40.0" prefHeight="27.0" prefWidth="29.0">
@@ -79,7 +81,6 @@
                                         <SVGPath />
                                     </children>
                                 </HBox>
-                                <MFXComboBox fx:id="regionsFilter" floatMode="DISABLED" maxHeight="37.0" maxWidth="100.0" prefHeight="0.0" promptText="Regions" styleClass="countryFilterComboBox" />
                             </children>
                         </HBox>
                         <!--                  <MFXComboBox fx:id="countriesFilterCB" alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="150.0" promptText="Countries" selectable="true" GridPane.columnIndex="2" />-->

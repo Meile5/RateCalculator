@@ -1,5 +1,6 @@
 package easv.ui.components.teamManagementEmployeesAdd;
 
+import easv.Utility.TeamValidation;
 import easv.be.Employee;
 import easv.be.Team;
 import easv.exception.ErrorCode;
@@ -35,6 +36,7 @@ public class EmployeesToAdd implements Initializable {
     private IModel model;
     private TeamManagementController teamManagementController;
     private Employee employee;
+    private TeamValidation teamValidation;
 
 
     public EmployeesToAdd(Employee employee, IModel model, TeamManagementController teamManagementController) {
@@ -46,7 +48,6 @@ public class EmployeesToAdd implements Initializable {
         try {
             employeesToAddComponent = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -58,7 +59,13 @@ public class EmployeesToAdd implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
+        utilListener();
 
+    }
+    private void utilListener() {
+        utilPercentageToAdd.textProperty().addListener((observable, oldValue, newValue) -> {
+           TeamValidation.isPercentageValid(utilPercentageToAdd, employee);
+        });
     }
 
     public void setLabels() {
@@ -88,17 +95,15 @@ public class EmployeesToAdd implements Initializable {
 
     public Employee getEditedEmployee(Team team) {
         if (addEmployee.isSelected()) {
-            System.out.println(employee +"from add edit");
-            Employee editedEmployee = employee;
-            String utilPercentageStr = utilPercentageToAdd.getText();
-            BigDecimal utilPercentage = new BigDecimal(utilPercentageStr);
-            editedEmployee.getUtilPerTeams().put(team.getId(), utilPercentage);
-            return editedEmployee;
+            if (TeamValidation.isPercentageValid(utilPercentageToAdd, employee)) {
+                Employee editedEmployee = employee;
+                String utilPercentageStr = utilPercentageToAdd.getText();
+                BigDecimal utilPercentage = new BigDecimal(utilPercentageStr);
+                editedEmployee.getUtilPerTeams().put(team.getId(), utilPercentage);
+                return editedEmployee;
+            }
         }
         return null;
     }
 
-    public void changeName() {
-        this.employeeName.setText("ana are mere");
-    }
 }
