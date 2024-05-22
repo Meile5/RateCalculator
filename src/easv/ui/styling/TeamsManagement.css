@@ -18,3 +18,16 @@
 .textField{
     -fx-background-color: #818181 ;
 }
+.tooltip {
+    -fx-background-color: #63b2e1; /* Blue background color */
+    -fx-text-fill: white; /* Text color */
+    -fx-font-size: 14px; /* Font size */
+    -fx-font-weight: bold; /* Font weight */
+    -fx-padding: 5px 10px; /* Padding */
+    -fx-background-radius: 5px; /* Rounded corners */
+    -fx-border-radius: 5px; /* Rounded corners */
+}
+
+.scroll-bar {
+    -fx-opacity: 0;
+}
