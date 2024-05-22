@@ -351,13 +351,11 @@ public class Model implements IModel {
      * @param editedEmployee   the employee after editing
      */
     @Override
-    public boolean updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
+    public Employee updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
         List<Team> originalEmployeeTeams =  new ArrayList<>();
         for(Team team : employees.get(originalEmployee.getId()).getTeams()){
              originalEmployeeTeams.add(teamsWithEmployees.get(team.getId()));
         }
-
-
 
         Employee editedSavedEmployee = employeeManager.saveEditOperation(editedEmployee, originalEmployee,originalEmployeeTeams );
 
@@ -377,7 +375,7 @@ public class Model implements IModel {
             }
             return true;
         }*/
-        return true;
+        return editedSavedEmployee;
 
     }
 

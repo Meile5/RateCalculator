@@ -187,7 +187,7 @@ public class Team {
             if (employeeReplace.getId() == employee.getId()) {
                 iterator.remove();
                 teamMembers.add(employee);
-                break;  // Assuming IDs are unique, we can break the loop after finding the match
+                break;
             }
         }
     }

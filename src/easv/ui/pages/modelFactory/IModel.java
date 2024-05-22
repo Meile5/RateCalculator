@@ -72,7 +72,7 @@ public interface IModel {
     /**
      * save the updated employee to the database
      */
-    boolean updateEditedEmployee(Employee employee, Employee editedEmployee) throws RateException;
+    Employee updateEditedEmployee(Employee employee, Employee editedEmployee) throws RateException;
 
     List<String> getValidCountries();
 
