@@ -800,6 +800,9 @@ public class EmployeesDAO implements IEmployeeDAO {
     public Team saveEditOperationTeam(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException {
         Connection conn = null;
         try {
+            System.out.println("At start of saveEditOperationTeam" + editedTeam.getEmployees()+ " :editedTeam");
+            System.out.println("At start of saveEditOperationTeam" + employees + " :employees");
+
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
 
@@ -811,8 +814,13 @@ public class EmployeesDAO implements IEmployeeDAO {
             addEmployeeHistoryTeams(configurationID, employees, conn);
             deleteTeamEmployeeConnections(conn, employeesToDelete, editedTeam.getId()); //team id
             setOldConfigurationToInactiveTeams(idOriginalTeam, conn);
+            System.out.println("Before addEmployees to team" + editedTeam.getEmployees()+ " :editedTeam");
+            System.out.println("Before addEmployees to team" + employees + " :employees");
             addEmployeesToTeam(employees, editedTeam.getId(), conn);
+
             conn.commit();
+            System.out.println("Before return" + editedTeam.getEmployees() + " :editedTeam");
+            System.out.println("Before return" + employees + " :employees");
             System.out.println(editedTeam.getTeamMembers().size() + "from dao" + "");
 
             return editedTeam;
@@ -912,6 +920,7 @@ public class EmployeesDAO implements IEmployeeDAO {
         try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             // Retrieve the active configuration from the team
             TeamConfiguration teamConfiguration = editedTeam.getActiveConfiguration();
+
             psmt.setBigDecimal(1, teamConfiguration.getTeamDayRate());
             psmt.setBigDecimal(2, teamConfiguration.getTeamHourlyRate());
             psmt.setDouble(3, teamConfiguration.getGrossMargin());
@@ -919,12 +928,14 @@ public class EmployeesDAO implements IEmployeeDAO {
             psmt.setTimestamp(5, Timestamp.valueOf(teamConfiguration.getSavedDate()));
             psmt.setString(6, String.valueOf(teamConfiguration.isActive()));
             psmt.executeUpdate();
+
             try (ResultSet res = psmt.getGeneratedKeys()) {
                 if (res.next()) {
                     configurationID = res.getInt(1);
                 } else {
                     throw new RateException(ErrorCode.OPERATION_DB_FAILED);
                 }
+
             }
         }
         return configurationID;

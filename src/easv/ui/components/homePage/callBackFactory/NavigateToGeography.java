@@ -13,13 +13,14 @@ public class NavigateToGeography implements CallBack, Subject {
     private Parent root;
     private boolean isOpened;
     private IModel model;
-    private StackPane pane;
+    private StackPane pane, secondLayout;
 
 
 
-    public NavigateToGeography(PageManager pageManager, IModel model, StackPane pane) {
+    public NavigateToGeography(PageManager pageManager, IModel model, StackPane pane, StackPane secondLayout) {
         this.pageManager= pageManager;
         this.pane = pane;
+        this.secondLayout = secondLayout;
         this.model = model;
     }
 
@@ -35,7 +36,7 @@ public class NavigateToGeography implements CallBack, Subject {
 
 
     private void initializePage(){
-        GeographyManagementController geographyManagementController = new GeographyManagementController(model, pane);
+        GeographyManagementController geographyManagementController = new GeographyManagementController(model, pane, secondLayout);
         root=geographyManagementController.getCreatePage();
     }
 

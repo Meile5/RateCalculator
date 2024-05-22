@@ -60,17 +60,23 @@ public class TeamManagementController implements Initializable {
     private Service<Void> saveTeam;
 
 
-    public TeamManagementController(Team team, IModel model, StackPane firstLayout, TeamInfoController teamInfoController, EmployeesToAdd employeesToAdd) {
+
+    public TeamManagementController(Team team, IModel model, StackPane firstLayout, TeamInfoController teamInfoController, EmployeesToAdd employeesToAdd, TeamsPageController teamsPageController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamManagementComponent.fxml"));
         loader.setController(this);
         this.firstLayout = firstLayout;
         this.model = model;
         this.team = team;
         this.teamInfoController = teamInfoController;
+        this.employeesToAdd = employeesToAdd;
+        employeesToAddList = new ArrayList<EmployeesToAdd>();
+        teamMembersToAddList = new ArrayList<TeamMembersController>();
+        this.teamsPageController = teamsPageController;
+       // teamsPageController = new TeamsPageController(model, firstLayout); //?
        // this.employeesToAdd = employeesToAdd;
         employeesToAddList = new ArrayList<>();
         teamMembersToAddList = new ArrayList<>();
-       teamsPageController = teamInfoController.getTeamsPageController();
+       this.teamsPageController = teamsPageController;
         System.out.println(teamInfoController + "  teamInfoController");
 
        // teamsPageController = new TeamsPageController(model, firstLayout);
@@ -150,7 +156,7 @@ public class TeamManagementController implements Initializable {
             returnEmployeesToDelete();
             getTeam();
           /*  try {
-                model.performEditTeam(returnAllEmployees(), returnEmployeesToDelete(), getTeam(), team);
+                model.performEditTeam(returnAllEmployees(), returnEmployeesToDelete(), getUpdatedTeam(), team);
             } catch (RateException e) {}*/
             saveTeamOperation(returnAllEmployees(), returnEmployeesToDelete(), getTeam(), team);
          //

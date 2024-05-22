@@ -35,17 +35,26 @@ public class CountryLogic implements ICountryLogic {
     }
 
     @Override
-    public Country addCountry(Country country, List<Team> teams, List<Team> newTeams) throws RateException {
-        int countryID = countryDao.addCountry(country, teams, newTeams);
+    public Country addCountry(Country country, List<Team> existingTeams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException {
+        int countryID = countryDao.addCountry(country, existingTeams, newTeams, teamsToUpdate);
         if (countryID > 0) {
             country.setId(countryID);
-            country.setTeams(teams);
+
+            // Using a Set to compile all teams without duplicates
+            Set<Team> allTeams = new HashSet<>();
+            allTeams.addAll(existingTeams);
+            allTeams.addAll(newTeams);
+            allTeams.addAll(teamsToUpdate);
+
+            List<Team> compiledTeams = new ArrayList<>(allTeams);
+
+            country.setTeams(compiledTeams);
         }
         return country;
     }
 
     @Override
-    public Country updateCountry(Country country, List<Team> currentTeams, List<Team> newTeams) throws RateException {
+    public Country updateCountry(Country country, List<Team> currentTeams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException {
         List<Team> teamsBeforeUpdate = country.getTeams();
 
         Set<Team> existingSet = new HashSet<>(teamsBeforeUpdate);
@@ -57,7 +66,7 @@ public class CountryLogic implements ICountryLogic {
         Set<Team> removedTeams = new HashSet<>(existingSet);
         removedTeams.removeAll(newSet);
 
-        countryDao.updateCountry(country, addedTeams.stream().toList(), removedTeams.stream().toList(), newTeams);
+        countryDao.updateCountry(country, addedTeams.stream().toList(), removedTeams.stream().toList(), newTeams, teamsToUpdate);
         country.setTeams(currentTeams);
         return country;
     }
@@ -71,33 +80,64 @@ public class CountryLogic implements ICountryLogic {
     public List<Team> checkNewTeams(List<Team> teamsToCheck, Map<Integer, Team> teams){
         List<Team> newTeams = new ArrayList<>();
         for (Team team : teamsToCheck) {
-            if (team != null && !teams.containsValue(team)) {
+            if (team != null && !teams.containsKey(team.getId())) {
                 newTeams.add(team);
             }
         }
+        System.out.println("new teams" + newTeams);
         return newTeams;
     }
 
     @Override
-    public List<Team> checkExistingTeams(List<Team> teamsToCheck, ObservableMap<Integer, Team> teams) {
+    public List<Team> checkExistingTeams(List<Team> teamsToCheck, Map<Integer, Team> teams) {
         List<Team> existingTeams = new ArrayList<>();
         for (Team team : teamsToCheck) {
-            if (teams.containsValue(team)) {
-                existingTeams.add(team);
+            if (team != null) {
+                Team existingTeam = teams.get(team.getId());
+                if (teams.containsKey(team.getId()) && existingTeam.getTeamName().equals(team.getTeamName())) {
+                    existingTeams.add(team);
+                }
             }
         }
+        System.out.println("existing teams" + existingTeams);
         return existingTeams;
     }
 
     @Override
-    public boolean addNewTeams(Country country, List<Team> newTeams) throws SQLException, RateException {
-        List<Integer> teamsIds = countryDao.addTeams(newTeams, null);
+    public List<Team> checkTeamsToUpdate(List<Team> teamsToCheck, Map<Integer, Team> teams){
+        List<Team> updatedTeams = new ArrayList<>();
+        for (Team team : teamsToCheck) {
+            if (team != null) {
+                if (teams.containsKey(team.getId())) {
+                    Team existingTeam = teams.get(team.getId());
+                    System.out.println("existing team" + existingTeam);
+                    System.out.println("updated team" + team);
+                    if (!existingTeam.getTeamName().equals(team.getTeamName())) {
+                        updatedTeams.add(team);
+                    }
+                }
+            }
+        }
+        System.out.println("to Update teams" + updatedTeams);
+        return updatedTeams;
+    }
+
+    @Override
+    public boolean addNewTeam(Country country, Team team) throws SQLException, RateException {
+        List<Team> teams = new ArrayList<>();
+        teams.add(team);
+        List<Integer> teamsIds = countryDao.addTeams(teams, null);
         if (!teamsIds.isEmpty()) {
             countryDao.addNewTeamsToCountry(teamsIds, country.getId(), null);
             return true;
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean deleteTeam(Team team) throws RateException {
+        return countryDao.deleteTeam(team);
     }
 
 }
