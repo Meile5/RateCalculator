@@ -184,11 +184,13 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
      * @param team is being passed from teamInfo controller to get the selected team component team
      */
     public void setTeamHistoryDatesInComboBox(Team team) {
+        System.out.println(team.getTeamConfigurationsHistory().size() + "configuration history");
         List<TeamConfiguration> teamConfigurations = team.getTeamConfigurationsHistory();
         teamConfigurations.sort(Comparator.comparing(TeamConfiguration::getSavedDate).reversed());
         teamsHistory.getItems().clear();
         teamsHistory.getItems().addAll(teamConfigurations);
         /* Set the latest configuration as the default value*/
+
         if (!teamConfigurations.isEmpty()) {
             teamsHistory.setValue(teamConfigurations.get(0));
         }
@@ -214,6 +216,8 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
      * sets team name into pieChart label
      */
     private void displayEmployeesForDate(Team team, TeamConfiguration selectedConfig) {
+       //TODO  commented the bindings out
+
         String currency = team.getCurrency().toString();
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         List<TeamConfigurationEmployee> teamMembers = selectedConfig.getTeamMembers();
@@ -221,13 +225,15 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
             String label = employee.getEmployeeName() + " " + currency + " ";
             pieChartData.add(new PieChart.Data(label, employee.getEmployeeDailyRate()));
         }
+
         /* binds each PieChart.Data object's name property to a concatenated string
          containing the name and day rate, ensuring that both are displayed in the pie chart.*/
-        pieChartData.forEach(data ->
-                data.nameProperty().bind(
-                        Bindings.concat(data.getName(), " ", data.pieValueProperty())
-                )
-        );
+//        pieChartData.forEach(data ->
+//                data.nameProperty().bind(
+//                        Bindings.concat(data.getName(), " ", data.pieValueProperty())
+//                )
+//        );
+
         teamsPieChart.setData(pieChartData);
         teamsPieChart.setTitle(team.getTeamName());
         teamsPieChart.setLabelLineLength(10);
