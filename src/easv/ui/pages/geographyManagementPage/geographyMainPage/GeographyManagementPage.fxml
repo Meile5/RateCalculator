@@ -58,11 +58,12 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="38.0" prefWidth="254.0">
+            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="38.0" prefWidth="254.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Region" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Countries" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" layoutX="81.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Teams" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Region" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Countries" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" layoutX="81.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Teams" HBox.hgrow="ALWAYS" />
+                  <Region prefHeight="38.0" prefWidth="130.0" />
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" />
@@ -109,11 +110,12 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="358.0">
+            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="358.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="105.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Country" textOverrun="CLIP" />
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Teams" textOverrun="CLIP" />
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Employees" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Country" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Teams" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Employees" HBox.hgrow="ALWAYS" />
+                  <Region prefHeight="50.0" prefWidth="130.0" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
