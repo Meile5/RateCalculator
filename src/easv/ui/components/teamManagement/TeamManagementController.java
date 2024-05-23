@@ -131,8 +131,7 @@ public class TeamManagementController implements Initializable {
             returnEmployeesToDelete();
             getTeam();
             saveTeamOperation(returnAllEmployees(), returnEmployeesToDelete(), getTeam(), team);
-
-
+            teamsPageController.reinitializeTeamChart();
         });
     }
 
@@ -154,7 +153,10 @@ public class TeamManagementController implements Initializable {
 
             // closeWindowSpinner(firstLayout);
             teamsPageController.clearTeams();
+
+            //TODO , maybe this , does not need to be recalled , we cgit heck tomorrow
             teamsPageController.displayTeams();
+            //teamsPageController.reinitializeTeamChart();
 
             //showOperationStatus("Operation Successful!", Duration.seconds(2));
             WindowsManagement.closeStackPane(firstLayout);
@@ -202,21 +204,24 @@ public class TeamManagementController implements Initializable {
     }
 
     public List<Employee> returnAllEmployees() {
-        List<Employee> editedEmployeesList = new ArrayList<Employee>();
+
+        List<Employee> editedEmployeesList = new ArrayList<>();
         for (EmployeesToAdd employeesToAdd : employeesToAddList) {
             Employee editedEmployee = employeesToAdd.getEditedEmployee(team);
             if (editedEmployee != null) {
                 editedEmployeesList.add(editedEmployee);
             }
         }
+
+
         List<Employee> editedTeamMembersList = new ArrayList<Employee>();
         for (TeamMembersController teamMembersToAdd : teamMembersToAddList) {
             Employee editedTeamMember = teamMembersToAdd.getEditedTeamMember(team);
             if (editedTeamMember != null) {
                 editedTeamMembersList.add(editedTeamMember);
             }
-
         }
+
         List<Employee> employeesList = new ArrayList<Employee>();
         employeesList.addAll(editedTeamMembersList);
         employeesList.addAll(editedEmployeesList);

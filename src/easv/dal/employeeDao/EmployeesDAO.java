@@ -447,6 +447,9 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
 
+
+    //TODO modify this method, to onlly add the link with employees, in the new configuration
+
     /**
      * save the edit operation , change the active configuration of the user
      *
@@ -811,19 +814,12 @@ public class EmployeesDAO implements IEmployeeDAO {
             System.out.println(configurationID);
             editedTeam.getActiveConfiguration().setId(configurationID);
             editedTeam.getTeamConfigurationsHistory().add(editedTeam.getActiveConfiguration());
-            System.out.println(editedTeam.getActiveConfiguration().getId() + "id after setting ");
             addTeamToConfiguration(editedTeam, configurationID, conn);
             addEmployeeHistoryTeams(configurationID, employees, conn);
             deleteTeamEmployeeConnections(conn, employeesToDelete, editedTeam.getId()); //team id
             setOldConfigurationToInactiveTeams(idOriginalTeam, conn);
-
             addEmployeesToTeam(employees, editedTeam.getId(), conn);
-
             conn.commit();
-            System.out.println("Before return" + editedTeam.getEmployees() + " :editedTeam");
-            System.out.println("Before return" + employees + " :employees");
-            System.out.println(editedTeam.getTeamMembers().size() + "from dao" + "");
-
             return editedTeam;
         } catch (RateException | SQLException e) {
             e.printStackTrace();
@@ -919,12 +915,11 @@ public class EmployeesDAO implements IEmployeeDAO {
     //TODO added the true for the configuration when is added in the database, i had problems with
     public Integer addTeamConfigurationT(Team editedTeam, Connection conn) throws SQLException, RateException {
         String sql = "INSERT INTO TeamConfiguration (TeamDailyRate, TeamHourlyRate, GrossMargin, MarkupMultiplier, ConfigurationDate, Active) VALUES (?, ?, ?, ?, ?, ?)";
-
+        System.out.println(editedTeam.getActiveConfiguration().getTeamMembers().size() + "before the add");
         Integer configurationID = null;
         try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             // Retrieve the active configuration from the team
             TeamConfiguration teamConfiguration = editedTeam.getActiveConfiguration();
-
             psmt.setBigDecimal(1, teamConfiguration.getTeamDayRate());
             psmt.setBigDecimal(2, teamConfiguration.getTeamHourlyRate());
             psmt.setDouble(3, teamConfiguration.getGrossMargin());
@@ -944,6 +939,7 @@ public class EmployeesDAO implements IEmployeeDAO {
 
             }
         }
+        System.out.println(editedTeam.getActiveConfiguration().getTeamMembers().size() + "after the add");
         return configurationID;
     }
 

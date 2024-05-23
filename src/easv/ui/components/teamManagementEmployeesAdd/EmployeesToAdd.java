@@ -75,7 +75,7 @@ public class EmployeesToAdd implements Initializable {
 
             BigDecimal remainingUtilization = calculateRemainingUtilization(employee.getUtilPerTeams());
             if (remainingUtilization != null) {
-                utilLeft.setText(remainingUtilization.toString() + "%");
+                utilLeft.setText(remainingUtilization + " %");
             }else {
                 utilLeft.setText("N/A");
             }

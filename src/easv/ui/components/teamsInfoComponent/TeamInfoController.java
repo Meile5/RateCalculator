@@ -64,16 +64,23 @@ public class TeamInfoController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
-        Platform.runLater(this::addClickListener);
+       // Platform.runLater(this::addClickListener);
         addEditAction();
         addClickListener();
     }
 
     /* listener that tells what happens when team component is clicked*/
     private void addClickListener(){
-
         teamInfoComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
-            System.out.println(team.getActiveConfiguration().getTeamMembers());
+           if(event.getTarget()==editButton){
+               System.out.println("editButton");
+               return;
+           }
+
+            System.out.println(team.getActiveConfiguration().getTeamMembers() + "team memebres");
+            team.getTeamConfigurationsHistory().forEach((e)->{
+                System.out.println(e.getTeamMembers() +" team mebers history");
+            });
             teamInfoComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
             teamsPageController.setSelectedComponentStyleToSelected(this);
             teamsPageController.yearsComboBoxListener(team);
@@ -87,6 +94,7 @@ public class TeamInfoController implements Initializable {
             TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this, employeesToAdd, teamsPageController);
             firstLayout.getChildren().add(teamManagementController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
+            event.consume();
         });
     }
 

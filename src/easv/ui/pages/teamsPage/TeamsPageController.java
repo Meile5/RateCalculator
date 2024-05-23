@@ -81,6 +81,7 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
         displayTeams();
         //initialize search field
         intializeSearchField();
+      // yearsComboBoxListener(team);
 
     }
 
@@ -125,7 +126,6 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
         yearComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 populateChartForYear(team, newValue);
-
             }
         });
     }
@@ -225,7 +225,7 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
         System.out.println(selectedConfig.getTeamMembers());
         for (TeamConfigurationEmployee employee : teamMembers) {
             System.out.println(employee.getEmployeeDailyRate());
-            String label = employee.getEmployeeName() + " " + currency + " ";
+            String label = employee.getEmployeeName() + employee.getEmployeeDailyRate() + currency + " ";
             pieChartData.add(new PieChart.Data(label, employee.getEmployeeDailyRate()));
 
         }
@@ -265,5 +265,10 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
     public void undoSearchOperation() throws RateException {
         teamsContainer.getChildren().clear();
         displayTeams();
+    }
+
+    public void reinitializeTeamChart() {
+        System.out.println("Ana are mere");
+        this.selectedTeam=null;
     }
 }

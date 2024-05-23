@@ -803,18 +803,18 @@ public class Model implements IModel {
             employee.setTeamHourlyRate(employeeHourlyRate);
             BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeamE(employee, editedTeam);
             employee.setTeamDailyRate(employeeDayRate);
-            System.out.println("edited team member id: " + editedTeam.getEmployees().getFirst().getId());
-            System.out.println(employee + " employee in loop with id " + employee.getId());
-            System.out.println("get teaM MEMBER" + editedTeam.getTeamMember(employee.getId()));
+           // System.out.println("edited team member id: " + editedTeam.getEmployees().getFirst().getId());
+        //    System.out.println(employee + " employee in loop with id " + employee.getId());
+       //     System.out.println("get teaM MEMBER" + editedTeam.getTeamMember(employee.getId()));
             if (editedTeam.getTeamMember(employee.getId()) != null) {
-                System.out.println("im inside the loop to replacememeber");
-                System.out.println("with employee " + employee);
+             //   System.out.println("im inside the loop to replacememeber");
+             //   System.out.println("with employee " + employee);
                 editedTeam.replaceTeaMember(employee);
                 teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
             } else {
-                System.out.println("-------------------------------");
-                System.out.println("im inside the else loop");
-                System.out.println("with employee " + employee);
+            //    System.out.println("-------------------------------");
+             //   System.out.println("im inside the else loop");
+              //  System.out.println("with employee " + employee);
                 teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
                 editedTeam.addNewTeamMember(employee);
             }

@@ -24,8 +24,13 @@ public class TeamValidation {
         }
 
         BigDecimal inputUtilization = new BigDecimal(percentageText);
+
+
         BigDecimal remainingUtilization = calculateRemainingUtilization(employee.getUtilPerTeams());
-        if (remainingUtilization != null && inputUtilization.compareTo(remainingUtilization) > 0) {
+
+        System.out.println(employee.getUtilPerTeams() + " utilization per teams");
+        if (inputUtilization.compareTo(remainingUtilization) > 0) {
+            System.out.println(remainingUtilization + "from utilization ");
             addUtil.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             addUtil.setTooltip(new Tooltip("Utilization exceeds the remaining available utilization for the employee."));
             return false;
