@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane styleClass="distributioParent" alignment="CENTER" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="900.0" stylesheets="/easv/ui/styling/Distribution.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane alignment="CENTER" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="900.0" styleClass="distributioParent" stylesheets="/easv/ui/styling/Distribution.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
       <ColumnConstraints hgrow="NEVER" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="540.0" minWidth="256.0" prefWidth="256.0" />
@@ -239,7 +239,7 @@
          </padding></VBox>
       <VBox fx:id="simulationBarChartChartHolder" alignment="CENTER" disable="true" maxWidth="536.0" prefHeight="408.0" prefWidth="256.0" style="-fx-background-color: #D1D0D0; -fx-background-radius: 20;" GridPane.columnIndex="3" GridPane.rowIndex="3">
          <children>
-            <BarChart fx:id="barchartAfterTheSimulation" visible="false">
+            <BarChart fx:id="barchartAfterTheSimulation" animated="false">
               <xAxis>
                 <CategoryAxis side="BOTTOM" />
               </xAxis>

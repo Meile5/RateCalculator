@@ -128,6 +128,7 @@ public class DistributionController implements Initializable, DistributionContro
         this.barchartAfterTheSimulation.setTitle("Simulation values");
         this.barchartAfterTheSimulation.getXAxis().setLabel("Team");
         this.barchartAfterTheSimulation.getYAxis().setLabel("Overhead");
+
 // set the barchart with the initial overhead
         populateTeamBarChartWithSimulatedOverhead(overHeadSimulationTeams);
     }
@@ -160,6 +161,7 @@ public class DistributionController implements Initializable, DistributionContro
         });
         this.barchartAfterTheSimulation.getData().add(previousOverheadSeries);
         this.barchartAfterTheSimulation.getData().add(currentOverheadSeries);
+        this.distributeToTeams.requestLayout();
     }
 
 
