@@ -60,7 +60,6 @@ public class CountryComponent extends HBox implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
         setEditButton();
-        setAddTeamButton();
         displayDelete();
     }
 
@@ -97,20 +96,6 @@ public class CountryComponent extends HBox implements Initializable {
         this.editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             ManageCountryController managecountryController = new ManageCountryController(model, pane, secondPane, country, controller);
             this.pane.getChildren().add(managecountryController.getRoot());
-            WindowsManagement.showStackPane(pane);
-
-//            EditController editController = new EditController(model, firstLayout, employee, this);
-//            this.firstLayout.getChildren().add(editController.getRoot());
-//            employeeController.setSelectedComponentStyleToSelected(this);
-//            employeeController.setEmployeesVboxContainerStyleToEdit();
-//            WindowsManagement.showStackPane(firstLayout);
-        });
-    }
-
-    private void setAddTeamButton() {
-        this.addTeamButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            CreateTeamController createTeamController = new CreateTeamController(pane, controller, null, null, false, null);
-            this.pane.getChildren().add(createTeamController.getRoot());
             WindowsManagement.showStackPane(pane);
 
 //            EditController editController = new EditController(model, firstLayout, employee, this);
