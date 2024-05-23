@@ -1,4 +1,4 @@
-package easv.dal;
+package easv.dal.connectionManagement;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -2,10 +2,9 @@ package easv.bll.RegionLogic;
 
 import easv.be.Country;
 import easv.be.Region;
-import easv.dal.regionDAO.IRegionDAO;
-import easv.dal.regionDAO.RegionDAO;
+import easv.dal.regionDao.IRegionDAO;
+import easv.dal.regionDao.RegionDAO;
 import easv.exception.RateException;
-import javafx.collections.ObservableMap;
 
 import java.util.Collection;
 import java.util.HashSet;

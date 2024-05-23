@@ -1,4 +1,4 @@
-package easv.dal;
+package easv.dal.employeeDao;
 
 import easv.be.*;
 import easv.exception.RateException;

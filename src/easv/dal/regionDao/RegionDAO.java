@@ -1,4 +1,4 @@
-package easv.dal.regionDAO;
+package easv.dal.regionDao;
 
 import easv.be.Country;
 import easv.be.Region;

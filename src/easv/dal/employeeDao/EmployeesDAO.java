@@ -1,4 +1,4 @@
-package easv.dal;
+package easv.dal.employeeDao;
 
 import easv.be.*;
 import easv.be.Country;
@@ -14,7 +14,6 @@ import javafx.collections.ObservableMap;
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.FileHandler;
