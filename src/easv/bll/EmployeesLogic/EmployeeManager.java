@@ -1,8 +1,8 @@
 package easv.bll.EmployeesLogic;
 
 import easv.be.*;
-import easv.dal.EmployeesDAO;
-import easv.dal.IEmployeeDAO;
+import easv.dal.employeeDao.EmployeesDAO;
+import easv.dal.employeeDao.IEmployeeDAO;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 

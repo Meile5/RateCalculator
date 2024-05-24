@@ -6,6 +6,8 @@ import easv.be.Region;
 import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
+import easv.ui.components.searchComponent.DataHandler;
+import easv.ui.components.searchComponent.SearchController;
 import easv.ui.pages.geographyManagementPage.countryComponents.CountryComponent;
 import easv.ui.pages.geographyManagementPage.countryComponents.DeleteCountryController;
 import easv.ui.pages.geographyManagementPage.countryComponents.ManageCountryController;
@@ -26,6 +28,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -34,7 +37,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GeographyManagementController implements Initializable {
+public class GeographyManagementController implements Initializable, GeographyInterface {
     @FXML
     private Parent createPage;
     @FXML
@@ -45,6 +48,8 @@ public class GeographyManagementController implements Initializable {
     private MFXProgressSpinner progressBar;
     @FXML
     private Button addRegionBTN, addCountryBTN;
+    @FXML
+    private HBox regionSearchContainer;
 
     private IModel model;
     private StackPane pane;
@@ -57,11 +62,11 @@ public class GeographyManagementController implements Initializable {
     public GeographyManagementController(IModel model, StackPane pane, StackPane secondPane) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("GeographyManagementPage.fxml"));
         loader.setController(this);
-        this.model=model;
+        this.model = model;
         this.pane = pane;
         this.secondPane = secondPane;
         try {
-            createPage=loader.load();
+            createPage = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -73,6 +78,7 @@ public class GeographyManagementController implements Initializable {
         initializeGeographyLoadingService();
         addRegionButtonListener();
         addCountryButtonListener();
+        initializeSearchComponents();
 
     }
 
@@ -139,38 +145,38 @@ public class GeographyManagementController implements Initializable {
         regions.forEach(this::addRegionComponent);
     }
 
-    public void addRegionComponent(Region region){
+    public void addRegionComponent(Region region) {
         DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region, this);
         RegionComponent regionComponent = new RegionComponent(model, pane, region, deleteRegionController, this);
         regionsVBox.getChildren().add(regionComponent.getRoot());
-        if(!regions.contains(region))
+        if (!regions.contains(region))
             regions.add(region);
     }
 
-    public void updateRegionComponents(){
+    public void updateRegionComponents() {
         initializeGeographyLoadingService();
     }
 
-    private void enableProgressBar(){
+    private void enableProgressBar() {
         progressBar.setDisable(false);
         progressBar.setVisible(true);
         enableStackPane(progressBar);
     }
 
-    private void disableProgressBar(){
+    private void disableProgressBar() {
         progressBar.setDisable(true);
         progressBar.setVisible(false);
         disableStackPane();
     }
 
-    private void enableStackPane(Node node){
+    private void enableStackPane(Node node) {
         pane.getChildren().clear();
         pane.getChildren().add(node);
         pane.setDisable(false);
         pane.setVisible(true);
     }
 
-    private void disableStackPane(){
+    private void disableStackPane() {
         pane.getChildren().clear();
         pane.setDisable(true);
         pane.setVisible(false);
@@ -191,11 +197,62 @@ public class GeographyManagementController implements Initializable {
         DeleteCountryController deleteCountryController = new DeleteCountryController(pane, model, country, this);
         CountryComponent countryComponent = new CountryComponent(model, pane, country, deleteCountryController, this, secondPane);
         countriesVBox.getChildren().add(countryComponent.getRoot());
-        if(!countries.contains(country))
+        if (!countries.contains(country))
             countries.add(country);
     }
 
     public void updateCountryComponents() {
         initializeGeographyLoadingService();
+    }
+
+
+    //FILTER RELATED LOGIC
+    private void initializeSearchComponents() {
+        SearchRegionHandler searchRegionHandler = new SearchRegionHandler(this);
+        SearchController<Region> searchRegion = new SearchController<>(searchRegionHandler);
+        regionSearchContainer.getChildren().add(0, searchRegion.getSearchRoot());
+
+    }
+
+
+    @Override
+    public ObservableList<Region> getRegionsForSearch(String filter) {
+        return model.getRegionFilterResults(filter);
+    }
+
+    @Override
+    public void undoSearchOperationRegion() {
+        this.regionsVBox.getChildren().clear();
+        this.displayRegions();
+    }
+
+    @Override
+    public void performSelectSearchOperationRegion(int entityId) {
+        this.regionsVBox.getChildren().clear();
+        Region region = model.getRegionById(entityId);
+        DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region, this);
+        RegionComponent regionComponent = new RegionComponent(model, pane, region, deleteRegionController, this);
+        System.out.println(region);
+        regionsVBox.getChildren().add(regionComponent.getRoot());
+    }
+
+    @Override
+    public ObservableList<Country> getCountriesForSearch(String filter) {
+        return null;
+    }
+
+    @Override
+    public void performSelectSearchOperationCountry(int entityId) {
+
+    }
+
+    @Override
+    public void undoSearchOperationCountry() {
+
+    }
+
+    @Override
+    public void performSelectSearchOperationTo(int entityId) {
+
     }
 }

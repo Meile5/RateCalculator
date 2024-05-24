@@ -102,6 +102,18 @@ public interface IModel {
     //FILTERS RELATED LOGIC
 
 
+ /**perform the region search operation*/
+    ObservableList<Region> getRegionFilterResults(String filter);
+
+
+
+    /**return region by id  */
+    Region getRegionById(int regionId);
+    /**return country by id */
+    Country getCountryById(int countryId);
+    /**perform the region search operation*/
+    ObservableList<Country> getCountryFilterResults(String filter);
+
     void teamFilterActiveRevert() throws RateException;
 
     void returnEmployeesByRegion(Region region );

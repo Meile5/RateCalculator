@@ -1,11 +1,13 @@
 package easv.bll.countryLogic;
 
 import easv.be.Country;
+import easv.be.Region;
 import easv.be.Team;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -34,4 +36,6 @@ public interface ICountryLogic {
     boolean addNewTeam(Country country, Team team) throws SQLException, RateException;
 
     boolean deleteTeam(Team team) throws RateException;
+
+    List<Country> performSearchCountryFilter(String filter, Collection<Country> values);
 }

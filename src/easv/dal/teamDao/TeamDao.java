@@ -52,27 +52,27 @@ public class TeamDao implements ITeamDao {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
             conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
-//
-//            //set previous configurations to inactive
-//            setPreviousConfigurationsToInactive(conn,selectedTeamToDistributeFrom,receivedTeams.keySet());
-//            //insert new configuration
-//            Map<Integer,Integer> insertedTeamConfigurationId = insertTeamNewConfiguration(conn, selectedTeamToDistributeFrom, receivedTeams.keySet());
-//
-//            System.out.println(insertedTeamConfigurationId + "inserted id");
-//            // map team with configuration
-//            mapTeamWithConfiguration(conn,insertedTeamConfigurationId);
-//            //insert team employees in teamConfigurationHistory
-//            insertTeamConfigurationEmployees(conn,insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), selectedTeamToDistributeFrom.getEmployees());
-//            //insert team  shared distribution
-//
-//
-//            BigDecimal sharedDayRate = receivedTeams.get(selectedTeamToDistributeFrom).get(RateType.DAY_RATE);
-//            BigDecimal sharedHourRate = receivedTeams.get(selectedTeamToDistributeFrom).get(RateType.HOUR_RATE);
-//            insertTeamSharedDistribution(conn, insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), selectedTeamToDistributeFrom.getId(),sharedDayRate, sharedHourRate);
-//            //insert teams into received overhead
-//            insertReceivedOverhead(conn, insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), selectedTeamToDistributeFrom.getId(), receivedTeams);
-//
-//            conn.commit();
+
+            //set previous configurations to inactive
+            setPreviousConfigurationsToInactive(conn,selectedTeamToDistributeFrom,receivedTeams.keySet());
+            //insert new configuration
+            Map<Integer,Integer> insertedTeamConfigurationId = insertTeamNewConfiguration(conn, selectedTeamToDistributeFrom, receivedTeams.keySet());
+
+            System.out.println(insertedTeamConfigurationId + "inserted id");
+            // map team with configuration
+            mapTeamWithConfiguration(conn,insertedTeamConfigurationId);
+            //insert team employees in teamConfigurationHistory
+            insertTeamConfigurationEmployees(conn,insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), selectedTeamToDistributeFrom.getEmployees());
+            //insert team  shared distribution
+
+
+            BigDecimal sharedDayRate = receivedTeams.get(selectedTeamToDistributeFrom).get(RateType.DAY_RATE);
+            BigDecimal sharedHourRate = receivedTeams.get(selectedTeamToDistributeFrom).get(RateType.HOUR_RATE);
+            insertTeamSharedDistribution(conn, insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), selectedTeamToDistributeFrom.getId(),sharedDayRate, sharedHourRate);
+            //insert teams into received overhead
+            insertReceivedOverhead(conn, insertedTeamConfigurationId.get(selectedTeamToDistributeFrom.getId()), selectedTeamToDistributeFrom.getId(), receivedTeams);
+
+            conn.commit();
             return true;
         } catch (RateException | SQLException e) {
             if (conn != null) {

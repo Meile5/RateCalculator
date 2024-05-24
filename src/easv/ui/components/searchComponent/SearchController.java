@@ -1,6 +1,8 @@
 package easv.ui.components.searchComponent;
 
+import easv.be.Country;
 import easv.be.Employee;
+import easv.be.Region;
 import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
@@ -127,6 +129,12 @@ public class SearchController<T> implements Initializable {
                     }
                     if(newValue instanceof Team){
                         dataHandler.performSelectSearchOperation(((Team) newValue).getId());
+                    }
+                    if(newValue instanceof Region){
+                        dataHandler.performSelectSearchOperation(((Region) newValue).getId());
+                    }
+                    if(newValue instanceof Country){
+                        dataHandler.performSelectSearchOperation(((Country) newValue).getId());
                     }
 
                 } catch (RateException e) {

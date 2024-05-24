@@ -66,11 +66,14 @@ public class TeamInfoController implements Initializable {
         setLabels();
         Platform.runLater(this::addClickListener);
         addEditAction();
+        addClickListener();
     }
 
     /* listener that tells what happens when team component is clicked*/
     private void addClickListener(){
+
         teamInfoComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+            System.out.println(team.getActiveConfiguration().getTeamMembers());
             teamInfoComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
             teamsPageController.setSelectedComponentStyleToSelected(this);
             teamsPageController.yearsComboBoxListener(team);
