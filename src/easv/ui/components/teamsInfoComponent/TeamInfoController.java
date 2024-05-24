@@ -73,17 +73,14 @@ public class TeamInfoController implements Initializable {
     private void addClickListener(){
         teamInfoComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
            if(event.getTarget()==editButton){
-               System.out.println("editButton");
                return;
            }
 
-            System.out.println(team.getActiveConfiguration().getTeamMembers() + "team memebres");
             team.getTeamConfigurationsHistory().forEach((e)->{
-                System.out.println(e.getTeamMembers() +" team mebers history");
             });
             teamInfoComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
             teamsPageController.setSelectedComponentStyleToSelected(this);
-            teamsPageController.yearsComboBoxListener(team);
+        //    teamsPageController.yearsComboBoxListener(team);
             teamsPageController.populateComboBoxWithYears(team);
             teamsPageController.historyComboBoxListener(team);
             teamsPageController.setTeamHistoryDatesInComboBox(team);
@@ -159,4 +156,7 @@ public class TeamInfoController implements Initializable {
         return this.teamsPageController;
     }
 
+    public Team getControllerTeam(){
+        return this.team;
+    }
 }

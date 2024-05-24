@@ -2,6 +2,7 @@ package easv.bll.RegionLogic;
 
 import easv.be.Country;
 import easv.be.Region;
+import easv.be.Team;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 
@@ -16,4 +17,8 @@ public interface IRegionManager {
     boolean deleteRegion(Region region) throws RateException;
 
     List<Region> performSearchRegionFilter(String filter, Collection<Region> allRegions);
+
+
+    /**get the region teams */
+    List<Team> filterTeamsByRegion(Region region);
 }

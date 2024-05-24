@@ -24,7 +24,7 @@ public interface DistributionControllerInterface {
 
 
     /**display all the teams in the distribute from container*/
-     void displayDistributeFromTeamsInContainer();
+     void displayDistributeFromTeamsInContainer(List<Team>  teams);
 
 
      /**display all the teams in the distribute to list */
@@ -36,7 +36,6 @@ public interface DistributionControllerInterface {
 
     /**undo search operation from the distribute to field*/
      void undoSearchOperationTo();
-
 
     /**show the selected team from the distribute from search field */
      void performSelectSearchOperationFrom(int entityId);

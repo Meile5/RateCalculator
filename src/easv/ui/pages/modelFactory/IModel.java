@@ -102,21 +102,42 @@ public interface IModel {
     //FILTERS RELATED LOGIC
 
 
- /**perform the region search operation*/
+    /**
+     * perform the region search operation
+     */
     ObservableList<Region> getRegionFilterResults(String filter);
 
-
-
-    /**return region by id  */
+    /**
+     * return region by id
+     */
     Region getRegionById(int regionId);
-    /**return country by id */
+
+    /**
+     * return country by id
+     */
     Country getCountryById(int countryId);
-    /**perform the region search operation*/
+
+    /**
+     * perform the region search operation
+     */
     ObservableList<Country> getCountryFilterResults(String filter);
+
+    /**
+     * get the countries for the selected region from the regions filter
+     *
+     * @param region the selected region from the filter
+     */
+    ObservableList<Country> getRegionCountries(Region region);
+
+
+    /**get the teams for the selected region from the filter
+     * @param region selected region from the filter */
+    List<Team> getRegionTeams(Region region);
+
 
     void teamFilterActiveRevert() throws RateException;
 
-    void returnEmployeesByRegion(Region region );
+    void returnEmployeesByRegion(Region region);
 
     Employee getEmployeeById(int id);
 
@@ -214,7 +235,6 @@ public interface IModel {
     boolean isTeamSelectedToDistribute(Integer teamId);
 
 
-
     /**
      * save the  distribution operation
      */
@@ -236,17 +256,23 @@ public interface IModel {
      */
     List<Employee> getAllEmployees();
 
-    void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException;
+    void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete, Team editedTeam, Team originalTeam) throws RateException;
 
 
-    /**get unsuported countries */
+    /**
+     * get unsuported countries
+     */
     ObservableList<Country> getUnsoportedCountries();
 
 
-    /**perform the search operation for teams and return the results*/
+    /**
+     * perform the search operation for teams and return the results
+     */
     ObservableList<Team> getTeamsFilterResults(String filter);
 
-    /**return the selected team from the search operation results*/
+    /**
+     * return the selected team from the search operation results
+     */
     Team getTeamById(int entityId);
 
     void deleteRegion(Region region) throws RateException;

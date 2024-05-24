@@ -1,15 +1,15 @@
-package easv.ui.pages.distribution;
+package easv.ui.components.distributionPage.teamsFilters;
 
 import easv.be.Team;
 import easv.exception.RateException;
 import easv.ui.components.searchComponent.DataHandler;
+import easv.ui.pages.distribution.DistributionControllerInterface;
 import javafx.collections.ObservableList;
 
-public class SearchDistributeFromTeamHandler implements DataHandler<Team> {
+public class SearchDistributeToTeamHandler implements DataHandler<Team> {
     private DistributionControllerInterface dataHandler;
 
-
-    public SearchDistributeFromTeamHandler(DistributionController dataHandler) {
+    public SearchDistributeToTeamHandler(DistributionControllerInterface dataHandler) {
         this.dataHandler = dataHandler;
     }
 
@@ -20,11 +20,11 @@ public class SearchDistributeFromTeamHandler implements DataHandler<Team> {
 
     @Override
     public void performSelectSearchOperation(int entityId) throws RateException {
-          dataHandler.performSelectSearchOperationFrom(entityId);
+        dataHandler.performSelectSearchOperationTo(entityId);
     }
 
     @Override
     public void undoSearchOperation() throws RateException {
-        dataHandler.undoSearchOperationFrom();
+        dataHandler.undoSearchOperationTo();
     }
 }

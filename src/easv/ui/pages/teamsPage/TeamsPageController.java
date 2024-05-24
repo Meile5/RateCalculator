@@ -81,7 +81,7 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
         displayTeams();
         //initialize search field
         intializeSearchField();
-      // yearsComboBoxListener(team);
+       yearsComboBoxListener();
 
     }
 
@@ -122,10 +122,10 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
     }
 
     /* listener that listens changes in selected years of combobox and calls a method to populate pieChart*/
-    public void yearsComboBoxListener(Team team) {
+    public void yearsComboBoxListener() {
         yearComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                populateChartForYear(team, newValue);
+                populateChartForYear(newValue);
             }
         });
     }
@@ -137,12 +137,15 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
      *
      * @param selectedYear is the year that is selected from a combobox
      */
-    private void populateChartForYear(Team team, int selectedYear) {
-        System.out.println(team.getTeamConfigurationsHistory() + "----------");
+    private void populateChartForYear( int selectedYear) {
         XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
-        series.setName(team.getTeamName());
+        series.setName(this.selectedTeam.getControllerTeam().getTeamName());
+         this.selectedTeam.getControllerTeam().getTeamConfigurationsHistory().forEach((e)->{
+
+         });
+        System.out.println(selectedTeam.getControllerTeam().getTeamConfigurationsHistory());
         /* Get the configurations for the selected year*/
-        List<TeamConfiguration> configurations = team.getTeamConfigurationsHistory().stream()
+        List<TeamConfiguration> configurations = this.selectedTeam.getControllerTeam().getTeamConfigurationsHistory().stream()
                 .filter(config -> config.getSavedDateWithoutTime().getYear() == selectedYear)
                 .sorted(Comparator.comparing(TeamConfiguration::getSavedDateWithoutTime))
                 .toList();
@@ -268,7 +271,6 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
     }
 
     public void reinitializeTeamChart() {
-        System.out.println("Ana are mere");
         this.selectedTeam=null;
     }
 }

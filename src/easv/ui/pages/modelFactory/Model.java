@@ -18,7 +18,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -413,6 +412,7 @@ public class Model implements IModel {
 
 
 
+
     //FILTERS RELATED LOGIC
     public ObservableList<Employee> getSearchResult(String filter) {
         ObservableList searchResults = FXCollections.observableArrayList();
@@ -445,11 +445,29 @@ public class Model implements IModel {
     }
 
     //REGION FILTER LOGIC
+
+    /**get the regions resulted from the search operation
+     * @param filter the input from the search component*/
     public ObservableList<Region> getRegionFilterResults(String filter){
         ObservableList<Region> regionFilterResult= FXCollections.observableArrayList();
         regionFilterResult.setAll(regionManager.performSearchRegionFilter(filter,regionsWithCountries.values()));
         return regionFilterResult;
     }
+
+    /**get the countries for the selected region from the regions filter
+     * @param region the selected region from the filter */
+    public ObservableList<Country> getRegionCountries(Region region){
+        ObservableList<Country> regionCountries =  FXCollections.observableArrayList();
+        regionCountries.setAll(regionsWithCountries.get(region.getId()).getCountries());
+        return regionCountries;
+    }
+
+    /**get the teams for the selected region from the filter
+     * @param region selected region from the filter */
+    public List<Team> getRegionTeams(Region region){
+        return regionManager.filterTeamsByRegion(region);
+    }
+
 
 
 
@@ -470,6 +488,7 @@ public class Model implements IModel {
     public Country getCountryById(int countryId){
         return countriesWithTeams.get(countryId);
     };
+
     /**perform the region search operation*/
    public   ObservableList<Country> getCountryFilterResults(String filter){
        ObservableList<Country> countryFilterResult= FXCollections.observableArrayList();
@@ -555,7 +574,6 @@ public class Model implements IModel {
         }
         resultedTeamsFromFilterAction = new ArrayList<>();
         resultedTeamsFromFilterAction.addAll(employeeManager.filterTeamsByRegion(region, region. getCountries()));
-
     }
 
 
@@ -835,6 +853,15 @@ public class Model implements IModel {
             // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
             teamsWithEmployees.remove(originalTeam.getId());
             teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
+         for(TeamConfiguration teamConfiguration: editedTeamSaved.getTeamConfigurationsHistory()){
+             System.out.println("new team");
+             System.out.println(teamConfiguration.getSavedDate() + "saved date" );
+              for(TeamConfigurationEmployee team: teamConfiguration.getTeamMembers()){
+
+                  System.out.println(team.getEmployeeName() + "from the model");
+              }
+             System.out.println("end team");
+         }
             //System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamDayRate() + "" + editedTeamSaved.getActiveConfiguration().getId());
 
         }

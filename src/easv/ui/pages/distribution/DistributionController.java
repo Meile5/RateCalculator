@@ -1,15 +1,18 @@
 package easv.ui.pages.distribution;
 import easv.Utility.WindowsManagement;
-import easv.be.DistributionValidation;
-import easv.be.OverheadHistory;
-import easv.be.Team;
+import easv.be.*;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
 import easv.ui.components.common.errorWindow.ErrorWindowController;
+import easv.ui.components.common.regionFilter.FilterHandler;
+import easv.ui.components.common.regionFilter.RegionFilter;
 import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFromController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToController;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToInterface;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToListCell;
+import easv.ui.components.distributionPage.teamsFilters.DistributeFromFilter;
+import easv.ui.components.distributionPage.teamsFilters.SearchDistributeFromTeamHandler;
+import easv.ui.components.distributionPage.teamsFilters.SearchDistributeToTeamHandler;
 import easv.ui.components.searchComponent.SearchController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
@@ -97,7 +100,7 @@ public class DistributionController implements Initializable, DistributionContro
         // save the performed distribution operation
         saveDistributionOperation();
         //initialize search component
-        initializeSearchComponent();
+        initializeSearchAndFilterComponent();
     }
 
 
@@ -109,6 +112,8 @@ public class DistributionController implements Initializable, DistributionContro
         distributeToTeams.setItems(model.getOperationalTeams());
     }
 
+
+    /**display initial data from the model, for the distribute from teams components */
     private void populateDistributeFromTeams() {
         List<Parent> distributeFromTeamsComponents = new ArrayList<>();
         model.getOperationalTeams().forEach(e -> {
@@ -117,6 +122,9 @@ public class DistributionController implements Initializable, DistributionContro
         });
         distributeFromTeams.getChildren().addAll(distributeFromTeamsComponents);
     }
+
+
+
 
     /**
      * display the chart when simulate button is pressed
@@ -415,9 +423,9 @@ public class DistributionController implements Initializable, DistributionContro
 
 
     /**
-     * initialize searchComponent
+     * initialize  filters and  search components
      */
-    private void initializeSearchComponent() {
+    private void initializeSearchAndFilterComponent() {
 
         // initialize search from component
         SearchDistributeFromTeamHandler searchFromHandler = new SearchDistributeFromTeamHandler(this);
@@ -426,8 +434,18 @@ public class DistributionController implements Initializable, DistributionContro
         // initialize distribute to search component
         SearchDistributeToTeamHandler searchToHandler = new SearchDistributeToTeamHandler(this);
         SearchController<Team> searchControllerDistributeTo = new SearchController<>(searchToHandler);
+
+        //initialize distribute from filters
+
+        FilterHandler<Region,Country> distributeFromFilterHandler = new DistributeFromFilter(model,this);
+        RegionFilter<Region, Country> distributeFromFilter =  new RegionFilter<>(distributeFromFilterHandler);
+
+
+
         this.searchFromContainer.getChildren().add(searchControllerDistributeFrom.getSearchRoot());
+        this.searchFromContainer.getChildren().add(distributeFromFilter.getFilterRoot());
         this.searchToContainer.getChildren().add(searchControllerDistributeTo.getSearchRoot());
+
     }
 
 
@@ -445,7 +463,6 @@ public class DistributionController implements Initializable, DistributionContro
 
     public void performSelectSearchOperationTo(int entityId) {
         Team resultedTeam = model.getTeamById(entityId);
-        //  distributeToTeams.getItems().clear();
         distributeToTeams.setItems(FXCollections.observableArrayList(resultedTeam));
     }
 
@@ -460,9 +477,16 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
 
+    /**display the resulted teams from the region , or country filters
+     * @param teams the resulted teams from the performed filter operation (region,country)*/
     @Override
-    public void displayDistributeFromTeamsInContainer() {
-        populateDistributeFromTeams();
+    public void displayDistributeFromTeamsInContainer(List<Team> teams) {
+            List<Parent> distributeFromTeamsComponents = new ArrayList<>();
+            teams.forEach(e -> {
+                DistributeFromController distributeToController = new DistributeFromController(model, e, distributionMediator, DistributionType.DISTRIBUTE_FROM, secondLayout);
+                distributeFromTeamsComponents.add(distributeToController.getRoot());
+            });
+            distributeFromTeams.getChildren().setAll(distributeFromTeamsComponents);
     }
 
     @Override
