@@ -794,9 +794,10 @@ public class Model implements IModel {
             //System.out.println(employeesToDelete +" in model");
             editedTeam.removeTeamMember(employeesDelete);
         }
+        List<TeamConfigurationEmployee> teamConfigurationEmployees = new ArrayList<>();
         // Replace with new employees from the provided list and update their rates
         for (Employee employee : employees) {
-          //  System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");
+            //  System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");
             TeamConfigurationEmployee teamConfigurationEmployee = null;
             // Calculate and set the new hourly and daily rates for the employee
             BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeamE(employee, editedTeam);
@@ -818,9 +819,12 @@ public class Model implements IModel {
                 teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
                 editedTeam.addNewTeamMember(employee);
             }
+            teamConfigurationEmployees.add(teamConfigurationEmployee);
+
 
             TeamConfiguration newTeamConfiguration = getNewEmployeeTeamConfiguration1(editedTeam);
-            newTeamConfiguration.addEmployeeToTeamHistory(teamConfigurationEmployee);
+            newTeamConfiguration.setTeamMembers(teamConfigurationEmployees);
+            //newTeamConfiguration.addEmployeeToTeamHistory(teamConfigurationEmployee);
             editedTeam.setActiveConfiguration(newTeamConfiguration);
         }
 
@@ -835,6 +839,7 @@ public class Model implements IModel {
             // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
             teamsWithEmployees.remove(originalTeam.getId());
             teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
+            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getTeamMembers() + " employees after editing ---------------------");
             //System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamDayRate() + "" + editedTeamSaved.getActiveConfiguration().getId());
 
         }

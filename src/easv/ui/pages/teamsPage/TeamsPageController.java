@@ -64,7 +64,6 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
         try {
             teamPage = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -138,7 +137,7 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
      * @param selectedYear is the year that is selected from a combobox
      */
     private void populateChartForYear(Team team, int selectedYear) {
-        System.out.println(team.getTeamConfigurationsHistory() + "----------");
+       // System.out.println(team.getTeamConfigurationsHistory() + "----------");
         XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
         series.setName(team.getTeamName());
         /* Get the configurations for the selected year*/
@@ -215,15 +214,15 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
      * sets team name into pieChart label
      */
     private void displayEmployeesForDate(Team team, TeamConfiguration selectedConfig) {
+        System.out.println(selectedConfig.getTeamMembers() + "-----------------");
         String currency = team.getCurrency().toString();
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         List<TeamConfigurationEmployee> teamMembers = selectedConfig.getTeamMembers();
-        System.out.println(selectedConfig.getTeamMembers());
+        //List<TeamConfigurationEmployee> teamMembers = team.getActiveConfiguration().getTeamMembers();
+        System.out.println(selectedConfig.getTeamMembers().size() + "employees in pie chart after update +++++++++++++++++++");
         for (TeamConfigurationEmployee employee : teamMembers) {
-            System.out.println(employee.getEmployeeDailyRate());
             String label = employee.getEmployeeName() + " " + currency + " ";
             pieChartData.add(new PieChart.Data(label, employee.getEmployeeDailyRate()));
-
         }
         /* binds each PieChart.Data object's name property to a concatenated string
          containing the name and day rate, ensuring that both are displayed in the pie chart.*/
