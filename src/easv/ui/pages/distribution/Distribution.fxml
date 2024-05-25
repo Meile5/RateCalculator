@@ -33,6 +33,21 @@
    <children>
       <VBox alignment="CENTER" maxWidth="540.0" minWidth="-Infinity" prefHeight="408.0" prefWidth="256.0" style="-fx-background-radius: 20; -fx-background-color: #D1D0D0;" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
+            <HBox alignment="CENTER_LEFT" maxWidth="520.0" minWidth="-Infinity" prefHeight="20.0" prefWidth="254.0">
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+               <children>
+                  <Label text="Distribute fom teams">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
             <HBox fx:id="searchFromContainer" alignment="CENTER_LEFT" maxWidth="520.0" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0" spacing="5.0" style="-fx-background-radius: 20 20 0 0;">
                <children>
 <!--                  <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="258.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="70.0" HBox.hgrow="ALWAYS">-->
@@ -105,7 +120,7 @@
             </ScrollPane>
          </children>
          <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </VBox>
       <VBox alignment="CENTER" maxWidth="204.0" minWidth="64.0" prefHeight="200.0" prefWidth="128.0" spacing="10.0" style="-fx-background-radius: 20;" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="3">
@@ -136,6 +151,21 @@
          </children></VBox>
       <VBox alignment="TOP_CENTER" maxWidth="540.0" minWidth="-Infinity" prefHeight="408.0" prefWidth="256.0" style="-fx-background-color: #D1D0D0; -fx-background-radius: 20;" GridPane.columnIndex="3" GridPane.rowIndex="1">
          <children>
+            <HBox alignment="CENTER_LEFT" maxWidth="520.0" minWidth="-Infinity" prefHeight="20.0" prefWidth="254.0">
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+               <children>
+                  <Label text="Distribute to teams">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
             <HBox fx:id="searchToContainer" alignment="CENTER_LEFT" maxWidth="520.0" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0" spacing="5.0" style="-fx-background-radius: 20 20 0 0;">
                <children>
 <!--                  <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="258.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="70.0" HBox.hgrow="ALWAYS">-->
@@ -184,28 +214,42 @@
             </HBox>
             <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="510.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="38.0" prefWidth="254.0">
                <children>
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="Countries" textOverrun="CLIP" HBox.hgrow="ALWAYS">
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="Name" textOverrun="CLIP" HBox.hgrow="ALWAYS">
                      <font>
                         <Font name="Open Sans Regular" size="12.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="Regions" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" layoutX="109.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="Name" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="Day Rate" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" layoutX="81.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="Hourlly Rate" HBox.hgrow="ALWAYS" />
-                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="Overhead %" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="DayRate" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" layoutX="109.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="HourrlyRate" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="Regions" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" layoutX="81.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="85.0" text="Countries" HBox.hgrow="ALWAYS" />
                </children>
                <padding>
                   <Insets left="5.0" right="5.0" />
                </padding>
             </HBox>
-            <ListView fx:id="distributeToTeams" maxWidth="520.0" minWidth="-Infinity" prefHeight="200.0" prefWidth="250.0" styleClass="teamsListView" />
+            <ListView fx:id="distributeToTeams" maxWidth="520.0" minWidth="250.0" prefHeight="200.0" prefWidth="250.0" styleClass="teamsListView" />
          </children>
          <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding></VBox>
       <VBox fx:id="distributionManagement" alignment="TOP_CENTER" maxWidth="536.0" prefHeight="408.0" prefWidth="256.0" style="-fx-background-color: #D1D0D0; -fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <children>
+            <HBox alignment="CENTER_LEFT" maxWidth="520.0" minWidth="-Infinity" prefHeight="38.0" prefWidth="254.0">
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+               <children>
+                  <Label text="Distribute from team">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
             <VBox fx:id="selectedToDistribute" maxWidth="520.0" minWidth="-Infinity" prefHeight="50.0" prefWidth="254.0" />
             <HBox alignment="CENTER_LEFT" maxWidth="520.0" minWidth="-Infinity" prefHeight="38.0" prefWidth="254.0">
                <padding>
@@ -235,7 +279,7 @@
             </ScrollPane>
          </children>
          <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding></VBox>
       <VBox fx:id="simulationBarChartChartHolder" alignment="CENTER" disable="true" maxWidth="536.0" prefHeight="408.0" prefWidth="256.0" style="-fx-background-color: #D1D0D0; -fx-background-radius: 20;" GridPane.columnIndex="3" GridPane.rowIndex="3">
          <children>
@@ -248,16 +292,6 @@
               </yAxis>
             </BarChart>
          </children></VBox>
-      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
-         <children>
-            <Label text="Distribute From " />
-         </children>
-      </HBox>
-      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
-         <children>
-            <Label text="Distribute to" />
-         </children>
-      </HBox>
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
