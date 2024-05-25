@@ -11,6 +11,7 @@ import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToCont
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToInterface;
 import easv.ui.components.distributionPage.distributeToTeamInfo.DistributeToListCell;
 import easv.ui.components.distributionPage.teamsFilters.DistributeFromFilter;
+import easv.ui.components.distributionPage.teamsFilters.DistributeToFilter;
 import easv.ui.components.distributionPage.teamsFilters.SearchDistributeFromTeamHandler;
 import easv.ui.components.distributionPage.teamsFilters.SearchDistributeToTeamHandler;
 import easv.ui.components.searchComponent.SearchController;
@@ -440,11 +441,15 @@ public class DistributionController implements Initializable, DistributionContro
         FilterHandler<Region,Country> distributeFromFilterHandler = new DistributeFromFilter(model,this);
         RegionFilter<Region, Country> distributeFromFilter =  new RegionFilter<>(distributeFromFilterHandler);
 
+          //initialize distribute to filters
 
+        FilterHandler<Region,Country> distributeToFilterHandler = new DistributeToFilter(model,this);
+        RegionFilter<Region,Country> distributeToFilter = new RegionFilter<>(distributeToFilterHandler);
 
         this.searchFromContainer.getChildren().add(searchControllerDistributeFrom.getSearchRoot());
         this.searchFromContainer.getChildren().add(distributeFromFilter.getFilterRoot());
         this.searchToContainer.getChildren().add(searchControllerDistributeTo.getSearchRoot());
+        this.searchToContainer.getChildren().add(distributeToFilter.getFilterRoot());
 
     }
 
@@ -490,8 +495,8 @@ public class DistributionController implements Initializable, DistributionContro
     }
 
     @Override
-    public void displayDistributeToTeamsInContainer() {
-        populateDistributeToTeams();
+    public void displayDistributeToTeamsInContainer(List<Team> teams) {
+        distributeToTeams.setItems(FXCollections.observableArrayList(teams));
     }
 
 

@@ -28,7 +28,7 @@ public interface DistributionControllerInterface {
 
 
      /**display all the teams in the distribute to list */
-     void displayDistributeToTeamsInContainer();
+     void displayDistributeToTeamsInContainer(List<Team> teams);
 
 
      /**undo search operation from distribute from search field*/
