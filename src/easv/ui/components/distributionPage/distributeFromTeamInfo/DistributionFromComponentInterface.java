@@ -8,4 +8,6 @@ public interface DistributionFromComponentInterface {
     boolean isTheSameEntityDisplayed(int teamId);
 
 
+    void setBackToOriginal();
+
 }

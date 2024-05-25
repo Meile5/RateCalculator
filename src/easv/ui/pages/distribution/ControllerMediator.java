@@ -19,10 +19,12 @@ public class ControllerMediator {
     // distribute  from  team component, that was selected by the user
     private DistributionFromComponentInterface distributionFromTeamController;
 
+
+    // selected team chosen to distribute from
     private DistributionFromComponentInterface selectedTeamToDistributeFromController;
 
 
-    //TODO if time replace with the interface
+    // holds all the controllers that was selected to distribute to by the user
     private final Map<Integer, DistributeToInterface> distributeToControllers;
 
     public ControllerMediator() {
@@ -124,6 +126,9 @@ public class ControllerMediator {
         boolean removedFromView = distributionController.removeTeamFromDistributionView(removedTeamControllers);
         if (removedFromView) {
             this.distributeToControllers.remove(id);
+            if(this.distributeToControllers.isEmpty()){
+                selectedTeamToDistributeFromController.setBackToOriginal();
+            }
             return true;
         } else {
             return false;

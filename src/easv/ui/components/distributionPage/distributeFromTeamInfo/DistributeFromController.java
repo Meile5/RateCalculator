@@ -106,7 +106,7 @@ public class DistributeFromController implements Initializable, DistributionFrom
     private void addInfoToolTip(Label label) {
         Tooltip toolTip = new Tooltip();
         toolTip.getStyleClass().add("tooltipinfo");
-        toolTip.setText(label.getText());
+        toolTip.textProperty().bind(label.textProperty());
         label.setTooltip(toolTip);
     }
 
@@ -180,7 +180,6 @@ public class DistributeFromController implements Initializable, DistributionFrom
 
     @Override
     public void setTheStyleClassToDefault() {
-        System.out.println("removed");
         this.teamComponent.getStyleClass().remove("teamComponentClicked");
     }
 
@@ -201,15 +200,18 @@ public class DistributeFromController implements Initializable, DistributionFrom
     @Override
     public void setDayRate(String value) {
         this.dayRate.setText(value);
-        this.dayRate.getTooltip().setText(value);
     }
 
     @Override
     public void setHourlyRate(String value) {
         this.hourlyRate.setText(value);
-        this.hourlyRate.getTooltip().setText(value);
     }
 
+    //display the original value if no distribute to teams are selceted
+    public void setBackToOriginal(){
+        this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate()+"");
+        this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate()+"");
+    }
 
     public boolean isTheSameEntityDisplayed(int teamId) {
         return this.teamToDisplay.getId() == teamId;
