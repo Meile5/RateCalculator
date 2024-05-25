@@ -1,5 +1,6 @@
 package easv.ui.components.common.regionFilter;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -65,6 +66,9 @@ public class RegionFilter<T, V> implements Initializable {
         addUndoRegionButtonListener();
         // add undo country listener
         addUndoCountryButtonListener();
+        // change the style off the revert button to look the same as comboboxes
+         addFocusListener(regionsFilter,regionRevertButton);
+         addFocusListener(countryFilter,countryRevertButton);
     }
 
 
@@ -90,7 +94,9 @@ public class RegionFilter<T, V> implements Initializable {
     private void addRegionFilterListener() {
         this.regionsFilter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
+                this.countryFilter.clearSelection();
                 this.countryFilter.setItems(filterHandler.filterCountriesByRegion(newValue));
+                this.countryFilter.selectItem(countryFilter.getItems().getFirst());
                 this.filterHandler.displaySelectedRegionTeams(newValue);
                 this.regionFilterActive = true;
                 showUndoButton(regionRevertButton,regionRevertSvg);
@@ -106,7 +112,9 @@ public class RegionFilter<T, V> implements Initializable {
                 {
                     if (newValue != null) {
                         this.filterHandler.displaySelectedCountryTeams(newValue);
+                    showUndoButton(countryRevertButton,countryRevertSvg);
                     }
+
                 }
         );
     }
@@ -121,9 +129,12 @@ public class RegionFilter<T, V> implements Initializable {
                 this.countryFilter.setItems(filterHandler.getCountryData());
                 this.filterHandler.displayAllTeamsInTheSystem();
                 this.regionFilterActive = false;
+                this.countryFilter.clearSelection();
+                this.regionsFilter.clearSelection();
                 hideUndoButton(regionRevertButton, regionRevertSvg);
                 hideUndoButton(countryRevertButton, countryRevertSvg);
             });
+            pauseTransition.playFromStart();
         });
     }
 
@@ -136,12 +147,14 @@ public class RegionFilter<T, V> implements Initializable {
             pauseTransition.setOnFinished((e) -> {
                 if (regionFilterActive) {
                     this.filterHandler.displaySelectedRegionTeams(regionsFilter.getSelectionModel().getSelectedItem());
+                    hideUndoButton(countryRevertButton, countryRevertSvg);
                 } else {
+                    this.countryFilter.clearSelection();
                     this.filterHandler.displayAllTeamsInTheSystem();
                     hideUndoButton(countryRevertButton, countryRevertSvg);
                 }
-
             });
+            pauseTransition.playFromStart();
         });
     }
 
@@ -163,6 +176,16 @@ public class RegionFilter<T, V> implements Initializable {
         button.setDisable(false);
     }
 
+
+    private void addFocusListener(MFXTextField filterInput, HBox sibling) {
+        filterInput.focusWithinProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (isNowFocused) {
+                sibling.getStyleClass().add("countryFilterFocused");
+            } else {
+                sibling.getStyleClass().remove("countryFilterFocused");
+            }
+        });
+    }
     public HBox getFilterRoot() {
         return filtersContainer;
     }
