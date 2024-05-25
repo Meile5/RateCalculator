@@ -104,7 +104,6 @@ public class TeamInfoController implements Initializable {
 
             TeamConfiguration activeConfiguration = team.getActiveConfiguration();
             if (activeConfiguration != null) {
-                System.out.println(activeConfiguration.getTeamDayRate()+ "from labels");
 
                 teamDailyRate.setText(activeConfiguration.getTeamDayRate().toString());
                 teamHourlyRate.setText(activeConfiguration.getTeamHourlyRate().toString());
@@ -136,10 +135,7 @@ public class TeamInfoController implements Initializable {
                 teamRegion.setText("N/A");
                 teamRegion.setTooltip(new Tooltip("N/A"));
             }
-            if(team.getActiveConfiguration() != null){
-                System.out.println("................");
-            System.out.println(team.getActiveConfiguration().getTeamDayRate() + team.getTeamName());
-                System.out.println("................");}
+
         }
     }
 

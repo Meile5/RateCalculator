@@ -22,7 +22,8 @@ public class Employee {
     private List<Team> teams;
     private BigDecimal overhead;
     private Configuration  activeConfiguration;
-
+    // the idea to store the employee percentage per each team
+    private Map<Integer,BigDecimal> utilPerTeams;
 
 
 
@@ -42,8 +43,7 @@ public class Employee {
         this.teamHourlyRate = teamHourlyRate;
     }
 
-    // the idea to store the employee percentage per each team
-    private Map<Integer,BigDecimal> utilPerTeams;
+
 
 
     public Employee(String name, EmployeeType employeeType, Currency currency) {

@@ -1,10 +1,25 @@
 package easv.be;
 
+import java.util.Objects;
+
 public class TeamConfigurationEmployee {
     private String employeeName ;
     private double employeeDailyRate;
     private double employeeHourlyRate;
     private Currency currency;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TeamConfigurationEmployee that = (TeamConfigurationEmployee) o;
+        return Double.compare(employeeDailyRate, that.employeeDailyRate) == 0 && Double.compare(employeeHourlyRate, that.employeeHourlyRate) == 0 && Objects.equals(employeeName, that.employeeName) && currency == that.currency;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(employeeName, employeeDailyRate, employeeHourlyRate, currency);
+    }
 
     public Currency getCurrency() {
         return currency;

@@ -121,7 +121,6 @@ public class EmployeeInfoController implements Initializable {
 
             // Displaying multiple regions
             StringBuilder regionNames = new StringBuilder();
-            System.out.println(employee.getRegions()+ "employee regions");
             if (employee.getRegions().isEmpty()||employee.getRegions()==null) {
                 regionNames.append(NOT_AVAILABLE);
             } else {

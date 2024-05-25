@@ -221,10 +221,18 @@ public class Model implements IModel {
 
     @Override
     public void deleteEmployee(Employee employee) throws RateException {
-        boolean succeeded = employeeManager.deleteEmployee(employee);
-        if (succeeded) {
+        List<Team> employeeTeams = employee.getTeams().stream().map((e)->teamsWithEmployees.get(e.getId())).toList();
+        List<Team> teamsWithoutEmployee = employeeManager.deleteEmployee(employee,employeeTeams);
+        if (!teamsWithoutEmployee.isEmpty()) {
             // If the deletion was successful, remove the employee from the observable map
             employees.remove(employee.getId());
+            //add the new teams configurations to the teamWithEmployees map
+            for(Team team : teamsWithoutEmployee){
+                teamsWithEmployees.put(team.getId(),team);
+            }
+
+            //update the countries with the new teams values
+            employeeManager.updateCountryTeams(countriesWithTeams.values(),teamsWithoutEmployee );
             sortDisplayedEmployee();
             displayedEmployees = sortedEmployeesByName;
             Platform.runLater(() -> {
@@ -233,13 +241,15 @@ public class Model implements IModel {
         }
     }
 
+//TODO to check where the  employee lose the team utilization , at creation, update the team day rate and hourlly rate also
     @Override
     public void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException {
         employee = employeeManager.addEmployee(employee, configuration, teams);
+        System.out.println(employee.getUtilPerTeams());
         if (employee != null) {
             employees.put(employee.getId(), employee);
-
             for (Team team : teams) {
+                employee.getUtilPerTeams().put(team.getId(),team.getUtilizationPercentage());
                 team.addNewTeamMember(employee);
                 TeamConfiguration teamConfiguration = getNewEmployeeTeamConfiguration(team);
                 Map<Integer, BigDecimal> employeesDayRates = new HashMap<>();
@@ -253,6 +263,7 @@ public class Model implements IModel {
                 addTeamConfiguration(teamConfiguration, team, employeesDayRates, employeesHourlyRates);
                 teamsWithEmployees.get(team.getId()).addNewTeamMember(employee);
             }
+
         }
     }
 
@@ -359,11 +370,9 @@ public class Model implements IModel {
         }
 
         Employee editedSavedEmployee = employeeManager.saveEditOperation(editedEmployee, originalEmployee,originalEmployeeTeams );
-
         editedSavedEmployee.setCountries(originalEmployee.getCountries());
         editedSavedEmployee.setRegions(originalEmployee.getRegions());
         editedSavedEmployee.setTeams(originalEmployee.getTeams());
-        System.out.println(editedSavedEmployee.getTeams().size() + "teams size");
        if (editedSavedEmployee != null) {
             this.employees.put(editedEmployee.getId(), editedSavedEmployee);
             // update the filter list with the new updated values
@@ -734,9 +743,7 @@ public class Model implements IModel {
 
     @Override
     public Map<OverheadHistory, List<Team>> saveDistribution() throws RateException {
-        insertedDistributionPercentageFromTeams.keySet().forEach((e) -> System.out.println(e.getActiveConfiguration().getTeamDayRate() + " " + e.getActiveConfiguration().getTeamHourlyRate() + " oon saved"));
-        //System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "day rate" + selectedTeamToDistributeFrom.getActiveConfiguration().getTeamHourlyRate() + "team day rate");
-        //System.out.println("------=-  before");
+
         Map<OverheadHistory, List<Team>> performedValues = teamManager.saveDistributionOperation(insertedDistributionPercentageFromTeams, selectedTeamToDistributeFrom, simulationPerformed, teamsWithEmployees);
         //   update the  local teams with the new values;
         if (!performedValues.isEmpty()) {
@@ -747,7 +754,6 @@ public class Model implements IModel {
             }
             performedValues.put(OverheadHistory.PREVIOUS_OVERHEAD, previousValues);
             // add the selected team distribution performed,
-
 
             // update the teams map in order to have the updated overhead rates values
             for (Team team : performedValues.get(OverheadHistory.CURRENT_OVERHEAD)) {
@@ -800,7 +806,7 @@ public class Model implements IModel {
 
         // Add unique employees back to the observable list
         employeesForTeamsPage.addAll(uniqueEmployees);
-        //System.out.println(uniqueEmployees);
+
 
         return employeesForTeamsPage;
     }
@@ -809,30 +815,22 @@ public class Model implements IModel {
 
         // Clear existing employees in the team
         for (Employee employeesDelete : employeesToDelete) {
-            //System.out.println(employeesToDelete +" in model");
             editedTeam.removeTeamMember(employeesDelete);
         }
         // Replace with new employees from the provided list and update their rates
         for (Employee employee : employees) {
-          //  System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");
+
             TeamConfigurationEmployee teamConfigurationEmployee = null;
             // Calculate and set the new hourly and daily rates for the employee
             BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeamE(employee, editedTeam);
             employee.setTeamHourlyRate(employeeHourlyRate);
             BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeamE(employee, editedTeam);
             employee.setTeamDailyRate(employeeDayRate);
-           // System.out.println("edited team member id: " + editedTeam.getEmployees().getFirst().getId());
-        //    System.out.println(employee + " employee in loop with id " + employee.getId());
-       //     System.out.println("get teaM MEMBER" + editedTeam.getTeamMember(employee.getId()));
             if (editedTeam.getTeamMember(employee.getId()) != null) {
-             //   System.out.println("im inside the loop to replacememeber");
-             //   System.out.println("with employee " + employee);
+
                 editedTeam.replaceTeaMember(employee);
                 teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
             } else {
-            //    System.out.println("-------------------------------");
-             //   System.out.println("im inside the else loop");
-              //  System.out.println("with employee " + employee);
                 teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
                 editedTeam.addNewTeamMember(employee);
             }
@@ -842,28 +840,12 @@ public class Model implements IModel {
             editedTeam.setActiveConfiguration(newTeamConfiguration);
         }
 
-
-
         Team editedTeamSaved = employeeManager.saveTeamEditOperation(editedTeam, originalTeam.getActiveConfiguration().getId(), employeesToDelete, employees);
 
         // Update the model map with the edited team
         if (editedTeamSaved != null) {
-
-            // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-            // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
             teamsWithEmployees.remove(originalTeam.getId());
             teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-         for(TeamConfiguration teamConfiguration: editedTeamSaved.getTeamConfigurationsHistory()){
-             System.out.println("new team");
-             System.out.println(teamConfiguration.getSavedDate() + "saved date" );
-              for(TeamConfigurationEmployee team: teamConfiguration.getTeamMembers()){
-
-                  System.out.println(team.getEmployeeName() + "from the model");
-              }
-             System.out.println("end team");
-         }
-            //System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamDayRate() + "" + editedTeamSaved.getActiveConfiguration().getId());
-
         }
     }
 

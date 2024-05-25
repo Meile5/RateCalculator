@@ -76,6 +76,7 @@ public class TeamManagementController implements Initializable {
         try {
             teamManagementComponent = loader.load();
         } catch (IOException e) {
+            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
@@ -115,7 +116,6 @@ public class TeamManagementController implements Initializable {
     public void displayAllEmployees() {
         allEmployeesContainer.getChildren().clear();
         employeesToAddList.clear();
-        //employeesToAddList.forEach(EmployeesToAdd::changeName);
         model.getAllEmployees()
                 .forEach(e -> {
                     EmployeesToAdd employeesToAdd = new EmployeesToAdd(e, model, this);
@@ -154,7 +154,7 @@ public class TeamManagementController implements Initializable {
             // closeWindowSpinner(firstLayout);
             teamsPageController.clearTeams();
 
-            //TODO , maybe this , does not need to be recalled , we cgit heck tomorrow
+
             teamsPageController.displayTeams();
             //teamsPageController.reinitializeTeamChart();
 

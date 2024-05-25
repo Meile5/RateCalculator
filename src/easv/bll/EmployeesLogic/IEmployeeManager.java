@@ -14,7 +14,12 @@ import java.util.Map;
 public interface IEmployeeManager {
     Employee addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException;
     Map<Integer, Employee> returnEmployees() throws RateException;
-    Boolean deleteEmployee(Employee employee) throws RateException;
+
+    /**delete the employee ,and  modify the teams overhead , where he is present,return a list with the modified teams
+     * @param employee employee to delete
+     * @param employeeTeams  the teams that employee is in
+     */
+    List<Team> deleteEmployee(Employee employee,List<Team> employeeTeams) throws RateException;
 
     BigDecimal calculateTeamDayRate(Team team);
     BigDecimal calculateTeamHourlyRate(Team team);
@@ -73,4 +78,6 @@ public interface IEmployeeManager {
     List<Employee> filterEmployeesByTeam(Team selectedTeam,ObservableMap<Integer,Employee> employees);
 
     Team saveTeamEditOperation(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException;
+
+    void updateCountryTeams(Collection<Country> values, List<Team> teamsWithoutEmployee);
 }

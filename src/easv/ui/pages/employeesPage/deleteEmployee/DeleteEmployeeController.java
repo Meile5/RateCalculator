@@ -62,7 +62,7 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
 
     private void deleteOperation() {
         firstLayout.getChildren().clear();
-        ConfirmationWindowController confirmationWindowController = new ConfirmationWindowController(firstLayout, this);
+        confirmationWindowController = new ConfirmationWindowController(firstLayout, this);
         firstLayout.getChildren().add(confirmationWindowController.getRoot());
         firstLayout.setDisable(false);
         firstLayout.setVisible(true);
@@ -103,6 +103,7 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
         deleteEmployee.setOnSucceeded(event -> WindowsManagement.closeStackPane(firstLayout));
 
         deleteEmployee.setOnFailed(event -> {
+            deleteEmployee.getException().printStackTrace();
             confirmationWindowController.setErrorMessage(ErrorCode.DELETING_EMPLOYEES_FAILED.getValue());
         });
 

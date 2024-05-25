@@ -109,7 +109,6 @@ public class CreateController implements Initializable {
             enableSpinner();
             firstLayout.getChildren().add(operationSpinner);
             WindowsManagement.showStackPane(firstLayout);
-
             String name = nameTF.getText().trim();
             EmployeeType employeeType = (EmployeeType) overOrResourceCB.getSelectedItem();
             List<Team> teamsToSave = getSelectedTeams();
@@ -129,7 +128,6 @@ public class CreateController implements Initializable {
             BigDecimal hourlyRate = model.getComputedHourlyRate(employee, dailyWorkingHours);
             configuration.setDayRate(dayRate);
             configuration.setHourlyRate(hourlyRate);
-
             saveEmployeeOperation(employee, configuration, teamsToSave);
         }
     }
@@ -196,7 +194,6 @@ public class CreateController implements Initializable {
                     team.setUtilizationPercentage(utilizationPercentage);
                     teamsList.add(team);
                     teamsUtilizationList.add(Integer.valueOf(utilPercentageTF.getText()));
-
                     String teamWithUtilization = team.getTeamName() + ",  " + utilPercentageTF.getText() + "%";
                     teamsListView.getItems().add(teamWithUtilization);
                     regionCB.clearSelection();

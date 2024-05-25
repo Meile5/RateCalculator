@@ -15,7 +15,11 @@ public interface IEmployeeDAO {
     LinkedHashMap<Integer, Employee> returnEmployees() throws RateException;
 
     Integer addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException;
-    Boolean deleteEmployee(Employee employee) throws RateException;
+
+    /**delete the employee ,and  modify the teams overhead , where he is present
+     * @param employee employee to delete
+     * @param employeeTeams  the teams that employee is in */
+    Boolean deleteEmployee(Employee employee,List<Team> employeeTeams) throws RateException;
     void addNewCountryOrTeam(Employee employee, boolean newCountry, boolean newTeam, Connection conn) throws RateException, SQLException;
     Integer addCountry(Country country, Connection conn) throws RateException, SQLException;
     Integer addTeam(Team team, Connection conn) throws RateException, SQLException;
