@@ -114,6 +114,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private SearchController<Employee> employeeSearch;
     private EmployeeSearchHandler employeeSearchHandler;
 
+
     public EmployeeMainPageController(StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeesMainPage.fxml"));
         loader.setController(this);
@@ -173,7 +174,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 //
 //            revertCountryFilter(countryRevertButton, countryRevertSvg);
 //            revertTeamFilter(teamRevertButton, teamRevertSvg);
-
 
             //setTotalRatesDefault();
         } catch (RateException e) {

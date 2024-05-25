@@ -5,6 +5,7 @@ import easv.be.*;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.components.editPage.EditController;
+import easv.ui.components.map.popUpInfo.notSupportedCountries.NotSupportedView;
 import easv.ui.pages.employeesPage.deleteEmployee.DeleteEmployeeController;
 import easv.ui.pages.employeesPage.employeeMainPage.EmployeeMainPageController;
 import easv.ui.pages.modelFactory.IModel;
@@ -59,8 +60,7 @@ public class EmployeeInfoController implements Initializable {
     private IModel model;
     @FXML
     private Tooltip countryTooltip;
-
-
+    private final String NOT_AVAILABLE = "N/A";
 
 
     public EmployeeInfoController(Employee employee, DeleteEmployeeController deleteEmployeeController, IModel model, StackPane firstLayout, EmployeeMainPageController employeeController) {
@@ -88,12 +88,16 @@ public class EmployeeInfoController implements Initializable {
 
             // Displaying multiple countries
             StringBuilder countryNames = new StringBuilder();
-            for (Country country : employee.getCountries()) {
-                if(employee.getCountries().size()>1) {
-                    countryNames.append(country.getCountryName()).append(", ");
-                }
-                else{
-                    countryNames.append(country.getCountryName());
+
+            if (employee.getCountries().isEmpty()) {
+                countryNames.append(NOT_AVAILABLE);
+            } else {
+                for (Country country : employee.getCountries()) {
+                    if (employee.getCountries().size() > 1) {
+                        countryNames.append(country.getCountryName()).append(", ");
+                    } else {
+                        countryNames.append(country.getCountryName());
+                    }
                 }
             }
             country.setText(countryNames.toString());
@@ -101,11 +105,15 @@ public class EmployeeInfoController implements Initializable {
 
             // Displaying multiple teams
             StringBuilder teamNames = new StringBuilder();
-            for (Team team : employee.getTeams()) {
-                if(employee.getTeams().size()>1) {
-                    teamNames.append(team.getTeamName()).append(", ");
-                }else {
-                    teamNames.append(team.getTeamName());
+            if (employee.getTeams().isEmpty()) {
+                teamNames.append(NOT_AVAILABLE);
+            } else {
+                for (Team team : employee.getTeams()) {
+                    if (employee.getTeams().size() > 1) {
+                        teamNames.append(team.getTeamName()).append(", ");
+                    } else {
+                        teamNames.append(team.getTeamName());
+                    }
                 }
             }
             team.setText(teamNames.toString());
@@ -113,14 +121,17 @@ public class EmployeeInfoController implements Initializable {
 
             // Displaying multiple regions
             StringBuilder regionNames = new StringBuilder();
-            for (Region region : employee.getRegions()) {
-                if (employee.getRegions().size()>1){
-                    regionNames.append(region.getRegionName()).append(", ");
+            System.out.println(employee.getRegions()+ "employee regions");
+            if (employee.getRegions().isEmpty()||employee.getRegions()==null) {
+                regionNames.append(NOT_AVAILABLE);
+            } else {
+                for (Region region : employee.getRegions()) {
+                    if (employee.getRegions().size() > 1) {
+                        regionNames.append(region.getRegionName()).append(", ");
+                    } else {
+                        regionNames.append(region.getRegionName());
+                    }
                 }
-                else{
-                    regionNames.append(region.getRegionName());
-                }
-
             }
             region.setText(regionNames.toString());
             region.setTooltip(new Tooltip(region.getText()));
@@ -176,7 +187,7 @@ public class EmployeeInfoController implements Initializable {
         this.employee = employee;
     }
 
-    public void setDayRate(String  value) {
+    public void setDayRate(String value) {
         this.dayRate.setText(value);
     }
 
@@ -185,8 +196,8 @@ public class EmployeeInfoController implements Initializable {
     }
 
 
-    public void setEmployeesVboxContainerStyleToDefault(){
-      this.employeeController.setEmployeesVboxContainerStyleToDefault();
+    public void setEmployeesVboxContainerStyleToDefault() {
+        this.employeeController.setEmployeesVboxContainerStyleToDefault();
     }
 
     public void refreshRates() {
@@ -195,15 +206,17 @@ public class EmployeeInfoController implements Initializable {
 
 
     //change the style on the clicked employee info  component
-    private void setEmployeeComponentOnClick(){
-        this.employeeComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+    private void setEmployeeComponentOnClick() {
+        this.employeeComponent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             employeeController.setSelectedComponentStyleToSelected(this);
 
         });
     }
 
-    /**check if filters are active*/
-    public boolean isFilterActive(){
+    /**
+     * check if filters are active
+     */
+    public boolean isFilterActive() {
         return employeeController.isFilterActive();
     }
 

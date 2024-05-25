@@ -140,11 +140,11 @@
                   </Label>
                </children>
             </HBox>
-            <Button fx:id="simulateButton" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="37.0" prefWidth="40.0" style="-fx-background-color: #63B2E1;" text="Simulate" textFill="WHITE">
+            <Button fx:id="simulateButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="37.0" prefWidth="40.0" styleClass="interactiveButtons" text="Simulate" textFill="WHITE">
                <font>
                   <Font name="SansSerif Bold" size="14.0" />
                </font></Button>
-            <Button fx:id="saveButton" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="37.0" prefWidth="40.0" style="-fx-background-color: #63B2E1;" text="Save" textFill="WHITE">
+            <Button fx:id="saveButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="37.0" prefWidth="40.0" styleClass="interactiveButtons" text="Save" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Button>

@@ -64,13 +64,15 @@ public class NotSupportedView implements Initializable {
     /**populate the countries input with values*/
     private void populateCountriesInput(){
         this.countriesInput.setItems(model.getUnsoportedCountries());
+        this.countriesInput.selectItem(countriesInput.getItems().getFirst());
+        model.setSelectedCountry(countriesInput.getSelectionModel().getSelectedItem().getCountryName());
+        initializeService();
         this.countriesInput.setText("Countries");
     }
 
 
     private void addCountriesInputListener(){
         countriesInput.getSelectionModel().selectedItemProperty().addListener((e)->{
-
             model.setSelectedCountry(countriesInput.getSelectionModel().getSelectedItem().getCountryName());
             initializeService();
         });
