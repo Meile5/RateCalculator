@@ -28,7 +28,7 @@ public class EmployeesToAdd implements Initializable {
     @FXML
     private HBox employeesToAddComponent;
     @FXML
-    private Label employeeName, utilLeft;
+    private Label employeeName, utilLeft, employeeType;
     @FXML
     private MFXCheckbox addEmployee;
     @FXML
@@ -59,19 +59,21 @@ public class EmployeesToAdd implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
-       // utilListener();
+        utilListener();
 
     }
-   /* private void utilListener() {
+    private void utilListener() {
         utilPercentageToAdd.textProperty().addListener((observable, oldValue, newValue) -> {
-           TeamValidation.isPercentageValid(utilPercentageToAdd, employee);
+           TeamValidation.isPercentageValid(utilPercentageToAdd, utilLeft);
         });
-    }*/
+    }
 
     public void setLabels() {
         if (employee != null) {
             employeeName.setText(employee.getName());
             employeeName.setTooltip(new Tooltip(employeeName.getText()));
+            employeeType.setText(employee.getEmployeeType().toString());
+            employeeType.setTooltip(new Tooltip(employeeType.getText()));
 
             BigDecimal remainingUtilization = calculateRemainingUtilization(employee.getUtilPerTeams());
             if (remainingUtilization != null) {
@@ -95,13 +97,15 @@ public class EmployeesToAdd implements Initializable {
 
     public Employee getEditedEmployee(Team team) {
         if (addEmployee.isSelected()) {
-            if (TeamValidation.isPercentageValid(utilPercentageToAdd, employee)) {
+            if (TeamValidation.isPercentageValid(utilPercentageToAdd, utilLeft)) {
                 Employee editedEmployee = employee;
                 String utilPercentageStr = utilPercentageToAdd.getText();
                 BigDecimal utilPercentage = new BigDecimal(utilPercentageStr);
                 editedEmployee.getUtilPerTeams().put(team.getId(), utilPercentage);
                 return editedEmployee;
             }
+
+
         }
         return null;
     }

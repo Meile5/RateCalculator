@@ -76,21 +76,10 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //display teams
         displayTeams();
-        //initialize search field
         intializeSearchField();
-
     }
 
-
-    /**
-     * add the team search
-     */
-    private void intializeSearchField() {
-        SearchController<Team> searchField = new SearchController<>(this);
-        this.searchField.getChildren().add(searchField.getSearchRoot());
-    }
 
     public void displayTeams() {
         teamsContainer.getChildren().clear();
@@ -214,15 +203,21 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
      * sets team name into pieChart label
      */
     private void displayEmployeesForDate(Team team, TeamConfiguration selectedConfig) {
+        teamsPieChart.getData().clear();
+
         System.out.println(selectedConfig.getTeamMembers() + "-----------------");
         String currency = team.getCurrency().toString();
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         List<TeamConfigurationEmployee> teamMembers = selectedConfig.getTeamMembers();
-        //List<TeamConfigurationEmployee> teamMembers = team.getActiveConfiguration().getTeamMembers();
-        System.out.println(selectedConfig.getTeamMembers().size() + "employees in pie chart after update +++++++++++++++++++");
-        for (TeamConfigurationEmployee employee : teamMembers) {
-            String label = employee.getEmployeeName() + " " + currency + " ";
-            pieChartData.add(new PieChart.Data(label, employee.getEmployeeDailyRate()));
+        // Check if there are team members in the selected configuration
+        if (!teamMembers.isEmpty()) {
+            for (TeamConfigurationEmployee employee : teamMembers) {
+                String label = employee.getEmployeeName() + " " + currency + " ";
+                pieChartData.add(new PieChart.Data(label, employee.getEmployeeDailyRate()));
+            }
+        } else {
+            // Add a default value to indicate no team members
+            pieChartData.add(new PieChart.Data("No team members", 0));
         }
         /* binds each PieChart.Data object's name property to a concatenated string
          containing the name and day rate, ensuring that both are displayed in the pie chart.*/
@@ -231,6 +226,7 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
                         Bindings.concat(data.getName(), " ", data.pieValueProperty())
                 )
         );
+
         teamsPieChart.setData(pieChartData);
         teamsPieChart.setTitle(team.getTeamName());
         teamsPieChart.setLabelLineLength(10);
@@ -240,7 +236,13 @@ public class TeamsPageController implements Initializable, DataHandler<Team> {
         }
     }
 
-
+    /**
+     * add the team search
+     */
+    private void intializeSearchField() {
+        SearchController<Team> searchField = new SearchController<>(this);
+        this.searchField.getChildren().add(searchField.getSearchRoot());
+    }
     @Override
     public ObservableList<Team> getResultData(String filter) {
         return model.getTeamsFilterResults(filter);

@@ -1,4 +1,5 @@
 package easv.ui.components.teamsInfoComponent;
+import easv.Utility.TeamValidation;
 import easv.Utility.WindowsManagement;
 import easv.be.Country;
 import easv.be.Region;
@@ -69,26 +70,45 @@ public class TeamInfoController implements Initializable {
         addClickListener();
     }
 
-    /* listener that tells what happens when team component is clicked*/
+    /** listener that tells what happens when team component is clicked*/
     private void addClickListener(){
 
         teamInfoComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
-            System.out.println(team.getActiveConfiguration().getTeamMembers());
+            if(event.getTarget()==editButton){
+                return;
+            }
+
             teamInfoComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
             teamsPageController.setSelectedComponentStyleToSelected(this);
-            teamsPageController.yearsComboBoxListener(team);
-            teamsPageController.populateComboBoxWithYears(team);
-            teamsPageController.historyComboBoxListener(team);
-            teamsPageController.setTeamHistoryDatesInComboBox(team);
+            populateCharts();
         });
+    }
+    public void populateCharts(){
+
+        teamsPageController.yearsComboBoxListener(team);
+        teamsPageController.populateComboBoxWithYears(team);
+        teamsPageController.historyComboBoxListener(team);
+        teamsPageController.setTeamHistoryDatesInComboBox(team);
+    }
+    /** Method overloading, used for refreshing charts after edit  operation*
+     * Param team uses edited team*/
+    public void populateCharts(Team team){
+
+        teamsPageController.yearsComboBoxListener(team);
+        teamsPageController.populateComboBoxWithYears(team);
+        teamsPageController.historyComboBoxListener(team);
+        teamsPageController.setTeamHistoryDatesInComboBox(team);
     }
     private void addEditAction() {
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this, employeesToAdd, teamsPageController);
             firstLayout.getChildren().add(teamManagementController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
+            event.consume();
         });
     }
+
+
 
     public void setLabels() {
         if (team != null) {
@@ -137,6 +157,7 @@ public class TeamInfoController implements Initializable {
                 System.out.println("................");}
         }
     }
+
 
 
 

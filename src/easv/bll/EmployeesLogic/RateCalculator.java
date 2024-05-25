@@ -196,14 +196,15 @@ public class RateCalculator implements IRateCalculator {
         for (Employee employee : team.getEmployees()) {
             BigDecimal dayRate = calculateEmployeeDayRateOnTeamE(employee, team);
             if (markupMultiplier > 0) {
-                BigDecimal markedUpHourlyRate = dayRate.multiply(BigDecimal.valueOf(markupMultiplier/100));
+               /* 1 represents the additional cost added to the base rate*/
+                BigDecimal markedUpHourlyRate = dayRate.multiply(BigDecimal.valueOf(1 + markupMultiplier/100));
                 totalDayRate = totalDayRate.add(markedUpHourlyRate);
             } else {
                 totalDayRate = totalDayRate.add(dayRate);
             }
         }
         if(grossMargin > 0){
-            BigDecimal hourlyRateWithMargin = totalDayRate.divide(BigDecimal.valueOf(grossMargin/100), 2, RoundingMode.HALF_UP);
+            BigDecimal hourlyRateWithMargin = totalDayRate.divide(BigDecimal.valueOf(1 - grossMargin/100), 2, RoundingMode.HALF_UP);
             return hourlyRateWithMargin;
         }
         return totalDayRate;
@@ -220,14 +221,14 @@ public class RateCalculator implements IRateCalculator {
         for (Employee employee : team.getEmployees()) {
             BigDecimal hourlyRate = calculateEmployeeHourlyRateOnTeamE(employee, team);
             if (markupMultiplier > 0) {
-                BigDecimal markedUpHourlyRate = hourlyRate.multiply(BigDecimal.valueOf(markupMultiplier/100));
+                BigDecimal markedUpHourlyRate = hourlyRate.multiply(BigDecimal.valueOf(1 + markupMultiplier/100));
                 totalHourlyRate = totalHourlyRate.add(markedUpHourlyRate);
             } else {
                 totalHourlyRate = totalHourlyRate.add(hourlyRate);
             }
         }
         if(grossMargin > 0){
-            BigDecimal hourlyRateWithMargin = totalHourlyRate.divide(BigDecimal.valueOf(grossMargin/100), 2, RoundingMode.HALF_UP);
+            BigDecimal hourlyRateWithMargin = totalHourlyRate.divide(BigDecimal.valueOf(1 - grossMargin/100), 2, RoundingMode.HALF_UP);
             return hourlyRateWithMargin;
         }
         return totalHourlyRate;

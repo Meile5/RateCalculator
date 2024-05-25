@@ -788,7 +788,7 @@ public class Model implements IModel {
     }
 
     public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
-
+        System.out.println(employees + "eeeeeeeeeeeeee");
         // Clear existing employees in the team
         for (Employee employeesDelete : employeesToDelete) {
             //System.out.println(employeesToDelete +" in model");
@@ -804,9 +804,6 @@ public class Model implements IModel {
             employee.setTeamHourlyRate(employeeHourlyRate);
             BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeamE(employee, editedTeam);
             employee.setTeamDailyRate(employeeDayRate);
-            System.out.println("edited team member id: " + editedTeam.getEmployees().getFirst().getId());
-            System.out.println(employee + " employee in loop with id " + employee.getId());
-            System.out.println("get teaM MEMBER" + editedTeam.getTeamMember(employee.getId()));
             if (editedTeam.getTeamMember(employee.getId()) != null) {
                 System.out.println("im inside the loop to replacememeber");
                 System.out.println("with employee " + employee);

@@ -13,6 +13,8 @@ import easv.ui.components.teamsInfoComponent.TeamInfoController;
 import easv.ui.components.teamsManagementTeamMembers.TeamMembersController;
 import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.teamsPage.TeamsPageController;
+import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -40,14 +42,15 @@ public class TeamManagementController implements Initializable {
     @FXML
     private GridPane teamManagementComponent;
     @FXML
-    private VBox teamMembersContainer;
-    @FXML
-    private VBox allEmployeesContainer;
+    private VBox teamMembersContainer, allEmployeesContainer;
     @FXML
     private TextField grossMargin, markUp;
     @FXML
     private HBox closeButton, saveButton;
-
+    @FXML
+    private MFXProgressSpinner operationSpinner;
+    @FXML
+    private Label spinnerLB;
     private IModel model;
     private StackPane firstLayout;
     private Team team;
@@ -58,6 +61,7 @@ public class TeamManagementController implements Initializable {
     private List<EmployeesToAdd> employeesToAddList;
     private List<TeamMembersController> teamMembersToAddList;
     private Service<Void> saveTeam;
+
 
 
 
@@ -103,6 +107,7 @@ public class TeamManagementController implements Initializable {
         teamMembersContainer.getChildren().clear();
         teamMembersToAddList.clear(); // Clear the list before adding new members
         for (Employee employee : team.getTeamMembers()) {
+            System.out.println(team.getTeamMembers() + "++++++++++++++++++++++");
             TeamMembersController teamMembersController = new TeamMembersController(employee, team, model, this);
             teamMembersContainer.getChildren().add(teamMembersController.getRoot());
             teamMembersToAddList.add(teamMembersController);
@@ -127,6 +132,7 @@ public class TeamManagementController implements Initializable {
     private void editAction() {
         saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
         {
+            enableSpinner();
             returnAllEmployees();
             returnEmployeesToDelete();
             getTeam();
@@ -136,6 +142,7 @@ public class TeamManagementController implements Initializable {
         });
     }
 
+
     private void saveTeamOperation(List<Employee> employees, List<Employee> employeesToDelete, Team editedTeam, Team originalTeam) {
         saveTeam = new Service<Void>() {
             @Override
@@ -143,6 +150,7 @@ public class TeamManagementController implements Initializable {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
+                        Thread.sleep(200);
                         model.performEditTeam(employees, employeesToDelete, editedTeam, originalTeam);
                         return null;
                     }
@@ -151,25 +159,34 @@ public class TeamManagementController implements Initializable {
         };
 
         saveTeam.setOnSucceeded(event -> {
-
-            // closeWindowSpinner(firstLayout);
+            showOperationStatus("Operation Successful!", Duration.seconds(5));
             teamsPageController.clearTeams();
             teamsPageController.displayTeams();
-
-            //showOperationStatus("Operation Successful!", Duration.seconds(2));
+            // Refresh charts and graphs
+            teamInfoController.populateCharts(editedTeam);
             WindowsManagement.closeStackPane(firstLayout);
 
         });
 
         saveTeam.setOnFailed(event -> {
+            showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
 
-            //showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
             WindowsManagement.closeStackPane(firstLayout);
-            //closeWindowSpinner(firstLayout);
+            operationSpinner.setVisible(false);
         });
         saveTeam.restart();
     }
-
+    private void showOperationStatus(String message, Duration duration) {
+        spinnerLB.setText(message);
+        PauseTransition delay = new PauseTransition(duration);
+        delay.setOnFinished(event -> spinnerLB.setText(""));
+        delay.play();
+    }
+    private void enableSpinner() {
+        spinnerLB.setText("Processing...");
+        operationSpinner.setVisible(true);
+        operationSpinner.setDisable(false);
+    }
     public Team getTeam() {
         String grossMarginString = grossMargin.getText();
         double grossMargin = 0.0; // Default value if null or empty
@@ -220,7 +237,9 @@ public class TeamManagementController implements Initializable {
         List<Employee> employeesList = new ArrayList<Employee>();
         employeesList.addAll(editedTeamMembersList);
         employeesList.addAll(editedEmployeesList);
+        System.out.println(employeesList);
         return employeesList;
+
 
     }
 
