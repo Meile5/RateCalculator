@@ -106,11 +106,8 @@ public class GeographyManagementController implements Initializable, GeographyIn
                 return new Task<>() {
                     @Override
                     protected Void call() {
-                        System.out.println("FIRST: " + model.getOperationalRegions());
                         regions = FXCollections.observableArrayList(model.getOperationalRegions());
-                        System.out.println("SECOND: " + model.getOperationalCountries());
                         countries = FXCollections.observableArrayList(model.getOperationalCountries());
-                        System.out.println("THIRD: " + model.getOperationalTeams());
                         teams = FXCollections.observableArrayList(model.getOperationalTeams());
                         return null;
                     }

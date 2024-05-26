@@ -241,15 +241,13 @@ public class Model implements IModel {
         }
     }
 
-//TODO to check where the  employee lose the team utilization , at creation, update the team day rate and hourlly rate also
     @Override
     public void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException {
         employee = employeeManager.addEmployee(employee, configuration, teams);
-        System.out.println(employee.getUtilPerTeams());
         if (employee != null) {
             employees.put(employee.getId(), employee);
+
             for (Team team : teams) {
-                employee.getUtilPerTeams().put(team.getId(),team.getUtilizationPercentage());
                 team.addNewTeamMember(employee);
                 TeamConfiguration teamConfiguration = getNewEmployeeTeamConfiguration(team);
                 Map<Integer, BigDecimal> employeesDayRates = new HashMap<>();
@@ -263,7 +261,6 @@ public class Model implements IModel {
                 addTeamConfiguration(teamConfiguration, team, employeesDayRates, employeesHourlyRates);
                 teamsWithEmployees.get(team.getId()).addNewTeamMember(employee);
             }
-
         }
     }
 

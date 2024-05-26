@@ -121,19 +121,24 @@ public class ManageCountryController implements Initializable {
         teamsCB.getItems().addAll(model.getOperationalTeams());
     }
 
+    public void updateTeamComboBox(Team team){
+        Team selectedTeam = getSelectedTeam();
+        if(team != null){
+            teamsCB.getItems().remove(selectedTeam);
+            teamsCB.getItems().add(team);
+            teamsCB.getItems().sorted();
+        }
+    }
+
     private void saveCountryListener() {
         saveBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(CountryValidation.isCountryNameValid(countryNameBox) && CountryValidation.isTeamsListValid(teamsListView)){
                 enableProgressBar();
                 if(isEditOperation) {
                     country.setCountryName(countryNameBox.getText());
-//                    secondPane.getChildren().add(progressSpinner);
-//                    WindowsManagement.showStackPane(secondPane);
 
                     saveCountryOperation(country, existingTeamsList);
                 } else {
-//                    secondPane.getChildren().add(progressSpinner);
-//                    WindowsManagement.showStackPane(secondPane);
 
                     String name = countryNameBox.getText();
                     country = new Country(name);
@@ -146,8 +151,8 @@ public class ManageCountryController implements Initializable {
 
     private void addNewTeamListener() {
         addNewTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
-                CreateTeamController createTeamController = new CreateTeamController (pane, controller, null, secondPane, false, this);
-                secondPane.getChildren().add(createTeamController.getRoot());
+                ManageTeamController manageTeamController = new ManageTeamController(pane, controller, null, secondPane, false, this);
+                secondPane.getChildren().add(manageTeamController.getRoot());
                 WindowsManagement.showStackPane(secondPane);
 
         });
@@ -157,8 +162,8 @@ public class ManageCountryController implements Initializable {
         editTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(CountryValidation.isTeamSelected(null, teamsListView)){
                 Team team = getSelectedTeam();
-                CreateTeamController createTeamController = new CreateTeamController(pane, controller, team, secondPane, true, this);
-                secondPane.getChildren().add(createTeamController.getRoot());
+                ManageTeamController manageTeamController = new ManageTeamController(pane, controller, team, secondPane, true, this);
+                secondPane.getChildren().add(manageTeamController.getRoot());
                 WindowsManagement.showStackPane(secondPane);
             }
         });
@@ -171,6 +176,7 @@ public class ManageCountryController implements Initializable {
             String teamAndCurrency = teamsListView.getSelectionModel().getSelectedItem();
             String[] teamAndCurrencyArray = teamAndCurrency.split(" - ");
             String teamName = teamAndCurrencyArray[0];
+
             return existingTeamsList.stream()
                     .filter(team -> team.getTeamName().equals(teamName))
                     .findFirst()
@@ -206,10 +212,8 @@ public class ManageCountryController implements Initializable {
                     @Override
                     protected Void call() throws Exception {
                         if(isEditOperation) {
-                            System.out.println("Updating country " + country + " with teams " + teams);
                             model.updateCountry(country, teams);
                         } else {
-                            System.out.println("Updating country " + country + " with teams " + teams);
                             model.addNewCountry(country, teams);
                         }
                         return null;
@@ -244,15 +248,13 @@ public class ManageCountryController implements Initializable {
         return manageWindow;
     }
 
-    public void getUpdatedTeam(Team team) {
-        Team selectedTeam = getSelectedTeam();
-        if (selectedTeam != null) {
-            selectedTeam.setTeamName(team.getTeamName());
-            selectedTeam.setCurrency(team.getCurrency());
-        }
+    public void getUpdatedTeam(Team team, Team selectedTeam) {
         teamsListView.getItems().remove(teamsListView.getSelectionModel().getSelectedIndex());
         String teamAndCurrency = team.getTeamName() + " - " + team.getCurrency().name();
         teamsListView.getItems().add(teamAndCurrency);
+        teamsListView.getSelectionModel().clearSelection();
+        existingTeamsList.add(team);
+        existingTeamsList.remove(selectedTeam);
     }
 
     public void getNewTeam(Team team) {
