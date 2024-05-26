@@ -241,6 +241,9 @@ public String printConfiguration(){
         return hourlyRate;
     }
 
+    public Configuration() {
+    }
+
     public void setHourlyRate(BigDecimal hourlyRate) {
         this.hourlyRate = hourlyRate;
     }

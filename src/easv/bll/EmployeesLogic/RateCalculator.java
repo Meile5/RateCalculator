@@ -18,6 +18,7 @@ public class RateCalculator implements IRateCalculator {
      *                 if no values are present for the employee returns BigDecimal.ZERO
      */
 
+    //TODO modify to take the employee working hours
     public BigDecimal calculateEmployeeTotalDayRate(Employee employee) {
         BigDecimal annualSalary = employee.getActiveConfiguration().getAnnualSalary();
         BigDecimal overheadMultiplier = employee.getActiveConfiguration().getOverheadMultiplier().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32).add(BigDecimal.ONE);
