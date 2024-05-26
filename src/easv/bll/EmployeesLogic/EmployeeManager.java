@@ -345,8 +345,8 @@ public class EmployeeManager implements IEmployeeManager {
     }
 
     @Override
-    public Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException {
-        return employeeDAO.addNewTeamConfiguration(teamConfiguration, team, employeeDayRate, employeeHourlyRate);
+    public Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, int oldTeamConfigurationID) throws SQLException, RateException {
+        return employeeDAO.addNewTeamConfiguration(teamConfiguration, team, employeeDayRate, employeeHourlyRate, oldTeamConfigurationID);
     }
 
 

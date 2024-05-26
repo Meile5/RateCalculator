@@ -241,6 +241,9 @@ public class Model implements IModel {
             employees.put(employee.getId(), employee);
 
             for (Team team : teams) {
+                if(team.getTeamMembers() == null){
+                    team.setTeamMembers(new ArrayList<>());
+                }
                 team.addNewTeamMember(employee);
                 TeamConfiguration teamConfiguration = getNewEmployeeTeamConfiguration(team);
                 Map<Integer, BigDecimal> employeesDayRates = new HashMap<>();
@@ -259,7 +262,12 @@ public class Model implements IModel {
 
     @Override
     public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException {
-        int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team, employeeDayRate, employeeHourlyRate);
+        int oldTeamConfigurationID = 0;
+        if(team != null)
+            if(team.getActiveConfiguration() != null)
+                oldTeamConfigurationID = team.getActiveConfiguration().getId();
+
+        int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team, employeeDayRate, employeeHourlyRate, oldTeamConfigurationID);
         if (teamConfiguration != null) {
             teamConfiguration.setId(teamConfigurationID);
             teamsWithEmployees.get(team.getId()).setActiveConfiguration(teamConfiguration);

@@ -41,9 +41,7 @@ public class ManageRegionController implements Initializable {
     @FXML
     private ListView<Country> countriesListView;
     @FXML
-    private Button addCountryBTN, removeCountryBTN;
-    @FXML
-    private MFXButton saveBTN, cancelBTN;
+    private Button addCountryBTN, removeCountryBTN, saveBTN, cancelBTN;
     @FXML
     private MFXProgressSpinner progressSpinner;
 
