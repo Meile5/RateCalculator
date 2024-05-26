@@ -17,11 +17,21 @@ public class Main extends Application {
     }
 
 
-    /**the model initialization will be moved to the class that will  manage all the initialization of the view based on the role
-     * the model will be initialized in that class and we will use dependency injection, to inject  the model in our components*/
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        IModel model = initializeModel(primaryStage);
+
+        HomePageController homePageController = new HomePageController(model);
+        Scene scene = new Scene(homePageController.getRoot());
+        primaryStage.setMinWidth(1024);
+        primaryStage.setMinHeight(700);
+        primaryStage.setTitle("Overhead manager");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private static IModel initializeModel(Stage primaryStage) {
         IModel model = null;
         try{
             model =  ModelFactory.createModel(ModelFactory.ModelType.NORMAL_MODEL);
@@ -29,11 +39,6 @@ public class Main extends Application {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
             primaryStage.close();
         }
-
-        HomePageController homePageController = new HomePageController(model);
-        Scene scene = new Scene(homePageController.getRoot());
-        primaryStage.setTitle("Overhead manager");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        return model;
     }
 }
