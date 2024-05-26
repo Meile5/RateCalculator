@@ -33,7 +33,7 @@ public class EmployeeValidation {
     private final static String validNumberPattern = "^\\d{1,12}([.,]\\d{1,2})?$";
 
     private final static String INVALID_MARKUP = "The  multiplier should be between 0 and 100";
-    private final static String  INVALID_FORMAT = "Please insert a value in the following formats : '0 00 00,0 00,00 00.0 00.00'";
+    private final static String INVALID_FORMAT = "Please insert a value in the following formats : '0 00 00,0 00,00 00.0 00.00'";
 
 
     /**
@@ -41,7 +41,7 @@ public class EmployeeValidation {
      */
     public static boolean arePercentagesValid(MFXTextField overheadMultiplier, List<Integer> utilizationPercentages) {
         boolean isValid = true;
-        if(utilizationPercentages.stream().mapToInt(Integer::intValue).sum() > 100){
+        if (utilizationPercentages.stream().mapToInt(Integer::intValue).sum() > 100) {
             ExceptionHandler.errorAlertMessage("The sum of the Utilization % should be less than or equal to 100.");
             return false;
         }
@@ -61,14 +61,13 @@ public class EmployeeValidation {
         String overheadMultiplierText = overheadMultiplier.getText();
         if (overheadMultiplierText.isEmpty()) {
             overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            System.out.println("HERE");
             ExceptionHandler.errorAlertMessage("The Overhead Multiplier % field cannot be empty.");
             return false;
         } else if (!overheadMultiplierText.matches(validPercentagePattern)) {
             overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("The Overhead Multiplier % should be a number.");
             return false;
-        } else{
+        } else {
             BigDecimal multiplierValue = new BigDecimal(convertToDecimalPoint(overheadMultiplierText));
             if (multiplierValue.compareTo(BigDecimal.ZERO) < 0 || multiplierValue.compareTo(new BigDecimal("100")) > 0) {
                 overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
@@ -96,9 +95,9 @@ public class EmployeeValidation {
             overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("The Overhead Multiplier % should be a number.");
             return false;
-        } else{
+        } else {
             BigDecimal multiplierValue = new BigDecimal(convertToDecimalPoint(overheadMultiplierText));
-            if (multiplierValue.compareTo(BigDecimal.ZERO) < 0 || multiplierValue.compareTo(new BigDecimal("100")) > 0) {
+            if (!isPercentageValid(multiplierValue)) {
                 overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                 ExceptionHandler.errorAlertMessage("The Overhead Multiplier % should be between 0 and 100.");
                 return false;
@@ -109,7 +108,6 @@ public class EmployeeValidation {
 
     public static boolean isPercentageValid(MFXTextField percentageField) {
         boolean isValid = true;
-
         String percentageText = percentageField.getText();
         if (percentageText.isEmpty()) {
             percentageField.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
@@ -121,7 +119,7 @@ public class EmployeeValidation {
             return false;
         } else {
             int multiplierValue = Integer.parseInt(percentageText);
-            if (multiplierValue < 0 || multiplierValue > 100) {
+            if (!isPercentageInLimits(multiplierValue)) {
                 percentageField.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                 ExceptionHandler.errorAlertMessage("The Utilization % should be between 0 and 100.");
                 return false;
@@ -143,9 +141,9 @@ public class EmployeeValidation {
             salary.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("The Salary should be a number.");
             return false;
-        } else{
+        } else {
             BigDecimal salaryValue = new BigDecimal(convertToDecimalPoint(salaryText));
-            if (salaryValue.compareTo(BigDecimal.ZERO) < 0) {
+            if (isValueSmallerThanZero(salaryValue)) {
                 salary.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                 ExceptionHandler.errorAlertMessage("The Salary should be equal or greater than 0.");
                 return false;
@@ -161,9 +159,9 @@ public class EmployeeValidation {
             hours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
             ExceptionHandler.errorAlertMessage("The Working Hours should be a number.");
             return false;
-        } else{
+        } else {
             BigDecimal hoursValue = new BigDecimal(convertToDecimalPoint(hoursText));
-            if (hoursValue.compareTo(BigDecimal.ZERO) < 0) {
+            if (isValueSmallerThanZero(hoursValue)) {
                 hours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                 ExceptionHandler.errorAlertMessage("The Working Hours should be equal or greater than 0.");
                 return false;
@@ -181,7 +179,7 @@ public class EmployeeValidation {
             return false;
         } else {
             BigDecimal fixedAmountValue = new BigDecimal(convertToDecimalPoint(fixedAmountText));
-            if (fixedAmountValue.compareTo(BigDecimal.ZERO) < 0) {
+            if (isValueSmallerThanZero(fixedAmountValue)) {
                 fixedAmount.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                 ExceptionHandler.errorAlertMessage("The Fixed Annual Amount should be equal or greater than 0.");
                 return false;
@@ -198,8 +196,8 @@ public class EmployeeValidation {
             ExceptionHandler.errorAlertMessage("The Daily Working Hours should be a number.");
             return false;
         } else {
-            double numberToCheck = Double.parseDouble(convertToDecimalPoint(dailyHours));
-            if (numberToCheck < 0 || numberToCheck >=24 ) {
+            double workingHoursDay = Double.parseDouble(convertToDecimalPoint(dailyHours));
+            if (!isValidWorkingDayHoursRange(workingHoursDay)) {
                 dailyWorkingHours.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                 ExceptionHandler.errorAlertMessage("The Daily Working Hours should be equal or greater than 0.");
                 return false;
@@ -236,7 +234,6 @@ public class EmployeeValidation {
     }
 
 
-
     public static boolean isItemSelected(MFXComboBox currency, MFXComboBox overOrResource) {
         boolean isValid = true;
 
@@ -255,6 +252,8 @@ public class EmployeeValidation {
     }
 
 
+    //TODO delete if not used
+
     /**
      * validate the format of the  markupMultiplier and grossMarginMultiplier
      *
@@ -263,12 +262,12 @@ public class EmployeeValidation {
      */
     public static boolean validateAditionalMultipliers(MFXTextField markup, MFXTextField grossMargin) {
         if (!markup.getText().isEmpty()) {
-            if(!markup.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$")){
+            if (!markup.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
                 ExceptionHandler.errorAlertMessage(INVALID_FORMAT);
                 return false;
             }
             boolean isValid = isValueWithinValidRange(markup.getText());
-            if(!isValid){
+            if (!isValid) {
                 markup.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
                 ExceptionHandler.errorAlertMessage(INVALID_MARKUP);
                 return false;
@@ -276,12 +275,12 @@ public class EmployeeValidation {
         }
 
         if (!grossMargin.getText().isEmpty()) {
-            if(!grossMargin.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$")){
+            if (!grossMargin.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
                 ExceptionHandler.errorAlertMessage(INVALID_FORMAT);
                 return false;
             }
             boolean isValid = isValueWithinValidRange(grossMargin.getText());
-            if(!isValid){
+            if (!isValid) {
                 grossMargin.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
                 ExceptionHandler.errorAlertMessage(INVALID_MARKUP);
                 return false;
@@ -347,7 +346,7 @@ public class EmployeeValidation {
         currencyCB.setTooltip(tooltip);
     }
 
-    public static void listenerForEmptyFieldsAfterSaving(MFXTextField textField){
+    public static void listenerForEmptyFieldsAfterSaving(MFXTextField textField) {
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
         textField.textProperty().addListener(((observable, oldValue, newValue) -> {
             pauseTransition.setOnFinished((event) -> {
@@ -385,6 +384,8 @@ public class EmployeeValidation {
     }
 
 
+
+    //TODO remove if not needed
     /**
      * add validation listeners for the markup and the grossMargin multipliers,
      * they can be empty;
@@ -420,8 +421,8 @@ public class EmployeeValidation {
                 Double value = null;
                 try {
                     String convertToDecimalPoint = convertToDecimalPoint(newValue);
-                    value =Double.parseDouble(convertToDecimalPoint);
-                }catch (NumberFormatException e){
+                    value = Double.parseDouble(convertToDecimalPoint);
+                } catch (NumberFormatException e) {
                     normalDigitInputs.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
                     return;
                 }
@@ -510,4 +511,27 @@ public class EmployeeValidation {
         }
         return isValid;
     }
+
+    //check if the multiplier is between 0 and 100
+    private static boolean isPercentageValid(BigDecimal value) {
+        return value.compareTo(BigDecimal.ZERO) >= 0 && value.compareTo(new BigDecimal("100")) <= 0;
+    }
+
+
+    //check if the percentage is between 0 and 100;
+    private static boolean isPercentageInLimits(int percentage) {
+        return percentage > 0 && percentage <= 100;
+    }
+
+    // check if the salary is bigger than zero
+    private static boolean isValueSmallerThanZero(BigDecimal value) {
+        return value.compareTo(BigDecimal.ZERO) < 0;
+    }
+
+    //check if the day working hours is between 1 and 24
+
+    private static boolean isValidWorkingDayHoursRange(double workingDayHours) {
+        return workingDayHours > 0 && workingDayHours <= 24;
+    }
+
 }

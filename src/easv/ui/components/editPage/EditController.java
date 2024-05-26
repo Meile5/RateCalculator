@@ -207,7 +207,6 @@ public class EditController implements Initializable {
     /**
      * save the edited employee
      */
-    //TODO call the method that changes the style off the employee container to default
     private void saveEdit() {
         this.saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (EmployeeValidation.areNamesValid(nameInput) &&
@@ -337,19 +336,6 @@ public class EditController implements Initializable {
             WindowsManagement.closeStackPane(this.spinnerLayer);
         }
 
-    }
-
-    private boolean isTextFieldEmpty(MFXTextField textField) {
-        return textField.getText().isEmpty();
-    }
-
-    private Team getSelectedTeam() {
-        Team team = null;
-        if (teamComboBox.getSelectedItem() == null) {
-        } else {
-            team = teamComboBox.getSelectedItem();
-        }
-        return team;
     }
 
 

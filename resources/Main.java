@@ -1,9 +1,10 @@
+
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
-import easv.ui.pages.homePage.HomePageController;
-import easv.ui.pages.modelFactory.IModel;
 import easv.ui.pages.modelFactory.ModelFactory;
+import easv.ui.pages.modelFactory.IModel;
+import easv.ui.pages.homePage.HomePageController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
