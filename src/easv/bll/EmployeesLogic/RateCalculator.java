@@ -194,6 +194,7 @@ public class RateCalculator implements IRateCalculator {
             grossMargin = team.getGrossMarginTemporary();
         }
         for (Employee employee : team.getEmployees()) {
+            System.out.println(employee + "in calculator");
             BigDecimal dayRate = calculateEmployeeDayRateOnTeamE(employee, team);
             if (markupMultiplier > 0) {
                /* 1 represents the additional cost added to the base rate*/

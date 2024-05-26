@@ -3,6 +3,7 @@ package easv.ui.pages.modelFactory;
 
 import easv.Utility.DisplayEmployees;
 import easv.be.*;
+import easv.be.Currency;
 import easv.bll.EmployeesLogic.EmployeeManager;
 import easv.bll.EmployeesLogic.IEmployeeManager;
 import easv.bll.RegionLogic.IRegionManager;
@@ -114,7 +115,7 @@ public class Model implements IModel {
 
 
     public Model() throws RateException {
-        this.employees = FXCollections.observableMap(new LinkedHashMap<>());
+        this.employees = FXCollections.observableHashMap();
         this.filteredEmployeesListByRegion = FXCollections.observableArrayList();
         this.listEmployeeByCountryTemp = FXCollections.observableArrayList();
         this.countries = FXCollections.observableHashMap();
@@ -142,10 +143,6 @@ public class Model implements IModel {
         this.displayEmployees = displayEmployees;
     }
 
-//    private void populateCountries() throws RateException {
-//
-//       this.countries.putAll(countryLogic.getCountries());
-//    }
 
 
     /**
@@ -787,68 +784,12 @@ public class Model implements IModel {
         return employeesForTeamsPage;
     }
 
-    public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
-        System.out.println(employees + "eeeeeeeeeeeeee");
-        // Clear existing employees in the team
-        for (Employee employeesDelete : employeesToDelete) {
-            //System.out.println(employeesToDelete +" in model");
-            editedTeam.removeTeamMember(employeesDelete);
-        }
-        List<TeamConfigurationEmployee> teamConfigurationEmployees = new ArrayList<>();
-        // Replace with new employees from the provided list and update their rates
-        for (Employee employee : employees) {
-            //  System.out.println(employee.getTeam()+ employee.getName() + "employeee in the model to calculate the ovrehead");
-            TeamConfigurationEmployee teamConfigurationEmployee = null;
-            // Calculate and set the new hourly and daily rates for the employee
-            BigDecimal employeeHourlyRate = employeeManager.getEmployeeHourlyRateOnTeamE(employee, editedTeam);
-            employee.setTeamHourlyRate(employeeHourlyRate);
-            BigDecimal employeeDayRate = employeeManager.getEmployeeDayRateOnTeamE(employee, editedTeam);
-            employee.setTeamDailyRate(employeeDayRate);
-            if (editedTeam.getTeamMember(employee.getId()) != null) {
-                System.out.println("im inside the loop to replacememeber");
-                System.out.println("with employee " + employee);
-                editedTeam.replaceTeaMember(employee);
-                teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
-            } else {
-                System.out.println("-------------------------------");
-                System.out.println("im inside the else loop");
-                System.out.println("with employee " + employee);
-                teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
-                editedTeam.addNewTeamMember(employee);
-            }
-            teamConfigurationEmployees.add(teamConfigurationEmployee);
-
-
-            TeamConfiguration newTeamConfiguration = getNewEmployeeTeamConfiguration1(editedTeam);
-            newTeamConfiguration.setTeamMembers(teamConfigurationEmployees);
-            //newTeamConfiguration.addEmployeeToTeamHistory(teamConfigurationEmployee);
-            editedTeam.setActiveConfiguration(newTeamConfiguration);
-        }
-
-
-
-        Team editedTeamSaved = employeeManager.saveTeamEditOperation(editedTeam, originalTeam.getActiveConfiguration().getId(), employeesToDelete, employees);
-
-        // Update the model map with the edited team
-        if (editedTeamSaved != null) {
-
-            // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-            // teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-            teamsWithEmployees.remove(originalTeam.getId());
-            teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-            System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getTeamMembers() + " employees after editing ---------------------");
-            //System.out.println(teamsWithEmployees.get(editedTeamSaved.getId()).getActiveConfiguration().getTeamDayRate() + "" + editedTeamSaved.getActiveConfiguration().getId());
-
-        }
-    }
-
-
-
     private TeamConfiguration getNewEmployeeTeamConfiguration1(Team team) {
-        BigDecimal teamHourlyRate = employeeManager.calculateTeamHourlyRateE(team);
-        BigDecimal teamDayRate = employeeManager.calculateTeamDayRateE(team);
+        BigDecimal teamHourlyRate = teamManager.calculateTeamHourlyRateE(team);
+        BigDecimal teamDayRate = teamManager.calculateTeamDayRateE(team);
         double grossMargin = 0;
         double markupMultiplier = 0;
+
         if (team.getActiveConfiguration() != null) {
             grossMargin = checkNullValues(team.getGrossMarginTemporary());
             markupMultiplier = checkNullValues(team.getMarkupMultiplierTemporary());
@@ -857,8 +798,53 @@ public class Model implements IModel {
         LocalDateTime savedDate = LocalDateTime.now();
         return new TeamConfiguration(teamDayRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, true);
     }
+    /**
+     * Performs the edit operation on the specified team,
+     * updates the team by removing the specified employees, adding new or replacing existing with new values,
+     * Setts new rates
+     * Creates new history for employees
+     * Creates new team configuration based on recalculated rates and sets active configuration
+     * If the team is successfully saved, it updates the map that stores the teams.
+     */
+    public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete,  Team editedTeam, Team originalTeam) throws RateException {
+        for (Employee employeesDelete : employeesToDelete) {
+            editedTeam.removeTeamMember(employeesDelete);
+        }
+        List<TeamConfigurationEmployee> teamConfigurationEmployees = new ArrayList<>();
+        /* Replace or add new employees */
+        for (Employee employee : employees) {
+            TeamConfigurationEmployee teamConfigurationEmployee = null;
+            /* Calculate and set the new hourly and daily rates for the employee*/
+            BigDecimal employeeHourlyRate = teamManager.getEmployeeHourlyRateOnTeamE(employee, editedTeam);
+            employee.setTeamHourlyRate(employeeHourlyRate);
+            BigDecimal employeeDayRate = teamManager.getEmployeeDayRateOnTeamE(employee, editedTeam);
+            employee.setTeamDailyRate(employeeDayRate);
+            if (editedTeam.getTeamMember(employee.getId()) != null) {
+                editedTeam.replaceTeaMember(employee);
+                teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
+            } else {
+                teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
+                editedTeam.addNewTeamMember(employee);
+            }
 
+            teamConfigurationEmployees.add(teamConfigurationEmployee);
+            TeamConfiguration newTeamConfiguration = getNewEmployeeTeamConfiguration1(editedTeam);
+            newTeamConfiguration.setTeamMembers(teamConfigurationEmployees);
+            editedTeam.setActiveConfiguration(newTeamConfiguration);
 
+        }
+        if(editedTeam.getTeamMembers().isEmpty()){
+            TeamConfiguration tm = new TeamConfiguration(BigDecimal.ZERO, BigDecimal.ZERO, 0, 0,LocalDateTime.now() , true);
+            editedTeam.setActiveConfiguration(tm);
+        }
+        Team editedTeamSaved = teamManager.saveTeamEditOperation(editedTeam, originalTeam.getActiveConfiguration().getId(), employeesToDelete, employees);
+
+        if (editedTeamSaved != null) {
+            teamsWithEmployees.remove(originalTeam.getId());
+            teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
+
+        }
+    }
 
     @Override
     public void deleteRegion(Region region) throws RateException {

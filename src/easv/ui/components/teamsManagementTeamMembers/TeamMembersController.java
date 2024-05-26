@@ -5,25 +5,19 @@ import easv.be.*;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.components.teamManagement.TeamManagementController;
-import easv.ui.components.teamsInfoComponent.TeamInfoController;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class TeamMembersController implements Initializable {
@@ -33,16 +27,15 @@ public class TeamMembersController implements Initializable {
     private Label teamMemberName, utilizationInTeam, memberType;
     @FXML
     private MFXCheckbox removeTeamMember;
-
     @FXML
     private MFXTextField utilPercentageToAdd;
     private IModel model;
     private TeamManagementController teamManagementController;
     private Employee employee;
     private Team team;
-    private static final PseudoClass ERROR_PSEUDO_CLASS = PseudoClass.getPseudoClass("error");
 
 
+    /** Initializes the controller with the necessary dependencies and loads the FXML component, not depend on FXML components being loaded*/
     public TeamMembersController(Employee employee, Team team, IModel model, TeamManagementController teamManagementController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamMembersComponent.fxml"));
         loader.setController(this);
@@ -57,7 +50,6 @@ public class TeamMembersController implements Initializable {
         }
 
     }
-
     public HBox getRoot() {
         return membersComponent;
     }
@@ -66,13 +58,38 @@ public class TeamMembersController implements Initializable {
         setLabels();
         utilListener();
     }
+    /** Checks if users typed value is valid, if it is not then makes the border red */
     private void utilListener() {
         utilPercentageToAdd.textProperty().addListener((observable, oldValue, newValue) -> {
             TeamValidation.validateUtilization(utilizationInTeam, utilPercentageToAdd, employee);
 
         });
     }
+    /** Returns all team members and sets their new util if it was changed*/
+    public Employee getEditedTeamMember(Team team) {
+        if (!removeTeamMember.isSelected()) {
+            if (TeamValidation.validateUtilization(utilizationInTeam, utilPercentageToAdd, employee)) {
+                Employee editedEmployee = employee;
+                String utilPercentageStr = utilPercentageToAdd.getText().trim();
 
+                if (!utilPercentageStr.isEmpty()) {
+                    BigDecimal utilPercentage = new BigDecimal(utilPercentageStr);
+                    editedEmployee.getUtilPerTeams().put(team.getId(), utilPercentage);
+                }
+                return editedEmployee;
+            }
+        }
+        return null;
+    }
+
+    /** Returns all team members who were selected to be deleted*/
+    public Employee membersToDelete() {
+        if (removeTeamMember.isSelected()) {
+            Employee employeeToDelete = employee;
+            return employeeToDelete;
+        }
+        return null;
+    }
     public void setLabels() {
         if (employee != null) {
             teamMemberName.setText(employee.getName());
@@ -89,33 +106,9 @@ public class TeamMembersController implements Initializable {
             BigDecimal remainingUtilization = TeamValidation.calculateRemainingUtilization(employee.getUtilPerTeams());
             utilizationInTeam.setTooltip(new Tooltip(remainingUtilization.toString() + "%"));
 
-
-
         }
     }
-    public Employee getEditedTeamMember(Team team) {
-        if (!removeTeamMember.isSelected()) {
-            if (TeamValidation.validateUtilization(utilizationInTeam, utilPercentageToAdd, employee)) {
-                Employee editedEmployee = employee;
-                String utilPercentageStr = utilPercentageToAdd.getText().trim();
 
-                // Check if the trimmed input string is not empty
-                if (!utilPercentageStr.isEmpty()) {
-                    BigDecimal utilPercentage = new BigDecimal(utilPercentageStr);
-                    editedEmployee.getUtilPerTeams().put(team.getId(), utilPercentage);
-                }
-                return editedEmployee;
-            }
-        }
-        return null;
-    }
-    public Employee membersToDelete() {
-        if (removeTeamMember.isSelected()) {
-            Employee employeeToDelete = employee;
-            return employeeToDelete;
-        }
-        return null;
-    }
 
 
 

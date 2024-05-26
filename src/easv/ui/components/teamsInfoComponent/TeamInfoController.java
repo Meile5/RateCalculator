@@ -27,21 +27,23 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 public class TeamInfoController implements Initializable {
     @FXML
     private HBox teamInfoComponent;
+    @FXML
+    private VBox editButton;
+    @FXML
+    private Label teamName, teamRegion, teamCountry, teamDailyRate, teamHourlyRate, teamDayCurrency, teamHourlyCurrency;
     private IModel model;
     private Team team;
     private TeamsPageController teamsPageController;
     private EmployeesToAdd employeesToAdd;
     private StackPane firstLayout;
-    @FXML
-    private VBox editButton;
-    @FXML
-    private Label teamName, teamRegion, teamCountry, teamDailyRate, teamHourlyRate, teamDayCurrency, teamHourlyCurrency;
 
+    /** Initializes the controller with the necessary dependencies and loads the FXML component, not depend on FXML components being loaded*/
     public TeamInfoController(Team team , IModel model, TeamsPageController teamsPageController, StackPane firstLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamInfoComponent.fxml"));
         loader.setController(this);
@@ -52,12 +54,10 @@ public class TeamInfoController implements Initializable {
         try {
             teamInfoComponent = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
              ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }
-
     public HBox getRoot() {
         return teamInfoComponent;
     }
@@ -70,35 +70,43 @@ public class TeamInfoController implements Initializable {
         addClickListener();
     }
 
-    /** listener that tells what happens when team component is clicked*/
+    /** When component is clicked adds and removes styling, populates charts with team info and prevents edit button from triggering charts*/
     private void addClickListener(){
-
         teamInfoComponent.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
             if(event.getTarget()==editButton){
                 return;
             }
-
             teamInfoComponent.pseudoClassStateChanged(PseudoClass.getPseudoClass("hover"),false);
             teamsPageController.setSelectedComponentStyleToSelected(this);
             populateCharts();
         });
     }
     public void populateCharts(){
+        //if(!team.getTeamMembers().isEmpty()) {
+            teamsPageController.yearsComboBoxListener(team);
+            teamsPageController.populateComboBoxWithYears(team);
+            teamsPageController.historyComboBoxListener(team);
+            teamsPageController.setTeamHistoryDatesInComboBox(team);
+       /// }else {
+       //     teamsPageController.clearCharts();
+       // }
 
-        teamsPageController.yearsComboBoxListener(team);
-        teamsPageController.populateComboBoxWithYears(team);
-        teamsPageController.historyComboBoxListener(team);
-        teamsPageController.setTeamHistoryDatesInComboBox(team);
+
     }
     /** Method overloading, used for refreshing charts after edit  operation*
      * Param team uses edited team*/
     public void populateCharts(Team team){
-
-        teamsPageController.yearsComboBoxListener(team);
-        teamsPageController.populateComboBoxWithYears(team);
-        teamsPageController.historyComboBoxListener(team);
+      //  if(!team.getTeamMembers().isEmpty()) {
         teamsPageController.setTeamHistoryDatesInComboBox(team);
+            teamsPageController.yearsComboBoxListener(team);
+            teamsPageController.populateComboBoxWithYears(team);
+            teamsPageController.historyComboBoxListener(team);
+
+       // }else {
+       //     teamsPageController.clearCharts();
+       // }
     }
+    /** Opens edit view for the selected team*/
     private void addEditAction() {
         editButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this, employeesToAdd, teamsPageController);
@@ -108,8 +116,11 @@ public class TeamInfoController implements Initializable {
         });
     }
 
-
-
+    /**
+     * Updates the UI labels with the team's details if the team is not null
+     * This includes setting the team's name, currency, daily and hourly rates, countries, and regions,
+     * along with tooltips
+     */
     public void setLabels() {
         if (team != null) {
             teamName.setText(team.getTeamName());
@@ -118,9 +129,7 @@ public class TeamInfoController implements Initializable {
             teamHourlyCurrency.setText(team.getCurrency().toString());
 
             TeamConfiguration activeConfiguration = team.getActiveConfiguration();
-            if (activeConfiguration != null) {
-                System.out.println(activeConfiguration.getTeamDayRate()+ "from labels");
-
+            if (activeConfiguration != null && !team.getTeamMembers().isEmpty()) {
                 teamDailyRate.setText(activeConfiguration.getTeamDayRate().toString());
                 teamHourlyRate.setText(activeConfiguration.getTeamHourlyRate().toString());
             } else {
@@ -130,8 +139,13 @@ public class TeamInfoController implements Initializable {
 
             if (team.getCountries() != null && !team.getCountries().isEmpty()) {
                 StringBuilder countryNames = new StringBuilder();
-                for (Country country : team.getCountries()) {
-                    countryNames.append(country.getCountryName()).append(", ");
+                Iterator<Country> countryIterator = team.getCountries().iterator();
+                while (countryIterator.hasNext()) {
+                    Country country = countryIterator.next();
+                    countryNames.append(country.getCountryName());
+                    if (countryIterator.hasNext()) {
+                        countryNames.append(", ");
+                    }
                 }
                 teamCountry.setText(countryNames.toString());
                 teamCountry.setTooltip(new Tooltip(teamCountry.getText()));
@@ -142,8 +156,13 @@ public class TeamInfoController implements Initializable {
 
             if (team.getRegions() != null && !team.getRegions().isEmpty()) {
                 StringBuilder regionNames = new StringBuilder();
-                for (Region region : team.getRegions()) {
-                    regionNames.append(region.getRegionName()).append(", ");
+                Iterator<Region> regionIterator = team.getRegions().iterator();
+                while (regionIterator.hasNext()) {
+                    Region region = regionIterator.next();
+                    regionNames.append(region.getRegionName());
+                    if (regionIterator.hasNext()) {
+                        regionNames.append(", ");
+                    }
                 }
                 teamRegion.setText(regionNames.toString());
                 teamRegion.setTooltip(new Tooltip(teamRegion.getText()));
@@ -151,25 +170,10 @@ public class TeamInfoController implements Initializable {
                 teamRegion.setText("N/A");
                 teamRegion.setTooltip(new Tooltip("N/A"));
             }
-            if(team.getActiveConfiguration() != null){
-                System.out.println("................");
-            System.out.println(team.getActiveConfiguration().getTeamDayRate() + team.getTeamName());
-                System.out.println("................");}
+
+
         }
     }
 
-
-
-
-
-    //TODO delete them
-    public String getTeamName(){
-        return this.team.getActiveConfiguration().getTeamDayRate()+" from the creation of the info controller";
-    }
-
-
-    public TeamsPageController getTeamsPageController(){
-        return this.teamsPageController;
-    }
 
 }

@@ -35,3 +35,21 @@
 .scroll-bar {
     -fx-opacity: 0;
 }
+
+.closeButton:hover {
+    -fx-background-color: #C42B1C;
+    -fx-background-radius:  7 ;
+}
+
+.closeButton:hover > .svgClose {
+    -fx-fill: #fff;
+}
+
+.saveButton:hover {
+    -fx-background-color: #2ba746;
+    -fx-background-radius: 7;
+}
+
+.saveButton:hover > .svgSave {
+    -fx-fill: #fff;
+}

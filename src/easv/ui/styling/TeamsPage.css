@@ -76,3 +76,13 @@
     -fx-background-color: #39c440;
     -fx-text-fill: #c2d1e2;
 }
+.editbuttonBackground:hover{
+    -fx-background-color:#63b2e1;
+    -fx-background-radius: 5;
+}
+
+
+.editbuttonBackground:hover > .svgFill{
+    -fx-fill:#63b2e1 ;
+    -fx-stroke: #fff;
+}
