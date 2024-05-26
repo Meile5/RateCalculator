@@ -67,8 +67,7 @@ public class NavigationFactory {
         modeling.setFillRule(EVEN_ODD);
         icons.put(Navigation.MODELING, modeling);
 
-        //add profile icon
-
+        //add geography icon
         SVGPath geography = new SVGPath();
         geography.setContent("M427.968,349.536c-5.3-5.7-14.2-6.2-20-1c-35.2,31.6-80.5,49-127.7,49c-105.4,0-191.2-85.8-191.2-191.2\n" +
                 "\t\t\tc0-79.1,49.8-151,124-179c7.3-2.7,11-10.9,8.2-18.2c-2.7-7.3-10.9-11-18.2-8.2c-85.1,32.1-142.2,114.6-142.2,205.4\n" +

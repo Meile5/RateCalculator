@@ -16,10 +16,12 @@ public class ModelFactory {
         if (models.containsKey(modelType)) {
             return models.get(modelType);
         }
-        IModel model = null;
-        model = new Model();
+        IModel model = new Model();
         models.put(modelType, model);
-
         return model;
     }
+
+
+
+
 }

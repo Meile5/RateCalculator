@@ -1,12 +1,10 @@
 package easv.bll.EmployeesLogic;
-
 import easv.be.*;
 import easv.dal.employeeDao.EmployeesDAO;
 import easv.dal.employeeDao.IEmployeeDAO;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
 import javafx.collections.ObservableMap;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
@@ -17,10 +15,11 @@ import java.util.stream.Collectors;
 
 public class EmployeeManager implements IEmployeeManager {
     private IEmployeeDAO employeeDAO;
-    IRateCalculator rateCalculator = new RateCalculator();
+    IRateCalculator rateCalculator;
 
     public EmployeeManager() throws RateException {
         this.employeeDAO = new EmployeesDAO();
+        this.rateCalculator = new RateCalculator();
     }
 
 
@@ -323,7 +322,7 @@ public class EmployeeManager implements IEmployeeManager {
         // Calculate the new team day rates
         for (Team team : employeeTeamsNewConfigurations) {
             if (team.getActiveConfiguration() != null) {
-                computeTeamNewDayRate(team, editedEmployee,originalEmployee, dayRateEmployee, employeeHourRate);
+                computeTeamNewDayRate(team, editedEmployee, originalEmployee, dayRateEmployee, employeeHourRate);
                 validTeams.add(team);
             }
         }
@@ -339,8 +338,6 @@ public class EmployeeManager implements IEmployeeManager {
         }
 
 
-
-
         editedEmployee.getTeams().forEach(e -> {
             System.out.println(e.getActiveConfiguration().getTeamDayRate() + " form the edit ");
         });
@@ -351,7 +348,7 @@ public class EmployeeManager implements IEmployeeManager {
     /**
      * calculate the team new  day rate and hourly rate based on the new edited employee values
      */
-    private void computeTeamNewDayRate(Team team,Employee editedEmployee, Employee originalEmployee, BigDecimal newEmployeeDayRate, BigDecimal newEmployeeHourRate) {
+    private void computeTeamNewDayRate(Team team, Employee editedEmployee, Employee originalEmployee, BigDecimal newEmployeeDayRate, BigDecimal newEmployeeHourRate) {
 
         //extract the employee utilization per team
         BigDecimal employeeUtilizationOnTeam = editedEmployee.getUtilPerTeams().get(team.getId());
@@ -372,8 +369,8 @@ public class EmployeeManager implements IEmployeeManager {
         BigDecimal teamEmployeeNewDayRate;
         BigDecimal teamEmployeeNewHourRate;
         if (employeeUtilizationOnTeam.compareTo(new BigDecimal(100)) == 0) {
-            teamEmployeeNewDayRate=removedOldEmployeeDayRate.add(newEmployeeDayRate);
-            teamEmployeeNewHourRate=removedOldEmployeeHourRate.add(newEmployeeHourRate);
+            teamEmployeeNewDayRate = removedOldEmployeeDayRate.add(newEmployeeDayRate);
+            teamEmployeeNewHourRate = removedOldEmployeeHourRate.add(newEmployeeHourRate);
         } else {
             teamEmployeeNewDayRate = removedOldEmployeeDayRate.add(newEmployeeDayRate.multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))));
             teamEmployeeNewHourRate = removedOldEmployeeHourRate.add(newEmployeeHourRate.multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))));
@@ -403,17 +400,20 @@ public class EmployeeManager implements IEmployeeManager {
     }
 
 
-    /**add the edited employee values into the  team configuration history*/
+    /**
+     * add the edited employee values into the  team configuration history
+     */
     private void replaceEmployeeInTeamConfiguration(Team team, Employee oldEmployee, Employee newEmployee) throws RateException {
         List<TeamConfigurationEmployee> teamMembers = team.getActiveConfiguration().getTeamMembers();
         for (int i = 0; i < teamMembers.size(); i++) {
-            try{
-            if (teamMembers.get(i).getEmployeeName().equals(oldEmployee.getName())) {
-                TeamConfigurationEmployee newTeamMember = new TeamConfigurationEmployee(newEmployee.getName(),newEmployee.getActiveConfiguration().getDayRate().doubleValue(),newEmployee.getActiveConfiguration().getHourlyRate().doubleValue(),newEmployee.getCurrency());
-                teamMembers.set(i, newTeamMember);
-                break;
-            }}catch (Exception e){
-                throw  new RateException(e.getMessage(),e,ErrorCode.OPERATION_DB_FAILED);
+            try {
+                if (teamMembers.get(i).getEmployeeName().equals(oldEmployee.getName())) {
+                    TeamConfigurationEmployee newTeamMember = new TeamConfigurationEmployee(newEmployee.getName(), newEmployee.getActiveConfiguration().getDayRate().doubleValue(), newEmployee.getActiveConfiguration().getHourlyRate().doubleValue(), newEmployee.getCurrency());
+                    teamMembers.set(i, newTeamMember);
+                    break;
+                }
+            } catch (Exception e) {
+                throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
             }
         }
     }

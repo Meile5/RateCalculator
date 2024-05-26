@@ -68,7 +68,6 @@ public class HomePageController implements Initializable, PageManager {
         CallBackFactory.setModel(this.model);
         CallBackFactory.setModalWindow(this.firstLayout);
         CallBackFactory.setSecondLayout(this.secondLayout);
-
         Platform.runLater(()->{
             CallBackFactory.createCallBack(Navigation.HOME).call();
         });

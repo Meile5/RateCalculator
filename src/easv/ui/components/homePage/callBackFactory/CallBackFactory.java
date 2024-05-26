@@ -8,8 +8,6 @@ import javafx.scene.layout.StackPane;
 import java.util.HashMap;
 
 public class CallBackFactory {
-
-
     private static final HashMap<Navigation, CallBack> callBacks = new HashMap<>();
     private static PageManager pageManager;
     private static IModel model;

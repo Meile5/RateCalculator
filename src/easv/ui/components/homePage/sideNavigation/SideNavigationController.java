@@ -15,7 +15,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -80,9 +79,6 @@ public class SideNavigationController implements Initializable {
            KeyValue keyValue= new KeyValue(sideNavigationContainer.prefWidthProperty(),expandedWidth);
            KeyFrame keyFrame = new KeyFrame(Duration.millis(500),keyValue);
            timeline.getKeyFrames().add(keyFrame);
-//           timeline.setOnFinished((e)->{
-//               theLine.setEndX(250);
-//           });
            timeline.play();
            isExpanded=true;
        });
@@ -93,9 +89,6 @@ public class SideNavigationController implements Initializable {
             KeyValue keyValue= new KeyValue(sideNavigationContainer.prefWidthProperty(),originalWidth);
             KeyFrame keyFrame = new KeyFrame(Duration.millis(500),keyValue);
             timeline.getKeyFrames().add(keyFrame);
-//            timeline.setOnFinished((e)->{
-//                theLine.setEndX(50);
-//            });
             timeline.play();
             isExpanded=false;
         });
