@@ -82,29 +82,20 @@ public class TeamInfoController implements Initializable {
         });
     }
     public void populateCharts(){
-        //if(!team.getTeamMembers().isEmpty()) {
-            teamsPageController.yearsComboBoxListener(team);
+        teamsPageController.yearsComboBoxListener(team);
             teamsPageController.populateComboBoxWithYears(team);
             teamsPageController.historyComboBoxListener(team);
             teamsPageController.setTeamHistoryDatesInComboBox(team);
-       /// }else {
-       //     teamsPageController.clearCharts();
-       // }
-
 
     }
     /** Method overloading, used for refreshing charts after edit  operation*
      * Param team uses edited team*/
     public void populateCharts(Team team){
-      //  if(!team.getTeamMembers().isEmpty()) {
         teamsPageController.setTeamHistoryDatesInComboBox(team);
             teamsPageController.yearsComboBoxListener(team);
             teamsPageController.populateComboBoxWithYears(team);
             teamsPageController.historyComboBoxListener(team);
 
-       // }else {
-       //     teamsPageController.clearCharts();
-       // }
     }
     /** Opens edit view for the selected team*/
     private void addEditAction() {
