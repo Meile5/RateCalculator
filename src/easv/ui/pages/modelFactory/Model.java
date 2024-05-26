@@ -366,14 +366,18 @@ public class Model implements IModel {
     public Employee updateEditedEmployee(Employee originalEmployee, Employee editedEmployee) throws RateException {
         List<Team> originalEmployeeTeams =  new ArrayList<>();
         for(Team team : employees.get(originalEmployee.getId()).getTeams()){
+            System.out.println(teamsWithEmployees.get(team.getId()).getActiveConfiguration().getTeamDayRate() + "old day rate before edit");
              originalEmployeeTeams.add(teamsWithEmployees.get(team.getId()));
         }
-
         Employee editedSavedEmployee = employeeManager.saveEditOperation(editedEmployee, originalEmployee,originalEmployeeTeams );
+        for(Team team :editedSavedEmployee.getTeams()){
+            System.out.println(team.getActiveConfiguration().getTeamDayRate() +"after save edit");
+        }
         editedSavedEmployee.setCountries(originalEmployee.getCountries());
         editedSavedEmployee.setRegions(originalEmployee.getRegions());
         editedSavedEmployee.setTeams(originalEmployee.getTeams());
-       if (editedSavedEmployee != null) {
+
+        if (editedSavedEmployee != null) {
             this.employees.put(editedEmployee.getId(), editedSavedEmployee);
             // update the filter list with the new updated values
             for (int i = 0; i <sortedEmployeesByName.size(); i++) {
@@ -759,6 +763,9 @@ public class Model implements IModel {
             for (Team team : performedValues.get(OverheadHistory.CURRENT_OVERHEAD)) {
                 teamsWithEmployees.put(team.getId(), team);
             }
+
+            //update the countries teams with the new updated overhead
+            employeeManager.updateCountryTeams(countriesWithTeams.values(),performedValues.get(OverheadHistory.CURRENT_OVERHEAD));
         }
 
         return performedValues;

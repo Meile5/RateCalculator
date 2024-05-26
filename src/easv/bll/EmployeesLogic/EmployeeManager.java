@@ -63,28 +63,31 @@ public class EmployeeManager implements IEmployeeManager {
                 //remove the employee overhead from the team
                 removeEmployeeOverheadFromTeam(employee, teamToModify);
                 //remove employee from the active configuration
-                removeEmployeeFromConfiguration(employee,teamToModify);
+                removeEmployeeFromConfiguration(employee, teamToModify);
                 teamToModify.getActiveConfiguration().setSavedDate(LocalDateTime.now());
                 teamsToModify.add(teamToModify);
             }
         }
 
-        boolean deleteOperationPerformed = employeeDAO.deleteEmployee(employee,teamsToModify);
+        boolean deleteOperationPerformed = employeeDAO.deleteEmployee(employee, teamsToModify);
         for (Team team : teamsToModify) {
             team.getTeamConfigurationsHistory().add(team.getActiveConfiguration());
         }
 
-        if(deleteOperationPerformed){
+        if (deleteOperationPerformed) {
             return teamsToModify;
-        }else{
+        } else {
             return Collections.emptyList();
         }
     }
 
 
-    /**remove the deleted employee from the current active configuration
-     *@param employee employee entity to be removed
-     *@param team  team entity to remove employee from */
+    /**
+     * remove the deleted employee from the current active configuration
+     *
+     * @param employee employee entity to be removed
+     * @param team     team entity to remove employee from
+     */
 
     private void removeEmployeeFromConfiguration(Employee employee, Team team) {
         TeamConfigurationEmployee teamConfigurationEmployeeToRemove = null;
@@ -182,17 +185,19 @@ public class EmployeeManager implements IEmployeeManager {
     }
 
 
-    /** update the country teams with the newest values */
+    /**
+     * update the country teams with the newest values
+     */
 
-        @Override
-        public void updateCountryTeams(Collection<Country> values, List<Team> teamsWithoutEmployee) {
+    @Override
+    public void updateCountryTeams(Collection<Country> values, List<Team> teamsWithoutEmployee) {
 
-            Map<Integer, Team> teamsMap = new HashMap<>();
-            for (Team team : teamsWithoutEmployee) {
-                teamsMap.put(team.getId(), team);
-            }
-            for (Country country : values) {
-                if(country.getTeams()!=null){
+        Map<Integer, Team> teamsMap = new HashMap<>();
+        for (Team team : teamsWithoutEmployee) {
+            teamsMap.put(team.getId(), team);
+        }
+        for (Country country : values) {
+            if (country.getTeams() != null) {
                 for (Team team : country.getTeams()) {
                     Team teamModified = teamsMap.get(team.getId());
                     if (teamModified != null) {
@@ -201,10 +206,9 @@ public class EmployeeManager implements IEmployeeManager {
                         team.setTeamConfigurationsHistory(teamModified.getTeamConfigurationsHistory());
                     }
                 }
-                }
             }
         }
-
+    }
 
 
     /**
@@ -292,7 +296,6 @@ public class EmployeeManager implements IEmployeeManager {
             Map<Integer, BigDecimal> employeeTeamUtilization = new HashMap<>(employeeDAO.getEmployeeUtilizationPerTeams(editedEmployee.getId()));
             editedEmployee.setUtilPerTeams(employeeTeamUtilization);
         } catch (RateException e) {
-
             return null;
         }
 
@@ -308,9 +311,6 @@ public class EmployeeManager implements IEmployeeManager {
         BigDecimal employeeHourRate = rateCalculator.calculateEmployeeHourlyRateWithoutUtilization(editedEmployee);
 
 
-        editedEmployee.getActiveConfiguration().setDayRate(dayRateEmployee);
-        editedEmployee.getActiveConfiguration().setHourlyRate(employeeHourRate);
-
         // Replace the originalEmployee with the edited one in the copies to calculate the new team rates
         for (Team team : employeeTeamsNewConfigurations) {
             for (int i = 0; i < team.getTeamMembers().size(); i++) {
@@ -324,34 +324,66 @@ public class EmployeeManager implements IEmployeeManager {
         // Calculate the new team day rates
         for (Team team : employeeTeamsNewConfigurations) {
             if (team.getActiveConfiguration() != null) {
-                computeTeamNewDayRate(team, editedEmployee, dayRateEmployee, employeeHourRate);
+                computeTeamNewDayRate(team, editedEmployee, originalEmployee, dayRateEmployee, employeeHourRate);
                 validTeams.add(team);
             }
         }
 
+        editedEmployee.getActiveConfiguration().setDayRate(dayRateEmployee);
+        editedEmployee.getActiveConfiguration().setHourlyRate(employeeHourRate);
         editedEmployee.setTeams(validTeams);
-        return employeeDAO.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
+
+        editedEmployee.getTeams().forEach(e -> {
+            System.out.println(e.getActiveConfiguration().getTeamDayRate() + " form the edit ");
+        });
+        return editedEmployee;
+        //employeeDAO.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
     }
 
 
     /**
      * calculate the team new  day rate and hourly rate based on the new edited employee values
      */
-    private void computeTeamNewDayRate(Team team, Employee employee, BigDecimal newEmployeeDayRate, BigDecimal newEmployeeHourRate) {
+    private void computeTeamNewDayRate(Team team, Employee employee, Employee originalEmployee, BigDecimal newEmployeeDayRate, BigDecimal newEmployeeHourRate) {
 
         //extract the employee utilization per team
         BigDecimal employeeUtilizationOnTeam = employee.getUtilPerTeams().get(team.getId());
-        //extract the employee old rates from the team
-        BigDecimal removeOldEmployeeDayRate = team.getActiveConfiguration().getTeamDayRate().multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
-        BigDecimal removeEmployeeHourRate = team.getActiveConfiguration().getTeamHourlyRate().multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
+
+        BigDecimal removedOldEmployeeDayRate;
+        BigDecimal removedOldEmployeeHourRate;
+        System.out.println(team.getActiveConfiguration().getTeamDayRate() + "team day rate");
+        System.out.println(newEmployeeDayRate + "employee day rate");
+        System.out.println(newEmployeeHourRate + "employee hour rate ");
+        System.out.println(employeeUtilizationOnTeam);
+        if (employeeUtilizationOnTeam.compareTo(new BigDecimal(100)) == 0) {
+            removedOldEmployeeDayRate = team.getActiveConfiguration().getTeamDayRate().subtract(originalEmployee.getActiveConfiguration().getDayRate());
+            removedOldEmployeeHourRate = team.getActiveConfiguration().getTeamHourlyRate().subtract(originalEmployee.getActiveConfiguration().getHourlyRate());
+        } else {
+            //extract the employee old rates from the team
+            removedOldEmployeeDayRate = team.getActiveConfiguration().getTeamDayRate().multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
+            removedOldEmployeeHourRate = team.getActiveConfiguration().getTeamHourlyRate().multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
+        }
+
+//
+//        //extract the employee old rates from the team
+//        BigDecimal removeOldEmployeeDayRate = team.getActiveConfiguration().getTeamDayRate().multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
+//        BigDecimal removeEmployeeHourRate = team.getActiveConfiguration().getTeamHourlyRate().multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
+
+
         //calculate  employee new overhead on the team
-        BigDecimal teamEmployeeNewDayRate = removeOldEmployeeDayRate.add(newEmployeeDayRate.multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))));
-        BigDecimal teamEmployeeNewHourRate = removeEmployeeHourRate.add(newEmployeeHourRate.multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))));
+        BigDecimal teamEmployeeNewDayRate;
+        BigDecimal teamEmployeeNewHourRate;
+        if (employeeUtilizationOnTeam.compareTo(new BigDecimal(100)) == 0) {
+            teamEmployeeNewDayRate=removedOldEmployeeDayRate.add(newEmployeeDayRate);
+            teamEmployeeNewHourRate=removedOldEmployeeHourRate.add(newEmployeeHourRate);
+        } else {
+            teamEmployeeNewDayRate = removedOldEmployeeDayRate.add(newEmployeeDayRate.multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))));
+            teamEmployeeNewHourRate = removedOldEmployeeHourRate.add(newEmployeeHourRate.multiply(BigDecimal.ONE.subtract(employeeUtilizationOnTeam.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))));
+        }
 
         //add employee new rates on the team
         team.getActiveConfiguration().setTeamDayRate(teamEmployeeNewDayRate);
         team.getActiveConfiguration().setTeamHourlyRate(teamEmployeeNewHourRate);
-
     }
 
     /**

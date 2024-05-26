@@ -77,10 +77,10 @@ public class RateCalculator implements IRateCalculator {
                     .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP);
     }
 
-        //else {
-//            hourlyRate = annualSalary
-//                    .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP);
-//        }
+        else {
+            hourlyRate = annualSalary
+                    .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP);
+        }
         return hourlyRate.setScale(2, RoundingMode.HALF_UP);
     }
 
