@@ -513,24 +513,24 @@ public class EmployeeValidation {
     }
 
     //check if the multiplier is between 0 and 100
-    private static boolean isPercentageValid(BigDecimal value) {
+    public static boolean isPercentageValid(BigDecimal value) {
         return value.compareTo(BigDecimal.ZERO) >= 0 && value.compareTo(new BigDecimal("100")) <= 0;
     }
 
 
     //check if the percentage is between 0 and 100;
-    private static boolean isPercentageInLimits(int percentage) {
+    public static boolean isPercentageInLimits(int percentage) {
         return percentage > 0 && percentage <= 100;
     }
 
     // check if the salary is bigger than zero
-    private static boolean isValueSmallerThanZero(BigDecimal value) {
+    public static boolean isValueSmallerThanZero(BigDecimal value) {
         return value.compareTo(BigDecimal.ZERO) < 0;
     }
 
     //check if the day working hours is between 1 and 24
 
-    private static boolean isValidWorkingDayHoursRange(double workingDayHours) {
+    public static boolean isValidWorkingDayHoursRange(double workingDayHours) {
         return workingDayHours > 0 && workingDayHours <= 24;
     }
 
