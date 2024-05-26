@@ -2,15 +2,12 @@ package easv.ui.pages.geographyManagementPage.countryComponents;
 
 import easv.Utility.CountryValidation;
 import easv.Utility.WindowsManagement;
-import easv.be.Country;
 import easv.be.Currency;
 import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
-import easv.ui.components.confirmationView.ConfirmationWindowController;
 import easv.ui.pages.geographyManagementPage.geographyMainPage.GeographyManagementController;
-import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -23,15 +20,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
-public class CreateTeamController implements Initializable {
+public class ManageTeamController implements Initializable {
 
     @FXML
     private VBox createTeamWindow;
@@ -49,17 +43,17 @@ public class CreateTeamController implements Initializable {
     private GeographyManagementController geographyManagementController;
     private ManageCountryController manageCountryController;
     private Service<Void> saveTeam;
-    private Team team;
+    private Team selectedTeam;
     private boolean isEditOperation;
 
-    public CreateTeamController(StackPane pane, GeographyManagementController geographyManagementController, Team team, StackPane secondPane, boolean isEditOperation, ManageCountryController manageCountryController){
+    public ManageTeamController(StackPane pane, GeographyManagementController geographyManagementController, Team selectedTeam, StackPane secondPane, boolean isEditOperation, ManageCountryController manageCountryController){
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CreateTeamPage.fxml"));
         loader.setController(this);
         this.pane = pane;
         this.secondPane = secondPane;
         this.geographyManagementController = geographyManagementController;
         this.manageCountryController = manageCountryController;
-        this.team = team;
+        this.selectedTeam = selectedTeam;
         this.isEditOperation = isEditOperation;
         try {
             createTeamWindow = loader.load();
@@ -70,7 +64,6 @@ public class CreateTeamController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("team " + team);
         setFields();
 
         saveTeamListener();
@@ -81,13 +74,15 @@ public class CreateTeamController implements Initializable {
     private void saveTeamListener() {
         saveBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(CountryValidation.isTeamNameValid(teamNameTF) && CountryValidation.isCurrencySelected(currencyCB)){
-                if(team == null) {
+                if(selectedTeam == null) {
                     Team newTeam = new Team(teamNameTF.getText(), getCurrency());
                     saveTeamOperation(newTeam);
+                    manageCountryController.updateTeamComboBox(newTeam);
                 } else {
-                    team.setTeamName(teamNameTF.getText());
-                    team.setCurrency(getCurrency());
-                    saveTeamOperation(team);
+                    Team updatedTeam = new Team(teamNameTF.getText(), getCurrency());
+                    updatedTeam.setId(selectedTeam.getId());
+                    saveTeamOperation(updatedTeam);
+                    manageCountryController.updateTeamComboBox(updatedTeam);
                 }
             }
         });
@@ -96,9 +91,9 @@ public class CreateTeamController implements Initializable {
 
     private void deleteTeamListener() {
         deleteBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
-                if(team != null) {
+                if(selectedTeam != null) {
                     try {
-                        manageCountryController.deleteTeam(team);
+                        manageCountryController.deleteTeam(selectedTeam);
                     } catch (RateException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -122,12 +117,10 @@ public class CreateTeamController implements Initializable {
                     protected Void call() throws Exception {
                         if (isEditOperation) {
                             Platform.runLater(() -> {
-                                System.out.println("Updated team " + team);
-                                manageCountryController.getUpdatedTeam(team);
+                                manageCountryController.getUpdatedTeam(team, selectedTeam);
                             });
                         } else {
                             Platform.runLater(() -> {
-                                System.out.println("New team " + team);
                                 manageCountryController.getNewTeam(team);
                             });
                         }
@@ -157,6 +150,7 @@ public class CreateTeamController implements Initializable {
     private void cancelOperationListener() {
         cancelBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             WindowsManagement.closeStackPane(secondPane);
+            WindowsManagement.showStackPane(pane);
         });
     }
 
@@ -164,9 +158,9 @@ public class CreateTeamController implements Initializable {
         pane.setVisible(false);
         ObservableList<String> currencies = FXCollections.observableArrayList(Currency.EUR.name(), Currency.USD.name());
         currencyCB.setItems(currencies);
-        if(team != null){
-            teamNameTF.setText(team.getTeamName());
-            currencyCB.getSelectionModel().selectItem(team.getCurrency().name());
+        if(selectedTeam != null){
+            teamNameTF.setText(selectedTeam.getTeamName());
+            currencyCB.getSelectionModel().selectItem(selectedTeam.getCurrency().name());
         }
     }
 

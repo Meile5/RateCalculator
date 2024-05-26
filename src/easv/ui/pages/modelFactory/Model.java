@@ -364,7 +364,6 @@ public class Model implements IModel {
         editedSavedEmployee.setCountries(originalEmployee.getCountries());
         editedSavedEmployee.setRegions(originalEmployee.getRegions());
         editedSavedEmployee.setTeams(originalEmployee.getTeams());
-        System.out.println(editedSavedEmployee.getTeams().size() + "teams size");
        if (editedSavedEmployee != null) {
             this.employees.put(editedEmployee.getId(), editedSavedEmployee);
             // update the filter list with the new updated values

@@ -148,7 +148,9 @@ public class CountryDao implements ICountryDao {
                 psmt.executeUpdate();
                 try (ResultSet res = psmt.getGeneratedKeys()) {
                     if (res.next()) {
-                        teamIds.add(res.getInt(1));
+                        int id = res.getInt(1);
+                        teamIds.add(id);
+                        team.setId(id);
                     } else {
                         throw new RateException(ErrorCode.OPERATION_DB_FAILED);
                     }
