@@ -77,7 +77,6 @@ public class RateCalculator implements IRateCalculator {
             hourlyRate = (annualSalary.multiply(overheadMultiplier).add(fixedAnnualAmount))
                     .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP);
     }
-
         else {
             hourlyRate = annualSalary
                     .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP);
