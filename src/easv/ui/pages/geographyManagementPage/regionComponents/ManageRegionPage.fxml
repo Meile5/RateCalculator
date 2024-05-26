@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
@@ -13,15 +12,18 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="confirmationWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" style="-fx-background-radius: 20;" styleClass="background" stylesheets="/easv/ui/styling/Confirmation.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="confirmationWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" style="-fx-background-radius: 20;" styleClass="background" stylesheets="/easv/ui/styling/ManageGeographyPages.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="490.0">
          <children>
             <Region prefHeight="100.0" prefWidth="136.0" />
             <VBox alignment="CENTER_LEFT" prefHeight="122.0" prefWidth="384.0" spacing="5.0">
                <children>
-                  <Label text="Region Name" />
-                  <MFXTextField fx:id="regionNameTF" floatMode="DISABLED" prefWidth="250.0" />
+                  <Label text="Region Name" textFill="WHITE">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font></Label>
+                  <MFXTextField fx:id="regionNameTF" floatMode="DISABLED" prefWidth="250.0" styleClass="textField" />
                </children>
             </VBox>
          </children>
@@ -34,8 +36,17 @@
                      <VBox.margin>
                         <Insets bottom="30.0" top="10.0" />
                      </VBox.margin>
+                     <font>
+                        <Font name="Open Sans Regular" size="13.0" />
+                     </font>
                   </MFXComboBox>
-                  <Label text="Countries" />
+                  <Label text="Countries" textFill="WHITE">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin></Label>
                   <ListView fx:id="countriesListView" prefHeight="200.0" prefWidth="200.0">
                      <VBox.margin>
                         <Insets bottom="10.0" />
@@ -51,16 +62,16 @@
             </VBox>
             <VBox prefHeight="230.0" prefWidth="85.0">
                <children>
-                  <Region prefHeight="12.0" prefWidth="65.0" />
-                  <Button fx:id="addCountryBTN" maxHeight="28.0" maxWidth="28.0" minHeight="28.0" minWidth="28.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="28.0" text="+">
+                  <Region prefHeight="7.0" prefWidth="65.0" />
+                  <Button fx:id="addCountryBTN" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" styleClass="buttonTeams" text="+" textFill="WHITE">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="Open Sans Bold" size="17.0" />
                      </font>
                   </Button>
-                  <Region prefHeight="87.0" prefWidth="65.0" />
-                  <Button fx:id="removeCountryBTN" maxHeight="28.0" maxWidth="28.0" minHeight="28.0" minWidth="28.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="28.0" text="-">
+                  <Region prefHeight="81.0" prefWidth="65.0" />
+                  <Button fx:id="removeCountryBTN" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" styleClass="buttonTeams" text="-" textFill="WHITE">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="Open Sans Bold" size="17.0" />
                      </font>
                   </Button>
                </children>
@@ -78,12 +89,16 @@
                </HBox.margin>
             </MFXProgressSpinner>
             <Region prefHeight="57.0" prefWidth="190.0" />
-                <MFXButton fx:id="cancelBTN" buttonType="RAISED" depthLevel="LEVEL0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="80.0" rippleColor="#427972" styleClass="button-cancel" text="Cancel" />
-                <MFXButton fx:id="saveBTN" buttonType="RAISED" depthLevel="LEVEL0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="80.0" rippleColor="#63b2e1" styleClass="button-save" text="Save" textFill="WHITE">
-                    <HBox.margin>
-                        <Insets />
-                    </HBox.margin>
-                </MFXButton>
+            <Button fx:id="cancelBTN" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" styleClass="button-cancel" text="Cancel">
+               <font>
+                  <Font name="Open Sans Regular" size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="saveBTN" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" styleClass="button-save" text="Save" textFill="#f8f8f8">
+               <font>
+                  <Font name="Open Sans Regular" size="14.0" />
+               </font>
+            </Button>
             </children>
          <VBox.margin>
             <Insets right="10.0" />

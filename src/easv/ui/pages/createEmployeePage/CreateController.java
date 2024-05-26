@@ -2,6 +2,7 @@ package easv.ui.pages.createEmployeePage;
 import easv.Utility.EmployeeValidation;
 import easv.Utility.WindowsManagement;
 import easv.be.*;
+import easv.be.Currency;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
 import easv.ui.pages.modelFactory.IModel;
@@ -32,10 +33,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
+import java.util.*;
 
 
 public class CreateController implements Initializable {
@@ -122,6 +120,7 @@ public class CreateController implements Initializable {
             boolean isActive = true;
             double dailyWorkingHours = Double.parseDouble( convertToDecimalPoint(dayWorkingHours.getText()));
             Employee employee = new Employee(name, employeeType, currency);
+            setUtilPercentageForTeams(employee, teamsToSave);
             Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate, isActive,dailyWorkingHours);
             employee.setActiveConfiguration(configuration);
             BigDecimal dayRate = model.getComputedDayRate(employee);
@@ -130,6 +129,14 @@ public class CreateController implements Initializable {
             configuration.setHourlyRate(hourlyRate);
             saveEmployeeOperation(employee, configuration, teamsToSave);
         }
+    }
+
+    private void setUtilPercentageForTeams(Employee employee, List<Team> teamsToSave) {
+        Map<Integer,BigDecimal> utilPerTeams = new HashMap<>();
+        for (int i = 0; i < teamsToSave.size(); i++) {
+            utilPerTeams.put(teamsToSave.get(i).getId(), new BigDecimal(teamsUtilizationList.get(i)));
+        }
+        employee.setUtilPerTeams(utilPerTeams);
     }
 
     private Currency getCurrency() {

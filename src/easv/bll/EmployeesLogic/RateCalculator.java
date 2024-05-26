@@ -8,7 +8,7 @@ import java.math.RoundingMode;
 
 
 public class RateCalculator implements IRateCalculator {
-    private long HoursInDay = 8;
+    private long HoursInDay;
 
     /**
      * method can be improved for readability and testing
@@ -26,6 +26,11 @@ public class RateCalculator implements IRateCalculator {
         BigDecimal annualEffectiveWorkingHours = employee.getActiveConfiguration().getWorkingHours();
         BigDecimal utilizationPercentage = employee.getActiveConfiguration().getUtilizationPercentage().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
         BigDecimal dayRate = BigDecimal.ZERO;
+        if(employee.getActiveConfiguration() != null){
+            HoursInDay = (long) employee.getActiveConfiguration().getDayWorkingHours();
+        } else {
+            HoursInDay = 8;
+        }
 
         if (employee.getEmployeeType() == EmployeeType.Overhead) {
           dayRate = (((annualSalary.multiply(overheadMultiplier)).add(fixedAnnualAmount)).multiply(utilizationPercentage))
@@ -122,15 +127,16 @@ public class RateCalculator implements IRateCalculator {
     public BigDecimal calculateEmployeeHourlyRateOnTeam(Employee employee, Team team){
         BigDecimal hourlyRate = employee.getActiveConfiguration().getHourlyRate();
         BigDecimal utilizationPercentage = employee.getUtilPerTeams().get(team.getId()).divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
-        System.out.println("utilizationPercentage: " + utilizationPercentage);
         return (hourlyRate.multiply(utilizationPercentage)).setScale(2, RoundingMode.HALF_UP);
     }
+
     public BigDecimal calculateEmployeeHourlyRateOnTeamE(Employee employee, Team team){
         BigDecimal hourlyRate = employee.getActiveConfiguration().getHourlyRate();
         BigDecimal utilizationPercentage = employee.getUtilPerTeams().get(team.getId()).divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
         return (hourlyRate.multiply(utilizationPercentage)).setScale(2, RoundingMode.HALF_UP);
 
     }
+
     public BigDecimal calculateEmployeeDayRateOnTeamE(Employee employee, Team team){
         BigDecimal hourlyRate = calculateEmployeeHourlyRateOnTeamE(employee, team);
 

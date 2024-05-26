@@ -40,9 +40,7 @@ public class ManageCountryController implements Initializable {
     @FXML
     private ListView<String> teamsListView;
     @FXML
-    private Button addTeamBTN, removeTeamBTN;
-    @FXML
-    private MFXButton saveBTN, cancelBTN, editTeamBT, addNewTeamBT;
+    private Button addTeamBTN, removeTeamBTN, saveBTN, cancelBTN, editTeamBT, addNewTeamBT;
     @FXML
     private MFXProgressSpinner progressSpinner;
 

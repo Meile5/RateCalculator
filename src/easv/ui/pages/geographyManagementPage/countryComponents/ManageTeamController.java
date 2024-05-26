@@ -17,6 +17,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -34,7 +35,7 @@ public class ManageTeamController implements Initializable {
     @FXML
     private MFXComboBox<String> currencyCB;
     @FXML
-    private MFXButton saveBTN, cancelBTN, deleteBTN;
+    private Button saveBTN, cancelBTN, deleteBTN;
     @FXML
     private MFXProgressSpinner progressSpinner;
 
@@ -47,7 +48,7 @@ public class ManageTeamController implements Initializable {
     private boolean isEditOperation;
 
     public ManageTeamController(StackPane pane, GeographyManagementController geographyManagementController, Team selectedTeam, StackPane secondPane, boolean isEditOperation, ManageCountryController manageCountryController){
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("CreateTeamPage.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ManageTeamPage.fxml"));
         loader.setController(this);
         this.pane = pane;
         this.secondPane = secondPane;

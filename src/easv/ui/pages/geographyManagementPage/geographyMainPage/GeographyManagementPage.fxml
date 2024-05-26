@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<GridPane alignment="CENTER" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="900.0" stylesheets="/easv/ui/styling/Distribution.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane alignment="CENTER" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="900.0" stylesheets="/easv/ui/styling/GeographyPage.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
       <ColumnConstraints hgrow="NEVER" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="540.0" minWidth="256.0" prefWidth="357.0" />
@@ -52,7 +52,10 @@
 <!--                     </children>-->
 <!--                  </HBox>-->
                   <Region prefHeight="37.0" prefWidth="82.0" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="addRegionBTN" mnemonicParsing="false" text="Add Region" />
+                  <Button fx:id="addRegionBTN" mnemonicParsing="false" text="Add Region" textFill="WHITE">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font></Button>
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
@@ -60,9 +63,18 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="38.0" prefWidth="254.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Region" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Countries" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" layoutX="81.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Teams" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" layoutX="124.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Region" textOverrun="CLIP" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font></Label>
+                  <Label alignment="CENTER" layoutX="96.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Countries" textOverrun="CLIP" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font></Label>
+                  <Label alignment="CENTER" layoutX="81.0" layoutY="24.0" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Teams" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font></Label>
                   <Region prefHeight="38.0" prefWidth="130.0" />
                </children>
                <VBox.margin>
@@ -104,7 +116,10 @@
                      </children>
                   </HBox>
                   <Region prefHeight="50.0" prefWidth="67.0" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="addCountryBTN" mnemonicParsing="false" text="Add Country" />
+                  <Button fx:id="addCountryBTN" mnemonicParsing="false" text="Add Country" textFill="WHITE">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font></Button>
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
@@ -112,9 +127,18 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="358.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Country" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Teams" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Employees" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Country" textOverrun="CLIP" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font></Label>
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Teams" textOverrun="CLIP" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font></Label>
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="123.0" minHeight="-Infinity" minWidth="50.0" prefHeight="38.0" prefWidth="105.0" text="Employees" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Open Sans Regular" size="14.0" />
+                     </font></Label>
                   <Region prefHeight="50.0" prefWidth="130.0" />
                </children>
                <VBox.margin>
