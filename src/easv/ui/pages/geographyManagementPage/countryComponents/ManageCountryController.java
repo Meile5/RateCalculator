@@ -79,6 +79,7 @@ public class ManageCountryController implements Initializable {
         removeTeamListener();
         saveCountryListener();
         cancelOperationListener();
+        addListenersForInputs();
     }
 
     private void addTeamToListListener() {
@@ -101,6 +102,11 @@ public class ManageCountryController implements Initializable {
                 existingTeamsList.remove(teamsListView.getSelectionModel().getSelectedIndex());
                 teamsListView.getItems().remove(teamsListView.getSelectionModel().getSelectedIndex());
             }});
+    }
+
+    private void addListenersForInputs(){
+        CountryValidation.addLettersOnlyInputListener(countryNameBox);
+        CountryValidation.addLettersOnlyInputListener(teamsCB);
     }
 
     private void setFields() {

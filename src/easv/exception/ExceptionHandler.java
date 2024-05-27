@@ -27,4 +27,10 @@ public class ExceptionHandler {
         alert.setContentText(errorMessage);
         alert.show();
     }
+
+    public static void errorConfirmationMessage(String errorMessage){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText(errorMessage);
+        alert.showAndWait();
+    }
 }

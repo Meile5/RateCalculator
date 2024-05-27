@@ -30,7 +30,7 @@
                      <font>
                         <Font name="Open Sans Regular" size="14.0" />
                      </font></Label>
-                  <MFXComboBox fx:id="currencyCB" floatMode="DISABLED" prefWidth="250.0" />
+                  <MFXComboBox fx:id="currencyCB" floatMode="DISABLED" prefWidth="250.0" styleClass="comboBox" />
                </children>
                <padding>
                   <Insets top="10.0" />
