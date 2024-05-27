@@ -20,7 +20,6 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         IModel model = initializeModel(primaryStage);
-
         HomePageController homePageController = new HomePageController(model);
         Scene scene = new Scene(homePageController.getRoot());
         primaryStage.setMinWidth(1024);
@@ -29,6 +28,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
 
     private static IModel initializeModel(Stage primaryStage) {
         IModel model = null;
