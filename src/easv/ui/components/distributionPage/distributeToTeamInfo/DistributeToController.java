@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 public class DistributeToController implements Initializable,DistributeToInterface {
     @FXML
-    private final HBox teamComponentDistributeFrom;
+    private  HBox teamComponentDistributeFrom;
     @FXML
     private Label teamRegions;
     @FXML
@@ -62,7 +62,7 @@ public class DistributeToController implements Initializable,DistributeToInterfa
         try {
             teamComponentDistributeFrom = loader.load();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
 
@@ -227,8 +227,6 @@ public class DistributeToController implements Initializable,DistributeToInterfa
     }
 
 
-    public boolean isTheSameEntityDisplayed(int teamId){
-        return this.teamToDisplay.getId()== teamId;
-    }
+
 
 }

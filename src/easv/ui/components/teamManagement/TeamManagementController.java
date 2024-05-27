@@ -26,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -51,12 +52,16 @@ public class TeamManagementController implements Initializable {
     private TeamInfoController teamInfoController;
     private TeamsPageController teamsPageController;
 
-    /** Holds controllers for components in order to track the  changes in them*/
+    /**
+     * Holds controllers for components in order to track the  changes in them
+     */
     private List<EmployeesToAdd> employeesToAddList;
     private List<TeamMembersController> teamMembersToAddList;
     private Service<Void> saveTeam;
 
-    /** Initializes the controller with the necessary dependencies and loads the FXML component, not depend on FXML components being loaded*/
+    /**
+     * Initializes the controller with the necessary dependencies and loads the FXML component, not depend on FXML components being loaded
+     */
     public TeamManagementController(Team team, IModel model, StackPane firstLayout, TeamInfoController teamInfoController, EmployeesToAdd employeesToAdd, TeamsPageController teamsPageController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TeamManagementComponent.fxml"));
         loader.setController(this);
@@ -78,7 +83,10 @@ public class TeamManagementController implements Initializable {
     public GridPane getRoot() {
         return teamManagementComponent;
     }
-    /** Handles the setup that requires the FXML components to be loaded*/
+
+    /**
+     * Handles the setup that requires the FXML components to be loaded
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         displayTeamMembers();
@@ -88,7 +96,9 @@ public class TeamManagementController implements Initializable {
         Platform.runLater(this::editAction);
     }
 
-    /** Displays only team members for selected team and adds created controller to the list*/
+    /**
+     * Displays only team members for selected team and adds created controller to the list
+     */
     public void displayTeamMembers() {
         teamMembersToAddList.clear();
         teamMembersContainer.getChildren().clear();
@@ -99,7 +109,9 @@ public class TeamManagementController implements Initializable {
         }
     }
 
-    /** Displays all employees in the system  with their left util and adds created controller to the list*/
+    /**
+     * Displays all employees in the system  with their left util and adds created controller to the list
+     */
     public void displayAllEmployees() {
         employeesToAddList.clear();
         allEmployeesContainer.getChildren().clear();
@@ -111,7 +123,9 @@ public class TeamManagementController implements Initializable {
                 });
     }
 
-    /** When save edit button is clicked retrieves edited info from user and proceeds to call save method with needed parameters*/
+    /**
+     * When save edit button is clicked retrieves edited info from user and proceeds to call save method with needed parameters
+     */
 
     private void editAction() {
         saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
@@ -136,7 +150,7 @@ public class TeamManagementController implements Initializable {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        Thread.sleep(200);
+                        //  Thread.sleep(200);
                         model.performEditTeam(employees, employeesToDelete, editedTeam, originalTeam);
                         return null;
                     }
@@ -144,34 +158,54 @@ public class TeamManagementController implements Initializable {
             }
         };
         saveTeam.setOnSucceeded(event -> {
-            showOperationStatus("Operation Successful!", Duration.seconds(5));
+            PauseTransition closeTheSpinner = new PauseTransition(Duration.millis(500));
+            closeTheSpinner.setOnFinished((e) -> {
+                operationSpinner.setVisible(false);
+                spinnerLB.setText("Operation Succesfull");
+            });
+
+            PauseTransition pauseTransition = new PauseTransition(Duration.millis(1500));
+            pauseTransition.setOnFinished((e) -> {
+                WindowsManagement.closeStackPane(firstLayout);
+            });
             teamsPageController.clearTeams();
             teamsPageController.displayTeams();
             /* Refresh charts and graphs*/
             teamInfoController.populateCharts(editedTeam);
-            WindowsManagement.closeStackPane(firstLayout);
+            pauseTransition.playFromStart();
+            closeTheSpinner.playFromStart();
 
         });
         saveTeam.setOnFailed(event -> {
             showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
-            WindowsManagement.closeStackPane(firstLayout);
             operationSpinner.setVisible(false);
         });
         saveTeam.restart();
     }
-    /** Displays a status message for a specified duration */
+
+    /**
+     * Displays a status message for a specified duration
+     */
     private void showOperationStatus(String message, Duration duration) {
         spinnerLB.setText(message);
         PauseTransition delay = new PauseTransition(duration);
-        delay.setOnFinished(event -> spinnerLB.setText(""));
-        delay.play();
+        delay.setOnFinished(event -> {
+                    spinnerLB.setText("");
+                    WindowsManagement.closeStackPane(firstLayout);
+                }
+        );
+        delay.playFromStart();
     }
+
     private void enableSpinner() {
         spinnerLB.setText("Processing...");
         operationSpinner.setVisible(true);
         operationSpinner.setDisable(false);
     }
-    /** Creates a new Team (editedTeam) object using the copy constructor */
+
+    /**
+     * Creates a new Team (editedTeam) object using the copy constructor
+     */
     public Team getTeam() {
         String grossMarginString = grossMargin.getText();
         double grossMargin = 0.0; /* Default value if null or empty*/
@@ -190,7 +224,9 @@ public class TeamManagementController implements Initializable {
         return editedTeam;
     }
 
-    /** Retrieves a list of employees to be deleted from the team */
+    /**
+     * Retrieves a list of employees to be deleted from the team
+     */
     public List<Employee> returnEmployeesToDelete() {
         List<Employee> employeesToDeleteList = new ArrayList<Employee>();
         for (TeamMembersController teamMembersToAdd : teamMembersToAddList) {
@@ -202,9 +238,11 @@ public class TeamManagementController implements Initializable {
 
         return employeesToDeleteList;
     }
-    /** Retrieves a list of all employees to be included in the team, combining edited employees and team members
+
+    /**
+     * Retrieves a list of all employees to be included in the team, combining edited employees and team members
      * Uses two lists that hold created controllers in order to know what change has happened in each component created
-     * */
+     */
     public List<Employee> returnAllEmployees() {
         List<Employee> editedEmployeesList = new ArrayList<Employee>();
         for (EmployeesToAdd employeesToAdd : employeesToAddList) {
@@ -228,6 +266,7 @@ public class TeamManagementController implements Initializable {
 
 
     }
+
     public void populateTextFields() {
         if (team != null && team.getActiveConfiguration() != null) {
             double margin = team.getActiveConfiguration().getGrossMargin();
@@ -244,10 +283,11 @@ public class TeamManagementController implements Initializable {
     /**
      * closes manage popup
      */
-    private void addCloseButtonAction() { closeButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
-    {
-        WindowsManagement.closeStackPane(firstLayout);
-    });
+    private void addCloseButtonAction() {
+        closeButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
+        {
+            WindowsManagement.closeStackPane(firstLayout);
+        });
     }
 
 

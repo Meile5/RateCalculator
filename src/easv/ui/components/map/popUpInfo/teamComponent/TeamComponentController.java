@@ -1,6 +1,8 @@
 package easv.ui.components.map.popUpInfo.teamComponent;
 import easv.be.Employee;
 import easv.be.Team;
+import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -42,7 +44,7 @@ public class TeamComponentController  implements Initializable {
         try {
      loader.load();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
 

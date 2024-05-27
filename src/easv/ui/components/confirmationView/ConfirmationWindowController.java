@@ -7,9 +7,7 @@ import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -26,7 +24,7 @@ public class ConfirmationWindowController {
     private Label errorMessage;
     @FXML
     private VBox confirmationWindow;
-    private  StackPane firstLayout;
+    private StackPane firstLayout;
     private OperationHandler operationHandler;
     @FXML
     private MFXProgressSpinner progressSpinner;
@@ -35,7 +33,7 @@ public class ConfirmationWindowController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Confirmation.fxml"));
         loader.setController(this);
         this.firstLayout = firstLayout;
-        this.operationHandler=operationHandler;
+        this.operationHandler = operationHandler;
         try {
             confirmationWindow = loader.load();
 
@@ -43,18 +41,21 @@ public class ConfirmationWindowController {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
+
     public VBox getRoot() {
         return confirmationWindow;
     }
 
-    public void setErrorMessage(String message){
+    public void setErrorMessage(String message) {
         this.errorMessage.setText(message);
     }
+
     @FXML
     private void cancelOperation(ActionEvent event) {
         firstLayout.getChildren().clear();
         firstLayout.setDisable(true);
-        firstLayout.setVisible(false);;
+        firstLayout.setVisible(false);
+        ;
     }
 
     @FXML

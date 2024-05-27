@@ -6,6 +6,8 @@ import easv.be.Currency;
 import easv.be.Region;
 import easv.be.Team;
 import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
+import easv.exception.RateException;
 import easv.ui.components.common.errorWindow.ErrorWindowController;
 import easv.ui.pages.distribution.ControllerMediator;
 import easv.ui.pages.distribution.DistributionType;
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
 
 public class DistributeFromController implements Initializable, DistributionFromComponentInterface {
     @FXML
-    private final HBox teamComponent;
+    private HBox teamComponent;
     @FXML
     private Label teamRegions;
     @FXML
@@ -40,10 +42,10 @@ public class DistributeFromController implements Initializable, DistributionFrom
     private Label dayRate, dayCurrency, hourlyRate, hourlyCurrency;
     private IModel model;
     private Team teamToDisplay;
-    private ControllerMediator controllerMediator;
-    private DistributionType distributionType;
+    private  ControllerMediator controllerMediator;
+    private  DistributionType distributionType;
     private static final String EMPTY_VALUE = "";
-    private StackPane modalLayout;
+    private  StackPane modalLayout;
 
     public DistributeFromController(IModel model, Team teamToDisplay, ControllerMediator distributionControllerMediator, DistributionType distributionType, StackPane modalLayout) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DistributeFromTeamInfo.fxml"));
@@ -56,7 +58,7 @@ public class DistributeFromController implements Initializable, DistributionFrom
         try {
             teamComponent = loader.load();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
 
@@ -68,7 +70,6 @@ public class DistributeFromController implements Initializable, DistributionFrom
     }
 
 
-    //TODO add the  team day rate and hourly rate  when is finished
 
     /**
      * pupulate the component with the team values
@@ -207,14 +208,13 @@ public class DistributeFromController implements Initializable, DistributionFrom
         this.hourlyRate.setText(value);
     }
 
-    //display the original value if no distribute to teams are selceted
+    //display the original value if no distribute to teams are selected
     public void setBackToOriginal(){
         this.dayRate.setText(teamToDisplay.getActiveConfiguration().getTeamDayRate()+"");
         this.hourlyRate.setText(teamToDisplay.getActiveConfiguration().getTeamHourlyRate()+"");
     }
 
-    public boolean isTheSameEntityDisplayed(int teamId) {
-        return this.teamToDisplay.getId() == teamId;
-    }
+
+
 
 }
