@@ -732,7 +732,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
             }
         }
-            setOldConfigurationToInactiveTeams(oldTeamConfigurationID, conn);
+            teamDao.setOldConfigurationToInactiveTeams(oldTeamConfigurationID, conn);
             addTeamToConfiguration(team, configurationID, conn);
             addEmployeeHistory(team, configurationID, employeeDayRate, employeeHourlyRate, conn);
             conn.commit();
