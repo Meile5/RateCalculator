@@ -59,4 +59,31 @@
 
 }
 
+.list-view {
+    -fx-border-color: transparent;
+}
+
+.list-view:focused {
+    -fx-border-color: #2ba746;
+}
+
+.list-cell:selected {
+    -fx-background-color: #2ba746;
+    -fx-text-fill: white;
+}
+
+.list-cell:selected:focused {
+    -fx-background-color: #2ba746;
+}
+
+.tooltip {
+    -fx-background-color: #63b2e1; /* Blue background color */
+    -fx-text-fill: white; /* Text color */
+    -fx-font-size: 14px; /* Font size */
+    -fx-font-weight: bold; /* Font weight */
+    -fx-padding: 5px 10px; /* Padding */
+    -fx-background-radius: 5px; /* Rounded corners */
+    -fx-border-radius: 6px; /* Rounded corners */
+}
+
 

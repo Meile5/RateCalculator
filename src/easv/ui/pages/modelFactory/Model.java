@@ -241,15 +241,16 @@ public class Model implements IModel {
         }
     }
 
-//TODO to check where the  employee lose the team utilization , at creation, update the team day rate and hourlly rate also
     @Override
     public void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException {
         employee = employeeManager.addEmployee(employee, configuration, teams);
-        System.out.println(employee.getUtilPerTeams());
         if (employee != null) {
             employees.put(employee.getId(), employee);
+
             for (Team team : teams) {
-                employee.getUtilPerTeams().put(team.getId(),team.getUtilizationPercentage());
+                if(team.getTeamMembers() == null){
+                    team.setTeamMembers(new ArrayList<>());
+                }
                 team.addNewTeamMember(employee);
                 TeamConfiguration teamConfiguration = getNewEmployeeTeamConfiguration(team);
                 Map<Integer, BigDecimal> employeesDayRates = new HashMap<>();
@@ -263,13 +264,17 @@ public class Model implements IModel {
                 addTeamConfiguration(teamConfiguration, team, employeesDayRates, employeesHourlyRates);
                 teamsWithEmployees.get(team.getId()).addNewTeamMember(employee);
             }
-
         }
     }
 
     @Override
     public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException {
-        int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team, employeeDayRate, employeeHourlyRate);
+        int oldTeamConfigurationID = 0;
+        if(team != null)
+            if(team.getActiveConfiguration() != null)
+                oldTeamConfigurationID = team.getActiveConfiguration().getId();
+
+        int teamConfigurationID = employeeManager.addTeamConfiguration(teamConfiguration, team, employeeDayRate, employeeHourlyRate, oldTeamConfigurationID);
         if (teamConfiguration != null) {
             teamConfiguration.setId(teamConfigurationID);
             teamsWithEmployees.get(team.getId()).setActiveConfiguration(teamConfiguration);

@@ -709,7 +709,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
     @Override
-    public Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException {
+    public Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, int oldTeamConfigurationID) throws SQLException, RateException {
         Integer configurationID = null;
         Connection conn = null;
         try {
@@ -732,6 +732,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
             }
         }
+            teamDao.setOldConfigurationToInactiveTeams(oldTeamConfigurationID, conn);
             addTeamToConfiguration(team, configurationID, conn);
             addEmployeeHistory(team, configurationID, employeeDayRate, employeeHourlyRate, conn);
             conn.commit();

@@ -54,18 +54,21 @@ public class CountryLogic implements ICountryLogic {
         return country;
     }
 
+    // TODO: Check on the list to remove, if the id is the same and the name or currency is different
+    // TODO: Then don't place on the list to remove but on the list to update.
     @Override
     public Country updateCountry(Country country, List<Team> currentTeams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException {
         List<Team> teamsBeforeUpdate = country.getTeams();
 
         Set<Team> existingSet = new HashSet<>(teamsBeforeUpdate);
-        Set<Team> newSet = new HashSet<>(currentTeams);
+        Set<Team> currentTeamsSet = new HashSet<>(currentTeams);
 
-        Set<Team> addedTeams = new HashSet<>(newSet);
+        Set<Team> addedTeams = new HashSet<>(currentTeamsSet);
         addedTeams.removeAll(existingSet);
 
         Set<Team> removedTeams = new HashSet<>(existingSet);
-        removedTeams.removeAll(newSet);
+        removedTeams.removeAll(currentTeamsSet);
+        removedTeams.removeIf(team -> teamsToUpdate.stream().anyMatch(updatedTeam -> updatedTeam.getId() == team.getId()));
 
         countryDao.updateCountry(country, addedTeams.stream().toList(), removedTeams.stream().toList(), newTeams, teamsToUpdate);
         country.setTeams(currentTeams);
@@ -85,7 +88,6 @@ public class CountryLogic implements ICountryLogic {
                 newTeams.add(team);
             }
         }
-        System.out.println("new teams" + newTeams);
         return newTeams;
     }
 
@@ -100,7 +102,6 @@ public class CountryLogic implements ICountryLogic {
                 }
             }
         }
-        System.out.println("existing teams" + existingTeams);
         return existingTeams;
     }
 
@@ -111,15 +112,12 @@ public class CountryLogic implements ICountryLogic {
             if (team != null) {
                 if (teams.containsKey(team.getId())) {
                     Team existingTeam = teams.get(team.getId());
-                    System.out.println("existing team" + existingTeam);
-                    System.out.println("updated team" + team);
                     if (!existingTeam.getTeamName().equals(team.getTeamName())) {
                         updatedTeams.add(team);
                     }
                 }
             }
         }
-        System.out.println("to Update teams" + updatedTeams);
         return updatedTeams;
     }
 
