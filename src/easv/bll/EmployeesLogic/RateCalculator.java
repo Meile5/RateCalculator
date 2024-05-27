@@ -18,7 +18,7 @@ public class RateCalculator implements IRateCalculator {
      *                 if no values are present for the employee returns BigDecimal.ZERO
      */
 
-    //TODO modify to take the employee working hours
+
     public BigDecimal calculateEmployeeTotalDayRate(Employee employee) {
         BigDecimal annualSalary = employee.getActiveConfiguration().getAnnualSalary();
         BigDecimal overheadMultiplier = employee.getActiveConfiguration().getOverheadMultiplier().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32).add(BigDecimal.ONE);
@@ -26,6 +26,7 @@ public class RateCalculator implements IRateCalculator {
         BigDecimal annualEffectiveWorkingHours = employee.getActiveConfiguration().getWorkingHours();
         BigDecimal utilizationPercentage = employee.getActiveConfiguration().getUtilizationPercentage().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
         BigDecimal dayRate = BigDecimal.ZERO;
+
         if(employee.getActiveConfiguration() != null){
             HoursInDay = (long) employee.getActiveConfiguration().getDayWorkingHours();
         } else {
@@ -34,20 +35,11 @@ public class RateCalculator implements IRateCalculator {
 
         if (employee.getEmployeeType() == EmployeeType.Overhead) {
           dayRate = (((annualSalary.multiply(overheadMultiplier)).add(fixedAnnualAmount)).multiply(utilizationPercentage))
-            //calculate markup multiplier
-           // dayRate = calculateEmployeeOverheadMarkupMultiplier(employee.getActiveConfiguration().getMarkupMultiplier(), dayRate);
-
-            //calculate grossMargin multiplier
-           // dayRate = calculateEmployeeOverheadWithGrossMargin(employee.getActiveConfiguration().getGrossMargin(), dayRate)
                     .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(HoursInDay));
         } else {
             dayRate = ((annualSalary.multiply(overheadMultiplier)).add(fixedAnnualAmount)
                     .multiply(BigDecimal.ONE.subtract(utilizationPercentage)))
-            //add markup multiplier
-           // dayRate = calculateEmployeeOverheadMarkupMultiplier(employee.getActiveConfiguration().getMarkupMultiplier(), dayRate);
-            //calculate grossMargin multiplier
-          //  dayRate = calculateEmployeeOverheadWithGrossMargin(employee.getActiveConfiguration().getGrossMargin(), dayRate)
                     .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(HoursInDay));
         }
         return dayRate.setScale(2, RoundingMode.HALF_UP);
@@ -87,17 +79,6 @@ public class RateCalculator implements IRateCalculator {
                     .divide(annualEffectiveWorkingHours, 2, RoundingMode.HALF_UP);
         }
         return hourlyRate.setScale(2, RoundingMode.HALF_UP);
-    }
-
-
-
-
-    public BigDecimal calculateHourlyRate(Employee employee) {
-
-        BigDecimal hourlyRate = calculateEmployeeTotalDayRate(employee)
-                .divide(BigDecimal.valueOf(HoursInDay));
-
-        return hourlyRate;
     }
 
     /**
@@ -161,8 +142,7 @@ public class RateCalculator implements IRateCalculator {
             }
         }
         if(grossMargin > 0){
-            BigDecimal hourlyRateWithMargin = totalDayRate.divide(BigDecimal.valueOf(grossMargin/100), 2, RoundingMode.HALF_UP);
-            return hourlyRateWithMargin;
+            return totalDayRate.divide(BigDecimal.valueOf(grossMargin/100), 2, RoundingMode.HALF_UP);
         }
         return totalDayRate;
     }
@@ -186,8 +166,7 @@ public class RateCalculator implements IRateCalculator {
             }
         }
         if(grossMargin > 0){
-            BigDecimal hourlyRateWithMargin = totalHourlyRate.divide(BigDecimal.valueOf(grossMargin/100), 2, RoundingMode.HALF_UP);
-            return hourlyRateWithMargin;
+            return totalHourlyRate.divide(BigDecimal.valueOf(grossMargin/100), 2, RoundingMode.HALF_UP);
         }
         return totalHourlyRate;
     }
@@ -200,7 +179,6 @@ public class RateCalculator implements IRateCalculator {
             grossMargin = team.getGrossMarginTemporary();
         }
         for (Employee employee : team.getEmployees()) {
-            System.out.println(employee + "in calculator");
             BigDecimal dayRate = calculateEmployeeDayRateOnTeamE(employee, team);
             if (markupMultiplier > 0) {
                /* 1 represents the additional cost added to the base rate*/
@@ -211,8 +189,7 @@ public class RateCalculator implements IRateCalculator {
             }
         }
         if(grossMargin > 0){
-            BigDecimal hourlyRateWithMargin = totalDayRate.divide(BigDecimal.valueOf(1 - grossMargin/100), 2, RoundingMode.HALF_UP);
-            return hourlyRateWithMargin;
+            return totalDayRate.divide(BigDecimal.valueOf(1 - grossMargin/100), 2, RoundingMode.HALF_UP);
         }
         return totalDayRate;
     }
@@ -235,134 +212,9 @@ public class RateCalculator implements IRateCalculator {
             }
         }
         if(grossMargin > 0){
-            BigDecimal hourlyRateWithMargin = totalHourlyRate.divide(BigDecimal.valueOf(1 - grossMargin/100), 2, RoundingMode.HALF_UP);
-            return hourlyRateWithMargin;
+            return totalHourlyRate.divide(BigDecimal.valueOf(1 - grossMargin/100), 2, RoundingMode.HALF_UP);
         }
         return totalHourlyRate;
     }
 
-
-    /**
-     * calculate the overhead of the team by summing the employees  salary overhead
-     */
-    public BigDecimal calculateTeamSalaryOverhead(TeamWithEmployees team) {
-        return team.getTeamMembers().stream().map((e) -> {
-            if (e.getEmployeeType() == EmployeeType.Overhead) {
-                return calculateEmployeeOverHeadWithoutUtilizationPercentage(e);
-            } else {
-                return calculateEmployeeProductiveOverheadResource(e);
-            }
-        }).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-
-    /**
-     * calculate the team total overhead by summing the team member total overhead
-     */
-    public BigDecimal calculateTeamOverheadWithoutPercentage
-    (TeamWithEmployees team) {
-        return team.getTeamMembers().stream().map(this::calculateEmployeeOverHeadWithoutUtilizationPercentage).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    /**
-     * calculate the team (total overhead) productive overhead by  summing the  team members productive overhead
-     */
-    public BigDecimal calculateProductiveOverHead(TeamWithEmployees team) {
-        setEmployeesTotalOverhead(team);
-        return team.getTeamMembers().stream().map(Employee::getOverhead).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-
-    /**
-     * calculate the salary overhead for an employee by multiplying the annual salary to the overhead multiplier
-     */
-    private BigDecimal calculateEmployeeSalaryOverhead(Employee employee) {
-        Configuration config = employee.getActiveConfiguration();
-        BigDecimal overheadMultiplier = BigDecimal.ONE.add(config.getOverheadMultiplier().divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP));
-        return config.getAnnualSalary().multiply(overheadMultiplier);
-    }
-
-
-    /**
-     * calculate the  employee overhead by adding the employee annual fixed  amount to the salary overhead
-     */
-    private BigDecimal calculateEmployeeOverHeadWithoutUtilizationPercentage(Employee employee) {
-        Configuration configuration = employee.getActiveConfiguration();
-        BigDecimal salaryOverhead = calculateEmployeeSalaryOverhead(employee);
-        return salaryOverhead.add(configuration.getFixedAnnualAmount());
-    }
-
-    /**
-     * calculate the employee (total overhead) productive overhead by dividing the employee total overhead with the utilization percentage,
-     * if is an overhead
-     */
-    private BigDecimal calculateEmployeeProductiveOverhead(Employee employee) {
-        Configuration employeeConfig = employee.getActiveConfiguration();
-        BigDecimal totalOverHead = calculateEmployeeOverHeadWithoutUtilizationPercentage(employee);
-        BigDecimal utilizationPercentage = employeeConfig.getUtilizationPercentage().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
-        BigDecimal totalProductiveOverhead = totalOverHead.multiply(utilizationPercentage);
-        //calculate markup multiplier
-      //  totalProductiveOverhead = calculateEmployeeOverheadMarkupMultiplier(employeeConfig.getMarkupMultiplier(), totalProductiveOverhead);
-
-//calculate grossMargin multiplier
-      //  totalProductiveOverhead = calculateEmployeeOverheadWithGrossMargin(employeeConfig.getGrossMargin(), totalProductiveOverhead);
-
-        return totalProductiveOverhead;
-    }
-
-
-    /**
-     * calculate total overhead for each employee
-     */
-    private void setEmployeesTotalOverhead(TeamWithEmployees team) {
-        for (Employee teamMember : team.getTeamMembers()) {
-            if (teamMember.getEmployeeType() == EmployeeType.Overhead) {
-                teamMember.setOverhead(calculateEmployeeProductiveOverhead(teamMember));
-            } else {
-                teamMember.setOverhead(calculateEmployeeProductiveOverheadResource(teamMember));
-            }
-        }
-    }
-
-    /**
-     * Calculate overhead if is a resource
-     */
-    private BigDecimal calculateEmployeeProductiveOverheadResource(Employee employee) {
-        Configuration employeeConfig = employee.getActiveConfiguration();
-        BigDecimal totalOverHead = calculateEmployeeOverHeadWithoutUtilizationPercentage(employee);
-        BigDecimal utilizationPercentage = employeeConfig.getUtilizationPercentage().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
-        BigDecimal totalProductiveOverhead = new BigDecimal(String.valueOf(totalOverHead.multiply(BigDecimal.ONE.subtract(utilizationPercentage))));
-        //calculate markup multiplier
-     //   totalProductiveOverhead = calculateEmployeeOverheadMarkupMultiplier(employeeConfig.getMarkupMultiplier(), totalProductiveOverhead);
-
-//calculate grossMargin multiplier
-     //   totalProductiveOverhead = calculateEmployeeOverheadWithGrossMargin(employeeConfig.getGrossMargin(), totalProductiveOverhead);
-
-        return totalProductiveOverhead;
-    }
-
-
-    /**
-     * calculate the employee Overhead based on the additional markupMultiplier , if is present
-     *
-     * @param markup        the markup multiplier to be applied for the employee
-     * @param totalOverhead the overhead  to apply markup
-     */
-
-    public BigDecimal calculateEmployeeOverheadMarkupMultiplier(double markup, BigDecimal totalOverhead) {
-        BigDecimal markupMultiplier = BigDecimal.valueOf(1 + (markup / 100));
-        return totalOverhead.multiply(markupMultiplier);
-    }
-
-
-    /**
-     * calculate the employee overhead based on the additional GrossMargin
-     */
-    private BigDecimal calculateEmployeeOverheadWithGrossMargin(double grossMarginPercentage, BigDecimal totalOverhead) {
-        if (grossMarginPercentage == 0) {
-            return totalOverhead;
-        }
-        BigDecimal marginMultiplier = BigDecimal.valueOf(1 - (grossMarginPercentage / 100));
-        return totalOverhead.divide(marginMultiplier, MathContext.DECIMAL32);
-    }
 }

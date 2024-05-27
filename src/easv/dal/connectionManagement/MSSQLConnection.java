@@ -7,16 +7,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class MSSQLConnection implements IConnection {
-    private final int  CONN_POOL_SIZE  = 2;
     private final long establishConnectionTime = 5000;
     private final SQLServerDataSource ds;
     private String user;
     private String password;
-   // private ConnectionPool connectionPool;
+
 
     /**Manages the Microsoft SQL server connection, by encapsulating an connectionPool ,
      *that will create new connections or retrieve an existing one from the pool */
-    public MSSQLConnection() throws RateException {
+    public MSSQLConnection() {
         ds = new SQLServerDataSource();
         this.getCredentials();
         ds.setDatabaseName("CSe2023b_e_20_Code_Crafters");
@@ -24,14 +23,9 @@ public class MSSQLConnection implements IConnection {
         ds.setPassword(password);
         ds.setServerName("EASV-DB4");
         ds.setTrustServerCertificate(true);
-      //  this.connectionPool = new ConnectionPool(ds, CONN_POOL_SIZE);
+
 
     }
-
-   // @Override
-   // public void releaseConnection(Connection connection) {
-  // connectionPool.releaseConnection(connection);
-   // }
 
     public Connection getConnection() {
         Connection conn = null;

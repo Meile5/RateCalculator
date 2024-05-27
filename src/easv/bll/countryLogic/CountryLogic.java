@@ -20,10 +20,6 @@ public class CountryLogic implements ICountryLogic {
         this.countryDao = new CountryDao();
     }
 
-    @Override
-    public Map<String, Country> getCountries() throws RateException {
-        return countryDao.getCountries();
-    }
 
 
     /**extract the countries to be used for the  map view component*/
@@ -54,8 +50,6 @@ public class CountryLogic implements ICountryLogic {
         return country;
     }
 
-    // TODO: Check on the list to remove, if the id is the same and the name or currency is different
-    // TODO: Then don't place on the list to remove but on the list to update.
     @Override
     public Country updateCountry(Country country, List<Team> currentTeams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException {
         List<Team> teamsBeforeUpdate = country.getTeams();

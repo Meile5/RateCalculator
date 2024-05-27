@@ -32,16 +32,16 @@ public class TeamLogic implements ITeamLogic {
      * @param team the team to calculate for
      *             returns a List that contains salaryOverhead,totalOverhead,productiveOverhead
      */
-    private Map<TeamWithEmployees.TeamOverheadType, BigDecimal> calculateTeamOverhead(TeamWithEmployees team) {
-        Map<TeamWithEmployees.TeamOverheadType, BigDecimal> teamOverhead = new HashMap<>();
-        BigDecimal salaryOverhead = rateCalculator.calculateTeamSalaryOverhead(team);
-        BigDecimal expensesOverhead = rateCalculator.calculateTeamOverheadWithoutPercentage(team);
-        BigDecimal productiveOverhead = rateCalculator.calculateProductiveOverHead(team);
-        teamOverhead.put(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD, salaryOverhead);
-        teamOverhead.put(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD, expensesOverhead);
-        teamOverhead.put(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD, productiveOverhead);
-        return teamOverhead;
-    }
+//    private Map<TeamWithEmployees.TeamOverheadType, BigDecimal> calculateTeamOverhead(TeamWithEmployees team) {
+//        Map<TeamWithEmployees.TeamOverheadType, BigDecimal> teamOverhead = new HashMap<>();
+//        BigDecimal salaryOverhead = rateCalculator.calculateTeamSalaryOverhead(team);
+//        BigDecimal expensesOverhead = rateCalculator.calculateTeamOverheadWithoutPercentage(team);
+//        BigDecimal productiveOverhead = rateCalculator.calculateProductiveOverHead(team);
+//        teamOverhead.put(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD, salaryOverhead);
+//        teamOverhead.put(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD, expensesOverhead);
+//        teamOverhead.put(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD, productiveOverhead);
+//        return teamOverhead;
+//    }
 
     private List<Map<String, Double>> calculateTeamPercentage(TeamWithEmployees team) {
         List<Map<String, Double>> teamPercentagePerEmployee = team.getTeamMembers().stream().map(e -> employeePercentage(e, team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD))).toList();
@@ -62,9 +62,7 @@ public class TeamLogic implements ITeamLogic {
         return emplPercentage;
     }
 
-    public Map<Integer, Team> getTeams() throws RateException {
-        return teamDao.getTeams();
-    }
+
 
 
     /**DISTRIBUTION  OPERATION LOGIC */

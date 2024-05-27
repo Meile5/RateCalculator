@@ -175,6 +175,7 @@ public class CreateController implements Initializable {
         });
 
         saveEmployee.setOnFailed(event -> {
+            saveEmployee.getException().printStackTrace();
                 showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
                 WindowsManagement.closeStackPane(firstLayout);
                 closeWindowSpinner(firstLayout);

@@ -134,7 +134,7 @@ public class Model implements IModel {
         countriesWithTeams = FXCollections.observableHashMap();
         regionsWithCountries = FXCollections.observableHashMap();
    //     populateCountries();
-        populateTeams();
+
         populateTeamsWithEmployees();
         populateCountriesWithTeams();
         populateRegionsWithCountries();
@@ -418,10 +418,6 @@ public class Model implements IModel {
     }
 
 
-    //Todo if possible use the getOperationalTeams () method
-    private void populateTeams() throws RateException {
-        this.teams.putAll(teamManager.getTeams());
-    }
 
     public ObservableMap<Integer, Team> getTeams() {
         return teams;

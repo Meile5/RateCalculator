@@ -18,8 +18,8 @@ public class TeamConfiguration {
     private boolean active;
 
 
-    //TeamConfiguration copy constructor
 
+    /**  TeamConfiguration copy constructor */
     public TeamConfiguration (TeamConfiguration teamConfiguration){
         if(teamConfiguration!=null){
             this.id= teamConfiguration.getId();

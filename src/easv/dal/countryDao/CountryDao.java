@@ -20,25 +20,6 @@ public class CountryDao implements ICountryDao {
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }
 
-    @Override
-    public Map<String, Country> getCountries() throws RateException {
-        String sql = "SELECT  * FROM Countries";
-        Map<String, Country> countries = new HashMap<>();
-        try(Connection conn = connectionManager.getConnection()) {
-            try (PreparedStatement psmt = conn.prepareStatement(sql)) {
-                ResultSet rs = psmt.executeQuery();
-                while (rs.next()) {
-                    int id = rs.getInt("CountryId");
-                    String name = rs.getString("CountryName");
-                    Country country = new Country(name, id);
-                    countries.put(country.getCountryName(), country);
-                }
-            }
-        } catch (SQLException | RateException e) {
-            throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
-        }
-        return countries;
-    }
 
     @Override
     public Integer addCountry(Country country, List<Team> teams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException {

@@ -1,5 +1,4 @@
 package easv.bll.EmployeesLogic;
-
 import easv.be.*;
 import easv.dal.employeeDao.EmployeesDAO;
 import easv.dal.employeeDao.IEmployeeDAO;
@@ -8,7 +7,6 @@ import easv.exception.RateException;
 import javafx.collections.ObservableMap;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,7 +47,6 @@ public class EmployeeManager implements IEmployeeManager {
             Map<Integer, BigDecimal> employeeTeamUtilization = new HashMap<>(employeeDAO.getEmployeeUtilizationPerTeams(employee.getId()));
             employee.setUtilPerTeams(employeeTeamUtilization);
         } catch (RateException e) {
-            e.printStackTrace();
             throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
         }
 
@@ -161,24 +158,6 @@ public class EmployeeManager implements IEmployeeManager {
     public BigDecimal getEmployeeHourlyRateOnTeam(Employee employee, Team team) {
         return rateCalculator.calculateEmployeeHourlyRateOnTeam(employee, team);
     }
-
-    public BigDecimal getEmployeeHourlyRateOnTeamE(Employee employee, Team team) {
-        return rateCalculator.calculateEmployeeHourlyRateOnTeamE(employee, team);
-    }
-
-    public BigDecimal getEmployeeDayRateOnTeamE(Employee employee, Team team) {
-        return rateCalculator.calculateEmployeeDayRateOnTeamE(employee, team);
-    }
-
-    public BigDecimal calculateTeamHourlyRateE(Team team) {
-        return rateCalculator.calculateTeamHourlyRateE(team);
-    }
-
-    public BigDecimal calculateTeamDayRateE(Team team) {
-        return rateCalculator.calculateTeamDailyRateE(team);
-    }
-
-
 
 
     /**
@@ -335,10 +314,6 @@ public class EmployeeManager implements IEmployeeManager {
             team.getTeamConfigurationsHistory().add(team.getActiveConfiguration());
         }
 
-
-        editedEmployee.getTeams().forEach(e -> {
-            System.out.println(e.getActiveConfiguration().getTeamDayRate() + " form the edit ");
-        });
         return employeeDAO.saveEditOperation(editedEmployee, originalEmployee.getActiveConfiguration().getConfigurationId());
     }
 
@@ -450,7 +425,7 @@ public class EmployeeManager implements IEmployeeManager {
     }
 
     @Override
-    public Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, int oldTeamConfigurationID) throws SQLException, RateException {
+    public Integer addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, int oldTeamConfigurationID) throws   RateException {
         return employeeDAO.addNewTeamConfiguration(teamConfiguration, team, employeeDayRate, employeeHourlyRate, oldTeamConfigurationID);
     }
 

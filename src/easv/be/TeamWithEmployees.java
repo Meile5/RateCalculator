@@ -3,6 +3,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+
+//TODO delete after the methods are deleted
+
 public class TeamWithEmployees {
 
     private String teamName;
