@@ -26,7 +26,7 @@
 .component {
     -fx-background-color: #ffffff; /* Button color */
     -fx-background-radius: 17px;
-    -fx-padding: 10px 20px;
+    /*-fx-padding: 10px 20px;*/
     -fx-font-size: 14px;
     -fx-cursor: hand;
     -fx-border-color: transparent; /* No border initially */
