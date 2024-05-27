@@ -293,18 +293,22 @@ public class EditController implements Initializable {
         this.dayWorkingHoursInput.setText(NOT_AVAILABLE);
     }
 
+
+    //TODO bring the utilization for the employee
     /**
      * calculate utilizationPercentage for employee
      */
     private String calculateEmploueeUtilizatiion(Employee employee) {
         Map<Integer, BigDecimal> employeeUtilization = employee.getUtilPerTeams();
         BigDecimal utilization = BigDecimal.ZERO;
-        if (employeeUtilization != null && (!employeeUtilization.isEmpty())) {
+        if (employeeUtilization != null) {
             for (BigDecimal util : employeeUtilization.values()) {
                 utilization = utilization.add(util);
-
+                System.out.println(util+ "from edit");
             }
             return utilization.toString();
+        }else{
+            System.out.println("is null");
         }
         return EMPTY;
     }

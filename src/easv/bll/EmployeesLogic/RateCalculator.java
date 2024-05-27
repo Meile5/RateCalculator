@@ -50,12 +50,14 @@ public class RateCalculator implements IRateCalculator {
 
     /** calculate employee day rate without the utilization percentage */
     public BigDecimal calculateEmployeeDayRateWithoutUtilization(Employee employee) {
-        BigDecimal dayEmployeeConfigHours = employee.getActiveConfiguration().getWorkingHours() != null
-                ? BigDecimal.valueOf(employee.getActiveConfiguration().getDayWorkingHours())
-                : BigDecimal.valueOf(HoursInDay);
+        if(employee.getActiveConfiguration() != null){
+            HoursInDay = (long) employee.getActiveConfiguration().getDayWorkingHours();
+        } else {
+            HoursInDay = 8;
+        }
 
         BigDecimal hourlyRate = calculateEmployeeHourlyRateWithoutUtilization(employee);
-        BigDecimal dayRate = hourlyRate.multiply(dayEmployeeConfigHours);
+        BigDecimal dayRate = hourlyRate.multiply(BigDecimal.valueOf(HoursInDay));
 
         return dayRate.setScale(2, RoundingMode.HALF_UP);
     }
@@ -90,6 +92,11 @@ public class RateCalculator implements IRateCalculator {
      */
     public BigDecimal calculateEmployeeTotalHourlyRate(Employee employee, double configurableHours) {
         BigDecimal hourlyRate = BigDecimal.ZERO;
+        if(employee.getActiveConfiguration() != null){
+            HoursInDay = (long) employee.getActiveConfiguration().getDayWorkingHours();
+        } else {
+            HoursInDay = 8;
+        }
         if (configurableHours == 0) {
             hourlyRate = calculateEmployeeTotalDayRate(employee)
                     .divide(BigDecimal.valueOf(HoursInDay), RoundingMode.HALF_UP);
@@ -101,6 +108,11 @@ public class RateCalculator implements IRateCalculator {
     }
 
     public BigDecimal calculateEmployeeDayRateOnTeam(Employee employee, Team team){
+        if(employee.getActiveConfiguration() != null){
+            HoursInDay = (long) employee.getActiveConfiguration().getDayWorkingHours();
+        } else {
+            HoursInDay = 8;
+        }
         BigDecimal hourlyRate = calculateEmployeeHourlyRateOnTeam(employee, team);
         return hourlyRate.multiply(BigDecimal.valueOf(HoursInDay)).setScale(2, RoundingMode.HALF_UP);
     }
@@ -119,8 +131,12 @@ public class RateCalculator implements IRateCalculator {
     }
 
     public BigDecimal calculateEmployeeDayRateOnTeamE(Employee employee, Team team){
+        if(employee.getActiveConfiguration() != null){
+            HoursInDay = (long) employee.getActiveConfiguration().getDayWorkingHours();
+        } else {
+            HoursInDay = 8;
+        }
         BigDecimal hourlyRate = calculateEmployeeHourlyRateOnTeamE(employee, team);
-
         return hourlyRate.multiply(BigDecimal.valueOf(HoursInDay)).setScale(2, RoundingMode.HALF_UP);
     }
 

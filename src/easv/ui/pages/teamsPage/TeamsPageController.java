@@ -1,20 +1,16 @@
 package easv.ui.pages.teamsPage;
 
-import easv.Utility.WindowsManagement;
+
 import easv.be.Team;
 import easv.be.TeamConfiguration;
 import easv.be.TeamConfigurationEmployee;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
-import easv.ui.components.distributionPage.distributeFromTeamInfo.DistributeFromController;
 import easv.ui.components.searchComponent.DataHandler;
 import easv.ui.components.searchComponent.SearchController;
 import easv.ui.components.teamsInfoComponent.TeamInfoController;
-import easv.ui.pages.distribution.DistributionType;
 import easv.ui.pages.modelFactory.IModel;
-import easv.ui.pages.modelFactory.ModelFactory;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,7 +25,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;

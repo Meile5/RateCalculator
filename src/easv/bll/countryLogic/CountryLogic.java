@@ -116,7 +116,7 @@ public class CountryLogic implements ICountryLogic {
     }
 
     @Override
-    public boolean addNewTeam(Country country, Team team) throws SQLException, RateException {
+    public boolean addNewTeam(Country country, Team team) throws RateException {
         List<Team> teams = new ArrayList<>();
         teams.add(team);
         List<Integer> teamsIds = countryDao.addTeams(teams, null);

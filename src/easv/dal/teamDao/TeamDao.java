@@ -1,7 +1,6 @@
 package easv.dal.teamDao;
 
 import easv.be.*;
-import easv.be.Currency;
 import easv.dal.connectionManagement.DatabaseConnectionFactory;
 import easv.dal.connectionManagement.IConnection;
 import easv.dal.regionDao.IRegionDAO;
@@ -84,9 +83,6 @@ public class TeamDao implements ITeamDao {
         }
         return true;
     }
-
-
-
 
 
     /**
@@ -273,9 +269,7 @@ public class TeamDao implements ITeamDao {
         }
     }
 
-    /**
-     * Saves the edited team information and performs necessary database operations such as updating team configurations and employee associations
-     */
+    /** Saves the edited team information and performs necessary database operations such as updating team configurations and employee associations */
     @Override
     public Team saveEditOperationTeam(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException {
         Connection conn = null;
@@ -307,16 +301,13 @@ public class TeamDao implements ITeamDao {
                     conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException e) {
-                    LOGGER.log(Level.SEVERE, "Failed to close the database connection", e);
+                    //LOGGER.log(Level.SEVERE, "Failed to close the database connection", e);
                 }
             }
         }
         return null;
     }
-
-    /**
-     * Sets the old configuration of a team to inactive in the database
-     */
+    /** Sets the old configuration of a team to inactive in the database */
     public void setOldConfigurationToInactiveTeams(int configurationId, Connection conn) throws RateException {
         String sql = "UPDATE  TeamConfiguration  Set Active =? where TeamConfigurationID=?";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
@@ -327,25 +318,19 @@ public class TeamDao implements ITeamDao {
             throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
         }
     }
-
-    /**
-     * Deletes the connections between the team and specified employees in the database
-     */
+    /** Deletes the connections between the team and specified employees in the database */
     public void deleteTeamEmployeeConnections(Connection conn, List<Employee> employeesToDelete, int teamID) throws SQLException {
         String sql = "DELETE FROM TeamEmployee WHERE EmployeeID = ? AND TeamID = ?";
         System.out.println(employeesToDelete + "dao");
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             for (Employee employee : employeesToDelete) {
                 psmt.setInt(1, employee.getId());
-                psmt.setInt(2, teamID);
+                psmt.setInt(2,teamID);
                 psmt.executeUpdate();
             }
         }
     }
-
-    /**
-     * Adds employees to the team in the database
-     */
+    /** Adds employees to the team in the database */
     public void addEmployeesToTeam(List<Employee> employees, int teamId, Connection conn) throws RateException, SQLException {
         String checkSql = "SELECT COUNT(*) FROM TeamEmployee WHERE TeamID = ? AND EmployeeID = ?";
         String insertSql = "INSERT INTO TeamEmployee (TeamID, EmployeeID, UtilizationPercentage) VALUES (?, ?, ?)";
@@ -374,10 +359,7 @@ public class TeamDao implements ITeamDao {
             insertPsmt.executeBatch();
         }
     }
-
-    /**
-     * Adds employees history in the team in the database
-     */
+    /** Adds employees history in the team in the database */
     private void addEmployeeHistoryTeams(int teamConfigurationID, List<Employee> employees, Connection conn) throws RateException {
         String sql = "INSERT INTO TeamEmployeesHistory (EmployeeName, EmployeeDailyRate, EmployeeHourlyRate, TeamConfigurationId, Currency) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
@@ -391,13 +373,9 @@ public class TeamDao implements ITeamDao {
             }
             psmt.executeBatch();
         } catch (SQLException e) {
-            throw new RateException(ErrorCode.OPERATION_DB_FAILED);
-        }
+            throw new RateException(ErrorCode.OPERATION_DB_FAILED);        }
     }
-
-    /**
-     * Adds new team configuration in the database
-     */
+    /** Adds new team configuration in the database */
     public Integer addTeamConfigurationT(Team editedTeam, Connection conn) throws SQLException, RateException {
         String sql = "INSERT INTO TeamConfiguration (TeamDailyRate, TeamHourlyRate, GrossMargin, MarkupMultiplier, ConfigurationDate, Active) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -411,7 +389,7 @@ public class TeamDao implements ITeamDao {
             psmt.setDouble(3, teamConfiguration.getGrossMargin());
             psmt.setDouble(4, teamConfiguration.getMarkupMultiplier());
             psmt.setTimestamp(5, Timestamp.valueOf(teamConfiguration.getSavedDate()));
-            psmt.setString(6, "true");
+            psmt.setString(6,"true");
             psmt.executeUpdate();
 
             try (ResultSet res = psmt.getGeneratedKeys()) {
@@ -426,10 +404,7 @@ public class TeamDao implements ITeamDao {
         }
         return configurationID;
     }
-
-    /**
-     * Connect team with configuration in the database
-     */
+    /** Connect team with configuration in the database */
 
 
     private void addTeamToConfiguration(Team team, int teamConfigurationID, Connection conn) {
@@ -442,6 +417,5 @@ public class TeamDao implements ITeamDao {
             throw new RuntimeException(e);
         }
     }
-
 
 }

@@ -177,6 +177,7 @@ public class TeamManagementController implements Initializable {
 
         });
         saveTeam.setOnFailed(event -> {
+            saveTeam.getException().printStackTrace();
             showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
             operationSpinner.setVisible(false);
         });

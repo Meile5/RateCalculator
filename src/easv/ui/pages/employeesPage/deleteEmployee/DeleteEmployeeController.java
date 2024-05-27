@@ -4,18 +4,14 @@ import easv.Utility.WindowsManagement;
 import easv.be.Employee;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
-import easv.exception.RateException;
 import easv.ui.components.confirmationView.ConfirmationWindowController;
 import easv.ui.components.confirmationView.OperationHandler;
-import easv.ui.pages.employeesPage.employeeInfo.EmployeeInfoController;
 import easv.ui.pages.modelFactory.IModel;
-import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -108,7 +104,6 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
         deleteEmployee.setOnSucceeded(event -> WindowsManagement.closeStackPane(firstLayout));
 
         deleteEmployee.setOnFailed(event -> {
-            deleteEmployee.getException().printStackTrace();
             confirmationWindowController.setErrorMessage(ErrorCode.DELETING_EMPLOYEES_FAILED.getValue());
         });
 

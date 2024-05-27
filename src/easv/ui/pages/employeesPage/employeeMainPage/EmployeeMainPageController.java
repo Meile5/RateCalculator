@@ -37,7 +37,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-//TODO  redo the calculations when the filter and the undo buttons are active,
 
 public class EmployeeMainPageController implements Initializable, DisplayEmployees {
     @FXML
@@ -130,12 +129,9 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             employeeSearchHandler = new EmployeeSearchHandler(model);
             employeeSearch = new SearchController<>(employeeSearchHandler);
             employeeSearchContainer.add(employeeSearch.getSearchRoot(), 0, 0);
-            //loadSearchSVG();
+
             initializeEmployeeLoadingService();
-            // createPopUpWindow();
-            //searchFieldListener();
-            // addSelectionListener();
-            //
+
             /*populate the filter combo boxes  with the associated values*/
             populateFilterComboBox();
             /*add listener for the region to change the countries filter combo box  values  */
@@ -151,22 +147,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             revertCountryFilter(countryRevertButton, countryRevertSvg);
             revertTeamFilter(teamRevertButton,teamRevertSvg);
 
-
-            // filterByCountryListener();
-            //filterByTeamListener();
-
             /*change the style for the revert button to have the same style like the filter inputs , when are on focus  */
             addFocusListener(countriesFilterCB, countryRevertButton);
             addFocusListener(teamsFilterCB, teamRevertButton);
 
             addFocusListener(regionsFilter, regionRevertButton);
 
-            /*undo the filter operation*/
-//
-//            revertCountryFilter(countryRevertButton, countryRevertSvg);
-//            revertTeamFilter(teamRevertButton, teamRevertSvg);
-
-            //setTotalRatesDefault();
         } catch (RateException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
@@ -220,7 +206,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     }
 
 
-    //rename this classes
+
     private void addFocusListener(MFXTextField filterInput, HBox sibling) {
         filterInput.focusWithinProperty().addListener((obs, wasFocused, isNowFocused) -> {
             if (isNowFocused) {
@@ -275,8 +261,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         });
     }
 
-
-    //TODO this method  trows an error that i can not solve, but is not affeccting the application , it is related to the javafx
 
 
     /**

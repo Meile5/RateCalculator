@@ -103,7 +103,7 @@ public class CountryDao implements ICountryDao {
     }
 
     @Override
-    public void addTeamToCountry(Integer countryID, List<Team> teams, Connection conn) throws SQLException {
+    public void addTeamToCountry(Integer countryID, List<Team> teams, Connection conn) throws RateException {
         String sql = "INSERT INTO CountryTeam (CountryID, TeamID) VALUES (?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             for (Team team : teams) {
@@ -112,11 +112,13 @@ public class CountryDao implements ICountryDao {
                 psmt.executeUpdate();
             }
             psmt.executeBatch();
+        } catch (SQLException e) {
+            throw new RateException(e.getMessage(),e,ErrorCode.OPERATION_DB_FAILED);
         }
     }
 
     @Override
-    public List<Integer> addTeams(List<Team> teams, Connection conn) throws RateException, SQLException {
+    public List<Integer> addTeams(List<Team> teams, Connection conn) throws RateException {
         if (conn == null) {
             conn = connectionManager.getConnection();
         }
@@ -138,6 +140,8 @@ public class CountryDao implements ICountryDao {
                 }
             }
             psmt.executeBatch();
+        } catch (SQLException e) {
+            throw new RateException(e.getMessage(),e,ErrorCode.OPERATION_DB_FAILED);
         }
         return teamIds;
     }

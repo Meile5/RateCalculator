@@ -1,6 +1,8 @@
 package easv.ui.pages.homePage;
 
 import easv.be.Navigation;
+import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
 import easv.ui.components.common.PageManager;
 import easv.ui.components.homePage.callBackFactory.CallBackFactory;
 import easv.ui.components.homePage.navigation.HomePageNavigationController;
@@ -45,7 +47,7 @@ public class HomePageController implements Initializable, PageManager {
             root = loader.load();
             observer =CallBackFactory.getObserver();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }
