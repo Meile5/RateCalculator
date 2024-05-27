@@ -1,4 +1,5 @@
 package easv.bll.EmployeesLogic;
+
 import easv.be.*;
 import easv.dal.employeeDao.EmployeesDAO;
 import easv.dal.employeeDao.IEmployeeDAO;
@@ -35,7 +36,7 @@ public class EmployeeManager implements IEmployeeManager {
 
     @Override
     public Map<Integer, Employee> returnEmployees() throws RateException {
-        LinkedHashMap<Integer, Employee> employees = employeeDAO.returnEmployees();
+        Map<Integer, Employee> employees = employeeDAO.returnEmployees();
         return employees;
     }
 
@@ -177,10 +178,7 @@ public class EmployeeManager implements IEmployeeManager {
         return rateCalculator.calculateTeamDailyRateE(team);
     }
 
-    public Team saveTeamEditOperation(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException {
-        return employeeDAO.saveEditOperationTeam(editedTeam, idOriginalTeam, employeesToDelete, employees);
 
-    }
 
 
     /**

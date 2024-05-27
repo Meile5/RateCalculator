@@ -31,7 +31,7 @@
                     <children>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                             <children>
-                                <Label fx:id="employees" styleClass="employees" text="Teams" />
+                                <Label fx:id="teams" styleClass="teams" text="Teams" />
                             </children>
                         </HBox>
                     </children>
@@ -59,16 +59,16 @@
                                 <Insets left="10.0" />
                             </padding>
                             <children>
-                                <HBox prefHeight="45.0" prefWidth="722.0" spacing="33.0" VBox.vgrow="ALWAYS">
+                                <HBox maxWidth="760.0" prefHeight="45.0" prefWidth="722.0" spacing="33.0" VBox.vgrow="ALWAYS">
                                     <children>
-                                        <Label styleClass="tableLabels" text="Team" />
-                                        <Label styleClass="tableLabels" text="Region" />
-                                        <Label styleClass="tableLabels" text="Country" />
-                                        <Label styleClass="tableLabels" text="Daily rate" />
-                                        <Label prefHeight="17.0" prefWidth="71.0" styleClass="tableLabels" text="Hourly rate" />
+                                        <Label maxWidth="40.0" prefWidth="30.0" styleClass="tableLabels" text="Team" HBox.hgrow="ALWAYS" />
+                                        <Label maxWidth="40.0" minWidth="40.0" styleClass="tableLabels" text="Region" HBox.hgrow="ALWAYS" />
+                                        <Label maxWidth="50.0" minWidth="40.0" styleClass="tableLabels" text="Country" HBox.hgrow="ALWAYS" />
+                                        <Label maxWidth="65.0" minWidth="40.0" styleClass="tableLabels" text="Daily rate" HBox.hgrow="ALWAYS" />
+                                        <Label maxWidth="75.0" minWidth="40.0" prefHeight="17.0" prefWidth="71.0" styleClass="tableLabels" text="Hourly rate" HBox.hgrow="ALWAYS" />
                                     </children>
                                     <padding>
-                                        <Insets left="24.0" top="20.0" />
+                                        <Insets left="45.0" right="40.0" top="20.0" />
                                     </padding>
                            <VBox.margin>
                               <Insets />
@@ -76,9 +76,9 @@
                                 </HBox>
                                 <MFXScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="600.0" maxWidth="600.0" prefHeight="497.0" prefWidth="508.0" style="-fx-background-color: D1D0D0; -fx-background-radius: 25;" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
                                     <content>
-                                        <VBox fx:id="teamsContainer" alignment="TOP_CENTER" maxHeight="570.0" maxWidth="540.0" prefHeight="486.0" prefWidth="450.0" spacing="26.0">
+                                        <VBox fx:id="teamsContainer" alignment="TOP_CENTER" maxHeight="570.0" maxWidth="540.0" prefHeight="486.0" prefWidth="449.0" spacing="26.0">
                                             <padding>
-                                                <Insets left="15.0" />
+                                                <Insets left="15.0" right="6.0" />
                                             </padding>
                                         </VBox>
                                     </content>
@@ -96,7 +96,7 @@
         </VBox>
         <VBox alignment="CENTER_LEFT" prefHeight="700.0" prefWidth="805.0" spacing="45.0" HBox.hgrow="ALWAYS">
             <padding>
-                <Insets right="40.0" />
+                <Insets right="60.0" />
             </padding>
          <children>
             <GridPane alignment="CENTER" maxWidth="1920.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="459.0">
@@ -118,7 +118,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
-                        <VBox alignment="CENTER" prefHeight="360.0" prefWidth="436.0">
+                        <VBox alignment="CENTER" prefHeight="343.0" prefWidth="473.0" VBox.vgrow="ALWAYS">
                            <children>
                               <LineChart fx:id="lineChart" legendSide="TOP">
                                 <xAxis>
@@ -139,16 +139,21 @@
                   </VBox>
                   <VBox alignment="CENTER" maxWidth="536.0" minWidth="100.0" prefHeight="408.0" prefWidth="256.0" style="-fx-background-color: #D1D0D0; -fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <children>
-                        <VBox alignment="CENTER" prefHeight="292.0" prefWidth="436.0">
+                        <VBox alignment="CENTER" prefHeight="209.0" prefWidth="426.0" VBox.vgrow="ALWAYS">
                            <children>
                               <PieChart fx:id="teamsPieChart" />
-                              <ComboBox fx:id="teamsHistory" prefHeight="25.0" prefWidth="89.0">
+                              <ComboBox fx:id="teamsHistory" prefHeight="25.0" prefWidth="106.0">
                                  <VBox.margin>
                                     <Insets />
                                  </VBox.margin></ComboBox>
                            </children>
+                           <padding>
+                              <Insets bottom="10.0" />
+                           </padding>
                         </VBox>
                      </children></VBox>
+                  <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" />
+                  <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

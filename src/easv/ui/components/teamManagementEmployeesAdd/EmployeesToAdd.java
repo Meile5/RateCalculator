@@ -28,7 +28,7 @@ public class EmployeesToAdd implements Initializable {
     @FXML
     private HBox employeesToAddComponent;
     @FXML
-    private Label employeeName, utilLeft;
+    private Label employeeName, utilLeft, employeeType;
     @FXML
     private MFXCheckbox addEmployee;
     @FXML
@@ -38,7 +38,7 @@ public class EmployeesToAdd implements Initializable {
     private Employee employee;
     private TeamValidation teamValidation;
 
-
+    /** Initializes the controller with the necessary dependencies and loads the FXML component, not depend on FXML components being loaded*/
     public EmployeesToAdd(Employee employee, IModel model, TeamManagementController teamManagementController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeesToAddInTeam.fxml"));
         loader.setController(this);
@@ -48,42 +48,54 @@ public class EmployeesToAdd implements Initializable {
         try {
             employeesToAddComponent = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }
-
     public HBox getRoot() {
         return employeesToAddComponent;
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setLabels();
-       // utilListener();
-
+        utilListener();
     }
-   /* private void utilListener() {
+    /** Checks if users typed value is valid, if it is not then makes the border red */
+    private void utilListener() {
         utilPercentageToAdd.textProperty().addListener((observable, oldValue, newValue) -> {
-           TeamValidation.isPercentageValid(utilPercentageToAdd, employee);
+           TeamValidation.isPercentageValid(utilPercentageToAdd, utilLeft);
         });
-    }*/
+    }
+    /** Returns employees that have been selected to add to the team and sets their new util% */
+    public Employee getEditedEmployee(Team team) {
+        if (addEmployee.isSelected()) {
+            if (TeamValidation.isPercentageValid(utilPercentageToAdd, utilLeft)) {
+                Employee editedEmployee = employee;
+                String utilPercentageStr = utilPercentageToAdd.getText();
+                BigDecimal utilPercentage = new BigDecimal(utilPercentageStr);
+                editedEmployee.getUtilPerTeams().put(team.getId(), utilPercentage);
+                return editedEmployee;
+            }
+        }
+        return null;
+    }
 
     public void setLabels() {
         if (employee != null) {
             employeeName.setText(employee.getName());
             employeeName.setTooltip(new Tooltip(employeeName.getText()));
+            employeeType.setText(employee.getEmployeeType().toString());
+            employeeType.setTooltip(new Tooltip(employeeType.getText()));
 
             BigDecimal remainingUtilization = calculateRemainingUtilization(employee.getUtilPerTeams());
             if (remainingUtilization != null) {
-                utilLeft.setText(remainingUtilization + " %");
+                utilLeft.setText(remainingUtilization.toString() + "%");
             }else {
                 utilLeft.setText("N/A");
             }
-
-
         }
     }
+    /** Calculates remaining util% for the employee*/
     private BigDecimal calculateRemainingUtilization(Map<Integer, BigDecimal> utilPerTeams) {
         BigDecimal totalUtilization = BigDecimal.ZERO;
         for (BigDecimal utilization : utilPerTeams.values()) {
@@ -94,17 +106,6 @@ public class EmployeesToAdd implements Initializable {
         return BigDecimal.valueOf(100).subtract(totalUtilization);
     }
 
-    public Employee getEditedEmployee(Team team) {
-        if (addEmployee.isSelected()) {
-            if (TeamValidation.isPercentageValid(utilPercentageToAdd, employee)) {
-                Employee editedEmployee = employee;
-                String utilPercentageStr = utilPercentageToAdd.getText();
-                BigDecimal utilPercentage = new BigDecimal(utilPercentageStr);
-                editedEmployee.getUtilPerTeams().put(team.getId(), utilPercentage);
-                return editedEmployee;
-            }
-        }
-        return null;
-    }
+
 
 }

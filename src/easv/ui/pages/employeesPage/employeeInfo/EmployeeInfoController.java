@@ -29,40 +29,20 @@ public class EmployeeInfoController implements Initializable {
     @FXML
     private HBox employeeComponent;
     @FXML
-    private VBox employeesContainer;
-    @FXML
     protected VBox deleteContainer;
     @FXML
-    private Label employeeName;
-    @FXML
-    private Label employeeType;
-    @FXML
-    private Label country;
-    @FXML
-    private Label team;
-    @FXML
-    private Label dayRate;
-    @FXML
-    private Label hourlyRate;
-    @FXML
-    private Label hourlyCurrency;
-    @FXML
-    private Label dayCurrency;
+    private Label employeeName, employeeType, country, team, dayRate, hourlyRate, hourlyCurrency, dayCurrency, region;
     @FXML
     private VBox editButton;
-    @FXML
-    private Label region;
     private Employee employee;
     private StackPane firstLayout;
     private DeleteEmployeeController deleteEmployeeController;
     private EmployeeMainPageController employeeController;
-
     private IModel model;
-    @FXML
-    private Tooltip countryTooltip;
+
     private final String NOT_AVAILABLE = "N/A";
 
-
+    /** Initializes the controller with the necessary dependencies and loads the FXML component, not depend on FXML components being loaded*/
     public EmployeeInfoController(Employee employee, DeleteEmployeeController deleteEmployeeController, IModel model, StackPane firstLayout, EmployeeMainPageController employeeController) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeComponent.fxml"));
         loader.setController(this);
@@ -76,9 +56,25 @@ public class EmployeeInfoController implements Initializable {
         } catch (IOException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
-
+    }
+    public HBox getRoot() {
+        return employeeComponent;
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        deleteContainer.getChildren().clear();
+        this.deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
+        setLabels();
+        addEditAction();
+        setEmployeeComponentOnClick();
+
+    }
+    /**
+     * Updates the UI labels with the employee's details if the employee is not null
+     * This includes setting the employee's name, type, countries, teams, regions, day rate, hourly rate, and currency,
+     * along with tooltips
+     */
     public void setLabels() {
         if (employee != null) {
             employeeName.setText(employee.getName());
@@ -86,7 +82,7 @@ public class EmployeeInfoController implements Initializable {
 
             employeeType.setText(employee.getType().toString());
 
-            // Displaying multiple countries
+            /* Displaying multiple countries */
             StringBuilder countryNames = new StringBuilder();
 
             if (employee.getCountries().isEmpty()) {
@@ -103,7 +99,7 @@ public class EmployeeInfoController implements Initializable {
             country.setText(countryNames.toString());
             country.setTooltip(new Tooltip(country.getText()));
 
-            // Displaying multiple teams
+            /* Displaying multiple teams */
             StringBuilder teamNames = new StringBuilder();
             if (employee.getTeams().isEmpty()) {
                 teamNames.append(NOT_AVAILABLE);
@@ -119,7 +115,7 @@ public class EmployeeInfoController implements Initializable {
             team.setText(teamNames.toString());
             team.setTooltip(new Tooltip(team.getText()));
 
-            // Displaying multiple regions
+            /* Displaying multiple regions */
             StringBuilder regionNames = new StringBuilder();
             if (employee.getRegions().isEmpty()||employee.getRegions()==null) {
                 regionNames.append(NOT_AVAILABLE);
@@ -131,6 +127,7 @@ public class EmployeeInfoController implements Initializable {
                         regionNames.append(region.getRegionName());
                     }
                 }
+
             }
             region.setText(regionNames.toString());
             region.setTooltip(new Tooltip(region.getText()));
@@ -141,19 +138,6 @@ public class EmployeeInfoController implements Initializable {
         }
     }
 
-    public HBox getRoot() {
-        return employeeComponent;
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        deleteContainer.getChildren().clear();
-        this.deleteContainer.getChildren().add(deleteEmployeeController.getRoot());
-        setLabels();
-        addEditAction();
-        setEmployeeComponentOnClick();
-
-    }
 
 
     private void addEditAction() {

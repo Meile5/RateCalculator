@@ -82,7 +82,9 @@ public class SearchController<T> implements Initializable {
         popupWindow.getScene().setRoot(searchResponseHolder);
 
     }
-
+    /**
+     * Configures and displays a popup window below the search field with specified dimensions and styles
+     */
     private void configurePopUpWindow() {
         Bounds boundsInScreen = searchField.localToScreen(searchField.getBoundsInLocal());
         searchResponseHolder.setPrefWidth(searchField.getWidth());
@@ -96,7 +98,15 @@ public class SearchController<T> implements Initializable {
         popupWindow.setMaxHeight(250);
         popupWindow.show(searchField, boundsInScreen.getMinX(), boundsInScreen.getMaxY());
     }
-
+    /**
+     * Adds listeners to the search field to handle text input and focus changes
+     * This method performs the following steps:
+     * 1. Adds a listener to the search field's text property:
+     *    - If the text is not empty, updates the search response holder with results and shows the popup window.
+     *    - If the text is empty, clears the search field, hides the popup window, and loads the revert SVG.
+     * 2. Adds a listener to the search field's focus property:
+     *    - Hides the popup window when the search field loses focus.
+     */
     private void searchFieldListener() {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.isEmpty()) {
@@ -119,7 +129,10 @@ public class SearchController<T> implements Initializable {
             }
         });
     }
-
+    /**
+     * Adds a selection listener to the search response holder to handle selection of search results.
+     * Adds a listener to the search response holder's selected item property
+     */
     private void addSelectionListener() throws RateException  {
         searchResponseHolder.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -151,7 +164,9 @@ public class SearchController<T> implements Initializable {
             }
         });
     }
-
+    /**
+     * Adds a mouse click event handler to a button to perform the undo search operation
+     */
     private void goBack() {
 
         button.addEventHandler(MouseEvent.MOUSE_CLICKED, event->{

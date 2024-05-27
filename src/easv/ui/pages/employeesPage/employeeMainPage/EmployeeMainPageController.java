@@ -44,17 +44,13 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private VBox employeesContainer;
     @FXML
     private Parent employeePage;
-
     private IModel model;
-
     @FXML
     private MFXProgressSpinner progressBar;
     @FXML
     private MFXComboBox<Country> countriesFilterCB;
-
     @FXML
     private MFXComboBox<Team> teamsFilterCB;
-
     @FXML
     private MFXComboBox<Region> regionsFilter;
     @FXML
@@ -75,11 +71,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     private Button goBackButton;
     private Service<Void> loadEmployeesFromDB;
     @FXML
-    private HBox countryRevertButton;
-    @FXML
-    private HBox teamRevertButton;
-    @FXML
-    private HBox regionRevertButton;
+    private HBox countryRevertButton, teamRevertButton, regionRevertButton;
     @FXML
     private VBox employeesVboxContainer;
 
@@ -122,7 +114,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         try {
             employeePage = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
@@ -180,6 +171,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
+    /** Displays components for each employee in the scrollpane */
 
     public void displayEmployees() {
         employeesContainer.getChildren().clear();
@@ -191,7 +183,12 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
                 });
     }
 
-
+    /**
+     * Initializes and starts a background service to load employee data from the database
+     * This method initializes a JavaFX Service to perform the data loading in a background thread and
+     * defines success and failure handlers for the service
+     * This method to start loading employee data from the database while keeping the UI responsive
+     */
     private void initializeEmployeeLoadingService() {
         progressBar.setVisible(true);
         loadEmployeesFromDB = new Service<Void>() {
@@ -210,14 +207,11 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
         };
 
         loadEmployeesFromDB.setOnSucceeded((event) -> {
-            // Update the UI with loaded employees
+            /* Update the UI with loaded employees*/
             displayEmployees();
-
-            // Hide the progress bar
             progressBar.setVisible(false);
         });
         loadEmployeesFromDB.setOnFailed((event) -> {
-
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_EMPLOYEES_FAILED.getValue());
 
 
@@ -483,243 +477,6 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
 }
 
 
-
-
-
-
-
-
-   /* private void goBack() throws RateException {
-        if (filterActive && countriesFilterCB.getSelectionModel().getSelectedItem() != null &&
-                teamsFilterCB.getSelectionModel().getSelectedItem() != null) {
-            model.teamFilterActiveRevert();
-            setTotalRates();
-        } else if (filterActive && countriesFilterCB.getSelectionModel().getSelectedItem() != null) {
-            model.returnEmployeesByCountry();
-            setTotalRates();
-        } else {
-            model.performEmployeeSearchUndoOperation();
-            setTotalRatesDefault();
-        }
-        searchField.clear();
-        Platform.runLater(this::loadSearchSVG);
-    }
-
-
-    private void createPopUpWindow() {
-        popupWindow = new PopupControl();
-        searchResponseHolder = new ListView<>();
-        popupWindow.getScene().setRoot(searchResponseHolder);
-    }
-
-    private void configurePopUpWindow() {
-        Bounds boundsInScreen = searchField.localToScreen(searchField.getBoundsInLocal());
-        searchResponseHolder.setPrefWidth(searchField.getWidth());
-        searchResponseHolder.setMaxWidth(searchField.getWidth());
-        searchResponseHolder.setMaxHeight(250);
-        popupWindow.getScene().getStylesheets().add("/easv/ui/styling/EmployeePage.css");
-        ((Parent) popupWindow.getScene().getRoot()).getStyleClass().add("popupView");
-        searchResponseHolder.getStylesheets().add("/easv/ui/styling/EmployeePage.css");
-        popupWindow.setPrefWidth(searchField.getWidth());
-        popupWindow.setMaxWidth(searchField.getWidth());
-        popupWindow.setMaxHeight(250);
-        popupWindow.show(searchField, boundsInScreen.getMinX(), boundsInScreen.getMaxY());
-    }
-
-    private void searchFieldListener() {
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.isEmpty()) {
-                searchResponseHolder.setItems(model.getSearchResult(newValue));
-                setTotalRates();
-                if (!searchResponseHolder.getItems().isEmpty()) {
-                    configurePopUpWindow();
-                } else {
-                    popupWindow.hide();
-                }
-            } else {
-                loadRevertSVG();
-                searchField.clear();
-                popupWindow.hide();
-            }
-
-        });
-        searchField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                popupWindow.hide();
-            }
-        });
-    }
-
-
-
-    private void filterByCountryListener() {
-        countriesFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                try {
-                    Country selectedCountry = (Country) newValue;
-                    ObservableList <Team> teamsForCountry =  FXCollections.observableArrayList();
-                    if(!model.getTeamsForCountry(selectedCountry).isEmpty()){
-                        teamsForCountry.setAll(model.getTeamsForCountry(selectedCountry));
-                    }
-                    teamsFilterCB.getSelectionModel().clearSelection();
-                    teamsFilterCB.setItems(teamsForCountry.sorted());
-                    model.filterByCountry(selectedCountry);
-                    filterActive = true;
-                    setTotalRates();
-                    showRevertButtonByFilterActive(countryRevertButton,countryRevertSvg);
-                } catch (RateException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-    }
-
-    private void filterByTeamListener() {
-        teamsFilterCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                try {
-                    Team selectedTeam = (Team) newValue;
-                    Country selectedCountry = (Country) countriesFilterCB.getSelectionModel().getSelectedItem();
-                    if(selectedCountry==null){
-                        teamsFilterCB.setItems(teams.sorted());
-                        model.filterByTeam(selectedTeam);
-                    } else {
-                        model.filterByCountryAndTeam(selectedCountry, selectedTeam);
-                    }
-                    filterActive = true;
-                    setTotalRates();
-                    showRevertButtonByFilterActive(teamRevertButton,teamRevertSvg);
-                } catch (RateException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-    }
-
-
-
-
-
-    private void addSelectionListener() throws RateException  {
-        searchResponseHolder.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                try {
-                    model.performSelectUserSearchOperation(newValue);
-                    setTotalRates();
-                } catch (RateException e) {
-                    ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
-                }
-
-                Platform.runLater(() -> {
-                    if (!searchResponseHolder.getItems().isEmpty()) {
-                        searchResponseHolder.getSelectionModel().clearSelection();
-                    }
-                });
-                loadRevertSVG();
-                popupWindow.hide();
-            }
-        });
-    }
-
-
-    public void setSelectedComponentStyleToSelected(EmployeeInfoController selectedToEdit) {
-        if (this.selectedToEdit != null) {
-            this.selectedToEdit.getRoot().getStyleClass().remove("employeeComponentClicked");
-        }
-        this.selectedToEdit = selectedToEdit;
-        this.selectedToEdit.getRoot().getStyleClass().add("employeeComponentClicked");
-    }
-
-
-
-
-
-    @FXML
-    private void goBackFromTeams() throws RateException {
-        System.out.println("Boolean" + filterActive);
-        if(filterActive && countriesFilterCB.getSelectionModel().getSelectedItem()!=null){
-            model.returnEmployeesByCountry();
-            teamsFilterCB.clearSelection();
-            searchField.clear();
-            setTotalRates();
-        } else {
-            model.performEmployeeSearchUndoOperation();
-            teamsFilterCB.clearSelection();
-            filterActive = false;
-            setTotalRatesDefault();
-        }
-    }
-
-    private void showRevertButtonByFilterActive(HBox button,SVGPath revertSvg) {
-        revertSvg.setVisible(true);
-        button.setDisable(false);
-    }
-
-    private void hideRevertButton(SVGPath svgPath,HBox button) {
-        PauseTransition pauseTransition = new PauseTransition(Duration.millis(500));
-        pauseTransition.setOnFinished((event) -> {
-            svgPath.setVisible(false);
-            button.setDisable(true);
-        });
-        pauseTransition.playFromStart();
-    }
-
-
-
-    private void revertTeamFilter(HBox button,SVGPath revertIcon) throws RateException{
-        button.addEventHandler(MouseEvent.MOUSE_CLICKED,event->{
-            try {
-                goBackFromTeams();
-                hideRevertButton(revertIcon,button);
-            } catch (RateException e) {
-                ExceptionHandler.errorAlertMessage(ErrorCode.UNDO_FAILED.getValue());
-            }
-        });
-    }
-
-    public void callService(){
-        startPerformRedoCalculations();
-    }
-
-    private void startPerformRedoCalculations() {
-        this.calculateEditOperationPerformedEdit = new Service<Boolean>() {
-            @Override
-            protected Task<Boolean> createTask() {
-                return new Task<Boolean>() {
-                    @Override
-                    protected Boolean call() throws Exception {
-                        try {
-                            dayRateValue=model.calculateGroupDayRate().toString();
-                            hourlyRateValue=model.calculateGroupHourlyRate().toString();
-                            return true;
-                        } catch (NumberFormatException e) {
-                            ExceptionHandler.errorAlertMessage("error Message");
-                            return false;
-                        }
-                    }
-                };
-            }
-        };
-        calculateEditOperationPerformedEdit.setOnSucceeded((e)->{
-            if(calculateEditOperationPerformedEdit.getValue()){
-                  dayRateField.setText(dayRateValue);
-                  hourlyRateField.setText(hourlyRateValue);
-              //  ExceptionHandler.errorAlertMessage("operation succesfull");
-            }else{
-               // ExceptionHandler.errorAlertMessage("operation fails");
-            }
-
-        });
-        calculateEditOperationPerformedEdit.setOnFailed((e)->{
-           calculateEditOperationPerformedEdit.getException().printStackTrace();
-         //   ExceptionHandler.errorAlertMessage("thread failed to perform operations");
-        });
-        this.calculateEditOperationPerformedEdit.restart();
-    }
-
-
-
-*/
 
 
 

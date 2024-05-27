@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IEmployeeDAO {
-    LinkedHashMap<Integer, Employee> returnEmployees() throws RateException;
+    Map<Integer, Employee> returnEmployees() throws RateException;
 
     Integer addEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException;
 
@@ -40,7 +40,6 @@ public interface IEmployeeDAO {
     Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException;
 
     Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException;
-    Team saveEditOperationTeam(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException;
 
     /** retrieve the employee utilization per teams in order to calculate the  new team overhead*/
    Map<Integer, BigDecimal> getEmployeeUtilizationPerTeams(int employeeId) throws RateException;

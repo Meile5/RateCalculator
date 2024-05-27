@@ -31,5 +31,13 @@ public interface ITeamLogic  {
 
     /**perform the search operation for the teams*/
     List<Team> performSearchTeamFilter(String filter, Collection<Team> teams);
+    Team saveTeamEditOperation(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException;
+
+    BigDecimal getEmployeeHourlyRateOnTeamE(Employee employee, Team team);
+    BigDecimal getEmployeeDayRateOnTeamE(Employee employee, Team team);
+    BigDecimal calculateTeamHourlyRateE(Team team);
+    BigDecimal calculateTeamDayRateE(Team team);
+
+
 
 }

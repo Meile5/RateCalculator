@@ -1,5 +1,7 @@
 package easv.ui.components.confirmationView;
 
+import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.event.ActionEvent;
@@ -38,27 +40,11 @@ public class ConfirmationWindowController {
             confirmationWindow = loader.load();
 
         } catch (IOException e) {
-
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
     public VBox getRoot() {
         return confirmationWindow;
-    }
-
-    public Label getConfirmationTitle() {
-        return confirmationTitle;
-    }
-
-    public void setConfirmationTitle(String confirmationTitle) {
-        this.confirmationTitle.setText(confirmationTitle);
-    }
-
-    public Label getEntityTitle() {
-        return entityTitle;
-    }
-
-    public void setEntityTitle(String entityTitle) {
-        this.entityTitle.setText(entityTitle);
     }
 
     public void setErrorMessage(String message){

@@ -367,6 +367,28 @@ public class TeamLogic implements ITeamLogic {
         return distributionOperationOverheadValues;
 
     }
+    /** Calls team dao to save edited team in database and return the edited team */
+    public Team saveTeamEditOperation(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException {
+        return teamDao.saveEditOperationTeam(editedTeam, idOriginalTeam, employeesToDelete, employees);
+
+    }
+
+    public BigDecimal getEmployeeHourlyRateOnTeamE(Employee employee, Team team) {
+        return rateCalculator.calculateEmployeeHourlyRateOnTeamE(employee, team);
+    }
+
+    public BigDecimal getEmployeeDayRateOnTeamE(Employee employee, Team team) {
+        return rateCalculator.calculateEmployeeDayRateOnTeamE(employee, team);
+    }
+
+    public BigDecimal calculateTeamHourlyRateE(Team team) {
+        return rateCalculator.calculateTeamHourlyRateE(team);
+    }
+
+    public BigDecimal calculateTeamDayRateE(Team team) {
+        return rateCalculator.calculateTeamDailyRateE(team);
+    }
+
 
 }
 

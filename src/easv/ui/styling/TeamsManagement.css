@@ -14,6 +14,10 @@
 .label{
     -fx-text-fill: #eaeaea;
 }
+.membersLabel{
+    -fx-text-fill: #eaeaea;
+    -fx-font-size: 14px;
+}
 
 .textField{
     -fx-background-color: #818181 ;
@@ -30,4 +34,22 @@
 
 .scroll-bar {
     -fx-opacity: 0;
+}
+
+.closeButton:hover {
+    -fx-background-color: #C42B1C;
+    -fx-background-radius:  7 ;
+}
+
+.closeButton:hover > .svgClose {
+    -fx-fill: #fff;
+}
+
+.saveButton:hover {
+    -fx-background-color: #2ba746;
+    -fx-background-radius: 7;
+}
+
+.saveButton:hover > .svgSave {
+    -fx-fill: #fff;
 }
