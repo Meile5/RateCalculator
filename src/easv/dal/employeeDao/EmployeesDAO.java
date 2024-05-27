@@ -67,23 +67,22 @@ public class EmployeesDAO implements IEmployeeDAO {
                     String employeeType = res.getString("EmployeeType");
                     String currency1 = res.getString("Currency");
 
-
-                    // Retrieve employee type as string
+                    /* Retrieve employee type as string*/
                     EmployeeType type = EmployeeType.valueOf(employeeType);
-                    // Retrieve employee type as string
+                    /* Retrieve employee type as string*/
                     Currency currency = Currency.valueOf(currency1);
-
                     Employee employee = new Employee(name, type, currency);
                     employee.setId(employeeID);
-
-                    // Add Employee to LinkedHashMap
+                    /* Add Employee to HashMap*/
                     employees.put(employeeID, employee);
                 }
             }
+            /* Retrieve teams for employees*/
             for (Employee employee : employees.values()) {
                 List<Team> teams = retrieveTeamsForEmployee(employee.getId(), conn);
                 employee.setTeams(teams);
             }
+            /* Retrieve countries for employees from teams*/
             for (Employee employee : employees.values()) {
                 List<Country> countries = new ArrayList<>();
                 for (Team team : employee.getTeams()) {
@@ -91,6 +90,7 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
                 employee.setCountries(countries);
             }
+            /* Retrieve regions for employees from countries*/
             for (Employee employee : employees.values()) {
                 List<Region> regions = new ArrayList<>();
                 for (Country country : employee.getCountries()) {
@@ -98,37 +98,18 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
                 employee.setRegions(regions);
             }
-            // Retrieve configurations for employees
+            /* Retrieve configurations for employees*/
             for (Employee employee : employees.values()) {
                 List<Configuration> configurations = retrieveConfigurationsForEmployee(employee, conn);
                 employee.setConfigurations(configurations);
-
-
             }
-            conn.commit(); // Commit transaction
-        } catch (SQLException | RateException e) {
-            try {
-                if (conn != null) {
-                    conn.rollback(); // Rollback transaction if there's an exception
-                }
-            } catch (SQLException ex) {
-                throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
-            }
-            throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.setAutoCommit(true); // Reset auto-commit mode
-                    conn.close();
-                }
+            conn.commit();
+
             } catch (SQLException e) {
                 throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
 
             }
-        }
         return employees;
-
-
     }
 
     /**
@@ -175,7 +156,9 @@ public class EmployeesDAO implements IEmployeeDAO {
         return countries;
 
     }
-
+    /**
+     * Retrieves the regions for employee by using country id
+     */
     private List<Region> retrieveRegionsForEmployee(int countryId, Connection conn) throws SQLException {
         List<Region> regions = new ArrayList<>();
         String sql = "SELECT r.RegionID, r.RegionName " +
@@ -198,7 +181,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
     /**
-     * Retrieves the configurations for employee
+     * Retrieves the configurations for employee and sets active configuration
      */
     private List<Configuration> retrieveConfigurationsForEmployee(Employee employee, Connection conn) throws SQLException {
         List<Configuration> configurations = new ArrayList<>();

@@ -39,6 +39,7 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
     private ConfirmationWindowController confirmationWindowController;
     private Service<Void> deleteEmployee;
 
+    /** Initializes the controller with the necessary dependencies and loads the FXML component, not depend on FXML components being loaded*/
     public DeleteEmployeeController(StackPane firstLayout , IModel model, Employee employee) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DeleteEmployeeComponenet.fxml"));
         loader.setController(this);
@@ -47,10 +48,9 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
         this.employee=employee;
         try {
             deleteComponent = loader.load();
-           // this.deleteContainer = deleteContainer;
 
         } catch (IOException e) {
-            //ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }
@@ -72,16 +72,21 @@ public class DeleteEmployeeController implements Initializable, OperationHandler
     public void initialize(URL location, ResourceBundle resources) {
         deleteComponent.addEventHandler(MouseEvent.MOUSE_CLICKED, this::addEventHandler);
     }
+
     private void addEventHandler(MouseEvent event) {
         deleteOperation();
     }
-
+    /** Uses operation handler interface method to perform a method in confirmation popup, calls service to start*/
     @Override
     public void performOperation() {
         initializeDelete();
-
-
     }
+    /**
+     * Initializes and starts a background service to delete employee data from the database
+     * This method initializes a JavaFX Service to perform the data loading in a background thread and
+     * defines success and failure handlers for the service
+     * This method to start loading employee data from the database while keeping the UI responsive
+     */
     private void initializeDelete() {
 
         deleteEmployee = new Service<Void>() {

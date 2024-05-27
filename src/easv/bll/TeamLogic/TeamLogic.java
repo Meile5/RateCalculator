@@ -367,6 +367,7 @@ public class TeamLogic implements ITeamLogic {
         return distributionOperationOverheadValues;
 
     }
+    /** Calls team dao to save edited team in database and return the edited team */
     public Team saveTeamEditOperation(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException {
         return teamDao.saveEditOperationTeam(editedTeam, idOriginalTeam, employeesToDelete, employees);
 
