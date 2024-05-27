@@ -23,7 +23,7 @@
                      <font>
                         <Font name="Open Sans Regular" size="14.0" />
                      </font></Label>
-                  <MFXFilterComboBox fx:id="countryNameBox" allowEdit="true" floatMode="DISABLED" prefHeight="32.0" prefWidth="250.0" />
+                  <MFXFilterComboBox fx:id="countryNameBox" allowEdit="true" floatMode="DISABLED" prefHeight="32.0" prefWidth="250.0" styleClass="comboBox" />
                </children>
             </VBox>
          </children>
@@ -44,7 +44,7 @@
             </VBox>
             <VBox prefHeight="230.0" prefWidth="305.0">
                <children>
-                  <MFXComboBox fx:id="teamsCB" floatMode="DISABLED" prefHeight="42.0" prefWidth="250.0" promptText="Teams">
+                  <MFXComboBox fx:id="teamsCB" floatMode="DISABLED" prefHeight="42.0" prefWidth="250.0" promptText="Teams" styleClass="comboBox">
                      <VBox.margin>
                         <Insets bottom="40.0" top="15.0" />
                      </VBox.margin>

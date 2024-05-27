@@ -1,5 +1,6 @@
 package easv.ui.pages.geographyManagementPage.regionComponents;
 
+import easv.Utility.CountryValidation;
 import easv.Utility.RegionValidation;
 import easv.Utility.WindowsManagement;
 import easv.be.Country;
@@ -8,7 +9,6 @@ import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.ui.pages.geographyManagementPage.geographyMainPage.GeographyManagementController;
 import easv.ui.pages.modelFactory.IModel;
-import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -79,6 +79,7 @@ public class ManageRegionController implements Initializable {
 
         saveRegionListener();
         cancelOperationListener();
+        addListenersForInputs();
     }
 
     private void addCountryListener() {
@@ -99,6 +100,11 @@ public class ManageRegionController implements Initializable {
                 countriesList.remove(countriesListView.getSelectionModel().getSelectedIndex());
                 countriesListView.getItems().remove(countriesListView.getSelectionModel().getSelectedIndex());
             }});
+    }
+
+    private void addListenersForInputs(){
+        CountryValidation.addLettersOnlyInputListener(regionNameTF);
+        CountryValidation.addLettersOnlyInputListener(countriesCB);
     }
 
     private void setFields() {

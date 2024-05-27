@@ -70,6 +70,7 @@ public class ManageTeamController implements Initializable {
         saveTeamListener();
         deleteTeamListener();
         cancelOperationListener();
+        addListenersForInputs();
     }
 
     private void saveTeamListener() {
@@ -93,6 +94,7 @@ public class ManageTeamController implements Initializable {
     private void deleteTeamListener() {
         deleteBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
                 if(selectedTeam != null) {
+                    ExceptionHandler.errorConfirmationMessage("You are about to delete a Team. You confirm you want to delete?");
                     try {
                         manageCountryController.deleteTeam(selectedTeam);
                     } catch (RateException ex) {
@@ -102,11 +104,6 @@ public class ManageTeamController implements Initializable {
                     WindowsManagement.showStackPane(pane);
                 }
         });
-//        firstLayout.getChildren().clear();
-//        ConfirmationWindowController confirmationWindowController = new ConfirmationWindowController(firstLayout, this);
-//        firstLayout.getChildren().add(confirmationWindowController.getRoot());
-//        firstLayout.setDisable(false);
-//        firstLayout.setVisible(true);
     }
 
     private void saveTeamOperation(Team team) {
@@ -153,6 +150,11 @@ public class ManageTeamController implements Initializable {
             WindowsManagement.closeStackPane(secondPane);
             WindowsManagement.showStackPane(pane);
         });
+    }
+
+    private void addListenersForInputs(){
+        CountryValidation.addLettersOnlyInputListener(teamNameTF);
+        CountryValidation.addLettersOnlyInputListener(currencyCB);
     }
 
     private void setFields(){
