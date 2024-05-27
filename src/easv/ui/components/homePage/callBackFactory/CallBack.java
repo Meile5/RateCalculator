@@ -1,5 +1,7 @@
 package easv.ui.components.homePage.callBackFactory;
 
-public interface CallBack {
+import easv.ui.components.homePage.openPageObserver.Subject;
+
+public interface CallBack{
      void call();
 }

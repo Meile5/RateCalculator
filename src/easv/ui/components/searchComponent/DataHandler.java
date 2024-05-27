@@ -1,6 +1,4 @@
 package easv.ui.components.searchComponent;
-
-import easv.be.Employee;
 import easv.exception.RateException;
 import javafx.collections.ObservableList;
 
