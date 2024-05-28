@@ -144,7 +144,7 @@ public class TeamManagementController implements Initializable {
             }
         };
         saveTeam.setOnSucceeded(event -> {
-            showOperationStatus("Operation Successful!", Duration.seconds(5));
+            //showOperationStatus("Operation Successful!", Duration.seconds(5));
             teamsPageController.clearTeams();
             teamsPageController.displayTeams();
             /* Refresh charts and graphs*/
