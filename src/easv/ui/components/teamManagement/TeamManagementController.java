@@ -26,7 +26,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -137,7 +136,6 @@ public class TeamManagementController implements Initializable {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        //  Thread.sleep(200);
                         model.performEditTeam(employees, employeesToDelete, editedTeam, originalTeam);
                         return null;
                     }
