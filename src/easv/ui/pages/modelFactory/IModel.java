@@ -7,7 +7,7 @@ import javafx.collections.ObservableList;
 
 import java.math.BigDecimal;
 
-import java.sql.SQLException;
+
 import java.util.List;
 import java.util.Map;
 
@@ -40,9 +40,9 @@ public interface IModel {
 
     Map<String, Country> getCountries();
 
-    void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException;
+    void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException;
 
-    void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException;
+    void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws  RateException;
 
     /**
      * retrieve the teams with the overhead computed
@@ -135,7 +135,7 @@ public interface IModel {
     List<Team> getRegionTeams(Region region);
 
 
-    void teamFilterActiveRevert() throws RateException;
+
 
     void returnEmployeesByRegion(Region region);
 
@@ -282,8 +282,6 @@ public interface IModel {
     void addNewCountry(Country country, List<Team> teams) throws RateException;
 
     void deleteCountry(Country country) throws RateException;
-
-    void addNewTeam(Country country, Team team) throws SQLException, RateException;
 
     void deleteTeam(Team team) throws RateException;
 }

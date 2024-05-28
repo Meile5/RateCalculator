@@ -10,15 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface ICountryDao {
-    Map<String, Country> getCountries() throws RateException;
+
 
     Integer addCountry(Country country, List<Team> teams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException;
 
     void addNewTeamsToCountry(List<Integer> newTeamsIds, Integer countryID, Connection conn) throws RateException;
 
-    void addTeamToCountry(Integer countryID, List<Team> teams, Connection conn) throws SQLException;
+    void addTeamToCountry(Integer countryID, List<Team> teams, Connection conn) throws SQLException, RateException;
 
-    List<Integer> addTeams(List<Team> teams, Connection conn) throws RateException, SQLException;
+    List<Integer> addTeams(List<Team> teams, Connection conn) throws RateException;
 
     void updateCountry(Country country, List<Team> teamsToAdd, List<Team> teamsToRemove, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException;
 

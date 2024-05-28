@@ -22,26 +22,12 @@ public class Employee {
     private List<Team> teams;
     private BigDecimal overhead;
     private Configuration  activeConfiguration;
-    // the idea to store the employee percentage per each team
+
     private Map<Integer,BigDecimal> utilPerTeams;
 
 
 
-    public BigDecimal getTeamDailyRate() {
-        return teamDailyRate;
-    }
 
-    public void setTeamDailyRate(BigDecimal teamDailyRate) {
-        this.teamDailyRate = teamDailyRate;
-    }
-
-    public BigDecimal getTeamHourlyRate() {
-        return teamHourlyRate;
-    }
-
-    public void setTeamHourlyRate(BigDecimal teamHourlyRate) {
-        this.teamHourlyRate = teamHourlyRate;
-    }
 
 
 
@@ -147,15 +133,6 @@ public class Employee {
         return name;
     }
 
-
-    public String printEmployeeData(){
-        return this.getId() + ": " + this.getName() + " " + this.getActiveConfiguration().getConfigurationId() + " " + this.getEmployeeType() + this.activeConfiguration.printConfiguration();
-    }
-
-
-
-
-
     public void addConfiguration(Configuration config){
         this.configurations.add(config);
     }
@@ -223,6 +200,22 @@ public class Employee {
 
     public void setConfigurations(List<Configuration> configurations) {
         this.configurations = configurations;
+    }
+
+    public BigDecimal getTeamDailyRate() {
+        return teamDailyRate;
+    }
+
+    public void setTeamDailyRate(BigDecimal teamDailyRate) {
+        this.teamDailyRate = teamDailyRate;
+    }
+
+    public BigDecimal getTeamHourlyRate() {
+        return teamHourlyRate;
+    }
+
+    public void setTeamHourlyRate(BigDecimal teamHourlyRate) {
+        this.teamHourlyRate = teamHourlyRate;
     }
 
 

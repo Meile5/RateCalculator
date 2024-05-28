@@ -103,6 +103,7 @@ public class TeamInfoController implements Initializable {
             TeamManagementController teamManagementController = new TeamManagementController(team, model, firstLayout, this, employeesToAdd, teamsPageController);
             firstLayout.getChildren().add(teamManagementController.getRoot());
             WindowsManagement.showStackPane(firstLayout);
+            //stop the event to bubble up
             event.consume();
         });
     }

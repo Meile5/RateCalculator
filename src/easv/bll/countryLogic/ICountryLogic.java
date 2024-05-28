@@ -13,7 +13,7 @@ import java.util.Map;
 
 
 public interface ICountryLogic {
-    Map<String, Country> getCountries() throws RateException;
+
 
 
     /**
@@ -33,7 +33,7 @@ public interface ICountryLogic {
 
     List<Team> checkTeamsToUpdate(List<Team> teamsToCheck, Map<Integer, Team> teams);
 
-    boolean addNewTeam(Country country, Team team) throws SQLException, RateException;
+    boolean addNewTeam(Country country, Team team) throws RateException;
 
     boolean deleteTeam(Team team) throws RateException;
 

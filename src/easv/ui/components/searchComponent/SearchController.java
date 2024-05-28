@@ -7,9 +7,7 @@ import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
-import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,7 +20,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;

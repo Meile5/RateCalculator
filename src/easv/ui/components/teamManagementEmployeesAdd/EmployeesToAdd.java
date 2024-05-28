@@ -1,5 +1,4 @@
 package easv.ui.components.teamManagementEmployeesAdd;
-
 import easv.Utility.TeamValidation;
 import easv.be.Employee;
 import easv.be.Team;
@@ -15,9 +14,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
-
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;

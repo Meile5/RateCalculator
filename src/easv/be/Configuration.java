@@ -19,9 +19,14 @@ public class Configuration {
 
     //static  default value because it will be available for all objects
     private static final int  DAY_WORKING_HORS=8;
+
+
     private  double dayWorkingHours;
 
 
+    /**empty constructor , used for unit tests*/
+    public Configuration() {
+    }
 
     public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours) {
         this.annualSalary = annualSalary;
@@ -30,8 +35,6 @@ public class Configuration {
         this.utilizationPercentage = utilizationPercentage;
         this.workingHours = workingHours;
     }
-
-
 
 
     public Configuration(BigDecimal annualSalary, BigDecimal fixedAnnualAmount, BigDecimal overheadMultiplier, BigDecimal utilizationPercentage, BigDecimal workingHours, LocalDateTime savedDate, boolean active,double dayWorkingHours ) {
@@ -122,7 +125,7 @@ public class Configuration {
         return Objects.hash(savedDate);
     }
 
-    //TODO remove the utilization percentage from the employee configuration if not used annymore
+
 
 /**used to compare to configuration objects if are equal */
 public boolean isEqualTo(Configuration other) {
@@ -138,21 +141,7 @@ public boolean isEqualTo(Configuration other) {
 }
 
 
-public String printConfiguration(){
 
-        return "Configuration{" +
-                "configurationId=" + configurationId +
-                ", annualSalary=" + annualSalary +
-                ", fixedAnnualAmount=" + fixedAnnualAmount +
-                ", overheadMultiplier=" + overheadMultiplier +
-                ", utilizationPercentage=" + utilizationPercentage +
-                ", workingHours=" + workingHours +
-                ", savedDate=" + savedDate +
-                ", active=" + active +
-                ", dayWorkingHours= " + dayWorkingHours +
-                '}';
-
-    }
 
     public double getDayWorkingHours() {
         return dayWorkingHours;
@@ -241,8 +230,7 @@ public String printConfiguration(){
         return hourlyRate;
     }
 
-    public Configuration() {
-    }
+
 
     public void setHourlyRate(BigDecimal hourlyRate) {
         this.hourlyRate = hourlyRate;

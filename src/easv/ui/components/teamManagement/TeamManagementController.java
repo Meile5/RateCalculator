@@ -26,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -136,7 +137,7 @@ public class TeamManagementController implements Initializable {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        Thread.sleep(200);
+                        //  Thread.sleep(200);
                         model.performEditTeam(employees, employeesToDelete, editedTeam, originalTeam);
                         return null;
                     }
@@ -144,17 +145,27 @@ public class TeamManagementController implements Initializable {
             }
         };
         saveTeam.setOnSucceeded(event -> {
-            //showOperationStatus("Operation Successful!", Duration.seconds(5));
+            PauseTransition closeTheSpinner = new PauseTransition(Duration.millis(500));
+            closeTheSpinner.setOnFinished((e) -> {
+                operationSpinner.setVisible(false);
+                spinnerLB.setText("Operation Succesfull");
+            });
+
+            PauseTransition pauseTransition = new PauseTransition(Duration.millis(1500));
+            pauseTransition.setOnFinished((e) -> {
+                WindowsManagement.closeStackPane(firstLayout);
+            });
             teamsPageController.clearTeams();
             teamsPageController.displayTeams();
             /* Refresh charts and graphs*/
             teamInfoController.populateCharts(editedTeam);
-            WindowsManagement.closeStackPane(firstLayout);
+            pauseTransition.playFromStart();
+            closeTheSpinner.playFromStart();
 
         });
         saveTeam.setOnFailed(event -> {
+            saveTeam.getException().printStackTrace();
             showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
-            WindowsManagement.closeStackPane(firstLayout);
             operationSpinner.setVisible(false);
         });
         saveTeam.restart();
@@ -163,9 +174,14 @@ public class TeamManagementController implements Initializable {
     private void showOperationStatus(String message, Duration duration) {
         spinnerLB.setText(message);
         PauseTransition delay = new PauseTransition(duration);
-        delay.setOnFinished(event -> spinnerLB.setText(""));
-        delay.play();
+        delay.setOnFinished(event -> {
+                    spinnerLB.setText("");
+                    WindowsManagement.closeStackPane(firstLayout);
+                }
+        );
+        delay.playFromStart();
     }
+
     private void enableSpinner() {
         spinnerLB.setText("Processing...");
         operationSpinner.setVisible(true);

@@ -3,7 +3,6 @@ package easv.ui.pages.modelFactory;
 
 import easv.Utility.DisplayEmployees;
 import easv.be.*;
-import easv.be.Currency;
 import easv.bll.EmployeesLogic.EmployeeManager;
 import easv.bll.EmployeesLogic.IEmployeeManager;
 import easv.bll.RegionLogic.IRegionManager;
@@ -18,7 +17,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -71,8 +69,6 @@ public class Model implements IModel {
     private final ObservableMap<Integer, Team> teamsWithEmployees;
 
 
-
-
     /**
      * holds all the data related to the operational  countries
      */
@@ -94,7 +90,7 @@ public class Model implements IModel {
     private ObservableList<Employee> listEmployeeByCountryTemp;
 
     /**
-     * golds the selected region cho0sed by the employee from  the filter
+     * holds the selected region choosed by the employee from  the filter
      */
     private List<Team> resultedTeamsFromFilterAction;
 
@@ -133,8 +129,7 @@ public class Model implements IModel {
         teamsWithEmployees = FXCollections.observableHashMap();
         countriesWithTeams = FXCollections.observableHashMap();
         regionsWithCountries = FXCollections.observableHashMap();
-   //     populateCountries();
-        populateTeams();
+
         populateTeamsWithEmployees();
         populateCountriesWithTeams();
         populateRegionsWithCountries();
@@ -242,11 +237,10 @@ public class Model implements IModel {
     }
 
     @Override
-    public void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException, SQLException {
+    public void addNewEmployee(Employee employee, Configuration configuration, List<Team> teams) throws RateException {
         employee = employeeManager.addEmployee(employee, configuration, teams);
         if (employee != null) {
             employees.put(employee.getId(), employee);
-
             for (Team team : teams) {
                 if(team.getTeamMembers() == null){
                     team.setTeamMembers(new ArrayList<>());
@@ -268,7 +262,7 @@ public class Model implements IModel {
     }
 
     @Override
-    public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws SQLException, RateException {
+    public void addTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate) throws  RateException {
         int oldTeamConfigurationID = 0;
         if(team != null)
             if(team.getActiveConfiguration() != null)
@@ -302,29 +296,12 @@ public class Model implements IModel {
         }
     }
 
-    /*
-    private BigDecimal calculateSumDayRate(Team team) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (Employee employee : team.getEmployees()) {
-            sum = sum.add(employee.getActiveConfiguration().getDayRate());
-        }
-        return sum;
-    }
 
-    private BigDecimal calculateSumHourlyRate(Team team) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (Employee employee : team.getEmployees()) {
-            sum = sum.add(employee.getActiveConfiguration().getHourlyRate());
-        }
-        return sum;
-    }
-
-     */
 
 
 //MAP RELATED LOGIC
 
-    //Please do not modify again
+
     /**used in the map to display teams info*/
     @Override
     public List<Team> getCountryTeams() {
@@ -375,9 +352,6 @@ public class Model implements IModel {
              originalEmployeeTeams.add(teamsWithEmployees.get(team.getId()));
         }
         Employee editedSavedEmployee = employeeManager.saveEditOperation(editedEmployee, originalEmployee,originalEmployeeTeams );
-        for(Team team :editedSavedEmployee.getTeams()){
-            System.out.println(team.getActiveConfiguration().getTeamDayRate() +"after save edit");
-        }
         editedSavedEmployee.setCountries(originalEmployee.getCountries());
         editedSavedEmployee.setRegions(originalEmployee.getRegions());
         editedSavedEmployee.setTeams(originalEmployee.getTeams());
@@ -418,10 +392,6 @@ public class Model implements IModel {
     }
 
 
-    //Todo if possible use the getOperationalTeams () method
-    private void populateTeams() throws RateException {
-        this.teams.putAll(teamManager.getTeams());
-    }
 
     public ObservableMap<Integer, Team> getTeams() {
         return teams;
@@ -434,12 +404,12 @@ public class Model implements IModel {
 
     /** Returns results from the search operation in logic*/
     public ObservableList<Employee> getSearchResult(String filter) {
-        ObservableList searchResults = FXCollections.observableArrayList();
+        ObservableList<Employee> searchResults = FXCollections.observableArrayList();
         searchResults.setAll(employeeManager.performSearchOperation(employees.values(), filter));
         return searchResults;
     }
     /** Show selected employee for the user */
-    public void performSelectUserSearchOperation(Employee employee) throws RateException {
+    public void performSelectUserSearchOperation(Employee employee)  {
         filteredEmployeesListByRegion.setAll(displayedEmployees);
         displayedEmployees.setAll(employee);
         displayEmployees.displayEmployees();
@@ -486,13 +456,6 @@ public class Model implements IModel {
     public List<Team> getRegionTeams(Region region){
         return regionManager.filterTeamsByRegion(region);
     }
-
-
-
-
-
-
-
 
     /**return the selected team from the search operation results*/
     @Override
@@ -576,10 +539,6 @@ public class Model implements IModel {
     }
 
 
-    public void teamFilterActiveRevert() throws RateException {
-        displayedEmployees = filteredEmployeesListByRegion;
-        displayEmployees.displayEmployees();
-    }
 
 
     /**
@@ -619,6 +578,7 @@ public class Model implements IModel {
         return true;
     }
 
+
     public ObservableList<Employee> getUsersToDisplay() {
         return displayedEmployees;
     }
@@ -645,17 +605,7 @@ public class Model implements IModel {
 /**OVERHEAD DISTRIBUTION RELATED LOGIC*/
 
 
-    /**
-     * calculate the  selected team to distribute from regions overhead
-     */
-    public List<OverheadComputationPair<String, BigDecimal>> teamRegionsOverhead(int teamId) {
-        List<OverheadComputationPair<String, BigDecimal>> teamRegionsOverhead = new ArrayList<>();
-        for (Region region : teamsWithEmployees.get(teamId).getRegions()) {
-            OverheadComputationPair<String, BigDecimal> regionOverhead = teamManager.computeRegionOverhead(region);
-            teamRegionsOverhead.add(regionOverhead);
-        }
-        return teamRegionsOverhead;
-    }
+
 
 
     /**
@@ -766,7 +716,6 @@ public class Model implements IModel {
             performedValues.put(OverheadHistory.PREVIOUS_OVERHEAD, previousValues);
             // add the selected team distribution performed,
 
-
             // update the teams map in order to have the updated overhead rates values
             for (Team team : performedValues.get(OverheadHistory.CURRENT_OVERHEAD)) {
                 teamsWithEmployees.put(team.getId(), team);
@@ -779,9 +728,7 @@ public class Model implements IModel {
         return performedValues;
     }
 
-    public boolean isSimulationPerformed() {
-        return simulationPerformed;
-    }
+
 
     public void setSimulationPerformed(boolean simulationPerformed) {
         this.simulationPerformed = simulationPerformed;
@@ -834,6 +781,7 @@ public class Model implements IModel {
         LocalDateTime savedDate = LocalDateTime.now();
         return new TeamConfiguration(teamDayRate, teamHourlyRate, grossMargin, markupMultiplier, savedDate, true);
     }
+
     /**
      * Performs the edit operation on the specified team,
      * updates the team by removing the specified employees, adding new or replacing existing with new values,
@@ -873,12 +821,19 @@ public class Model implements IModel {
             TeamConfiguration tm = new TeamConfiguration(BigDecimal.ZERO, BigDecimal.ZERO, 0, 0,LocalDateTime.now() , true);
             editedTeam.setActiveConfiguration(tm);
         }
-        Team editedTeamSaved = teamManager.saveTeamEditOperation(editedTeam, originalTeam.getActiveConfiguration().getId(), employeesToDelete, employees);
+
+        Team editedTeamSaved = null;
+         if(originalTeam.getActiveConfiguration()!=null){
+             editedTeamSaved  = teamManager.saveTeamEditOperation(editedTeam, originalTeam.getActiveConfiguration().getId(), employeesToDelete, employees);
+         }else{
+             editedTeamSaved=teamManager.saveTeamEditOperation(editedTeam,0, employeesToDelete, employees);
+         }
+        System.out.println(editedTeam.getActiveConfiguration()+ "active configuration");
+
 
         if (editedTeamSaved != null) {
             teamsWithEmployees.remove(originalTeam.getId());
             teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
-
         }
     }
 
@@ -935,15 +890,7 @@ public class Model implements IModel {
         }
     }
 
-    @Override
-    public void addNewTeam(Country country, Team team) throws SQLException, RateException {
-        boolean isSucceed = countryLogic.addNewTeam(country, team);
-        if(isSucceed){
-            teamsWithEmployees.put(team.getId(), team);
-            teams.put(team.getId(), team);
-            countriesWithTeams.get(country.getId()).addNewTeam(team);
-        }
-    }
+
 
     @Override
     public void deleteTeam(Team team) throws RateException {

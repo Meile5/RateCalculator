@@ -46,6 +46,7 @@ public class EmployeesDAO implements IEmployeeDAO {
 
     public EmployeesDAO() throws RateException {
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
+        this.teamDao= new TeamDao();
     }
 
 
@@ -159,6 +160,8 @@ public class EmployeesDAO implements IEmployeeDAO {
         return countries;
 
     }
+
+
     /**
      * Retrieves the regions for employee by using country id
      */
@@ -273,57 +276,6 @@ public class EmployeesDAO implements IEmployeeDAO {
          return employeeID;
     }
 
-    @Override
-    public void addNewCountryOrTeam(Employee employee, boolean newCountry, boolean newTeam, Connection conn) throws RateException, SQLException {
-        if (newCountry) {
-            Integer countryID = addCountry(employee.getCountry(), conn);
-            if (countryID != null) {
-                employee.getCountry().setId(countryID);
-            }
-        }
-        if (newTeam) {
-            Integer teamID = addTeam(employee.getTeam(), conn);
-            if (teamID != null) {
-                employee.getTeam().setId(teamID);
-            }
-        }
-    }
-
-    @Override
-    public Integer addCountry(Country country, Connection conn) throws RateException, SQLException {
-        Integer countryID = null;
-        String sql = "INSERT INTO Countries (Name) VALUES (?)";
-        try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            psmt.setString(1, country.getCountryName());
-            psmt.executeUpdate();
-            try (ResultSet res = psmt.getGeneratedKeys()) {
-                if (res.next()) {
-                    countryID = res.getInt(1);
-                } else {
-                    throw new RateException(ErrorCode.OPERATION_DB_FAILED);
-                }
-            }
-        }
-        return countryID;
-    }
-
-    @Override
-    public Integer addTeam(Team team, Connection conn) throws RateException, SQLException {
-        Integer teamID = null;
-        String sql = "INSERT INTO Teams (Name) VALUES (?)";
-        try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            psmt.setString(1, team.getTeamName());
-            psmt.executeUpdate();
-            try (ResultSet res = psmt.getGeneratedKeys()) {
-                if (res.next()) {
-                    teamID = res.getInt(1);
-                } else {
-                    throw new RateException(ErrorCode.OPERATION_DB_FAILED);
-                }
-            }
-        }
-        return teamID;
-    }
 
 
     /**
@@ -410,8 +362,6 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
 
-    // DELETE EMPLOYEE LOGIC
-
     /**
      * delete the employee from the employees table
      *
@@ -463,11 +413,9 @@ public class EmployeesDAO implements IEmployeeDAO {
              conn.commit();
             succeeded = true;
         } catch (SQLException e) {
-            e.printStackTrace();
             try {
                 conn.rollback();
             } catch (SQLException ex) {
-                e.printStackTrace();
                 throw new RateException(e.getMessage(),e,ErrorCode.OPERATION_DB_FAILED);
             }
         }finally {
@@ -504,7 +452,6 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
 
-    //TODO modify this method, to onlly add the link with employees, in the new configuration
 
     /**
      * save the edit operation , change the active configuration of the user
@@ -540,7 +487,6 @@ public class EmployeesDAO implements IEmployeeDAO {
             conn.commit();
                        return editedEmployee;
         } catch (RateException | SQLException e) {
-            e.printStackTrace();
             if (conn != null) {
                 try {
                     conn.rollback();
@@ -709,7 +655,7 @@ public class EmployeesDAO implements IEmployeeDAO {
     }
 
     @Override
-    public Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, int oldTeamConfigurationID) throws SQLException, RateException {
+    public Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, int oldTeamConfigurationID) throws  RateException {
         Integer configurationID = null;
         Connection conn = null;
         try {
@@ -737,7 +683,11 @@ public class EmployeesDAO implements IEmployeeDAO {
             addEmployeeHistory(team, configurationID, employeeDayRate, employeeHourlyRate, conn);
             conn.commit();
         } catch (SQLException e) {
-            conn.rollback();
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                throw new RateException(ErrorCode.OPERATION_DB_FAILED);
+            }
         }
          catch (RateException e) {
         throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
@@ -877,17 +827,10 @@ public class EmployeesDAO implements IEmployeeDAO {
                 }
             }
         } catch (SQLException | RateException e) {
-            // Optionally, log the stack trace or rethrow the exception as needed
-            e.printStackTrace();
             throw new RateException(e.getMessage(),e,ErrorCode.OPERATION_DB_FAILED);
         }
         return employeeTeamsUtilization;
     }
-
-
-
-
-
 
 
 

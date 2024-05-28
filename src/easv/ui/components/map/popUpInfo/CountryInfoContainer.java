@@ -104,7 +104,6 @@ public class CountryInfoContainer implements Initializable {
         });
 
         teamsInitializer.setOnFailed(event -> {
-            teamsInitializer.getException().printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.CONNECTION_FAILED.getValue());
         });
         teamsInitializer.start();

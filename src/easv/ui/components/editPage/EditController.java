@@ -28,13 +28,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import java.io.IOException;
-import java.io.StringReader;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class EditController implements Initializable {
 
@@ -95,7 +94,6 @@ public class EditController implements Initializable {
         try {
             componentParent = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.INVALID_INPUT.getValue());
         }
     }
@@ -295,24 +293,28 @@ public class EditController implements Initializable {
         this.dayWorkingHoursInput.setText(NOT_AVAILABLE);
     }
 
+
+    //TODO bring the utilization for the employee
     /**
      * calculate utilizationPercentage for employee
      */
     private String calculateEmploueeUtilizatiion(Employee employee) {
         Map<Integer, BigDecimal> employeeUtilization = employee.getUtilPerTeams();
         BigDecimal utilization = BigDecimal.ZERO;
-        if (employeeUtilization != null && (!employeeUtilization.isEmpty())) {
+        if (employeeUtilization != null) {
             for (BigDecimal util : employeeUtilization.values()) {
                 utilization = utilization.add(util);
-
+                System.out.println(util+ "from edit");
             }
             return utilization.toString();
+        }else{
+            System.out.println("is null");
         }
         return EMPTY;
     }
 
 
-//REDO THE CALCULATIONS IF THE USER IS EDITED
+
 
     /**
      * call the EmployeeInfoController to update the edited userValues,and to update the performed calculations
@@ -331,7 +333,7 @@ public class EditController implements Initializable {
             pauseTransition.setOnFinished((e) -> WindowsManagement.closeStackPane(this.firstLayout));
             pauseTransition.playFromStart();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
             WindowsManagement.closeStackPane(this.spinnerLayer);
         }

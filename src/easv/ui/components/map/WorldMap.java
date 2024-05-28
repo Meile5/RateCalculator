@@ -37,7 +37,6 @@ public class WorldMap implements Initializable {
         try {
             mapContainer = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }

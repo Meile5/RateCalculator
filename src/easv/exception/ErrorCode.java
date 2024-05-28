@@ -23,13 +23,7 @@ public enum ErrorCode {
     DISTRIBUTE_TO("This team was selected to distribute to !"),
     OVERHEAD_ZERO("The overhead of the team to distribute from is  zero! No more overhead to distribute from!"),
     OPERATION_EXECUTED("Operation performed successfully!")
-
     ;
-
-
-
-
-
 
     private String value;
 

@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 public interface ITeamDao {
-    Map<Integer, Team> getTeams() throws RateException;
-
 
     boolean savePerformedDistribution(Map<Team, Map<RateType, BigDecimal>> receivedTeams, Team selectedTeamToDistributeFrom) throws RateException;
     Team saveEditOperationTeam(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException;

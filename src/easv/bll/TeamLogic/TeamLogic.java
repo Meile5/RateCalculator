@@ -8,14 +8,10 @@ import easv.dal.teamDao.ITeamDao;
 import easv.dal.teamDao.TeamDao;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
-
-
-import javax.swing.event.ListDataEvent;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.*;
 
-//TODO do not delete this class   Andrei found a usage for
 public class TeamLogic implements ITeamLogic {
     private final ITeamDao teamDao;
     private final IRateCalculator rateCalculator;
@@ -23,47 +19,6 @@ public class TeamLogic implements ITeamLogic {
     public TeamLogic() throws RateException {
         this.teamDao = new TeamDao();
         this.rateCalculator = new RateCalculator();
-    }
-
-
-    /**
-     * compute the overhead for a team*
-     *
-     * @param team the team to calculate for
-     *             returns a List that contains salaryOverhead,totalOverhead,productiveOverhead
-     */
-    private Map<TeamWithEmployees.TeamOverheadType, BigDecimal> calculateTeamOverhead(TeamWithEmployees team) {
-        Map<TeamWithEmployees.TeamOverheadType, BigDecimal> teamOverhead = new HashMap<>();
-        BigDecimal salaryOverhead = rateCalculator.calculateTeamSalaryOverhead(team);
-        BigDecimal expensesOverhead = rateCalculator.calculateTeamOverheadWithoutPercentage(team);
-        BigDecimal productiveOverhead = rateCalculator.calculateProductiveOverHead(team);
-        teamOverhead.put(TeamWithEmployees.TeamOverheadType.SALARY_OVERHEAD, salaryOverhead);
-        teamOverhead.put(TeamWithEmployees.TeamOverheadType.EXPENSES_OVERHEAD, expensesOverhead);
-        teamOverhead.put(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD, productiveOverhead);
-        return teamOverhead;
-    }
-
-    private List<Map<String, Double>> calculateTeamPercentage(TeamWithEmployees team) {
-        List<Map<String, Double>> teamPercentagePerEmployee = team.getTeamMembers().stream().map(e -> employeePercentage(e, team.getTeamOverheadValues().get(TeamWithEmployees.TeamOverheadType.TOTAL_OVERHEAD))).toList();
-        return teamPercentagePerEmployee;
-    }
-
-
-    private Map<String, Double> employeePercentage(Employee employee, BigDecimal totalOverhead) {
-        Map<String, Double> emplPercentage = new HashMap<>();
-        BigDecimal employeeOverhead = employee.getOverhead();
-        if (employeeOverhead.compareTo(BigDecimal.ZERO) == 0) {
-            emplPercentage.put(employee.getName(), 0.0);
-            return emplPercentage;
-        }
-        double percentage = employeeOverhead.divide(totalOverhead, MathContext.DECIMAL32).doubleValue() * 100;
-        String formattedPercentage = String.format("%.2f", percentage);
-        emplPercentage.put(employee.getName() + " " + formattedPercentage, percentage);
-        return emplPercentage;
-    }
-
-    public Map<Integer, Team> getTeams() throws RateException {
-        return teamDao.getTeams();
     }
 
 
@@ -92,9 +47,6 @@ public class TeamLogic implements ITeamLogic {
         return new OverheadComputationPair<>(region.getRegionName(), BigDecimal.ZERO);
     }
 
-
-
-    //TODO validate if the team to distribute to has no more overhead
 
     /**
      * validate if  inserted overhead percentages   are bigger than 100%
@@ -190,10 +142,6 @@ public class TeamLogic implements ITeamLogic {
         }
         return totalOverhead;
     }
-
-
-    //TODO after the review change this method to retrieve  only the previous values, because new values are saved on the model insertedTeamsWithOverheadPercentage collection,
-    // i do not think i need the previous values now, because in the insertedOverhead values i will not modify the teams overhead
 
     @Override
     public Map<OverheadHistory, List<Team>> performSimulationComputation(Team selectedTeamToDistributeFrom, Map<Team, String> insertedDistributionPercentageFromTeams, Map<Integer, Team> originalTeams) {
@@ -349,21 +297,6 @@ public class TeamLogic implements ITeamLogic {
         sharedOverhead.put(RateType.HOUR_RATE, selectedTeamSharedOverheadHourDay);
         distributionOperationOverheadValues.put(selectedTeamToDistributeFrom, sharedOverhead);
 
-        System.out.println("---rresulted overhead");
-        System.out.println(selectedTeamToDistributeFrom.getTeamName() + selectedTeamToDistributeFrom.getId());
-        System.out.println(selectedTeamSharedOverheadDayRate + "sharedValue");
-        System.out.println(selectedTeamSharedOverheadHourDay + "sharedValue");
-        System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "new value Day");
-        System.out.println(selectedTeamToDistributeFrom.getActiveConfiguration().getTeamDayRate() + "new value ray");
-        System.out.println("--ened of print--");
-
-        for (Team team : insertedDistributionPercentageFromTeams.keySet()) {
-            System.out.println("received overhead");
-            System.out.println(team.getActiveConfiguration().getTeamDayRate());
-            System.out.println(team.getActiveConfiguration().getTeamHourlyRate());
-            System.out.println(team.getTeamName() + team.getId());
-            System.out.println("========= end ");
-        }
         return distributionOperationOverheadValues;
 
     }

@@ -6,5 +6,5 @@ import java.sql.Connection;
 
 public interface IConnection {
     Connection getConnection() throws RateException;
-    //void releaseConnection(Connection connection);
+
 }

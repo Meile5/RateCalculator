@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -73,7 +74,7 @@ public class RegionDAO implements IRegionDAO{
                     conn.close();
                 }
             } catch (SQLException e) {
-                throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+                LOGGER.log(Level.SEVERE, "error closing the database connection", e);
             }
         }
         return regionID;
@@ -110,7 +111,6 @@ public class RegionDAO implements IRegionDAO{
                 if(!removedCountries.isEmpty()){
                     removeCountryFromRegion(region.getId(), removedCountries, conn);
                 }
-
                 conn.commit();
             } catch (SQLException e) {
                 conn.rollback();
@@ -124,12 +124,13 @@ public class RegionDAO implements IRegionDAO{
                     conn.close();
                 }
             } catch (SQLException e) {
-                throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+
+                LOGGER.log(Level.SEVERE, "error closing the database onnection", e);
             }
         }
     }
 
-    private void removeCountryFromRegion(int regionID, List<Country> removedCountries, Connection conn) {
+    private void removeCountryFromRegion(int regionID, List<Country> removedCountries, Connection conn) throws RateException {
         String sql = "DELETE FROM RegionCountry WHERE RegionID = ? AND CountryID = ?";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
             for (Country country : removedCountries) {
@@ -139,7 +140,7 @@ public class RegionDAO implements IRegionDAO{
             }
             psmt.executeBatch();
         } catch (SQLException e) {
-            e.printStackTrace();
+          throw  new RateException(e.getMessage(),e,ErrorCode.OPERATION_DB_FAILED);
         }
     }
 
@@ -149,6 +150,7 @@ public class RegionDAO implements IRegionDAO{
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
+            conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             String sql = "DELETE FROM Region WHERE RegionID = ?";
             try (PreparedStatement psmt = conn.prepareStatement(sql)) {
                 psmt.setInt(1, region.getId());
@@ -166,7 +168,7 @@ public class RegionDAO implements IRegionDAO{
                     conn.close();
                 }
             } catch (SQLException e) {
-                throw new RateException(e.getMessage(), e.getCause(), ErrorCode.OPERATION_DB_FAILED);
+                LOGGER.log(Level.SEVERE, "error closing the database connection", e);
             }
         }
         return true;

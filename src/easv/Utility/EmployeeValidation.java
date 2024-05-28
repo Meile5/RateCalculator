@@ -88,7 +88,6 @@ public class EmployeeValidation {
         String overheadMultiplierText = overheadMultiplier.getText();
         if (overheadMultiplierText.isEmpty()) {
             overheadMultiplier.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-            System.out.println("HERE");
             ExceptionHandler.errorAlertMessage("The Overhead Multiplier % field cannot be empty.");
             return false;
         } else if (!overheadMultiplierText.matches(validPercentagePattern)) {
@@ -252,42 +251,8 @@ public class EmployeeValidation {
     }
 
 
-    //TODO delete if not used
 
-    /**
-     * validate the format of the  markupMultiplier and grossMarginMultiplier
-     *
-     * @param markup
-     * @param grossMargin
-     */
-    public static boolean validateAditionalMultipliers(MFXTextField markup, MFXTextField grossMargin) {
-        if (!markup.getText().isEmpty()) {
-            if (!markup.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
-                ExceptionHandler.errorAlertMessage(INVALID_FORMAT);
-                return false;
-            }
-            boolean isValid = isValueWithinValidRange(markup.getText());
-            if (!isValid) {
-                markup.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
-                ExceptionHandler.errorAlertMessage(INVALID_MARKUP);
-                return false;
-            }
-        }
 
-        if (!grossMargin.getText().isEmpty()) {
-            if (!grossMargin.getText().matches("^\\d{0,3}([.,]\\d{1,2})?$")) {
-                ExceptionHandler.errorAlertMessage(INVALID_FORMAT);
-                return false;
-            }
-            boolean isValid = isValueWithinValidRange(grossMargin.getText());
-            if (!isValid) {
-                grossMargin.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValid);
-                ExceptionHandler.errorAlertMessage(INVALID_MARKUP);
-                return false;
-            }
-        }
-        return true;
-    }
 
 
     /**
@@ -384,30 +349,6 @@ public class EmployeeValidation {
     }
 
 
-
-    //TODO remove if not needed
-    /**
-     * add validation listeners for the markup and the grossMargin multipliers,
-     * they can be empty;
-     */
-    public static void addAdditionalMarkupsListeners(MFXTextField percentageDisplayer) {
-        PauseTransition pauseTransition = new PauseTransition(Duration.millis(300));
-        percentageDisplayer.textProperty().addListener(((observable, oldValue, newValue) -> {
-            pauseTransition.setOnFinished((event) -> {
-                if (newValue.isEmpty()) {
-                    percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, false);
-                    return;
-                }
-                if (!newValue.matches("^\\d{1,3}([.,]\\d{1,2})?$")) {
-                    percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, true);
-                    return;
-                }
-                percentageDisplayer.pseudoClassStateChanged(ERROR_PSEUDO_CLASS, !isValueWithinValidRange(newValue));
-            });
-            pauseTransition.playFromStart();
-        }));
-
-    }
 
     /**
      * add validation listeners for the input fields, to not be empty and to be digits

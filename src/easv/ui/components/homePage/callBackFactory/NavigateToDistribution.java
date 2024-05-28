@@ -6,7 +6,7 @@ import easv.ui.pages.distribution.DistributionController;
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 
-public class NavigateToDistribution implements CallBack, Subject {
+public class NavigateToDistribution implements CallBack,Subject {
     private PageManager pageManager;
     private Parent root;
     private boolean isOpened;

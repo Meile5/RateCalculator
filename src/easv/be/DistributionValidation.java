@@ -12,7 +12,6 @@ import java.util.Map;
 public class DistributionValidation {
      private Map<ErrorCode, List<Team>> errorValues;
 
-
     public DistributionValidation() {
         this.errorValues =  new HashMap<>();
     }
@@ -21,8 +20,5 @@ public class DistributionValidation {
         return errorValues;
     }
 
-    public void setErrorValues(Map<ErrorCode, List<Team>> errorValues) {
-        this.errorValues = errorValues;
-    }
 
 }

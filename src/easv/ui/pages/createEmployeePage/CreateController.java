@@ -4,6 +4,7 @@ import easv.Utility.WindowsManagement;
 import easv.be.*;
 import easv.be.Currency;
 import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
 import easv.exception.RateException;
 import easv.ui.pages.modelFactory.IModel;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
@@ -75,8 +76,7 @@ public class CreateController implements Initializable {
         try {
             createPage=loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
     }
 
@@ -159,7 +159,6 @@ public class CreateController implements Initializable {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        Thread.sleep(200);
                         model.addNewEmployee(employee, configuration, teams);
                         return null;
                     }
