@@ -774,7 +774,7 @@ public class Model implements IModel {
      * Creates new team configuration based on recalculated rates and sets active configuration
      * If the team is successfully saved, it updates the map that stores the teams.
      */
-    public void performEditTeam(List<Employee> employees, List<Employee> employeesToDelete, Team editedTeam, Team originalTeam) throws RateException{
+    public void performEditTeam (List<Employee> employees, List<Employee> employeesToDelete, Team editedTeam, Team originalTeam) throws RateException{
         for (Employee employeesDelete : employeesToDelete) {
             editedTeam.removeTeamMember(employeesDelete);
         }
@@ -812,7 +812,7 @@ public class Model implements IModel {
         }else{
             editedTeamSaved=teamManager.saveTeamEditOperation(editedTeam,0, employeesToDelete, employees);
         }
-        System.out.println(editedTeam.getActiveConfiguration()+ "active configuration");
+
 
 
         if (editedTeamSaved != null) {
