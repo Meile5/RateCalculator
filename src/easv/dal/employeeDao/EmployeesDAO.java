@@ -70,7 +70,6 @@ public class EmployeesDAO implements IEmployeeDAO {
                     String name = res.getString("Name");
                     String employeeType = res.getString("EmployeeType");
                     String currency1 = res.getString("Currency");
-
                     /* Retrieve employee type as string*/
                     EmployeeType type = EmployeeType.valueOf(employeeType);
                     /* Retrieve employee type as string*/

@@ -159,6 +159,7 @@ public class EmployeeMainPageController implements Initializable, DisplayEmploye
     }
     /** Displays components for each employee in the scrollpane */
 
+
     public void displayEmployees() {
         employeesContainer.getChildren().clear();
         model.getUsersToDisplay()
