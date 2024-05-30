@@ -6,11 +6,10 @@
 }
 
 .modalLayout{
--fx-background-color: transparent;
+    -fx-background-color: transparent;
 
 }
 
 .navigationButton{
     -fx-background-color:  #F2F3F2;
 }
-
