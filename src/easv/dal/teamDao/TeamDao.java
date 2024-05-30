@@ -291,7 +291,7 @@ public class TeamDao implements ITeamDao {
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
-                    // LOGGER.log(Level.SEVERE, "error in save edit team operation", e);
+                    LOGGER.log(Level.SEVERE, "error in save edit team operation", e);
                     throw new RateException(e.getMessage(), e, ErrorCode.OPERATION_DB_FAILED);
                 }
             }
@@ -301,7 +301,7 @@ public class TeamDao implements ITeamDao {
                     conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException e) {
-                    //LOGGER.log(Level.SEVERE, "Failed to close the database connection", e);
+                    LOGGER.log(Level.SEVERE, "Failed to close the database connection", e);
                 }
             }
         }
@@ -404,8 +404,8 @@ public class TeamDao implements ITeamDao {
         }
         return configurationID;
     }
-    /** Connect team with configuration in the database */
 
+    /** Connect team with configuration in the database */
 
     private void addTeamToConfiguration(Team team, int teamConfigurationID, Connection conn) {
         String sql = "INSERT INTO TeamConfigurationsHistory (TeamConfigurationID, TeamID) VALUES (?, ?)";
