@@ -33,8 +33,6 @@ public interface ICountryLogic {
 
     List<Team> checkTeamsToUpdate(List<Team> teamsToCheck, Map<Integer, Team> teams);
 
-    boolean addNewTeam(Country country, Team team) throws RateException;
-
     boolean deleteTeam(Team team) throws RateException;
 
     List<Country> performSearchCountryFilter(String filter, Collection<Country> values);

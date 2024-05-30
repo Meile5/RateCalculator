@@ -97,12 +97,6 @@ public class CountryComponent extends HBox implements Initializable {
             ManageCountryController managecountryController = new ManageCountryController(model, pane, secondPane, country, controller);
             this.pane.getChildren().add(managecountryController.getRoot());
             WindowsManagement.showStackPane(pane);
-
-//            EditController editController = new EditController(model, firstLayout, employee, this);
-//            this.firstLayout.getChildren().add(editController.getRoot());
-//            employeeController.setSelectedComponentStyleToSelected(this);
-//            employeeController.setEmployeesVboxContainerStyleToEdit();
-//            WindowsManagement.showStackPane(firstLayout);
         });
     }
 

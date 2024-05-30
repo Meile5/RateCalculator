@@ -21,6 +21,15 @@ public class CountryDao implements ICountryDao {
     }
 
 
+    /**
+     * Adds a new country and associates it with the specified teams.
+     *
+     * @param country      The country to add.
+     * @param teams        The list of existing teams to associate with the country.
+     * @param newTeams     The list of new teams to add and associate with the country.
+     * @param teamsToUpdate The list of teams to update.
+     * @return The ID of the added country.
+     */
     @Override
     public Integer addCountry(Country country, List<Team> teams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException {
         Integer countryID = null;
@@ -69,6 +78,12 @@ public class CountryDao implements ICountryDao {
         return countryID;
     }
 
+    /**
+     * Updates the specified list of teams in the database.
+     *
+     * @param teamsToUpdate The list of teams to update.
+     * @param conn          The database connection to use.
+     */
     private void updateTeams(List<Team> teamsToUpdate, Connection conn) throws RateException {
         String sql = "UPDATE Teams SET TeamName = ?, TeamCurrency = ? WHERE TeamID = ?";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
@@ -84,6 +99,13 @@ public class CountryDao implements ICountryDao {
         }
     }
 
+    /**
+     * Associates a list of new team IDs with a specified country in the database.
+     *
+     * @param newTeamsIds The list of new team IDs to associate.
+     * @param countryID   The ID of the country to associate the teams with.
+     * @param conn        The database connection to use.
+     */
     @Override
     public void addNewTeamsToCountry(List<Integer> newTeamsIds, Integer countryID, Connection conn) throws RateException {
         if (conn == null) {
@@ -102,6 +124,13 @@ public class CountryDao implements ICountryDao {
         }
     }
 
+    /**
+     * Associates a list of existing teams with a specified country in the database.
+     *
+     * @param countryID The ID of the country to associate the teams with.
+     * @param teams     The list of teams to associate.
+     * @param conn      The database connection to use.
+     */
     @Override
     public void addTeamToCountry(Integer countryID, List<Team> teams, Connection conn) throws RateException {
         String sql = "INSERT INTO CountryTeam (CountryID, TeamID) VALUES (?, ?)";
@@ -117,6 +146,13 @@ public class CountryDao implements ICountryDao {
         }
     }
 
+    /**
+     * Adds a list of new teams to the database and returns their generated IDs.
+     *
+     * @param teams The list of new teams to add.
+     * @param conn  The database connection to use.
+     * @return A list of generated team IDs.
+     */
     @Override
     public List<Integer> addTeams(List<Team> teams, Connection conn) throws RateException {
         if (conn == null) {
@@ -146,6 +182,15 @@ public class CountryDao implements ICountryDao {
         return teamIds;
     }
 
+    /**
+     * Updates an existing country and its associated teams in the database.
+     *
+     * @param country       The country to update.
+     * @param teamsToAdd    The list of teams to add.
+     * @param teamsToRemove The list of teams to remove.
+     * @param newTeams      The list of new teams to add.
+     * @param teamsToUpdate The list of teams to update.
+     */
     @Override
     public void updateCountry(Country country, List<Team> teamsToAdd, List<Team> teamsToRemove, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException {
         Connection conn = null;

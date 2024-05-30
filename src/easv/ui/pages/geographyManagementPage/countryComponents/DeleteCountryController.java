@@ -3,6 +3,7 @@ package easv.ui.pages.geographyManagementPage.countryComponents;
 import easv.Utility.WindowsManagement;
 import easv.be.Country;
 import easv.exception.ErrorCode;
+import easv.exception.ExceptionHandler;
 import easv.ui.components.confirmationView.ConfirmationWindowController;
 import easv.ui.components.confirmationView.OperationHandler;
 import easv.ui.pages.geographyManagementPage.geographyMainPage.GeographyManagementController;
@@ -25,13 +26,9 @@ public class DeleteCountryController implements Initializable, OperationHandler 
 
     @FXML
     private VBox deleteComponent;
-    @FXML
-    private VBox deleteContainer;
     private StackPane firstLayout;
     private IModel model;
     private Country country;
-    private VBox employeesContainer;
-    private HBox employeeComponent;
     private ConfirmationWindowController confirmationWindowController;
     private GeographyManagementController controller;
     private Service<Void> deleteCountry;
@@ -45,10 +42,8 @@ public class DeleteCountryController implements Initializable, OperationHandler 
         this.controller = controller;
         try {
             deleteComponent = loader.load();
-           // this.deleteContainer = deleteContainer;
-
         } catch (IOException e) {
-            //ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
+            ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());
         }
 
     }

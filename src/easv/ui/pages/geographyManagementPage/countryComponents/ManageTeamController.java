@@ -73,6 +73,9 @@ public class ManageTeamController implements Initializable {
         addListenersForInputs();
     }
 
+    /**
+     * Adds a listener to save the team.
+     */
     private void saveTeamListener() {
         saveBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(CountryValidation.isTeamNameValid(teamNameTF) && CountryValidation.isCurrencySelected(currencyCB)){
@@ -91,6 +94,9 @@ public class ManageTeamController implements Initializable {
 
     }
 
+    /**
+     * Adds a listener to delete the team.
+     */
     private void deleteTeamListener() {
         deleteBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
                 if(selectedTeam != null) {
@@ -106,6 +112,10 @@ public class ManageTeamController implements Initializable {
         });
     }
 
+    /**
+     * Performs the save team operation.
+     * @param team the team object
+     */
     private void saveTeamOperation(Team team) {
         saveTeam = new Service<Void>() {
             @Override
@@ -145,6 +155,9 @@ public class ManageTeamController implements Initializable {
         saveTeam.restart();
     }
 
+    /**
+     * Adds a listener to cancel the operation.
+     */
     private void cancelOperationListener() {
         cancelBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             WindowsManagement.closeStackPane(secondPane);
@@ -152,11 +165,17 @@ public class ManageTeamController implements Initializable {
         });
     }
 
+    /**
+     * Adds listeners for input fields.
+     */
     private void addListenersForInputs(){
         CountryValidation.addLettersOnlyInputListener(teamNameTF);
         CountryValidation.addLettersOnlyInputListener(currencyCB);
     }
 
+    /**
+     * Sets the initial fields.
+     */
     private void setFields(){
         pane.setVisible(false);
         ObservableList<String> currencies = FXCollections.observableArrayList(Currency.EUR.name(), Currency.USD.name());
@@ -167,6 +186,10 @@ public class ManageTeamController implements Initializable {
         }
     }
 
+    /**
+     * Retrieves the selected currency.
+     * @return the selected currency
+     */
     private Currency getCurrency() {
         if (currencyCB.getSelectedItem().equals(Currency.EUR.name())) {
             return Currency.EUR;
@@ -175,11 +198,10 @@ public class ManageTeamController implements Initializable {
         }
     }
 
-    private void clearFields(){
-        teamNameTF.clear();
-        currencyCB.clearSelection();
-    }
-
+    /**
+     * Retrieves the root element.
+     * @return the root element
+     */
     public VBox getRoot(){
         return createTeamWindow;
     }

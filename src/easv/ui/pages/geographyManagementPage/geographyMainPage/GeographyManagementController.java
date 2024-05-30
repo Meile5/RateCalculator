@@ -6,7 +6,6 @@ import easv.be.Region;
 import easv.be.Team;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
-import easv.ui.components.searchComponent.DataHandler;
 import easv.ui.components.searchComponent.SearchController;
 import easv.ui.pages.geographyManagementPage.countryComponents.CountryComponent;
 import easv.ui.pages.geographyManagementPage.countryComponents.DeleteCountryController;
@@ -82,6 +81,9 @@ public class GeographyManagementController implements Initializable, GeographyIn
 
     }
 
+    /**
+     * Adds a listener to the add region button.
+     */
     private void addRegionButtonListener() {
         addRegionBTN.setOnAction(event -> {
             ManageRegionController manageRegionController = new ManageRegionController(model, pane, secondPane, null, this);
@@ -90,6 +92,9 @@ public class GeographyManagementController implements Initializable, GeographyIn
         });
     }
 
+    /**
+     * Adds a listener to the add country button.
+     */
     private void addCountryButtonListener() {
         addCountryBTN.setOnAction(event -> {
             ManageCountryController manageCountryController = new ManageCountryController(model, pane, secondPane, null, this);
@@ -98,6 +103,9 @@ public class GeographyManagementController implements Initializable, GeographyIn
         });
     }
 
+    /**
+     * Initializes the service for loading regions and countries from the database.
+     */
     private void initializeGeographyLoadingService() {
         enableProgressBar();
         loadRegionsAndCountriesFromDB = new Service<>() {
@@ -132,16 +140,26 @@ public class GeographyManagementController implements Initializable, GeographyIn
         loadRegionsAndCountriesFromDB.restart();
     }
 
+    /**
+     * Displays the list of countries.
+     */
     private void displayCountries() {
         countriesVBox.getChildren().clear();
         countries.forEach(this::addCountryComponent);
     }
 
+    /**
+     * Displays the list of regions.
+     */
     private void displayRegions() {
         regionsVBox.getChildren().clear();
         regions.forEach(this::addRegionComponent);
     }
 
+    /**
+     * Adds a region component to the UI.
+     * @param region the region object
+     */
     public void addRegionComponent(Region region) {
         DeleteRegionController deleteRegionController = new DeleteRegionController(pane, model, region, this);
         RegionComponent regionComponent = new RegionComponent(model, pane, region, deleteRegionController, this);
@@ -150,22 +168,35 @@ public class GeographyManagementController implements Initializable, GeographyIn
             regions.add(region);
     }
 
+    /**
+     * Updates the region components.
+     */
     public void updateRegionComponents() {
         initializeGeographyLoadingService();
     }
 
+    /**
+     * Enables the progress bar.
+     */
     private void enableProgressBar() {
         progressBar.setDisable(false);
         progressBar.setVisible(true);
         enableStackPane(progressBar);
     }
 
+    /**
+     * Disables the progress bar.
+     */
     private void disableProgressBar() {
         progressBar.setDisable(true);
         progressBar.setVisible(false);
         disableStackPane();
     }
 
+    /**
+     * Enables the stack pane.
+     * @param node the node to be enabled
+     */
     private void enableStackPane(Node node) {
         pane.getChildren().clear();
         pane.getChildren().add(node);
@@ -173,16 +204,28 @@ public class GeographyManagementController implements Initializable, GeographyIn
         pane.setVisible(true);
     }
 
+    /**
+     * Disables the stack pane.
+     */
     private void disableStackPane() {
         pane.getChildren().clear();
         pane.setDisable(true);
         pane.setVisible(false);
     }
 
+    /**
+     * Retrieves the parent node.
+     * @return the parent node
+     */
     public Parent getCreatePage() {
         return createPage;
     }
 
+    /**
+     * Shows the operation status.
+     * @param value the status message
+     * @param duration the duration for which the status message will be displayed
+     */
     public void showOperationStatus(String value, Duration duration) {
         operationStatusLB.setText(value);
         PauseTransition delay = new PauseTransition(duration);

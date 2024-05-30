@@ -96,7 +96,9 @@ public class CreateController implements Initializable {
     }
 
 
-    /**daylly working hours need to be  a double in order to allow decimal point numbers */
+    /**
+     * Saves the employee after validating all inputs.
+     */
     @FXML
     private void saveEmployee() throws RateException {
         if(EmployeeValidation.areNamesValid(nameTF, teamsListView) &&
@@ -107,6 +109,8 @@ public class CreateController implements Initializable {
             enableSpinner();
             firstLayout.getChildren().add(operationSpinner);
             WindowsManagement.showStackPane(firstLayout);
+
+            // Gather input values
             String name = nameTF.getText().trim();
             EmployeeType employeeType = (EmployeeType) overOrResourceCB.getSelectedItem();
             List<Team> teamsToSave = getSelectedTeams();
@@ -119,10 +123,14 @@ public class CreateController implements Initializable {
             LocalDateTime savedDate = LocalDateTime.now();
             boolean isActive = true;
             double dailyWorkingHours = Double.parseDouble( convertToDecimalPoint(dayWorkingHours.getText()));
+
+            // Create employee and configuration objects
             Employee employee = new Employee(name, employeeType, currency);
             setUtilPercentageForTeams(employee, teamsToSave);
             Configuration configuration = new Configuration(annualSalary, fixedAnnualAmount, overheadMultiplier, utilizationPercentage, workingHours, savedDate, isActive,dailyWorkingHours);
             employee.setActiveConfiguration(configuration);
+
+            // Compute rates and save employee
             BigDecimal dayRate = model.getComputedDayRate(employee);
             BigDecimal hourlyRate = model.getComputedHourlyRate(employee, dailyWorkingHours);
             configuration.setDayRate(dayRate);
@@ -131,6 +139,11 @@ public class CreateController implements Initializable {
         }
     }
 
+    /**
+     * Sets the utilization percentage for teams in the employee object.
+     * @param employee the employee object
+     * @param teamsToSave the list of teams to save
+     */
     private void setUtilPercentageForTeams(Employee employee, List<Team> teamsToSave) {
         Map<Integer,BigDecimal> utilPerTeams = new HashMap<>();
         for (int i = 0; i < teamsToSave.size(); i++) {
@@ -139,6 +152,10 @@ public class CreateController implements Initializable {
         employee.setUtilPerTeams(utilPerTeams);
     }
 
+    /**
+     * Gets the selected currency from the combo box.
+     * @return the selected currency
+     */
     private Currency getCurrency() {
         if (currencyCB.getSelectedItem().equals(Currency.EUR.name())) {
             return Currency.EUR;
@@ -147,11 +164,12 @@ public class CreateController implements Initializable {
         }
     }
 
-    @FXML
-    private void clearInputs(){
-        clearFields();
-    }
-
+    /**
+     * Saves the employee operation using a background service.
+     * @param employee the employee object
+     * @param configuration the configuration object
+     * @param teams the list of teams to save
+     */
     private void saveEmployeeOperation(Employee employee, Configuration configuration, List<Team> teams) {
         saveEmployee = new Service<Void>() {
             @Override
@@ -181,6 +199,11 @@ public class CreateController implements Initializable {
         saveEmployee.restart();
     }
 
+    /**
+     * Shows the operation status with a message.
+     * @param message the status message
+     * @param duration the duration to display the message
+     */
     private void showOperationStatus(String message, Duration duration) {
         spinnerLB.setText(message);
         PauseTransition delay = new PauseTransition(duration);
@@ -188,10 +211,17 @@ public class CreateController implements Initializable {
         delay.play();
     }
 
+    /**
+     * Gets the list of selected teams.
+     * @return the list of selected teams
+     */
     private List<Team> getSelectedTeams() {
         return teamsList;
     }
 
+    /**
+     * Adds a listener to the add team button.
+     */
     private void addTeamButtonListener(){
         addTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(EmployeeValidation.isTeamSelected(teamCB) && EmployeeValidation.isPercentageValid(utilPercentageTF)){
@@ -210,6 +240,9 @@ public class CreateController implements Initializable {
         });
     }
 
+    /**
+     * Adds a listener to the remove team button.
+     */
     private void removeTeamListener(){
         removeTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(EmployeeValidation.isTeamToRemoveSelected(teamsListView)){

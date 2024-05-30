@@ -39,7 +39,13 @@ public class RegionDAO implements IRegionDAO{
         this.connectionManager = DatabaseConnectionFactory.getConnection(DatabaseConnectionFactory.DatabaseType.SCHOOL_MSSQL);
     }
 
-
+    /**
+     * Adds a new region to the database and associates it with the specified countries.
+     *
+     * @param region the Region object to add.
+     * @param countries a list of Country objects to associate with the region.
+     * @return the ID of the newly added region.
+     */
     @Override
     public Integer addRegion(Region region, List<Country> countries) throws RateException {
         Integer regionID = null;
@@ -80,6 +86,13 @@ public class RegionDAO implements IRegionDAO{
         return regionID;
     }
 
+    /**
+     * Adds countries to a specified region in the RegionCountry table.
+     *
+     * @param regionID the ID of the region to associate the countries with.
+     * @param countries a list of Country objects to add to the region.
+     * @param conn the database connection to use.
+     */
     @Override
     public void addCountryToRegion(Integer regionID, List<Country> countries, Connection conn) throws SQLException {
         String sql = "INSERT INTO RegionCountry (RegionID, CountryID) VALUES (?, ?)";
@@ -93,6 +106,13 @@ public class RegionDAO implements IRegionDAO{
         }
     }
 
+    /**
+     * Updates the details of a region and modifies its associated countries.
+     *
+     * @param region the Region object with updated details.
+     * @param addedCountries a list of Country objects to associate with the region.
+     * @param removedCountries a list of Country objects to disassociate from the region.
+     */
     @Override
     public void updateRegion(Region region, List<Country> addedCountries, List<Country> removedCountries) throws RateException {
         Connection conn = null;
@@ -130,6 +150,13 @@ public class RegionDAO implements IRegionDAO{
         }
     }
 
+    /**
+     * Removes countries from a specified region in the RegionCountry table.
+     *
+     * @param regionID the ID of the region to disassociate the countries from.
+     * @param removedCountries a list of Country objects to remove from the region.
+     * @param conn the database connection to use.
+     */
     private void removeCountryFromRegion(int regionID, List<Country> removedCountries, Connection conn) throws RateException {
         String sql = "DELETE FROM RegionCountry WHERE RegionID = ? AND CountryID = ?";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
@@ -144,6 +171,12 @@ public class RegionDAO implements IRegionDAO{
         }
     }
 
+    /**
+     * Deletes a region from the database.
+     *
+     * @param region the Region object to delete.
+     * @return true if the deletion was successful, false otherwise.
+     */
     @Override
     public boolean deleteRegion(Region region) throws RateException {
         Connection conn = null;

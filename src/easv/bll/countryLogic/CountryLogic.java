@@ -22,7 +22,12 @@ public class CountryLogic implements ICountryLogic {
 
 
 
-    /**extract the countries to be used for the  map view component*/
+    /**
+     * Extracts the countries to be used for the map view component.
+     *
+     * @param operationalCountries A map of countries keyed by their IDs.
+     * @return A map of countries keyed by their names for the map view.
+     */
     public Map<String, Country> getCountriesForMap(Map<Integer, Country> operationalCountries) {
         Map<String, Country> countriesForMap = new HashMap<>();
         operationalCountries.values().forEach(e -> {
@@ -54,16 +59,20 @@ public class CountryLogic implements ICountryLogic {
     public Country updateCountry(Country country, List<Team> currentTeams, List<Team> newTeams, List<Team> teamsToUpdate) throws RateException {
         List<Team> teamsBeforeUpdate = country.getTeams();
 
+        // Uses a Set to track existing and current teams for comparison
         Set<Team> existingSet = new HashSet<>(teamsBeforeUpdate);
         Set<Team> currentTeamsSet = new HashSet<>(currentTeams);
 
+        // Determine added teams
         Set<Team> addedTeams = new HashSet<>(currentTeamsSet);
         addedTeams.removeAll(existingSet);
 
+        // Determine removed teams
         Set<Team> removedTeams = new HashSet<>(existingSet);
         removedTeams.removeAll(currentTeamsSet);
         removedTeams.removeIf(team -> teamsToUpdate.stream().anyMatch(updatedTeam -> updatedTeam.getId() == team.getId()));
 
+        // Updates the country with added and removed teams
         countryDao.updateCountry(country, addedTeams.stream().toList(), removedTeams.stream().toList(), newTeams, teamsToUpdate);
         country.setTeams(currentTeams);
         return country;
@@ -113,19 +122,6 @@ public class CountryLogic implements ICountryLogic {
             }
         }
         return updatedTeams;
-    }
-
-    @Override
-    public boolean addNewTeam(Country country, Team team) throws RateException {
-        List<Team> teams = new ArrayList<>();
-        teams.add(team);
-        List<Integer> teamsIds = countryDao.addTeams(teams, null);
-        if (!teamsIds.isEmpty()) {
-            countryDao.addNewTeamsToCountry(teamsIds, country.getId(), null);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     @Override
