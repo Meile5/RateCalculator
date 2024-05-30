@@ -9,6 +9,9 @@ import java.util.HashMap;
 
 import static javafx.scene.shape.FillRule.EVEN_ODD;
 
+/**The NavigationFactory class is responsible for creating and configuring navigation components for the home page.
+ * It dynamically generates navigation items for different pages, each populated with the appropriate SVG icon,
+ * text, and functionality.  */
 
 public class NavigationFactory {
     private final static HashMap<Navigation, SVGPath> icons = new HashMap<>();

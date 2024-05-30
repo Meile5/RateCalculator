@@ -7,6 +7,12 @@ import easv.ui.pages.modelFactory.IModel;
 import javafx.scene.layout.StackPane;
 import java.util.HashMap;
 
+/**
+ * The CallBackFactory class is responsible for creating and managing callbacks for different navigation actions within
+ * the application. These callbacks are used by NavigationController instances to handle the navigation to various pages.
+ * This factory ensures that callbacks are created, cached, and appropriately linked to the navigation actions.
+ */
+
 public class CallBackFactory {
     private static final HashMap<Navigation, CallBack> callBacks = new HashMap<>();
     private static PageManager pageManager;

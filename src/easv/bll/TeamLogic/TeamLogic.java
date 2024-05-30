@@ -9,7 +9,6 @@ import easv.dal.teamDao.TeamDao;
 import easv.exception.ErrorCode;
 import easv.exception.RateException;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.*;
 
 public class TeamLogic implements ITeamLogic {
@@ -22,7 +21,8 @@ public class TeamLogic implements ITeamLogic {
     }
 
 
-    /**DISTRIBUTION  OPERATION LOGIC */
+
+    // DISTRIBUTION  OPERATION LOGIC
 
     /**
      * calculate the overhead off a region , if is zero return an  OverHeadComputationPair object
@@ -293,7 +293,6 @@ public class TeamLogic implements ITeamLogic {
     /** Calls team dao to save edited team in database and return the edited team */
     public Team saveTeamEditOperation(Team editedTeam, int idOriginalTeam, List<Employee> employeesToDelete, List<Employee> employees) throws RateException {
         return teamDao.saveEditOperationTeam(editedTeam, idOriginalTeam, employeesToDelete, employees);
-
     }
 
     public BigDecimal getEmployeeHourlyRateOnTeamE(Employee employee, Team team) {
