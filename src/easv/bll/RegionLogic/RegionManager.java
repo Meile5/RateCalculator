@@ -17,6 +17,13 @@ public class RegionManager implements IRegionManager {
         this.regionDAO = new RegionDAO();
     }
 
+    /**
+     * Adds a new region and associates it with a list of countries.
+     *
+     * @param region The region to add.
+     * @param countries The list of countries to associate with the region.
+     * @return The added region with its ID and countries set.
+     */
     @Override
     public Region addRegion(Region region, List<Country> countries) throws RateException {
         int regionID = regionDAO.addRegion(region, countries);
@@ -27,6 +34,13 @@ public class RegionManager implements IRegionManager {
         return region;
     }
 
+    /**
+     * Updates an existing region and its associated countries.
+     *
+     * @param region The region to update.
+     * @param countries The updated list of countries to associate with the region.
+     * @return The updated region with its countries set.
+     */
     @Override
     public Region updateRegion(Region region, List<Country> countries) throws RateException {
         List<Country> existingCountries = region.getCountries();
@@ -43,11 +57,24 @@ public class RegionManager implements IRegionManager {
         return region;
     }
 
+    /**
+     * Deletes a region.
+     *
+     * @param region The region to delete.
+     * @return true if the region was successfully deleted, false otherwise.
+     */
     @Override
     public boolean deleteRegion(Region region) throws RateException {
         return regionDAO.deleteRegion(region);
     }
 
+    /**
+     * Filters regions based on a search filter.
+     *
+     * @param filter The search filter to apply.
+     * @param allRegions The collection of all regions to filter.
+     * @return A list of regions that match the filter criteria.
+     */
     @Override
     public List<Region> performSearchRegionFilter(String filter, Collection<Region> allRegions) {
         String filterToLowerCase = filter.toLowerCase();

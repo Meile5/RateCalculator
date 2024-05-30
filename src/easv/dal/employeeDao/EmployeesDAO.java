@@ -234,12 +234,14 @@ public class EmployeesDAO implements IEmployeeDAO {
         try {
             conn = connectionManager.getConnection();
             conn.setAutoCommit(false);
+            // Insert employee data
             String sql = "INSERT INTO dbo.Employees (Name, EmployeeType, Currency) VALUES (?, ?, ?)";
             try (PreparedStatement psmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psmt.setString(1, employee.getName());
                 psmt.setString(2, employee.getEmployeeType().toString());
                 psmt.setString(3, employee.getCurrency().name());
                 psmt.executeUpdate();
+                // Retrieve generated employee ID
                 try (ResultSet res = psmt.getGeneratedKeys()) {
                     if (res.next()) {
                         employeeID = res.getInt(1);
@@ -247,12 +249,14 @@ public class EmployeesDAO implements IEmployeeDAO {
                         throw new RateException(ErrorCode.OPERATION_DB_FAILED);
                     }
                 }
+                // Add configuration if provided
                 if (configuration != null) {
                     Integer configurationID = addConfiguration(configuration, conn);
                     if (configurationID != null) {
                         addEmployeeConfiguration(employeeID, configurationID, conn);
                     }
                 }
+                // Add employee to teams if provided
                 if (!teams.isEmpty()) {
                     addEmployeeToTeam(employeeID, teams, conn);
                 }
@@ -308,6 +312,9 @@ public class EmployeesDAO implements IEmployeeDAO {
         return configurationID;
     }
 
+    /**
+     * Links an employee to a configuration in the database
+     */
     @Override
     public void addEmployeeConfiguration(int employeeID, int configurationID, Connection conn) throws RateException, SQLException {
         String sql = "INSERT INTO EmployeeConfigurations (EmployeeID, ConfigurationID) VALUES (?, ?)";
@@ -318,6 +325,9 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
     }
 
+    /**
+     * Adds an employee to multiple teams in the database
+     */
     @Override
     public void addEmployeeToTeam(int employeeID, List<Team> teams, Connection conn) throws RateException, SQLException {
         String sql = "INSERT INTO TeamEmployee (TeamID, EmployeeID, UtilizationPercentage) VALUES (?, ?, ?)";
@@ -332,6 +342,9 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
     }
 
+    /**
+     * Adds a history entry for team employees in the database
+     */
     private void addEmployeeHistory(Team team, int teamConfigurationID, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, Connection conn) {
          String sql = "INSERT INTO TeamEmployeesHistory (EmployeeName, EmployeeDailyRate, EmployeeHourlyRate, TeamConfigurationId, Currency) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
@@ -349,6 +362,9 @@ public class EmployeesDAO implements IEmployeeDAO {
         }
     }
 
+    /**
+     * Adds a team to a configuration history in the database
+     */
     private void addTeamToConfiguration(Team team, int teamConfigurationID, Connection conn) {
         String sql = "INSERT INTO TeamConfigurationsHistory (TeamConfigurationID, TeamID) VALUES (?, ?)";
         try (PreparedStatement psmt = conn.prepareStatement(sql)) {
@@ -626,7 +642,6 @@ public class EmployeesDAO implements IEmployeeDAO {
     /**
      * get all regions in the system with associated countries
      */
-
     @Override
     public Map<Integer, Region> getRegionsWithCountries(ObservableMap<Integer, Country> countriesWithTeams) throws RateException {
         String sql = "SELECT r.*,rc.CountryID from RegionCountry rc " +
@@ -654,6 +669,9 @@ public class EmployeesDAO implements IEmployeeDAO {
         return retrievedRegions;
     }
 
+    /**
+     * Adds a team to a configuration history in the database
+     */
     @Override
     public Integer addNewTeamConfiguration(TeamConfiguration teamConfiguration, Team team, Map<Integer, BigDecimal> employeeDayRate, Map<Integer, BigDecimal> employeeHourlyRate, int oldTeamConfigurationID) throws  RateException {
         Integer configurationID = null;

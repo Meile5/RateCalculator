@@ -82,6 +82,9 @@ public class ManageRegionController implements Initializable {
         addListenersForInputs();
     }
 
+    /**
+     * Adds a listener to the add country button.
+     */
     private void addCountryListener() {
         addCountryBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(RegionValidation.isCountrySelected(countriesCB)){
@@ -94,6 +97,9 @@ public class ManageRegionController implements Initializable {
         });
     }
 
+    /**
+     * Adds a listener to the remove country button.
+     */
     private void removeCountryListener() {
         removeCountryBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(RegionValidation.isCountryToRemoveSelected(countriesListView)){
@@ -102,11 +108,17 @@ public class ManageRegionController implements Initializable {
             }});
     }
 
+    /**
+     * Adds listeners for inputs.
+     */
     private void addListenersForInputs(){
         CountryValidation.addLettersOnlyInputListener(regionNameTF);
         CountryValidation.addLettersOnlyInputListener(countriesCB);
     }
 
+    /**
+     * Sets the fields for the region.
+     */
     private void setFields() {
         if(region != null){
             isEditOperation = true;
@@ -119,20 +131,17 @@ public class ManageRegionController implements Initializable {
         countriesCB.getItems().addAll(model.getOperationalCountries());
     }
 
+    /**
+     * Adds a listener to the save button for saving region operation.
+     */
     private void saveRegionListener() {
         saveBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(RegionValidation.isRegionNameValid(regionNameTF) && RegionValidation.isCountryListValid(countriesListView)){
                 enableProgressBar();
                 if(isEditOperation) {
                     region.setRegionName(regionNameTF.getText());
-//                    secondPane.getChildren().add(progressSpinner);
-//                    WindowsManagement.showStackPane(secondPane);
-
                     saveRegionOperation(region, countriesList);
                 } else {
-//                    secondPane.getChildren().add(progressSpinner);
-//                    WindowsManagement.showStackPane(secondPane);
-
                     String name = regionNameTF.getText();
                     region = new Region(name);
                     saveRegionOperation(region, countriesList);
@@ -142,16 +151,27 @@ public class ManageRegionController implements Initializable {
 
     }
 
+    /**
+     * Enables the progress bar.
+     */
     private void enableProgressBar() {
         progressSpinner.setVisible(true);
         progressSpinner.setDisable(false);
     }
 
+    /**
+     * Disables the progress bar.
+     */
     private void disableProgressBar() {
         progressSpinner.setVisible(false);
         progressSpinner.setDisable(true);
     }
 
+    /**
+     * Executes the save region operation.
+     * @param region the region object
+     * @param countries the list of countries
+     */
     private void saveRegionOperation(Region region, List<Country> countries) {
         saveRegion = new Service<Void>() {
             @Override
@@ -173,12 +193,6 @@ public class ManageRegionController implements Initializable {
         saveRegion.setOnSucceeded(event -> {
             controller.showOperationStatus("Operation Successful!", Duration.seconds(2));
             controller.updateRegionComponents();
-//            if (isEditOperation) {
-//                controller.updateRegionComponents();
-//            } else {
-//                controller.addRegionComponent(region);
-//            }
-            //WindowsManagement.closeStackPane(secondPane);
             WindowsManagement.closeStackPane(pane);
             disableProgressBar();
 
@@ -186,19 +200,25 @@ public class ManageRegionController implements Initializable {
 
         saveRegion.setOnFailed(event -> {
             controller.showOperationStatus(ErrorCode.OPERATION_DB_FAILED.getValue(), Duration.seconds(5));
-            //WindowsManagement.closeStackPane(secondPane);
             WindowsManagement.closeStackPane(pane);
             disableProgressBar();
         });
         saveRegion.restart();
     }
 
+    /**
+     * Adds a listener to the cancel button to cancel the operation.
+     */
     private void cancelOperationListener() {
         cancelBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             WindowsManagement.closeStackPane(pane);
         });
     }
 
+    /**
+     * Retrieves the root VBox.
+     * @return the root VBox
+     */
     public VBox getRoot(){
         return manageWindow;
     }

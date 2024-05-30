@@ -26,13 +26,9 @@ public class DeleteRegionController implements Initializable, OperationHandler {
 
     @FXML
     private VBox deleteComponent;
-    @FXML
-    private VBox deleteContainer;
     private StackPane pane;
     private IModel model;
     private Region region;
-    private VBox employeesContainer;
-    private HBox employeeComponent;
     private ConfirmationWindowController confirmationWindowController;
     private GeographyManagementController controller;
     private Service<Void> deleteEmployee;
@@ -46,7 +42,6 @@ public class DeleteRegionController implements Initializable, OperationHandler {
         this.controller = controller;
         try {
             deleteComponent = loader.load();
-           // this.deleteContainer = deleteContainer;
 
         } catch (IOException e) {
             ExceptionHandler.errorAlertMessage(ErrorCode.LOADING_FXML_FAILED.getValue());

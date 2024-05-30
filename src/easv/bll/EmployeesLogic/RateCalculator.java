@@ -10,15 +10,13 @@ import java.math.RoundingMode;
 public class RateCalculator implements IRateCalculator {
     private long HoursInDay;
 
+
     /**
-     * method can be improved for readability and testing
      * this method is calculating the day rate for an employee
      *
      * @param employee the employee to calculate for
      *                 if no values are present for the employee returns BigDecimal.ZERO
      */
-
-
     public BigDecimal calculateEmployeeTotalDayRate(Employee employee) {
         BigDecimal annualSalary = employee.getActiveConfiguration().getAnnualSalary();
         BigDecimal overheadMultiplier = employee.getActiveConfiguration().getOverheadMultiplier().divide(BigDecimal.valueOf(100), MathContext.DECIMAL32).add(BigDecimal.ONE);

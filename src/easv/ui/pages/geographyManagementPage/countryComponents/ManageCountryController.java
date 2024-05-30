@@ -82,6 +82,9 @@ public class ManageCountryController implements Initializable {
         addListenersForInputs();
     }
 
+    /**
+     * Adds a listener to add a team to the list view.
+     */
     private void addTeamToListListener() {
         addTeamBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(CountryValidation.isTeamSelected(teamsCB, null)){
@@ -96,6 +99,9 @@ public class ManageCountryController implements Initializable {
         });
     }
 
+    /**
+     * Adds a listener to remove a team from the list view.
+     */
     private void removeTeamListener() {
         removeTeamBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(CountryValidation.isTeamToRemoveSelected(teamsListView)){
@@ -104,11 +110,17 @@ public class ManageCountryController implements Initializable {
             }});
     }
 
+    /**
+     * Adds listeners for input fields.
+     */
     private void addListenersForInputs(){
         CountryValidation.addLettersOnlyInputListener(countryNameBox);
         CountryValidation.addLettersOnlyInputListener(teamsCB);
     }
 
+    /**
+     * Sets the fields with initial values.
+     */
     private void setFields() {
         ObservableList<String> countries = FXCollections.observableArrayList(model.getValidCountries());
         countryNameBox.setItems(countries);
@@ -125,6 +137,10 @@ public class ManageCountryController implements Initializable {
         teamsCB.getItems().addAll(model.getOperationalTeams());
     }
 
+    /**
+     * Updates the team combo box.
+     * @param team the team object
+     */
     public void updateTeamComboBox(Team team){
         Team selectedTeam = getSelectedTeam();
         if(team != null){
@@ -134,6 +150,9 @@ public class ManageCountryController implements Initializable {
         }
     }
 
+    /**
+     * Adds a listener to the save button.
+     */
     private void saveCountryListener() {
         saveBTN.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(CountryValidation.isCountryNameValid(countryNameBox) && CountryValidation.isTeamsListValid(teamsListView)){
@@ -153,6 +172,9 @@ public class ManageCountryController implements Initializable {
 
     }
 
+    /**
+     * Adds a listener to the add new team button.
+     */
     private void addNewTeamListener() {
         addNewTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
                 ManageTeamController manageTeamController = new ManageTeamController(pane, controller, null, secondPane, false, this);
@@ -162,6 +184,9 @@ public class ManageCountryController implements Initializable {
         });
     }
 
+    /**
+     * Adds a listener to edit a team.
+     */
     private void editTeamListener() {
         editTeamBT.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
             if(CountryValidation.isTeamSelected(null, teamsListView)){
@@ -173,6 +198,10 @@ public class ManageCountryController implements Initializable {
         });
     }
 
+    /**
+     * Gets the selected team.
+     * @return the selected team
+     */
     private Team getSelectedTeam() {
         if(teamsListView.getSelectionModel().getSelectedItem() == null) {
             return null;

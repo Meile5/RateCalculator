@@ -49,7 +49,6 @@ public class RegionComponent extends HBox implements Initializable {
             loader.load();
             this.getChildren().add(regionInfoComponent);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -95,12 +94,6 @@ public class RegionComponent extends HBox implements Initializable {
             ManageRegionController manageRegionController = new ManageRegionController(model, pane, secondPane, region, controller);
             this.pane.getChildren().add(manageRegionController.getRoot());
             WindowsManagement.showStackPane(pane);
-
-//            EditController editController = new EditController(model, firstLayout, employee, this);
-//            this.firstLayout.getChildren().add(editController.getRoot());
-//            employeeController.setSelectedComponentStyleToSelected(this);
-//            employeeController.setEmployeesVboxContainerStyleToEdit();
-//            WindowsManagement.showStackPane(firstLayout);
         });
     }
 
