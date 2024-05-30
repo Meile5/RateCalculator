@@ -22,6 +22,7 @@ public class NavigateToCreate implements CallBack, Subject {
 
     }
 
+
     @Override
     public void call() {
         if (isOpened) {
@@ -31,8 +32,6 @@ public class NavigateToCreate implements CallBack, Subject {
         pageManager.changePage(root, this);
         isOpened = true;
     }
-
-
     private void initializePage() {
         CreateController createController = new CreateController(model,firstLayout);
         root = createController.getCreatePage();

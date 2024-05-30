@@ -17,6 +17,7 @@ class EmployeeValidationTest {
         BigDecimal  overHeadZero =  BigDecimal.ZERO;
         //Act
         boolean isInRange = EmployeeValidation.isPercentageValid(overHeadZero);
+        //Assert
         assertTrue(isInRange);
     }
 

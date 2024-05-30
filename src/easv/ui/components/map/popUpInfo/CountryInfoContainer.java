@@ -2,7 +2,6 @@ package easv.ui.components.map.popUpInfo;
 
 import easv.Utility.WindowsManagement;
 import easv.be.Team;
-import easv.be.TeamWithEmployees;
 import easv.exception.ErrorCode;
 import easv.exception.ExceptionHandler;
 import easv.exception.RateException;

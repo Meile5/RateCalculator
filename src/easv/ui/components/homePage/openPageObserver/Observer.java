@@ -6,7 +6,6 @@ import java.util.List;
 public class Observer implements Observable {
     private List<Subject> subjects;
 
-
     public Observer() {
     subjects= new ArrayList<>();
     }
