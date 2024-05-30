@@ -365,7 +365,10 @@ public class CreateController implements Initializable {
     public Parent getCreatePage() {
         return createPage;
     }
-
+    @FXML
+    private void clearInputs(){
+        clearFields();
+    }
 
     private void closeWindowSpinner(StackPane stackPane){
         PauseTransition pauseTransition =  new PauseTransition(Duration.millis(2000));
