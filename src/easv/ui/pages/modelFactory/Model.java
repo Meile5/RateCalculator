@@ -775,6 +775,7 @@ public class Model implements IModel {
      * If the team is successfully saved, it updates the map that stores the teams.
      */
     public void performEditTeam (List<Employee> employees, List<Employee> employeesToDelete, Team editedTeam, Team originalTeam) throws RateException{
+        /* Removes employees to delete from editedTeam */
         for (Employee employeesDelete : employeesToDelete) {
             editedTeam.removeTeamMember(employeesDelete);
         }
@@ -789,6 +790,7 @@ public class Model implements IModel {
             employee.setTeamDailyRate(employeeDayRate);
             if (editedTeam.getTeamMember(employee.getId()) != null) {
                 editedTeam.replaceTeaMember(employee);
+                /* Creates new history */
                 teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
             } else {
                 teamConfigurationEmployee = new TeamConfigurationEmployee(employee.getName(), employee.getTeamDailyRate().doubleValue(), employee.getTeamHourlyRate().doubleValue(), employee.getCurrency());
@@ -801,6 +803,7 @@ public class Model implements IModel {
             editedTeam.setActiveConfiguration(newTeamConfiguration);
 
         }
+        /* id editedTeam is empty, puts zeros in values*/
         if(editedTeam.getTeamMembers().isEmpty()){
             TeamConfiguration tm = new TeamConfiguration(BigDecimal.ZERO, BigDecimal.ZERO, 0, 0,LocalDateTime.now() , true);
             editedTeam.setActiveConfiguration(tm);
@@ -813,13 +816,12 @@ public class Model implements IModel {
             editedTeamSaved=teamManager.saveTeamEditOperation(editedTeam,0, employeesToDelete, employees);
         }
 
-
-
         if (editedTeamSaved != null) {
             teamsWithEmployees.remove(originalTeam.getId());
             teamsWithEmployees.put(editedTeamSaved.getId(), editedTeamSaved);
         }
     }
+
     /** Creates a new configuration for the team with recalculated rates */
     private TeamConfiguration getNewEmployeeTeamConfiguration1(Team team) {
         BigDecimal teamHourlyRate = teamManager.calculateTeamHourlyRateE(team);
